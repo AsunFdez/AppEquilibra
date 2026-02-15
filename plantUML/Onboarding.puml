@@ -1,0 +1,41 @@
+@startuml
+' Diagrama de Casos de Uso - Onboarding
+left to right direction
+actor "Usuario nuevo\n(ej. Ana)" as Ana
+package "App Equilibra" {
+  usecase "Ver Splash animado" as UC1
+  usecase "Responder estado emocional" as UC2
+  usecase "Recibir validación psicológica" as UC3
+  usecase "Responder 3 preguntas clave" as UC4
+  usecase "Establecer plan de ahorro\ny asignar Primera Misión" as UC5
+}
+
+Ana --> UC1
+UC1 --> UC2 : muestra pregunta
+Ana --> UC2
+UC2 --> UC3
+Ana --> UC4
+UC4 --> UC5
+
+note right of UC4
+  Preguntas:
+  - Mayor preocupación financiera
+  - Tiempo disponible (5,10,15 min)
+  - Objetivo especial (p.ej. "Regalo de boda")
+end note
+
+@enduml
+
+@startuml
+' Diagrama de Actividad - Onboarding (flujo)
+start
+:Abre la app por primera vez;
+:Se muestra Splash animado;
+:App pregunta: "¿Cómo te sientes cuando\npiensas en tu dinero?";
+:Usuario selecciona su estado emocional;
+:App muestra mensaje de validación psicológica;
+:Usuario responde 3 preguntas clave;
+:App calcula plan de ahorro;
+:App asigna "Primera Misión": registrar un gasto hoy;
+stop
+@enduml

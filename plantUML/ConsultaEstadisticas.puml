@@ -1,0 +1,43 @@
+@startuml
+' Diagrama de Casos de Uso - Consulta de Estadísticas
+top to bottom direction
+actor "Usuario analítico" as Analyst
+package "App Equilibra" {
+  usecase "Acceder a Vista Análisis" as UC1
+  usecase "Ver PieChart (por categoría)" as UC2
+  usecase "Ver BarChart (comparativa diaria)" as UC3
+  usecase "Ver progreso hacia objetivo y proyecciones" as UC4
+}
+
+Analyst --> UC1
+UC1 --> UC2
+UC1 --> UC3
+UC1 --> UC4
+
+note bottom of UC2
+  PieChart muestra % de gasto por
+  categorías (Vivienda, Ocio, etc.)
+end note
+
+note bottom of UC3
+  BarChart: comparativa diaria
+  para detectar días con más gasto
+end note
+
+note bottom of UC4
+  Ej: "80% completado" y proyecciones
+  para fin de mes
+end note
+@enduml
+
+@startuml
+' Diagrama de Actividad - Consulta de Estadísticas (flujo)
+start
+:Usuario abre menú de navegación;
+:Selecciona "Vista Análisis";
+:App renderiza PieChart (fugas por categoría);
+:Usuario revisa y puede alternar a BarChart;
+:BarChart muestra comparativa diaria;
+:Pantalla muestra progreso a objetivo y proyecciones;
+stop
+@enduml

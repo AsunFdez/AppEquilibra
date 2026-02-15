@@ -1,0 +1,37 @@
+@startuml
+' Diagrama de Casos de Uso - Registro de Gasto
+top to bottom direction
+actor "Usuario registrado" as User
+package "App Equilibra" {
+  usecase "Abrir Home" as UC0
+  usecase "Pulsar botón '+' " as UC1
+  usecase "Introducir importe,\ndescripción y categoría" as UC2
+  usecase "Intervención suave\n(educativa/visual)" as UC3
+  usecase "Confirmar gasto (sumar XP\ny actualizar racha)" as UC4
+}
+
+User --> UC0
+User --> UC1
+UC1 --> UC2
+UC2 --> UC3 : si gasto importante/impulsivo
+UC2 --> UC4 : confirmar
+UC3 --> UC4 : tras intervención
+
+note right of UC3
+  Ejemplos: "¿Este café te acerca\na tu viaje?" o cambiar color del presupuesto
+end note
+@enduml
+
+@startuml
+' Diagrama de Actividad - Registro de Gasto (flujo)
+start
+:Desde Home, pulsa '+';
+:Formulario -> importe, descripción, categoría;
+if (¿gasto importante o impulsivo?) then (sí)
+  :Mostrar intervención educativa y\nvisualizar impacto en presupuesto;
+endif
+:Usuario confirma gasto;
+:Sistema suma XP;
+:Sistema actualiza racha diaria;
+stop
+@enduml
