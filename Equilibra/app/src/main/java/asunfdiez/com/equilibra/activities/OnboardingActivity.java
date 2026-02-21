@@ -47,7 +47,7 @@ public class OnboardingActivity extends AppCompatActivity {
 
     // Método para navegar a MainActivity (llamado desde los fragmentos)
     public void goToMainActivity() {
-        Intent intent = new Intent(this, MainActivity.class);
+        Intent intent = new Intent(this, OnboardingActivity.class);
         startActivity(intent);
         finish(); // Cierra OnboardingActivity
     }

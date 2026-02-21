@@ -19,10 +19,16 @@
     <color name="purple">#9B59B6</color>
     <color name="red">#E74C3C</color>
     <color name="teal">#1ABC9C</color>
-    <color name="yellow">#F39C12</color>
+    <color name="yellow">#FFFF00</color>
 
     <color name="text_primary">#1E2939</color>
     <color name="text_secondary">#4A5565</color>
     <color name="border_gray">#E5E7EB</color>
+
+
+    <color name="brand_green">#2ECC71</color>
+
+
+
 
 </resources>
