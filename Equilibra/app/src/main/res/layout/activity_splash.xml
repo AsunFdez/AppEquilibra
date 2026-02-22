@@ -2,71 +2,105 @@
 <androidx.constraintlayout.widget.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/bg_splash">
 
-    <!-- Contenedor central -->
-    <LinearLayout
-        android:id="@+id/logo_container"
+    <!-- Logo Container -->
+    <FrameLayout
+        android:id="@+id/logoContainer"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:gravity="center"
+        app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintVertical_bias="0.4">
 
+        <!-- Icono logo -->
         <ImageView
-            android:id="@+id/img_logo"
-            android:layout_width="140dp"
-            android:layout_height="140dp"
-            android:src="@drawable/img_logo"
-            app:tint="@color/white" /> <!-- El cerdo en blanco -->
+            android:id="@+id/piggyBankIcon"
+            android:layout_width="120dp"
+            android:layout_height="120dp"
+            android:layout_gravity="center"
+            android:src="@drawable/ic_piggy_bank"
+            android:tint="@android:color/white" />
 
-        <TextView
-            android:id="@+id/txt_title"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
-            android:text="Equilibra"
-            android:textColor="@color/white"
-            android:textSize="45sp"
-            android:textStyle="bold" />
+    </FrameLayout>
 
-        <TextView
-            android:id="@+id/txt_subtitle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Finanzas con Bienestar"
-            android:textColor="@color/white"
-            android:textSize="18sp"
-            android:alpha="0.8" />
-    </LinearLayout>
 
-    <!-- Saquito: USANDO TEXTO PARA EMOJI -->
+    <!-- Coin Emoji -->
     <TextView
-        android:id="@+id/img_bag"
+        android:id="@+id/coinEmoji"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_gravity="top|end"
+        android:layout_marginTop="228dp"
+        android:alpha="1"
         android:text="💰"
         android:textSize="32sp"
-        app:layout_constraintBottom_toTopOf="@+id/logo_container"
-        app:layout_constraintEnd_toEndOf="@+id/logo_container"
-        android:layout_marginEnd="8dp"
-        android:layout_marginBottom="-50dp" />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.668"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
-    <!-- Estrellas: USANDO TEXTO PARA EMOJI -->
+    <!-- Sparkles -->
     <TextView
-        android:id="@+id/img_stars"
+        android:id="@+id/sparkleLeft"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical|start"
+        android:layout_marginTop="300dp"
+        android:alpha="1"
         android:text="✨"
-        android:textSize="30sp"
-        app:layout_constraintTop_toTopOf="@+id/logo_container"
-        app:layout_constraintStart_toStartOf="@+id/logo_container"
-        android:layout_marginStart="0dp"
-        android:layout_marginTop="65dp" />
+        android:textSize="32sp"
+        app:layout_constraintEnd_toStartOf="@+id/logoContainer"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/sparkleRight"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical|end"
+        android:layout_marginTop="344dp"
+        android:alpha="1"
+        android:text="✨"
+        android:textSize="32sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toEndOf="@+id/logoContainer"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <!-- App Title -->
+    <TextView
+        android:id="@+id/appTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/app_name"
+        android:textSize="48sp"
+        android:textStyle="bold"
+        android:textColor="@color/white"
+        android:alpha="0"
+        android:layout_marginTop="32dp"
+        app:layout_constraintTop_toBottomOf="@id/logoContainer"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <!-- App Subtitle -->
+    <TextView
+        android:id="@+id/appSubtitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/leyenda"
+        android:textSize="20sp"
+        android:textColor="@color/white_transparent"
+        android:alpha="0"
+        android:layout_marginTop="8dp"
+        app:layout_constraintTop_toBottomOf="@id/appTitle"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
