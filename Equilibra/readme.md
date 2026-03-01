@@ -76,5 +76,23 @@ Res (carpeta `app/src/main/res/`)
 Consejo: mantener los recursos de la pantalla splash ligeros y con tamaños adecuados para evitar retrasos en el arranque visual.
 
 
+Styles (estilos y temas)
+------------------------
+- **Archivo**: `app/src/main/res/values/styles.xml` — contiene estilos reutilizables y temas de la UI.
+- **Ejemplos**: `Equilibra.Button.Primary`, `Equilibra.Button.Secondary`, `Equilibra.Button.Accent` (basados en `Widget.MaterialComponents.Button`) centralizan `backgroundTint`, `cornerRadius`, `textSize`, `textColor` y dimensiones visuales (`android:minHeight`, padding).
+- **Cómo usar**: aplica el estilo en un `MaterialButton` en XML:
+
+    ```xml
+    <com.google.android.material.button.MaterialButton
+            style="@style/Equilibra.Button.Primary"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/btn_start" />
+    ```
+
+- **Por qué**: usar estilos garantiza consistencia visual en toda la app (por ejemplo, mantener una altura y paddings homogéneos entre botones declarados como `MaterialButton` y aquellos que históricamente se renderizaban dentro de `CardView`).
+- **Personalización**: ajusta `minHeight`, paddings o `backgroundTint` en `styles.xml` para cambiar la apariencia sin editar múltiples layouts.
+
+
 
 
