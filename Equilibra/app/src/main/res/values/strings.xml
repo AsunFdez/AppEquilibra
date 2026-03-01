@@ -2,4 +2,75 @@
 <resources>
     <string name="app_name">Equilibra</string>
     <string name="leyenda">"Finanzas con Bienestar</string>
+
+    <string name="money_bag_emoji">💰</string>
+    <string name="stars_emoji">✨</string>
+
+    <string name="question_0_title">¿Cómo te sientes cuando piensas en tu dinero?</string>
+    <string name="question_0_subtitle">Tu bienestar emocional es importante para nosotros</string>
+
+    <string name="label_option">Opción</string>
+
+    <string name="emotion_tranquilo_text">Tranquilo/a y en control</string>
+    <string name="emotion_ansioso_text">Un poco ansioso/a</string>
+    <string name="emotion_estresado_text">Muy estresado/a</string>
+    <string name="emotion_confundido_text">Confundido/a</string>
+
+    <string name="emotion_tranquilo_emoji">😌</string>
+    <string name="emotion_ansioso_emoji">😟</string>
+    <string name="emotion_estresado_emoji">😰</string>
+    <string name="emotion_confundido_emoji">😕</string>
+
+    <string name="validation_calm">¡Genial! Tu tranquilidad es una fortaleza. Equilibra te ayudará a mantener ese control y seguir creciendo.</string>
+    <string name="validation_anxious">Es completamente normal sentirse así. Equilibra está aquí para darte claridad y reducir ese estrés financiero paso a paso.</string>
+    <string name="validation_stressed">Entendemos tu preocupación. Dar este primer paso es valiente. Juntos trabajaremos para transformar ese estrés en confianza.</string>
+    <string name="validation_confused">La confusión es el inicio del aprendizaje. Equilibra te guiará con claridad para que tomes el control de tus finanzas.</string>
+
+    <string name="question_1_title">¿Cuál es tu mayor preocupación financiera?</string>
+
+    <string name="q1_option_1">Controlar mis gastos</string>
+    <string name="q1_option_2">Ahorrar para algo específico</string>
+    <string name="q1_option_3">Reducir estrés financiero</string>
+    <string name="q1_option_4">Aprender sobre dinero</string>
+
+    <string name="question_2_title">¿Cuánto tiempo tienes disponible diariamente?</string>
+
+    <string name="q2_option_1">5 minutos (básico)</string>
+    <string name="q2_option_2">10 minutos (recomendado)</string>
+    <string name="q2_option_3">15+ minutos (análisis detallado)</string>
+
+    <string name="btn_continue">Continuar</string>
+    <string name="btn_submit_goal">Guardar objetivo</string>
+    <string name="btn_start_mission">Comenzar misión</string>
+
+    <string name="saving_goal_title">¿Para qué quieres ahorrar y cuánto necesitas?</string>
+    <string name="saving_goal_subtitle">Por ejemplo: &quot;Vacaciones&quot;, &quot;Nuevo móvil&quot;, &quot;Regalo de boda&quot;</string>
+
+    <string name="label_goal">Objetivo</string>
+    <string name="hint_goal">Tu objetivo</string>
+    <string name="hint_input_goal">Ej: Vacaciones en verano</string>
+    <string name="label_amount">Cantidad</string>
+    <string name="hint_amount">¿Cuánto necesitas?</string>
+    <string name="label_date">Fecha límite</string>
+    <string name="hint_date">¿Para cuándo? (opcional)</string>
+    <string name="calculate_plan">Calcular plan" </string>
+
+    <string name="saving_plan">Hemos calculado tu plan de ahorro personalizado</string>
+    <string name="plan_ready">¡Tu plan está listo!</string>
+    <string name="emotional_state">Tu estado emocional</string>
+    <string name="savings_goal">Meta de ahorro</string>
+    <string name="suggested_savings_monthly">Ahorro sugerido mensual</string>
+    <string name="goal_time">Alcanzarás tu meta en 6 meses</string>
+    <string name="first_mission_title">¡Primera Misión!</string>
+    <string name="first_mission_subtitle">Estás listo para comenzar tu viaje financiero</string>
+    <string name="goal_emoji">🎯</string>
+    <string name="first_expense_today">Registra tu primer gasto hoy</string>
+    <string name="first_expense_today_explanation">Comienza a tomar control de tus finanzas registrando cualquier gasto que hagas hoy. ¡Así de simple!</string>
+    <string name="first_expense_today_example">Puede ser un café, el transporte o la comida</string>
+    <string name="register_expense_motivate">Solo toma 30 segundos registrarlo</string>
+    <string name="first_expense_gamification">Ganarás tu primer logro al completarlo</string>
+    <string name="btn_start">¡Comenzar mi viaje!</string>
+    <string name="checked_emoji">✓</string>
+
+
 </resources>

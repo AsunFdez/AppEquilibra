@@ -1,8 +1,26 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
+
+    <!-- Equilibra Brand Colors -->
     <color name="equilibra_primary">#2ECC71</color>
     <color name="equilibra_primary_dark">#27AE60</color>
+    <color name="equilibra_secondary">#3498DB</color>
+    <color name="equilibra_accent">#E67E22</color>
+
+    <!-- Gray Scale -->
+    <color name="gray_800">#1F2937</color>
+    <color name="gray_700">#374151</color>
+    <color name="gray_600">#4B5563</color>
+    <color name="gray_500">#6B7280</color>
+    <color name="gray_400">#9CA3AF</color>
+    <color name="gray_200">#E5E7EB</color>
+
+    <!-- Background -->
+    <color name="background_light">#F9FAFB</color>
+
+
+
     <color name="white">#FFFFFF</color>
     <color name="white_transparent">#E6FFFFFF</color>
 
