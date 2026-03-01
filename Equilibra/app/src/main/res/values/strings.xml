@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">Equilibra</string>
-    <string name="leyenda">"Finanzas con Bienestar</string>
+    <string name="leyenda">Finanzas con Bienestar</string>
 
     <string name="money_bag_emoji">💰</string>
     <string name="stars_emoji">✨</string>
@@ -49,11 +49,12 @@
     <string name="label_goal">Objetivo</string>
     <string name="hint_goal">Tu objetivo</string>
     <string name="hint_input_goal">Ej: Vacaciones en verano</string>
+    <string name="example_goal">Vacaciones en verano</string>
     <string name="label_amount">Cantidad</string>
     <string name="hint_amount">¿Cuánto necesitas?</string>
     <string name="label_date">Fecha límite</string>
     <string name="hint_date">¿Para cuándo? (opcional)</string>
-    <string name="calculate_plan">Calcular plan" </string>
+    <string name="calculate_plan">Calcular plan</string>
 
     <string name="saving_plan">Hemos calculado tu plan de ahorro personalizado</string>
     <string name="plan_ready">¡Tu plan está listo!</string>

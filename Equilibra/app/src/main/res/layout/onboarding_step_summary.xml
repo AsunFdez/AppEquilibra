@@ -31,7 +31,7 @@
                 android:layout_height="64dp"
                 android:layout_gravity="center"
                 android:src="@drawable/ic_onb_circle_check_big"
-                android:tint="@android:color/white" />
+                app:tint="@android:color/white" />
         </FrameLayout>
 
         <!-- Title -->
@@ -84,7 +84,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginBottom="4dp"
-                        android:text="Tu objetivo"
+                        android:text="@string/hint_goal"
                         android:textColor="@color/gray_600"
                         android:textSize="14sp" />
 
@@ -92,7 +92,7 @@
                         android:id="@+id/goalText"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="Vacaciones en verano"
+                        android:text="@string/example_goal"
                         android:textColor="@color/gray_800"
                         android:textSize="20sp"
                         android:textStyle="bold" />
@@ -223,27 +223,12 @@
         </androidx.cardview.widget.CardView>
 
         <!-- Continue Button -->
-        <androidx.cardview.widget.CardView
+        <com.google.android.material.button.MaterialButton
+            style="@style/Equilibra.Button.Primary"
             android:id="@+id/continueButton"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:clickable="true"
-            android:focusable="true"
-            android:foreground="?android:attr/selectableItemBackground"
-            app:cardBackgroundColor="@color/equilibra_primary"
-            app:cardCornerRadius="12dp"
-            app:cardElevation="4dp">
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:gravity="center"
-                android:padding="16dp"
-                android:text="@string/btn_continue"
-                android:textColor="@android:color/white"
-                android:textSize="18sp"
-                android:textStyle="bold" />
-        </androidx.cardview.widget.CardView>
+            android:text="@string/btn_continue" />
 
     </LinearLayout>
 </ScrollView>

@@ -12,6 +12,8 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import com.google.android.material.button.MaterialButton;
+
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
@@ -221,7 +223,7 @@ public class OnboardingActivity extends AppCompatActivity {
         CardView messageCard = view.findViewById(R.id.messageCard);
         animationHelper.animateCardScale(messageCard);
 
-        CardView continueButton = view.findViewById(R.id.continueButton);
+        MaterialButton continueButton = view.findViewById(R.id.continueButton);
         continueButton.setOnClickListener(v -> {
             animationHelper.animateButtonPress(v, () -> {
                 currentQuestionIndex = 0;
@@ -351,7 +353,7 @@ public class OnboardingActivity extends AppCompatActivity {
                 view.findViewById(R.id.amountInput);
         com.google.android.material.textfield.TextInputEditText dateInput =
                 view.findViewById(R.id.dateInput);
-        CardView submitButton = view.findViewById(R.id.submitButton);
+        MaterialButton submitButton = view.findViewById(R.id.submitButton);
 
         dateInput.setOnClickListener(v ->
                 new DatePickerHelper(this).showDatePicker(dateInput));
@@ -400,7 +402,7 @@ public class OnboardingActivity extends AppCompatActivity {
 
         setupSummaryContent(view);
 
-        CardView continueButton = view.findViewById(R.id.continueButton);
+        MaterialButton continueButton = view.findViewById(R.id.continueButton);
         continueButton.setOnClickListener(v -> {
             animationHelper.animateButtonPress(v, () -> showStep(OnboardingStep.MISSION));
         });
@@ -465,7 +467,7 @@ public class OnboardingActivity extends AppCompatActivity {
         View iconBackground = view.findViewById(R.id.iconBackground);
         animationHelper.animateZapIcon(zapIcon, iconBackground);
 
-        CardView startButton = view.findViewById(R.id.startButton);
+        MaterialButton startButton = view.findViewById(R.id.startButton);
         startButton.setOnClickListener(v -> {
             animationHelper.animateButtonPress(v, this::completeOnboarding);
         });

@@ -140,27 +140,12 @@
         </com.google.android.material.textfield.TextInputLayout>
 
         <!-- Submit Button -->
-        <androidx.cardview.widget.CardView
+        <com.google.android.material.button.MaterialButton
+            style="@style/Equilibra.Button.Accent"
             android:id="@+id/submitButton"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:clickable="true"
-            android:focusable="true"
-            android:foreground="?android:attr/selectableItemBackground"
-            app:cardBackgroundColor="@color/equilibra_accent"
-            app:cardCornerRadius="12dp"
-            app:cardElevation="4dp">
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:gravity="center"
-                android:padding="16dp"
-                android:text="@string/calculate_plan"
-                android:textColor="@android:color/white"
-                android:textSize="18sp"
-                android:textStyle="bold" />
-        </androidx.cardview.widget.CardView>
+            android:text="@string/calculate_plan" />
 
     </LinearLayout>
 </ScrollView>

@@ -3,6 +3,7 @@ package asunfdiez.com.equilibra.utils;
 import android.os.Handler;
 import android.text.Editable;
 import android.text.TextWatcher;
+import com.google.android.material.button.MaterialButton;
 
 import androidx.cardview.widget.CardView;
 
@@ -11,12 +12,12 @@ import com.google.android.material.textfield.TextInputEditText;
 public class SavingGoalValidator {
     private final TextInputEditText goalInput;
     private final TextInputEditText amountInput;
-    private final CardView submitButton;
+    private final MaterialButton submitButton;
     private final Handler handler;
 
     public SavingGoalValidator(TextInputEditText goalInput,
                                TextInputEditText amountInput,
-                               CardView submitButton,
+                               MaterialButton submitButton,
                                Handler handler) {
         this.goalInput = goalInput;
         this.amountInput = amountInput;
