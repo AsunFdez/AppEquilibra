@@ -198,7 +198,7 @@ public class OnboardingActivity extends AppCompatActivity {
         CardView card = parent.findViewById(cardId);
         card.setOnClickListener(v -> {
             selectedEmotion = emotion;
-            data.setEmotion(emotion.getId());
+            data.setEmotion(emotion.id());
             animationHelper.animateCardSelection(v, () -> showStep(OnboardingStep.VALIDATION));
         });
     }
@@ -212,8 +212,8 @@ public class OnboardingActivity extends AppCompatActivity {
         TextView validationMessage = view.findViewById(R.id.validationMessage);
 
         if (selectedEmotion != null) {
-            emojiText.setText(selectedEmotion.getEmoji());
-            validationMessage.setText(selectedEmotion.getValidation());
+            emojiText.setText(selectedEmotion.emoji());
+            validationMessage.setText(selectedEmotion.validation());
         }
 
         ImageView sparklesIcon = view.findViewById(R.id.sparklesIcon);
@@ -453,8 +453,8 @@ public class OnboardingActivity extends AppCompatActivity {
         if (selectedEmotion != null) {
             TextView emotionEmoji = view.findViewById(R.id.emotionEmoji);
             TextView emotionText = view.findViewById(R.id.emotionText);
-            emotionEmoji.setText(selectedEmotion.getEmoji());
-            emotionText.setText(selectedEmotion.getText());
+            emotionEmoji.setText(selectedEmotion.emoji());
+            emotionText.setText(selectedEmotion.text());
         }
     }
 

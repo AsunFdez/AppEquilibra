@@ -47,10 +47,10 @@ public class QuestionOptionAdapter {
         for (QuestionOption option : options) {
             CardView card = (CardView) inflater.inflate(R.layout.onboarding_item_question_option, container, false);
             TextView optionText = card.findViewById(R.id.optionText);
-            optionText.setText(option.getText());
+            optionText.setText(option.text());
 
-            final String optionId = option.getId();
-            final String optionTextValue = option.getText();
+            final String optionId = option.id();
+            final String optionTextValue = option.text();
 
             card.setOnClickListener(v -> {
                 if (listener != null) {

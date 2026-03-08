@@ -4,7 +4,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/background_light">
+    android:background="@color/background_light"
+    android:clipChildren= "false">
 
     <!-- Header Section -->
     <LinearLayout
@@ -119,44 +120,6 @@
         </LinearLayout>
 
         <!-- View Selector -->
-        <FrameLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="end">
-
-            <LinearLayout
-                android:id="@+id/viewSelectorButton"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="end"
-                android:background="@drawable/selector_background"
-                android:clickable="true"
-                android:focusable="true"
-                android:gravity="center_vertical"
-                android:orientation="horizontal"
-                android:paddingStart="16dp"
-                android:paddingTop="8dp"
-                android:paddingEnd="16dp"
-                android:paddingBottom="8dp">
-
-                <TextView
-                    android:id="@+id/viewSelectorText"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Principiante (Día 1)"
-                    android:textColor="@color/gray_700"
-                    android:textSize="14sp"
-                    android:textStyle="bold" />
-
-                <ImageView
-                    android:id="@+id/viewSelectorArrow"
-                    android:layout_width="16dp"
-                    android:layout_height="16dp"
-                    android:layout_marginStart="8dp"
-                    android:src="@drawable/ic_nav_chevron_down"
-                    android:tint="@color/gray_700" />
-            </LinearLayout>
-        </FrameLayout>
     </LinearLayout>
 
     <!-- Scrollable Content -->
@@ -197,7 +160,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginBottom="12dp"
-                        android:text="Tu progreso esta semana:"
+                        android:text="@string/weekly_progress_title"
                         android:textColor="@color/gray_800"
                         android:textSize="14sp"
                         android:textStyle="bold" />
@@ -207,7 +170,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginBottom="8dp"
-                        android:text="4/5 gastos registrados"
+                        android:text="@string/recorded_expenses"
                         android:textColor="@color/gray_600"
                         android:textSize="14sp" />
 
@@ -275,7 +238,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginBottom="4dp"
-                            android:text="Consejo de hoy:"
+                            android:text="@string/today_advice"
                             android:textColor="@color/gray_800"
                             android:textSize="14sp"
                             android:textStyle="bold" />
@@ -284,7 +247,7 @@
                             android:id="@+id/tipText"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="&quot;Registra gastos pequeños también. ¡Suman!&quot;"
+                            android:text="@string/advice_1"
                             android:textColor="@color/gray_700"
                             android:textSize="14sp" />
                     </LinearLayout>
@@ -334,7 +297,7 @@
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Acción rápida:"
+                            android:text="@string/quick_action_title"
                             android:textColor="@color/gray_800"
                             android:textSize="14sp"
                             android:textStyle="bold" />
@@ -347,7 +310,7 @@
                         android:layout_height="wrap_content"
                         android:clickable="true"
                         android:focusable="true"
-                        android:text="[+ Registrar último gasto]"
+                        android:text="@string/register_last_expense"
                         android:textColor="@color/equilibra_secondary"
                         android:textSize="16sp"
                         android:textStyle="bold" />
@@ -397,7 +360,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginBottom="4dp"
-                            android:text="Próximo objetivo:"
+                            android:text="@string/next_goal_title"
                             android:textColor="@color/gray_800"
                             android:textSize="14sp"
                             android:textStyle="bold" />
@@ -406,7 +369,7 @@
                             android:id="@+id/nextGoalText"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Completar tu primer presupuesto"
+                            android:text="@string/next_goal_1"
                             android:textColor="@color/gray_600"
                             android:textSize="14sp" />
                     </LinearLayout>
@@ -464,7 +427,7 @@
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="Mis Gastos"
+                                android:text="@string/my_expenses_tile"
                                 android:textColor="@color/gray_800"
                                 android:textSize="14sp"
                                 android:textStyle="bold" />
@@ -472,7 +435,7 @@
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="Ver, editar o eliminar"
+                                android:text="@string/my_expenses_text"
                                 android:textColor="@color/gray_600"
                                 android:textSize="12sp" />
                         </LinearLayout>

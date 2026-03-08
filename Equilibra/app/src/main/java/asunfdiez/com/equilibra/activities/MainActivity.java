@@ -35,9 +35,6 @@ public class MainActivity extends AppCompatActivity {
     private View progressBar;
     private TextView tipText;
     private TextView nextGoalText;
-    private LinearLayout viewSelectorButton;
-    private TextView viewSelectorText;
-    private ImageView viewSelectorArrow;
 
     // Bottom Navigation
     private LinearLayout navHome;
@@ -63,18 +60,17 @@ public class MainActivity extends AppCompatActivity {
     private CardView nextGoalCard;
     private CardView viewAllExpensesCard;
 
-    // Data
+    // Dummy Data
     private int weekProgress = 4;
     private int weekGoal = 5;
     private String userName = "Ana";
     private int dayCount = 1;
     private String currentView = "beginner"; // beginner, intermediate, advanced
 
-    // Popup
-    private PopupWindow viewSelectorPopup;
+
 
     // Handler
-    private Handler handler = new Handler();
+    private final Handler handler = new Handler();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -101,9 +97,6 @@ public class MainActivity extends AppCompatActivity {
         // Header
         userNameText = findViewById(R.id.userNameText);
         dayCountText = findViewById(R.id.dayCountText);
-        viewSelectorButton = findViewById(R.id.viewSelectorButton);
-        viewSelectorText = findViewById(R.id.viewSelectorText);
-        viewSelectorArrow = findViewById(R.id.viewSelectorArrow);
 
         // Progress Card
         progressCard = findViewById(R.id.progressCard);
@@ -149,13 +142,10 @@ public class MainActivity extends AppCompatActivity {
         dayCountText.setText(getString(R.string.day_count, dayCount));
         progressText.setText(getString(R.string.week_progress, weekProgress, weekGoal));
 
-        updateViewSelectorText();
         updateBottomNavigation("home");
     }
 
     private void setupListeners() {
-        // View Selector
-        viewSelectorButton.setOnClickListener(v -> showViewSelectorPopup());
 
         // Quick Action
         findViewById(R.id.quickActionButton).setOnClickListener(new View.OnClickListener() {
@@ -227,105 +217,6 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    private void showViewSelectorPopup() {
-        // Inflate popup layout
-        View popupView = LayoutInflater.from(this).inflate(R.layout.view_selector_popup, null);
-
-        // Create popup window
-        viewSelectorPopup = new PopupWindow(
-                popupView,
-                ViewGroup.LayoutParams.WRAP_CONTENT,
-                ViewGroup.LayoutParams.WRAP_CONTENT,
-                true
-        );
-
-        // Setup options
-        TextView option1 = popupView.findViewById(R.id.viewOption1);
-        TextView option2 = popupView.findViewById(R.id.viewOption2);
-        TextView option3 = popupView.findViewById(R.id.viewOption3);
-
-        // Highlight current selection
-        highlightSelectedView(option1, option2, option3);
-
-        // Set click listeners
-        option1.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                changeView("beginner");
-                viewSelectorPopup.dismiss();
-            }
-        });
-
-        option2.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                changeView("intermediate");
-                viewSelectorPopup.dismiss();
-            }
-        });
-
-        option3.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                changeView("advanced");
-                viewSelectorPopup.dismiss();
-            }
-        });
-
-        // Animate arrow rotation
-        viewSelectorArrow.animate()
-                .rotation(180f)
-                .setDuration(200)
-                .start();
-
-        // Show popup below selector button
-        viewSelectorPopup.setOnDismissListener(new PopupWindow.OnDismissListener() {
-            @Override
-            public void onDismiss() {
-                viewSelectorArrow.animate()
-                        .rotation(0f)
-                        .setDuration(200)
-                        .start();
-            }
-        });
-
-        viewSelectorPopup.showAsDropDown(viewSelectorButton, 0, 10);
-    }
-
-    private void highlightSelectedView(TextView option1, TextView option2, TextView option3) {
-        // Reset all
-        option1.setTextColor(getResources().getColor(R.color.gray_700));
-        option2.setTextColor(getResources().getColor(R.color.gray_700));
-        option3.setTextColor(getResources().getColor(R.color.gray_700));
-
-        option1.setTypeface(null, android.graphics.Typeface.NORMAL);
-        option2.setTypeface(null, android.graphics.Typeface.NORMAL);
-        option3.setTypeface(null, android.graphics.Typeface.NORMAL);
-
-        option1.setBackgroundColor(getResources().getColor(android.R.color.transparent));
-        option2.setBackgroundColor(getResources().getColor(android.R.color.transparent));
-        option3.setBackgroundColor(getResources().getColor(android.R.color.transparent));
-
-        // Highlight current
-        TextView selectedOption = null;
-        switch (currentView) {
-            case "beginner":
-                selectedOption = option1;
-                break;
-            case "intermediate":
-                selectedOption = option2;
-                break;
-            case "advanced":
-                selectedOption = option3;
-                break;
-        }
-
-        if (selectedOption != null) {
-            selectedOption.setTextColor(getResources().getColor(R.color.equilibra_primary));
-            selectedOption.setTypeface(null, android.graphics.Typeface.BOLD);
-            selectedOption.setBackgroundColor(getResources().getColor(R.color.primary_lightest));
-        }
-    }
 
     private void changeView(String newView) {
         if (currentView.equals(newView)) return;
@@ -336,29 +227,10 @@ public class MainActivity extends AppCompatActivity {
         SharedPreferences prefs = getSharedPreferences("equilibra_prefs", MODE_PRIVATE);
         prefs.edit().putString("current_view", currentView).apply();
 
-        // Update UI
-        updateViewSelectorText();
-
         // TODO: Update content based on view level
-        // For now, just update the selector text
+
     }
 
-    private void updateViewSelectorText() {
-        String text;
-        switch (currentView) {
-            case "intermediate":
-                text = "Intermedio (1-3 meses)";
-                break;
-            case "advanced":
-                text = "Avanzado (+3 meses)";
-                break;
-            case "beginner":
-            default:
-                text = "Principiante (Día 1)";
-                break;
-        }
-        viewSelectorText.setText(text);
-    }
 
     private void resetNavItem(ImageView icon, TextView text) {
         int gray = getResources().getColor(R.color.gray_400);
@@ -473,8 +345,5 @@ public class MainActivity extends AppCompatActivity {
         super.onDestroy();
         handler.removeCallbacksAndMessages(null);
 
-        if (viewSelectorPopup != null && viewSelectorPopup.isShowing()) {
-            viewSelectorPopup.dismiss();
-        }
     }
 }

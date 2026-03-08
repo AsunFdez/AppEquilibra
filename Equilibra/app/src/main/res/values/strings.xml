@@ -77,5 +77,20 @@
     <string name="day_count">Día %1$d</string>
     <string name="week_progress">%1$d/%2$d gastos registrados</string>
 
+    <string name="nav_home_text">Inicio</string>
+    <string name="nav_analysis_text">Análisis</string>
+    <string name="nav_achievements_text">Logros</string>
+    <string name="nav_settings_text">Ajustes</string>
+    <string name="weekly_progress_title">Tu progreso esta semana:</string>
+    <string name="recorded_expenses">4/5 gastos registrados</string>
+    <string name="today_advice">Consejo de hoy:</string>
+    <string name="advice_1">\"Registra gastos pequeños también. ¡Suman!\"</string>
+    <string name="quick_action_title">Acción rápida:</string>
+    <string name="register_last_expense">[+ Registrar último gasto]</string>
+    <string name="next_goal_title">Próximo objetivo:</string>
+    <string name="next_goal_1">Completar tu primer presupuesto</string>
+    <string name="my_expenses_tile">Mis Gastos</string>
+    <string name="my_expenses_text">Ver, editar o eliminar</string>
+
 
 </resources>

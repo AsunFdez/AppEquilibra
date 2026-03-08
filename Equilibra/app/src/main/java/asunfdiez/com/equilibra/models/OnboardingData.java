@@ -8,7 +8,7 @@ public class OnboardingData {
     private String savingGoal;
     private String savingAmount;
     private String savingDate;
-    private long completedAt;
+    private final long completedAt;
 
     public OnboardingData() {
         this.completedAt = System.currentTimeMillis();
