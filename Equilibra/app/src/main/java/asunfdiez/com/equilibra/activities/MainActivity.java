@@ -90,7 +90,7 @@ public class MainActivity extends AppCompatActivity {
         animateCardsEntrance();
 
         // Animate progress bar
-        animateProgressBar();
+        //animateProgressBar();
     }
 
     private void initViews() {

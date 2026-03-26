@@ -28,7 +28,7 @@ import asunfdiez.com.equilibra.models.OnboardingData;
 import asunfdiez.com.equilibra.models.QuestionOption;
 import asunfdiez.com.equilibra.utils.AnimationHelper;
 import asunfdiez.com.equilibra.utils.InputValidator;
-import asunfdiez.com.equilibra.utils.OnboardingConstants;
+import asunfdiez.com.equilibra.utils.Constants;
 import asunfdiez.com.equilibra.utils.DatePickerHelper;
 import asunfdiez.com.equilibra.utils.SavingGoalValidator;
 
@@ -42,7 +42,6 @@ public class OnboardingActivity extends AppCompatActivity {
     private int currentQuestionIndex = 0;
 
     private Handler handler;
-    private AnimationHelper animationHelper;
     private OnboardingController controller;
     private QuestionOptionAdapter questionAdapter;
 
@@ -67,7 +66,6 @@ public class OnboardingActivity extends AppCompatActivity {
 
     private void initializeComponents() {
         handler = new Handler(Looper.getMainLooper());
-        animationHelper = new AnimationHelper();
         controller = new OnboardingController(this);
         questionAdapter = new QuestionOptionAdapter();
         stepContainer = findViewById(R.id.stepContainer);
@@ -117,7 +115,7 @@ public class OnboardingActivity extends AppCompatActivity {
                 : null;
 
         newView.setAlpha(0f);
-        newView.setTranslationX(OnboardingConstants.TRANSITION_DISTANCE);
+        newView.setTranslationX(Constants.TRANSITION_DISTANCE);
         stepContainer.addView(newView);
 
         if (currentView != null) {
@@ -130,8 +128,8 @@ public class OnboardingActivity extends AppCompatActivity {
     private void animateViewExit(View view) {
         view.animate()
                 .alpha(0f)
-                .translationX(-OnboardingConstants.TRANSITION_DISTANCE)
-                .setDuration(OnboardingConstants.DURATION_MEDIUM)
+                .translationX(-Constants.TRANSITION_DISTANCE)
+                .setDuration(Constants.DURATION_MEDIUM)
                 .setListener(new AnimatorListenerAdapter() {
                     @Override
                     public void onAnimationEnd(Animator animation) {
@@ -145,24 +143,24 @@ public class OnboardingActivity extends AppCompatActivity {
         view.animate()
                 .alpha(1f)
                 .translationX(0f)
-                .setDuration(OnboardingConstants.DURATION_MEDIUM)
-                .setStartDelay(OnboardingConstants.DELAY_MEDIUM)
+                .setDuration(Constants.DURATION_MEDIUM)
+                .setStartDelay(Constants.DELAY_MEDIUM)
                 .start();
     }
 
-    // ==================== PASO 1: EMOTIONAL ====================
+    // ==================== PASO 1: ESTADO EMOCIONAL ====================
 
     private View createEmotionalStep() {
         View view = LayoutInflater.from(this).inflate(R.layout.onboarding_step_emotional, null);
 
         ImageView heartIcon = view.findViewById(R.id.heartIcon);
         View iconBackground = view.findViewById(R.id.iconBackground);
-        animationHelper.animateIcon(heartIcon, iconBackground);
+        AnimationHelper.animateIcon(heartIcon, iconBackground);
 
         setupEmotionalOptions(view);
 
         LinearLayout optionsContainer = view.findViewById(R.id.optionsContainer);
-        animationHelper.animateOptionsStagger(optionsContainer);
+        AnimationHelper.animateOptionsStagger(optionsContainer);
 
         return view;
     }
@@ -199,11 +197,11 @@ public class OnboardingActivity extends AppCompatActivity {
         card.setOnClickListener(v -> {
             selectedEmotion = emotion;
             data.setEmotion(emotion.id());
-            animationHelper.animateCardSelection(v, () -> showStep(OnboardingStep.VALIDATION));
+            AnimationHelper.animateCardSelection(v, () -> showStep(OnboardingStep.VALIDATION));
         });
     }
 
-    // ==================== PASO 2: VALIDATION ====================
+    // ==================== PASO 2: VALIDACION ====================
 
     private View createValidationStep() {
         View view = LayoutInflater.from(this).inflate(R.layout.onboarding_step_validation, null);
@@ -218,14 +216,14 @@ public class OnboardingActivity extends AppCompatActivity {
 
         ImageView sparklesIcon = view.findViewById(R.id.sparklesIcon);
         View iconBackground = view.findViewById(R.id.iconBackground);
-        animationHelper.animateSparklesIcon(sparklesIcon, iconBackground);
+        AnimationHelper.animateSparklesIcon(sparklesIcon, iconBackground);
 
         CardView messageCard = view.findViewById(R.id.messageCard);
-        animationHelper.animateCardScale(messageCard);
+        AnimationHelper.animateCardScale(messageCard);
 
         MaterialButton continueButton = view.findViewById(R.id.continueButton);
         continueButton.setOnClickListener(v -> {
-            animationHelper.animateButtonPress(v, () -> {
+            AnimationHelper.animateButtonPress(v, () -> {
                 currentQuestionIndex = 0;
                 showStep(OnboardingStep.QUESTIONS);
             });
@@ -234,7 +232,7 @@ public class OnboardingActivity extends AppCompatActivity {
         return view;
     }
 
-    // ==================== PASO 3: QUESTIONS ====================
+    // ==================== PASO 3: PREGUNTAS ====================
 
     private View createQuestionStep() {
         View view = LayoutInflater.from(this).inflate(R.layout.onboarding_step_question, null);
@@ -243,7 +241,7 @@ public class OnboardingActivity extends AppCompatActivity {
         setupQuestionContent(view);
 
         LinearLayout optionsContainer = view.findViewById(R.id.questionOptionsContainer);
-        animationHelper.animateOptionsStagger(optionsContainer);
+        AnimationHelper.animateOptionsStagger(optionsContainer);
 
         return view;
     }
@@ -253,11 +251,11 @@ public class OnboardingActivity extends AppCompatActivity {
         View progressBar = view.findViewById(R.id.progressBar);
 
         String progress = "Pregunta " + (currentQuestionIndex + 1) + " de " +
-                OnboardingConstants.TOTAL_QUESTIONS;
+                Constants.TOTAL_QUESTIONS;
         progressText.setText(progress);
 
-        float progressValue = (currentQuestionIndex + 1) / (float) OnboardingConstants.TOTAL_QUESTIONS;
-        animationHelper.animateProgressBar(progressBar, progressValue);
+        float progressValue = (currentQuestionIndex + 1) / (float) Constants.TOTAL_QUESTIONS;
+        AnimationHelper.animateProgressBar(progressBar, progressValue);
     }
 
     private void setupQuestionContent(View view) {
@@ -265,7 +263,7 @@ public class OnboardingActivity extends AppCompatActivity {
         ImageView questionIcon = view.findViewById(R.id.questionIcon);
         LinearLayout optionsContainer = view.findViewById(R.id.questionOptionsContainer);
 
-        if (currentQuestionIndex == OnboardingConstants.QUESTION_INDEX_FIRST) {
+        if (currentQuestionIndex == Constants.QUESTION_INDEX_FIRST) {
             questionTitle.setText(getString(R.string.question_1_title));
             questionIcon.setImageResource(R.drawable.ic_onb_target);
             setupFirstQuestion(optionsContainer);
@@ -284,8 +282,8 @@ public class OnboardingActivity extends AppCompatActivity {
 
         QuestionOption[] options = {
                 new QuestionOption("control", getString(R.string.q1_option_1)),
-                new QuestionOption(OnboardingConstants.ANSWER_ID_SAVE_SPECIFIC,
-                        OnboardingConstants.ANSWER_TEXT_SAVE_SPECIFIC),
+                new QuestionOption(Constants.ANSWER_ID_SAVE_SPECIFIC,
+                        Constants.ANSWER_TEXT_SAVE_SPECIFIC),
                 new QuestionOption("reduce-stress", getString(R.string.q1_option_3)),
                 new QuestionOption("learn", getString(R.string.q1_option_4))
         };
@@ -311,7 +309,7 @@ public class OnboardingActivity extends AppCompatActivity {
     }
 
     private void handleFirstQuestionAnswer(String answerId) {
-        if (OnboardingConstants.ANSWER_ID_SAVE_SPECIFIC.equals(answerId)) {
+        if (Constants.ANSWER_ID_SAVE_SPECIFIC.equals(answerId)) {
             currentQuestionIndex++;
             showStep(OnboardingStep.QUESTIONS);
         } else {
@@ -320,7 +318,7 @@ public class OnboardingActivity extends AppCompatActivity {
     }
 
     private void handleSecondQuestionAnswer() {
-        if (OnboardingConstants.ANSWER_TEXT_SAVE_SPECIFIC.equals(data.getMainConcern())) {
+        if (Constants.ANSWER_TEXT_SAVE_SPECIFIC.equals(data.getMainConcern())) {
             showStep(OnboardingStep.SAVING_GOAL);
         } else {
             showStep(OnboardingStep.SUMMARY);
@@ -329,14 +327,14 @@ public class OnboardingActivity extends AppCompatActivity {
 
     private void proceedToNextStep() {
         currentQuestionIndex++;
-        if (currentQuestionIndex < OnboardingConstants.TOTAL_QUESTIONS) {
+        if (currentQuestionIndex < Constants.TOTAL_QUESTIONS) {
             showStep(OnboardingStep.QUESTIONS);
         } else {
             showStep(OnboardingStep.SUMMARY);
         }
     }
 
-    // ==================== PASO 4: SAVING GOAL ====================
+    // ==================== PASO 4: ESTABLECER OBJETIVO ====================
 
     private View createSavingGoalStep() {
         View view = LayoutInflater.from(this).inflate(R.layout.onboarding_step_saving_goal, null);
@@ -364,7 +362,7 @@ public class OnboardingActivity extends AppCompatActivity {
 
         submitButton.setOnClickListener(v -> {
             if (saveSavingGoalData(goalInput, amountInput, dateInput)) {
-                animationHelper.animateButtonPress(v,
+                AnimationHelper.animateButtonPress(v,
                         () -> showStep(OnboardingStep.SUMMARY));
             }
         });
@@ -392,19 +390,19 @@ public class OnboardingActivity extends AppCompatActivity {
         return true;
     }
 
-    // ==================== PASO 5: SUMMARY ====================
+    // ==================== PASO 5: RESUMEN ====================
 
     private View createSummaryStep() {
         View view = LayoutInflater.from(this).inflate(R.layout.onboarding_step_summary, null);
 
         View iconBackground = view.findViewById(R.id.iconBackground);
-        animationHelper.animateCheckIcon(iconBackground);
+        AnimationHelper.animateCheckIcon(iconBackground);
 
         setupSummaryContent(view);
 
         MaterialButton continueButton = view.findViewById(R.id.continueButton);
         continueButton.setOnClickListener(v -> {
-            animationHelper.animateButtonPress(v, () -> showStep(OnboardingStep.MISSION));
+            AnimationHelper.animateButtonPress(v, () -> showStep(OnboardingStep.MISSION));
         });
 
         return view;
@@ -431,7 +429,7 @@ public class OnboardingActivity extends AppCompatActivity {
                 double amount = Double.parseDouble(data.getSavingAmount());
                 displayAmountUI(view, amount);
             } catch (NumberFormatException e) {
-                // Silenciosamente ignorar formato inválido
+                // ignorar formato inválido
             }
         }
     }
@@ -440,13 +438,13 @@ public class OnboardingActivity extends AppCompatActivity {
         LinearLayout amountSection = view.findViewById(R.id.savingAmountSection);
         TextView amountText = view.findViewById(R.id.savingAmountText);
         amountSection.setVisibility(View.VISIBLE);
-        amountText.setText(String.format(OnboardingConstants.CURRENCY_FORMAT, amount));
+        amountText.setText(String.format(Constants.CURRENCY_FORMAT, amount));
 
-        double monthlyAmount = amount / OnboardingConstants.MONTHLY_DIVISION_FACTOR;
+        double monthlyAmount = amount / Constants.MONTHLY_DIVISION_FACTOR;
         LinearLayout monthlySection = view.findViewById(R.id.monthlySavingSection);
         TextView monthlyText = view.findViewById(R.id.monthlySavingText);
         monthlySection.setVisibility(View.VISIBLE);
-        monthlyText.setText(String.format(OnboardingConstants.CURRENCY_FORMAT, monthlyAmount));
+        monthlyText.setText(String.format(Constants.CURRENCY_FORMAT, monthlyAmount));
     }
 
     private void displayEmotionSection(View view) {
@@ -458,18 +456,18 @@ public class OnboardingActivity extends AppCompatActivity {
         }
     }
 
-    // ==================== PASO 6: MISSION ====================
+    // ==================== PASO 6: GUARDAR MISION ====================
 
     private View createMissionStep() {
         View view = LayoutInflater.from(this).inflate(R.layout.onboarding_step_mission, null);
 
         ImageView zapIcon = view.findViewById(R.id.zapIcon);
         View iconBackground = view.findViewById(R.id.iconBackground);
-        animationHelper.animateZapIcon(zapIcon, iconBackground);
+        AnimationHelper.animateZapIcon(zapIcon, iconBackground);
 
         MaterialButton startButton = view.findViewById(R.id.startButton);
         startButton.setOnClickListener(v -> {
-            animationHelper.animateButtonPress(v, this::completeOnboarding);
+            AnimationHelper.animateButtonPress(v, this::completeOnboarding);
         });
 
         return view;
@@ -495,6 +493,6 @@ public class OnboardingActivity extends AppCompatActivity {
 
     private void cleanup() {
         handler.removeCallbacksAndMessages(null);
-        animationHelper.cleanup();
+        AnimationHelper.cleanup();
     }
 }
