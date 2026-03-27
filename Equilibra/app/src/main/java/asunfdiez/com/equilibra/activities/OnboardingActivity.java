@@ -32,19 +32,29 @@ import asunfdiez.com.equilibra.utils.InputValidator;
 import asunfdiez.com.equilibra.utils.Constants;
 import asunfdiez.com.equilibra.utils.DatePickerHelper;
 import asunfdiez.com.equilibra.utils.SavingGoalValidator;
+import asunfdiez.com.equilibra.utils.SharedPrefsManager;
+
 
 public class OnboardingActivity extends AppCompatActivity {
 
     private FrameLayout stepContainer;
     private OnboardingStep currentStep = OnboardingStep.EMOTIONAL;
 
-    private final UserProfile data = new UserProfile();
+    // Datos del usuario
+    private final UserProfile profile = new UserProfile();
     private EmotionalState selectedEmotion;
+    private String mainConcern = "";
+    private String timeAvailable = "";
+    private String savingGoal = "";
+    private String savingAmount = "";
+    private String savingDate = "";
+
     private int currentQuestionIndex = 0;
 
     private Handler handler;
     private OnboardingController controller;
     private QuestionOptionAdapter questionAdapter;
+    private SharedPrefsManager sharedPrefsManager;
 
     private enum OnboardingStep {
         EMOTIONAL,
@@ -70,6 +80,7 @@ public class OnboardingActivity extends AppCompatActivity {
         controller = new OnboardingController(this);
         questionAdapter = new QuestionOptionAdapter();
         stepContainer = findViewById(R.id.stepContainer);
+        sharedPrefsManager = SharedPrefsManager.getInstance(this);
     }
 
     private void hideSystemUI() {
@@ -120,34 +131,13 @@ public class OnboardingActivity extends AppCompatActivity {
         stepContainer.addView(newView);
 
         if (currentView != null) {
-            animateViewExit(currentView);
+            AnimationHelper.animateViewExit(currentView);
         }
 
-        animateViewEnter(newView);
+        AnimationHelper.animateViewEnter(newView);
     }
 
-    private void animateViewExit(View view) {
-        view.animate()
-                .alpha(0f)
-                .translationX(-Constants.TRANSITION_DISTANCE)
-                .setDuration(Constants.DURATION_MEDIUM)
-                .setListener(new AnimatorListenerAdapter() {
-                    @Override
-                    public void onAnimationEnd(Animator animation) {
-                        stepContainer.removeView(view);
-                    }
-                })
-                .start();
-    }
 
-    private void animateViewEnter(View view) {
-        view.animate()
-                .alpha(1f)
-                .translationX(0f)
-                .setDuration(Constants.DURATION_MEDIUM)
-                .setStartDelay(Constants.DELAY_MEDIUM)
-                .start();
-    }
 
     // ==================== PASO 1: ESTADO EMOCIONAL ====================
 
@@ -180,8 +170,9 @@ public class OnboardingActivity extends AppCompatActivity {
         CardView card = parent.findViewById(cardId);
         card.setOnClickListener(v -> {
             selectedEmotion = emotion;
-            data.setEmotion(emotion);
-            AnimationHelper.animateCardSelection(v, () -> showStep(OnboardingStep.VALIDATION));
+            profile.setEmotion(emotion);
+            AnimationHelper.animateCardSelection(v, () ->
+                    showStep(OnboardingStep.VALIDATION));
         });
     }
 
@@ -234,8 +225,10 @@ public class OnboardingActivity extends AppCompatActivity {
         TextView progressText = view.findViewById(R.id.progressText);
         View progressBar = view.findViewById(R.id.progressBar);
 
-        String progress = "Pregunta " + (currentQuestionIndex + 1) + " de " +
-                Constants.TOTAL_QUESTIONS;
+        String progress = getString(R.string.onboarding_progress_text,
+                currentQuestionIndex + 1,
+                Constants.TOTAL_QUESTIONS);
+
         progressText.setText(progress);
 
         float progressValue = (currentQuestionIndex + 1) / (float) Constants.TOTAL_QUESTIONS;
@@ -251,7 +244,7 @@ public class OnboardingActivity extends AppCompatActivity {
             questionTitle.setText(getString(R.string.question_1_title));
             questionIcon.setImageResource(R.drawable.ic_onb_target);
             setupFirstQuestion(optionsContainer);
-        } else {
+        } else if (currentQuestionIndex == Constants.QUESTION_INDEX_SECOND) {
             questionTitle.setText(getString(R.string.question_2_title));
             questionIcon.setImageResource(R.drawable.ic_onb_clock);
             setupSecondQuestion(optionsContainer);
@@ -260,35 +253,24 @@ public class OnboardingActivity extends AppCompatActivity {
 
     private void setupFirstQuestion(LinearLayout container) {
         questionAdapter.setOnOptionSelectedListener((id, text) -> {
-            data.setMainConcern(text);
+            profile.setMainConcern(text);
             handleFirstQuestionAnswer(id);
         });
 
-        QuestionOption[] options = {
-                new QuestionOption("control", getString(R.string.q1_option_1)),
-                new QuestionOption(Constants.ANSWER_ID_SAVE_SPECIFIC,
-                        Constants.ANSWER_TEXT_SAVE_SPECIFIC),
-                new QuestionOption("reduce-stress", getString(R.string.q1_option_3)),
-                new QuestionOption("learn", getString(R.string.q1_option_4))
-        };
-
-        questionAdapter.setOptions(Arrays.asList(options));
+        List <QuestionOption> options = QuestionOption.getFirstQuestions(this);
+        questionAdapter.setOptions(options);
         questionAdapter.addOptionsToContainer(container, LayoutInflater.from(this));
+
     }
 
     private void setupSecondQuestion(LinearLayout container) {
         questionAdapter.setOnOptionSelectedListener((id, text) -> {
-            data.setTimeAvailable(text);
+            profile.setTimeAvailable(text);
             handleSecondQuestionAnswer();
         });
 
-        QuestionOption[] options = {
-                new QuestionOption("5min", getString(R.string.q2_option_1)),
-                new QuestionOption("10min", getString(R.string.q2_option_2)),
-                new QuestionOption("15min", getString(R.string.q2_option_3))
-        };
-
-        questionAdapter.setOptions(Arrays.asList(options));
+        List <QuestionOption> options = QuestionOption.getSecondQuestions(this);;
+        questionAdapter.setOptions(options);
         questionAdapter.addOptionsToContainer(container, LayoutInflater.from(this));
     }
 
@@ -302,7 +284,7 @@ public class OnboardingActivity extends AppCompatActivity {
     }
 
     private void handleSecondQuestionAnswer() {
-        if (Constants.ANSWER_TEXT_SAVE_SPECIFIC.equals(data.getMainConcern())) {
+        if (Constants.ANSWER_ID_SAVE_SPECIFIC.equals(profile.getMainConcern())) {
             showStep(OnboardingStep.SAVING_GOAL);
         } else {
             showStep(OnboardingStep.SUMMARY);
@@ -368,9 +350,9 @@ public class OnboardingActivity extends AppCompatActivity {
             return false;
         }
 
-        data.setSavingGoal(goal);
-        data.setSavingAmount(amount);
-        data.setSavingDate(date);
+        profile.setSavingGoal(goal);
+        profile.setSavingAmount(amount);
+        profile.setSavingDate(date);
         return true;
     }
 
@@ -399,18 +381,18 @@ public class OnboardingActivity extends AppCompatActivity {
     }
 
     private void displayGoalSection(View view) {
-        if (data.getSavingGoal() != null && !data.getSavingGoal().isEmpty()) {
+        if (profile.getSavingGoal() != null && !profile.getSavingGoal().isEmpty()) {
             LinearLayout section = view.findViewById(R.id.goalSection);
             TextView text = view.findViewById(R.id.goalText);
             section.setVisibility(View.VISIBLE);
-            text.setText(data.getSavingGoal());
+            text.setText(profile.getSavingGoal());
         }
     }
 
     private void displaySavingAmountSection(View view) {
-        if (data.getSavingAmount() != null && !data.getSavingAmount().isEmpty()) {
+        if (profile.getSavingAmount() != null && !profile.getSavingAmount().isEmpty()) {
             try {
-                double amount = Double.parseDouble(data.getSavingAmount());
+                double amount = Double.parseDouble(profile.getSavingAmount());
                 displayAmountUI(view, amount);
             } catch (NumberFormatException e) {
                 // ignorar formato inválido
@@ -458,7 +440,7 @@ public class OnboardingActivity extends AppCompatActivity {
     }
 
     private void completeOnboarding() {
-        controller.saveOnboardingData(data);
+        controller.saveOnboardingData(profile);
         navigateToMainActivity();
     }
 
@@ -467,6 +449,20 @@ public class OnboardingActivity extends AppCompatActivity {
         startActivity(intent);
         finish();
         overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
+    }
+
+
+    // ==================== GUARDAR PERFIL ====================
+
+    private void saveUserProfile() {
+        profile.setEmotionalState(selectedEmotion);
+        profile.setMainConcern(mainConcern);
+        profile.setTimeAvailable(timeAvailable);
+        profile.setSavingGoal(savingGoal);
+        profile.setSavingAmount(savingAmount);
+        profile.setSavingDate(savingDate);
+
+        sharedPrefsManager.saveUserProfile(profile);
     }
 
     @Override

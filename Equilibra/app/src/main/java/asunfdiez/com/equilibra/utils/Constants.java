@@ -12,7 +12,6 @@ public final class Constants {
 
     // Onboarding
     public static final String KEY_ONBOARDING_COMPLETE = "onboardingComplete";
-    public static final String KEY_USER_NAME = "userName";
     public static final String KEY_USER_LEVEL = "userLevel";
     public static final String USER_LEVEL_BEGINNER = "userBeginner";
     public static final String USER_LEVEL_INTERMEDIATE = "userIntermediate";
@@ -20,12 +19,13 @@ public final class Constants {
     public static final String KEY_ONBOARDING_COMPLETED_AT = "onboardingCompletedAt";
 
     // Perfil de usuario
-    public static final String KEY_MONTHLY_INCOME = "monthlyIncome";
-    public static final String KEY_SAVINGS_GOAL = "savingsGoal";
-    public static final String KEY_SAVINGS_PLAN = "savingsPlan";
-    public static final String KEY_FINANCIAL_KNOWLEDGE = "financialKnowledge";
-    public static final String KEY_BUDGET_EXPERIENCE = "budgetExperience";
-    public static final String KEY_SAVINGS_HABIT = "savingsHabit";
+    public static final String KEY_USER_PROFILE = "userProfile";
+
+    // Intervenciones
+    public static final String KEY_INTERVENTION_LAST_SEEN = "interventionLastSeen";
+
+    // Logros
+    public static final String KEY_ACHIEVEMENTS = "achievement_";
 
 
     // Configuración
@@ -66,9 +66,9 @@ public final class Constants {
     public static final int QUESTION_INDEX_SECOND = 1;
     public static final int TOTAL_QUESTIONS = 2;
 
-    // IDs de respuestas
+    // IDs de respuesta ahorrar para algo específico
     public static final String ANSWER_ID_SAVE_SPECIFIC = "save-specific";
-    public static final String ANSWER_TEXT_SAVE_SPECIFIC = "Ahorrar para algo específico";
+
 
     // Formato de moneda
     public static final String CURRENCY_FORMAT = "€%.2f";

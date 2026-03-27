@@ -4,9 +4,7 @@ plugins {
 
 android {
     namespace = "asunfdiez.com.equilibra"
-    compileSdk {
-        version = release(36)
-    }
+    compileSdk = 36
 
     defaultConfig {
         applicationId = "asunfdiez.com.equilibra"
@@ -39,6 +37,7 @@ dependencies {
     implementation("androidx.constraintlayout:constraintlayout:2.1.4")
     implementation("com.google.android.material:material:1.11.0")
     implementation("androidx.cardview:cardview:1.0.0")
+    implementation("com.google.code.gson:gson:2.10.1")
 
     //implementation(libs.appcompat)
     //implementation(libs.material)

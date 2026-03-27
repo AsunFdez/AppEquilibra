@@ -26,6 +26,7 @@
     <string name="validation_stressed">Entendemos tu preocupación. Dar este primer paso es valiente. Juntos trabajaremos para transformar ese estrés en confianza.</string>
     <string name="validation_confused">La confusión es el inicio del aprendizaje. Equilibra te guiará con claridad para que tomes el control de tus finanzas.</string>
 
+    <string name="onboarding_progress_text">Pregunta %1$d de %2$d</string>
     <string name="question_1_title">¿Cuál es tu mayor preocupación financiera?</string>
 
     <string name="q1_option_1">Controlar mis gastos</string>

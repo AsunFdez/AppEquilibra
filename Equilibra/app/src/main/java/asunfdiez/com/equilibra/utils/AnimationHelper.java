@@ -15,6 +15,7 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.app.Activity;
 import asunfdiez.com.equilibra.R;
+import asunfdiez.com.equilibra.utils.Constants;
 
 
 /**
@@ -155,6 +156,34 @@ public class AnimationHelper {
                 .setStartDelay(delay)
                 .start();
     }
+
+    //===========  Onboarding Animations =======================
+    public static void animateViewExit(final View view) {
+        view.animate()
+                .alpha(0f)
+                .translationX(-Constants.TRANSITION_DISTANCE)
+                .setDuration(Constants.DURATION_MEDIUM)
+                .setListener(new AnimatorListenerAdapter() {
+                    @Override
+                    public void onAnimationEnd(Animator animation) {
+                        if (view.getParent() instanceof ViewGroup) {
+                            ((ViewGroup) view.getParent()).removeView(view);
+                        }
+                    }
+                })
+                .start();
+    }
+
+    public static void animateViewEnter(View view) {
+        view.animate()
+                .alpha(1f)
+                .translationX(0f)
+                .setDuration(Constants.DURATION_MEDIUM)
+                .setStartDelay(Constants.DELAY_MEDIUM)
+                .start();
+    }
+
+
 
     public static void animateIcon(View icon, View background) {
         if (icon == null || background == null) {
