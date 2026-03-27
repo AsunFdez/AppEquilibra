@@ -6,22 +6,22 @@ import android.content.SharedPreferences;
      * Gestor centralizado de SharedPreferences
      * con patrón Singleton
      */
-    public final class SharedPreferencesManager {
+    public final class SharedPrefsManager {
 
-        private static SharedPreferencesManager instance;
+        private static SharedPrefsManager instance;
         private final SharedPreferences sharedPreferences;
 
-        private SharedPreferencesManager(Context context) {
+        private SharedPrefsManager(Context context) {
             this.sharedPreferences = context.getApplicationContext()
                     .getSharedPreferences(Constants.PREFS_NAME, Context.MODE_PRIVATE);
         }
 
         /**
-         * Obtiene la instancia única del SharedPreferencesManager
+         * Obtiene la instancia única del SharedPrefsManager
          */
-        public static synchronized SharedPreferencesManager getInstance(Context context) {
+        public static synchronized SharedPrefsManager getInstance(Context context) {
             if (instance == null) {
-                instance = new SharedPreferencesManager(context);
+                instance = new SharedPrefsManager(context);
             }
             return instance;
         }
@@ -35,7 +35,8 @@ import android.content.SharedPreferences;
         }
 
         public boolean isOnboardingComplete() {
-            return sharedPreferences.getBoolean(Constants.KEY_ONBOARDING_COMPLETE, false);
+            return false;
+            //return sharedPreferences.getBoolean(Constants.KEY_ONBOARDING_COMPLETE, false);
         }
 
         public void setOnboardingCompletedAt(long timestamp) {

@@ -2,6 +2,8 @@ package asunfdiez.com.equilibra.utils;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
+import android.animation.AnimatorSet;
+import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
 import android.os.Handler;
 import android.os.Looper;
@@ -24,6 +26,134 @@ public class AnimationHelper {
 
     public AnimationHelper() {
         throw new AssertionError("No se puede instanciar, solo se puede utilizar estáticamente.");
+    }
+
+    //============ Animaciones Splahs =======================
+
+    public static void backgroundFadeIn(View decorView, int duration) {
+        decorView.setAlpha(0f); //invisible
+        decorView.animate()
+                .alpha(1f)
+                .setDuration(duration)
+                .start();
+    }
+
+    public static void logoRotation(View logoContainer, int duration, int delay) {
+        logoContainer.setScaleX(0f);
+        logoContainer.setScaleY(0f);
+        logoContainer.setRotation(-180f);
+        logoContainer.animate()
+                .scaleX(1f)
+                .scaleY(1f)
+                .rotation(0f)
+                .setDuration(duration)
+                .setStartDelay(delay)
+                .setInterpolator(new DecelerateInterpolator())
+                .start();
+    }
+
+    public static void animatePiggyBankBounce(final View view, int duration, int delay) {
+        ObjectAnimator bounceY = ObjectAnimator.ofFloat(view, "translationY", 0f, -12f, 0f);
+        bounceY.setDuration(duration);
+        bounceY.setRepeatCount(ValueAnimator.INFINITE);
+        bounceY.setInterpolator(new AccelerateDecelerateInterpolator());
+
+        ObjectAnimator rotation = ObjectAnimator.ofFloat(view, "rotation", 0f, -5f, 0f, 5f, 0f);
+        rotation.setDuration(duration);
+        rotation.setRepeatCount(ValueAnimator.INFINITE);
+        rotation.setInterpolator(new AccelerateDecelerateInterpolator());
+
+        ValueAnimator scale = ValueAnimator.ofFloat(1f, 1.05f, 1f);
+        scale.setDuration(duration);
+        scale.setRepeatCount(ValueAnimator.INFINITE);
+        scale.setInterpolator(new AccelerateDecelerateInterpolator());
+        scale.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+            @Override
+            public void onAnimationUpdate(ValueAnimator animation) {
+                float scaleValue = (float) animation.getAnimatedValue();
+                view.setScaleX(scaleValue);
+                view.setScaleY(scaleValue);
+            }
+        });
+
+        AnimatorSet animatorSet = new AnimatorSet();
+        animatorSet.playTogether(bounceY, rotation, scale);
+        animatorSet.setStartDelay(delay);
+        animatorSet.start();
+    }
+
+    public static void animateCoinSparkle(final View view, int duration, int delay) {
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                ObjectAnimator alpha = ObjectAnimator.ofFloat(view, "alpha", 0f, 1f, 1f, 0f);
+                alpha.setDuration(duration);
+
+                ObjectAnimator translationY = ObjectAnimator.ofFloat(view, "translationY", -20f, 10f, 25f, 45f);
+                translationY.setDuration(duration);
+
+                ValueAnimator scale = ValueAnimator.ofFloat(0f, 1.3f, 1f, 0.7f);
+                scale.setDuration(duration);
+                scale.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+                    @Override
+                    public void onAnimationUpdate(ValueAnimator animation) {
+                        float scaleValue = (float) animation.getAnimatedValue();
+                        view.setScaleX(scaleValue);
+                        view.setScaleY(scaleValue);
+                    }
+                });
+
+                ObjectAnimator rotationAnim = ObjectAnimator.ofFloat(view, "rotation", 0f, 180f, 360f, 540f);
+                rotationAnim.setDuration(duration);
+
+                AnimatorSet animatorSet = new AnimatorSet();
+                animatorSet.playTogether(alpha, translationY, scale, rotationAnim);
+                animatorSet.start();
+            }
+        }, delay);
+    }
+
+    public static void animateSparkle(final View view, final float startX, final float endX,
+                                final float startY, final float endY,
+                                int duration, int delay) {
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                ObjectAnimator alpha = ObjectAnimator.ofFloat(view, "alpha", 0f, 1f, 0f);
+                alpha.setDuration(duration);
+
+                ObjectAnimator translationY = ObjectAnimator.ofFloat(view, "translationY", 0f, startY, endY);
+                translationY.setDuration(duration);
+
+                ObjectAnimator translationX = ObjectAnimator.ofFloat(view, "translationX", startX / 2, startX, endX);
+                translationX.setDuration(duration);
+
+                ValueAnimator scale = ValueAnimator.ofFloat(0f, 1.2f, 0f);
+                scale.setDuration(duration);
+                scale.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+                    @Override
+                    public void onAnimationUpdate(ValueAnimator animation) {
+                        float scaleValue = (float) animation.getAnimatedValue();
+                        view.setScaleX(scaleValue);
+                        view.setScaleY(scaleValue);
+                    }
+                });
+
+                AnimatorSet animatorSet = new AnimatorSet();
+                animatorSet.playTogether(alpha, translationY, translationX, scale);
+                animatorSet.start();
+            }
+        }, delay);
+    }
+
+    public static void animateTitle(View title, int duration, int delay) {
+        title.setTranslationY(20f);
+        title.animate()
+                .alpha(1f)
+                .translationY(0f)
+                .setDuration(duration)
+                .setStartDelay(delay)
+                .start();
     }
 
     public static void animateIcon(View icon, View background) {
