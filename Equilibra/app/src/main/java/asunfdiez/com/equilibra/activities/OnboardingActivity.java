@@ -23,7 +23,6 @@ import java.util.Arrays;
 
 import asunfdiez.com.equilibra.R;
 import asunfdiez.com.equilibra.adapters.QuestionOptionAdapter;
-import asunfdiez.com.equilibra.controllers.OnboardingController;
 import asunfdiez.com.equilibra.models.EmotionalState;
 import asunfdiez.com.equilibra.models.UserProfile;
 import asunfdiez.com.equilibra.models.QuestionOption;
@@ -52,7 +51,6 @@ public class OnboardingActivity extends AppCompatActivity {
     private int currentQuestionIndex = 0;
 
     private Handler handler;
-    private OnboardingController controller;
     private QuestionOptionAdapter questionAdapter;
     private SharedPrefsManager sharedPrefsManager;
 
@@ -77,7 +75,6 @@ public class OnboardingActivity extends AppCompatActivity {
 
     private void initializeComponents() {
         handler = new Handler(Looper.getMainLooper());
-        controller = new OnboardingController(this);
         questionAdapter = new QuestionOptionAdapter();
         stepContainer = findViewById(R.id.stepContainer);
         sharedPrefsManager = SharedPrefsManager.getInstance(this);
@@ -440,7 +437,9 @@ public class OnboardingActivity extends AppCompatActivity {
     }
 
     private void completeOnboarding() {
-        controller.saveOnboardingData(profile);
+        sharedPrefsManager.setOnboardingComplete(true);
+        sharedPrefsManager.setOnboardingCompletedAt(System.currentTimeMillis());
+        sharedPrefsManager.saveUserProfile(profile);
         navigateToMainActivity();
     }
 
