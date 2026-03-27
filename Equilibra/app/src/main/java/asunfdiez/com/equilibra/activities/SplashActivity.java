@@ -12,6 +12,7 @@ import asunfdiez.com.equilibra.utils.SharedPrefsManager;
 
 /*
 * SplashActivity con implementación nativa de animaciones
+* utilizando la clase específica para AnimationHelper
 * */
 
 public class SplashActivity extends AppCompatActivity {

@@ -1,8 +1,10 @@
 package asunfdiez.com.equilibra.models;
+import asunfdiez.com.equilibra.models.EmotionalState;
 
-public class OnboardingData {
 
-    private String emotion;
+public class UserProfile {
+
+    private EmotionalState emotion;
     private String mainConcern;
     private String timeAvailable;
     private String savingGoal;
@@ -10,16 +12,16 @@ public class OnboardingData {
     private String savingDate;
     private final long completedAt;
 
-    public OnboardingData() {
+    public UserProfile() {
         this.completedAt = System.currentTimeMillis();
     }
 
     // Getters y Setters
-    public String getEmotion() {
+    public EmotionalState getEmotion() {
         return emotion;
     }
 
-    public void setEmotion(String emotion) {
+    public void setEmotion(EmotionalState emotion) {
         this.emotion = emotion;
     }
 

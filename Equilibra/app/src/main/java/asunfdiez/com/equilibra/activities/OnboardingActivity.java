@@ -13,6 +13,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import com.google.android.material.button.MaterialButton;
+import java.util.List;
 
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -24,7 +25,7 @@ import asunfdiez.com.equilibra.R;
 import asunfdiez.com.equilibra.adapters.QuestionOptionAdapter;
 import asunfdiez.com.equilibra.controllers.OnboardingController;
 import asunfdiez.com.equilibra.models.EmotionalState;
-import asunfdiez.com.equilibra.models.OnboardingData;
+import asunfdiez.com.equilibra.models.UserProfile;
 import asunfdiez.com.equilibra.models.QuestionOption;
 import asunfdiez.com.equilibra.utils.AnimationHelper;
 import asunfdiez.com.equilibra.utils.InputValidator;
@@ -37,7 +38,7 @@ public class OnboardingActivity extends AppCompatActivity {
     private FrameLayout stepContainer;
     private OnboardingStep currentStep = OnboardingStep.EMOTIONAL;
 
-    private final OnboardingData data = new OnboardingData();
+    private final UserProfile data = new UserProfile();
     private EmotionalState selectedEmotion;
     private int currentQuestionIndex = 0;
 
@@ -166,29 +167,12 @@ public class OnboardingActivity extends AppCompatActivity {
     }
 
     private void setupEmotionalOptions(View parent) {
-        EmotionalState[] emotions = {
-                new EmotionalState("tranquilo",
-                        getString(R.string.emotion_tranquilo_text),
-                        getString(R.string.emotion_tranquilo_emoji),
-                        getString(R.string.validation_calm)),
-                new EmotionalState("ansioso",
-                        getString(R.string.emotion_ansioso_text),
-                        getString(R.string.emotion_ansioso_emoji),
-                        getString(R.string.validation_anxious)),
-                new EmotionalState("estresado",
-                        getString(R.string.emotion_estresado_text),
-                        getString(R.string.emotion_estresado_emoji),
-                        getString(R.string.validation_stressed)),
-                new EmotionalState("confundido",
-                        getString(R.string.emotion_confundido_text),
-                        getString(R.string.emotion_confundido_emoji),
-                        getString(R.string.validation_confused))
-        };
+        List <EmotionalState> emotions = EmotionalState.getDefaultEmotions(this);
 
         int[] cardIds = {R.id.option1, R.id.option2, R.id.option3, R.id.option4};
 
-        for (int i = 0; i < emotions.length; i++) {
-            setupEmotionalOption(parent, cardIds[i], emotions[i]);
+        for (int i = 0; i < emotions.size(); i++) {
+            setupEmotionalOption(parent, cardIds[i], emotions.get(i));
         }
     }
 
@@ -196,7 +180,7 @@ public class OnboardingActivity extends AppCompatActivity {
         CardView card = parent.findViewById(cardId);
         card.setOnClickListener(v -> {
             selectedEmotion = emotion;
-            data.setEmotion(emotion.id());
+            data.setEmotion(emotion);
             AnimationHelper.animateCardSelection(v, () -> showStep(OnboardingStep.VALIDATION));
         });
     }

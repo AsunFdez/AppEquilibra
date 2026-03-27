@@ -7,7 +7,7 @@ import android.util.Log;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import asunfdiez.com.equilibra.models.OnboardingData;
+import asunfdiez.com.equilibra.models.UserProfile;
 
 public class OnboardingController {
     private static final String TAG = "OnboardingController";
@@ -24,9 +24,9 @@ public class OnboardingController {
         this.prefs = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
     }
 
-    public void saveOnboardingData(OnboardingData data) {
+    public void saveOnboardingData(UserProfile data) {
         if (data == null) {
-            throw new IllegalArgumentException("OnboardingData no puede ser nulo");
+            throw new IllegalArgumentException("UserProfile no puede ser nulo");
         }
         try {
             JSONObject jsonData = convertToJson(data);
@@ -40,7 +40,7 @@ public class OnboardingController {
         }
     }
 
-    public OnboardingData loadOnboardingData() {
+    public UserProfile loadOnboardingData() {
         String json = prefs.getString(KEY_DATA, null);
         if (json == null) {
             return null;
@@ -64,7 +64,7 @@ public class OnboardingController {
                 .apply();
     }
 
-    private JSONObject convertToJson(OnboardingData data) throws JSONException {
+    private JSONObject convertToJson(UserProfile data) throws JSONException {
         JSONObject json = new JSONObject();
         json.put("emotion", data.getEmotion() != null ? data.getEmotion() : "");
         json.put("mainConcern", data.getMainConcern() != null ? data.getMainConcern() : "");
@@ -76,9 +76,9 @@ public class OnboardingController {
         return json;
     }
 
-    private OnboardingData convertFromJson(JSONObject json) throws JSONException {
-        OnboardingData data = new OnboardingData();
-        data.setEmotion(json.optString("emotion", ""));
+    private UserProfile convertFromJson(JSONObject json) throws JSONException {
+        UserProfile data = new UserProfile();
+        //data.setEmotion(json.optString("emotion", ""));
         data.setMainConcern(json.optString("mainConcern", ""));
         data.setTimeAvailable(json.optString("timeAvailable", ""));
         data.setSavingGoal(json.optString("savingGoal", ""));

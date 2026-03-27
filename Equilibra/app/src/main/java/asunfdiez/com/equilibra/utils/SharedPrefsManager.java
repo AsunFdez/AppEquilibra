@@ -35,8 +35,7 @@ import android.content.SharedPreferences;
         }
 
         public boolean isOnboardingComplete() {
-            return false;
-            //return sharedPreferences.getBoolean(Constants.KEY_ONBOARDING_COMPLETE, false);
+            return sharedPreferences.getBoolean(Constants.KEY_ONBOARDING_COMPLETE, false);
         }
 
         public void setOnboardingCompletedAt(long timestamp) {
