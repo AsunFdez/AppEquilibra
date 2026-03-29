@@ -13,6 +13,7 @@ import android.view.animation.AccelerateDecelerateInterpolator;
 import android.view.animation.DecelerateInterpolator;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.view.animation.TranslateAnimation;
 import android.app.Activity;
 import asunfdiez.com.equilibra.R;
 import asunfdiez.com.equilibra.utils.Constants;
@@ -498,6 +499,25 @@ public class AnimationHelper {
         for (int i = 0; i < views.length; i++) {
             fadeInWithDelay(views[i], i * delayBetween);
         }
+    }
+
+    /**
+     * Aplica una animación de sacudida a una vista (para errores)
+     *
+     * @param view Vista a animar
+     */
+    public static void shakeAnimation(View view) {
+        if (view == null) {
+            return;
+        }
+
+        TranslateAnimation shake = new TranslateAnimation(
+                0, 10, 0, 0
+        );
+        shake.setDuration(50);
+        shake.setRepeatCount(5);
+        shake.setRepeatMode(Animation.REVERSE);
+        view.startAnimation(shake);
     }
 
 }

@@ -14,6 +14,7 @@ public final class SharedPrefsManager {
     private static SharedPrefsManager instance;
     private final SharedPreferences sharedPreferences;
     private final Gson gson;
+    private long currentUserId;
 
     private SharedPrefsManager(Context context) {
         this.sharedPreferences = context.getApplicationContext()
@@ -30,6 +31,14 @@ public final class SharedPrefsManager {
         }
         return instance;
     }
+
+    public long getCurrentUserId() {
+        return currentUserId;
+    }
+    public void setCurrentUserId(long userId) {
+        currentUserId = userId;
+    }
+
 
     // ==================== ONBOARDING ====================
     /**
@@ -72,12 +81,20 @@ public final class SharedPrefsManager {
     /**
      * Obtiene el perfil del usuario
      */
+
+
+
     public UserProfile getUserProfile() {
         String json = sharedPreferences.getString(Constants.KEY_USER_PROFILE, null);
         if (json != null) {
             return gson.fromJson(json, UserProfile.class);
         }
         return new UserProfile(); // Perfil vacío si no existe
+    }
+
+    public long gettUserId() {
+        UserProfile profile = getUserProfile();
+        return profile.getId();
     }
 
     public void setUserName(String name) {
@@ -91,6 +108,26 @@ public final class SharedPrefsManager {
         return profile.getName();
     }
 
+    public void setUserEmail(String email) {
+        UserProfile profile = getUserProfile();
+        profile.setEmail(email);
+        saveUserProfile(profile);
+    }
+
+    public String getUserEmail() {
+        UserProfile profile = getUserProfile();
+        return profile.getEmail();
+    }
+
+    public void setIdNameEmailIncomeUserData(long id, String name, String email, double income) {
+        UserProfile profile = getUserProfile();
+        profile.setId(id);
+        profile.setName(name);
+        profile.setEmail(email);
+        profile.setMonthlyIncome(income);
+        saveUserProfile(profile);
+    }
+
     public void setUserLevel(String level) {
         UserProfile profile = getUserProfile();
         profile.setLevel(level);
@@ -102,13 +139,13 @@ public final class SharedPrefsManager {
         return profile.getLevel();
     }
 
-    public void setMonthlyIncome(String income) {
+    public void setMonthlyIncome(double income) {
         UserProfile profile = getUserProfile();
         profile.setMonthlyIncome(income);
         saveUserProfile(profile);
     }
 
-    public String getMonthlyIncome() {
+    public double getMonthlyIncome() {
         UserProfile profile = getUserProfile();
         return profile.getMonthlyIncome();
     }

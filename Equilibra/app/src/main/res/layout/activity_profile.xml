@@ -1,10 +1,242 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<!--
+    Layout para la pantalla de Perfil
+    Permite visualizar y editar información del usuario
+
+-->
+<androidx.coordinatorlayout.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".activities.ProfileActivity">
+    android:background="@color/background_primary">
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+    <com.google.android.material.appbar.AppBarLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/equilibra_primary"
+        app:elevation="4dp">
+
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/toolbarProfile"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:background="@color/equilibra_primary"
+            app:titleTextColor="@android:color/white"
+            app:navigationIcon="@drawable/ic_arrow_back" />
+
+    </com.google.android.material.appbar.AppBarLayout>
+
+    <androidx.core.widget.NestedScrollView
+        android:id="@+id/layoutProfile"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"
+        android:fillViewport="true">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <!-- Header con imagen de perfil -->
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="200dp"
+                android:background="@drawable/bg_gradient_primary">
+
+                <ImageView
+                    android:id="@+id/ivProfileImage"
+                    android:layout_width="120dp"
+                    android:layout_height="120dp"
+                    android:layout_centerInParent="true"
+                    android:src="@drawable/ic_person_circle"
+                    android:background="@drawable/circle_background_white"
+                    android:padding="4dp"
+                    android:elevation="4dp"
+                    android:clickable="true"
+                    android:focusable="true" />
+
+                <ImageView
+                    android:layout_width="32dp"
+                    android:layout_height="32dp"
+                    android:layout_alignEnd="@id/ivProfileImage"
+                    android:layout_alignBottom="@id/ivProfileImage"
+                    android:src="@drawable/ic_camera"
+                    android:background="@drawable/circle_background_accent"
+                    android:padding="6dp"
+                    android:elevation="6dp"
+                    android:tint="@android:color/white" />
+
+            </RelativeLayout>
+
+            <!-- Información del perfil -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="16dp">
+
+                <TextView
+                    android:id="@+id/tvProfileName"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/userText"
+                    android:textSize="24sp"
+                    android:textColor="@color/text_primary"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginBottom="4dp" />
+
+                <TextView
+                    android:id="@+id/tvProfileEmail"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/userEmailText"
+                    android:textSize="14sp"
+                    android:textColor="@color/text_secondary"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginBottom="24dp" />
+
+                <!-- Formulario de edición -->
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/profile_personal_info"
+                    android:textSize="14sp"
+                    android:textColor="@color/text_secondary"
+                    android:layout_marginBottom="12dp"
+                    android:paddingStart="4dp" />
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="12dp"
+                    app:boxBackgroundColor="@android:color/white"
+                    app:boxStrokeColor="@color/equilibra_primary"
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/etName"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="@string/profile_name"
+                        android:inputType="textPersonName"
+                        android:enabled="false" />
+
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="12dp"
+                    app:boxBackgroundColor="@android:color/white"
+                    app:boxStrokeColor="@color/equilibra_primary"
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/etEmail"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="@string/profile_email"
+                        android:inputType="textEmailAddress"
+                        android:enabled="false" />
+
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="12dp"
+                    app:boxBackgroundColor="@android:color/white"
+                    app:boxStrokeColor="@color/equilibra_primary"
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/etPhone"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="@string/profile_phone"
+                        android:inputType="phone"
+                        android:enabled="false" />
+
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="16dp"
+                    app:boxBackgroundColor="@android:color/white"
+                    app:boxStrokeColor="@color/equilibra_primary"
+                    app:prefixText="$"
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/etMonthlyIncome"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="@string/profile_monthly_income"
+                        android:inputType="numberDecimal"
+                        android:enabled="false" />
+
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <!-- Botón guardar (oculto por defecto) -->
+                <Button
+                    android:id="@+id/btnSaveProfile"
+                    android:layout_width="match_parent"
+                    android:layout_height="56dp"
+                    android:text="@string/save_changes"
+                    android:textColor="@android:color/white"
+                    android:background="@drawable/button_primary"
+                    android:layout_marginBottom="16dp"
+                    android:visibility="gone"
+                    android:elevation="2dp" />
+
+                <!-- Sección de seguridad -->
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/profile_security"
+                    android:textSize="14sp"
+                    android:textColor="@color/text_secondary"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginBottom="12dp"
+                    android:paddingStart="4dp" />
+
+                <Button
+                    android:id="@+id/btnChangePassword"
+                    android:layout_width="match_parent"
+                    android:layout_height="56dp"
+                    android:text="@string/change_password"
+                    android:textColor="@color/equilibra_primary"
+                    android:background="@drawable/button_outline_primary"
+                    android:layout_marginBottom="24dp"
+                    android:elevation="0dp" />
+
+                <!-- Zona de peligro -->
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/profile_danger_zone"
+                    android:textSize="14sp"
+                    android:textColor="@color/equilibra_accent"
+                    android:layout_marginBottom="12dp"
+                    android:paddingStart="4dp" />
+
+                <Button
+                    android:id="@+id/btnDeleteAccount"
+                    android:layout_width="match_parent"
+                    android:layout_height="56dp"
+                    android:text="@string/delete_account"
+                    android:textColor="@color/equilibra_accent"
+                    android:background="@drawable/button_outline_accent"
+                    android:layout_marginBottom="32dp"
+                    android:elevation="0dp" />
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+    </androidx.core.widget.NestedScrollView>
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

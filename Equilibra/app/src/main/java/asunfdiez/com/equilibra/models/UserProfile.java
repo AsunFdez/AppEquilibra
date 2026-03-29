@@ -2,7 +2,12 @@ package asunfdiez.com.equilibra.models;
 
 public class UserProfile {
 
+    private long id;
     private String name;
+    private String email;
+    private String phone;
+    private String passwordHash;
+
     private EmotionalState emotionalState;
     private String mainConcern;
     private String timeAvailable;
@@ -10,9 +15,10 @@ public class UserProfile {
     private String savingAmount;
     private String savingDate;
     private final long createdAt;
+    private long updatedAt;
 
     private String level;
-    private String monthlyIncome;
+    private double monthlyIncome;
     private String savingsPlan;
 
     private int financialKnowledge;
@@ -20,7 +26,17 @@ public class UserProfile {
     private int savingsHabit;
 
     public UserProfile() {
+        this.id = -1;
         this.createdAt = System.currentTimeMillis();
+        this.updatedAt = System.currentTimeMillis();
+    }
+
+    public long getId() {
+        return id;
+    }
+
+    public void setId(long a_id) {
+        id = a_id;
     }
 
     public String getName() {
@@ -29,6 +45,30 @@ public class UserProfile {
 
     public void setName(String a_name) {
         name = a_name;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String a_email) {
+        email = a_email;
+    }
+
+    public String getPhone() {
+        return phone;
+    }
+
+    public void setPhone(String a_phone) {
+        phone = a_phone;
+    }
+
+    public String getPasswordHash() {
+        return passwordHash;
+    }
+
+    public void setPasswordHash(String a_passwordHash) {
+        passwordHash = a_passwordHash;
     }
 
     public EmotionalState getEmotionalState() {
@@ -83,6 +123,14 @@ public class UserProfile {
         return createdAt;
     }
 
+    public long getUpdatedAt() {
+        return updatedAt;
+    }
+
+    public void setUpdatedAt(long a_updatedAt) {
+        updatedAt = a_updatedAt;
+    }
+
     public String getLevel() {
         return level;
     }
@@ -91,11 +139,11 @@ public class UserProfile {
         level = a_level;
     }
 
-    public String getMonthlyIncome() {
+    public double getMonthlyIncome() {
         return monthlyIncome;
     }
 
-    public void setMonthlyIncome(String a_monthlyIncome) {
+    public void setMonthlyIncome(double a_monthlyIncome) {
         monthlyIncome = a_monthlyIncome;
     }
 

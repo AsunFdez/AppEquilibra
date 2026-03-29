@@ -104,7 +104,6 @@ public class MainActivity extends AppCompatActivity {
 
         // Other Cards
         tipCard = findViewById(R.id.tipCard);
-        tipText = findViewById(R.id.tipText);
         quickActionCard = findViewById(R.id.quickActionCard);
         nextGoalCard = findViewById(R.id.nextGoalCard);
         viewAllExpensesCard = findViewById(R.id.viewAllExpensesCard);
@@ -194,7 +193,8 @@ public class MainActivity extends AppCompatActivity {
         navSettings.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                navigateTo(SettingsActivity.class);
+                navigateTo(ProfileActivity.class);
+                //navigateTo(SettingsActivity.class);
             }
         });
 
