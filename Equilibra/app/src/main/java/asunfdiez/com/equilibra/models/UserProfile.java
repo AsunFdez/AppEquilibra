@@ -3,14 +3,13 @@ package asunfdiez.com.equilibra.models;
 public class UserProfile {
 
     private String name;
-    private EmotionalState emotion;
+    private EmotionalState emotionalState;
     private String mainConcern;
     private String timeAvailable;
     private String savingGoal;
     private String savingAmount;
     private String savingDate;
     private final long createdAt;
-    private long completedAt;
 
     private String level;
     private String monthlyIncome;
@@ -32,20 +31,12 @@ public class UserProfile {
         name = a_name;
     }
 
-    public EmotionalState getEmotion() {
-        return emotion;
-    }
-
-    public void setEmotion(EmotionalState a_emotion) {
-        emotion = a_emotion;
-    }
-
     public EmotionalState getEmotionalState() {
-        return emotion;
+        return emotionalState;
     }
 
     public void setEmotionalState(EmotionalState a_emotion) {
-        emotion = a_emotion;
+        emotionalState = a_emotion;
     }
 
     public String getMainConcern() {
@@ -90,14 +81,6 @@ public class UserProfile {
 
     public long getCreatedAt() {
         return createdAt;
-    }
-
-    public long getCompletedAt() {
-        return completedAt;
-    }
-
-    public void setCompletedAt(long completedAt) {
-        this.completedAt = completedAt;
     }
 
     public String getLevel() {

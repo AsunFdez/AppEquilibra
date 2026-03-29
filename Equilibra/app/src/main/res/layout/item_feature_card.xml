@@ -6,7 +6,8 @@
     android:layout_height="wrap_content"
     android:layout_marginBottom="16dp"
     app:cardCornerRadius="16dp"
-    app:cardElevation="4dp">
+    app:cardElevation="4dp"
+    app:cardBackgroundColor="@android:color/white">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -25,12 +26,14 @@
 
             <!-- Icon -->
             <FrameLayout
+                android:id="@+id/cardIconCircle"
                 android:layout_width="40dp"
                 android:layout_height="40dp"
                 android:layout_marginEnd="12dp"
                 android:background="@drawable/circle_accent">
 
                 <ImageView
+                    android:id="@+id/cardIcon"
                     android:layout_width="20dp"
                     android:layout_height="20dp"
                     android:layout_gravity="center"
@@ -45,6 +48,7 @@
                 android:orientation="vertical">
 
                 <TextView
+                    android:id="@+id/cardTitle"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/my_expenses_tile"
@@ -53,6 +57,7 @@
                     android:textStyle="bold" />
 
                 <TextView
+                    android:id="@+id/cardDescription"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/my_expenses_text"
@@ -63,10 +68,21 @@
 
         <!-- Arrow -->
         <TextView
+            android:id="@+id/cardArrow"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="→"
             android:textColor="@color/equilibra_accent"
-            android:textSize="24sp" />
+            android:textSize="24sp"
+            android:visibility="gone"/>
+
+        <ImageView
+            android:id="@+id/cardRightIcon"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:src="@drawable/ic_nav_plus"
+            app:tint="@color/gray_400"
+            android:visibility="gone"/>
+
     </LinearLayout>
 </LinearLayout>

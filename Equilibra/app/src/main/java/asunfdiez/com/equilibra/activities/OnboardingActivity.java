@@ -167,7 +167,7 @@ public class OnboardingActivity extends AppCompatActivity {
         CardView card = parent.findViewById(cardId);
         card.setOnClickListener(v -> {
             selectedEmotion = emotion;
-            profile.setEmotion(emotion);
+            profile.setEmotionalState(emotion);
             AnimationHelper.animateCardSelection(v, () ->
                     showStep(OnboardingStep.VALIDATION));
         });
@@ -262,7 +262,7 @@ public class OnboardingActivity extends AppCompatActivity {
 
     private void setupSecondQuestion(LinearLayout container) {
         questionAdapter.setOnOptionSelectedListener((id, text) -> {
-            profile.setTimeAvailable(text);
+            profile.setTimeAvailable(id);
             handleSecondQuestionAnswer();
         });
 
@@ -450,19 +450,6 @@ public class OnboardingActivity extends AppCompatActivity {
         overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
     }
 
-
-    // ==================== GUARDAR PERFIL ====================
-
-    private void saveUserProfile() {
-        profile.setEmotionalState(selectedEmotion);
-        profile.setMainConcern(mainConcern);
-        profile.setTimeAvailable(timeAvailable);
-        profile.setSavingGoal(savingGoal);
-        profile.setSavingAmount(savingAmount);
-        profile.setSavingDate(savingDate);
-
-        sharedPrefsManager.saveUserProfile(profile);
-    }
 
     @Override
     protected void onDestroy() {

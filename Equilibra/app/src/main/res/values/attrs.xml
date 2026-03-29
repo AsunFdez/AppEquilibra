@@ -2,8 +2,15 @@
 <resources>
     <declare-styleable name="FeatureCard">
         <attr name="cardIcon" format="reference" />
+        <attr name="cardIconCircle" format="reference" />
+        <attr name="cardIconTint" format="color" />
+
         <attr name="cardTitle" format="string" />
         <attr name="cardDescription" format="string" />
-        <attr name="cardIconTint" format="color" />
+
+        <attr name="showArrow" format="boolean" />
+        <attr name="showRightIcon" format="boolean" />
+        <attr name="cardRightIcon" format="reference" />
+
     </declare-styleable>
 </resources>

@@ -34,7 +34,6 @@ public class MainActivity extends AppCompatActivity {
     private TextView progressText;
     private View progressBar;
     private TextView tipText;
-    private TextView nextGoalText;
 
     // Bottom Navigation
     private LinearLayout navHome;
@@ -108,7 +107,6 @@ public class MainActivity extends AppCompatActivity {
         tipText = findViewById(R.id.tipText);
         quickActionCard = findViewById(R.id.quickActionCard);
         nextGoalCard = findViewById(R.id.nextGoalCard);
-        nextGoalText = findViewById(R.id.nextGoalText);
         viewAllExpensesCard = findViewById(R.id.viewAllExpensesCard);
 
         // Bottom Navigation

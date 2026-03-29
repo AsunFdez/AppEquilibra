@@ -66,6 +66,7 @@ public final class SharedPrefsManager {
     public void saveUserProfile(UserProfile profile) {
         String json = gson.toJson(profile);
         sharedPreferences.edit().putString(Constants.KEY_USER_PROFILE, json).apply();
+        System.out.println("Perfil de usuario guardado: " + json);
     }
 
     /**

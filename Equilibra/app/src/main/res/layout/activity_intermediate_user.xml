@@ -16,6 +16,44 @@
         android:layout_marginBottom="12dp"
         app:layout_constraintTop_toTopOf="parent"/>
 
+    <!-- Scrollable Content -->
+    <androidx.core.widget.NestedScrollView
+        android:id="@+id/contentScroll"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:clipToPadding="false"
+        android:paddingStart="24dp"
+        android:paddingTop="16dp"
+        android:paddingEnd="24dp"
+        android:paddingBottom="100dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/headerSection">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <!-- Ver Todos los Gastos Card -->
+            <asunfdiez.com.equilibra.views.FeatureCard
+                android:id="@+id/viewAllExpensesCard"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="24dp"
+                android:clickable="true"
+                android:focusable="true"
+                android:foreground="?android:attr/selectableItemBackground"
+                app:cardIcon="@drawable/ic_fea_receipt_euro"
+                app:cardIconCircle="@drawable/circle_accent"
+                app:cardTitle="@string/my_expenses_tile"
+                app:cardDescription="@string/my_expenses_text"
+                app:showArrow="true"
+                app:showRightIcon="false"
+                />
+
+
+        </LinearLayout>
+    </androidx.core.widget.NestedScrollView>
 
     <!-- Bottom Navigation -->
     <include

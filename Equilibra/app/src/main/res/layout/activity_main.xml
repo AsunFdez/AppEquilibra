@@ -43,13 +43,21 @@
                 android:layout_marginBottom="12dp"/>
 
             <!-- Daily Tip Card -->
-            <include
+            <asunfdiez.com.equilibra.views.FeatureCard
                 android:id="@+id/tipCard"
-                layout="@layout/item_feature_card_1_image"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="12dp"/>
-
+                android:layout_marginBottom="24dp"
+                android:clickable="true"
+                android:focusable="true"
+                android:foreground="?android:attr/selectableItemBackground"
+                app:cardIconCircle="@drawable/circle_primary"
+                app:cardIcon="@drawable/ic_fea_lightbulb"
+                app:cardTitle="@string/today_advice"
+                app:cardDescription="@string/advice_1"
+                app:showArrow="false"
+                app:showRightIcon="false"
+                />
 
             <!-- Quick Action Card -->
             <include
@@ -61,63 +69,23 @@
 
 
             <!-- Next Goal Card -->
-            <androidx.cardview.widget.CardView
+            <asunfdiez.com.equilibra.views.FeatureCard
                 android:id="@+id/nextGoalCard"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="12dp"
-                app:cardBackgroundColor="@android:color/white"
-                app:cardCornerRadius="16dp"
-                app:cardElevation="4dp">
+                android:layout_marginBottom="24dp"
+                android:clickable="true"
+                android:focusable="true"
+                android:foreground="?android:attr/selectableItemBackground"
 
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:gravity="top"
-                    android:orientation="horizontal"
-                    android:padding="16dp">
-
-                    <!-- Icon -->
-                    <FrameLayout
-                        android:layout_width="40dp"
-                        android:layout_height="40dp"
-                        android:layout_marginEnd="12dp"
-                        android:background="@drawable/circle_secondary_light">
-
-                        <ImageView
-                            android:layout_width="20dp"
-                            android:layout_height="20dp"
-                            android:layout_gravity="center"
-                            android:src="@drawable/ic_fea_flag"
-                            android:tint="@color/equilibra_secondary" />
-                    </FrameLayout>
-
-                    <!-- Content -->
-                    <LinearLayout
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:orientation="vertical">
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginBottom="4dp"
-                            android:text="@string/next_goal_title"
-                            android:textColor="@color/gray_800"
-                            android:textSize="14sp"
-                            android:textStyle="bold" />
-
-                        <TextView
-                            android:id="@+id/nextGoalText"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="@string/next_goal_1"
-                            android:textColor="@color/gray_600"
-                            android:textSize="14sp" />
-                    </LinearLayout>
-                </LinearLayout>
-            </androidx.cardview.widget.CardView>
+                app:cardIconCircle="@drawable/circle_secondary_light"
+                app:cardIcon="@drawable/ic_fea_flag"
+                app:cardIconTint = "@color/equilibra_secondary"
+                app:cardTitle="@string/next_goal_title"
+                app:cardDescription="@string/next_goal_1"
+                app:showArrow="false"
+                app:showRightIcon="false"
+                />
 
             <!-- Ver Todos los Gastos Card -->
             <asunfdiez.com.equilibra.views.FeatureCard
@@ -128,10 +96,13 @@
                 android:clickable="true"
                 android:focusable="true"
                 android:foreground="?android:attr/selectableItemBackground"
+                app:cardIcon="@drawable/ic_fea_receipt_euro"
+                app:cardIconCircle="@drawable/circle_accent"
                 app:cardTitle="@string/my_expenses_tile"
                 app:cardDescription="@string/my_expenses_text"
-                app:cardIcon="@drawable/ic_fea_receipt_euro"
-                app:cardIconTint="@android:color/white" />
+                app:showArrow="true"
+                app:showRightIcon="false"
+                />
 
 
         </LinearLayout>

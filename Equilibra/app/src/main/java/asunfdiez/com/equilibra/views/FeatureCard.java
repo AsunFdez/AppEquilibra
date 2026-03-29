@@ -6,6 +6,9 @@ import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.view.View;
+import androidx.core.widget.ImageViewCompat;
+import android.content.res.ColorStateList;
 import androidx.cardview.widget.CardView;
 import asunfdiez.com.equilibra.R;
 
@@ -16,37 +19,65 @@ public class FeatureCard extends CardView {
         init(context, attrs);
     }
 
-
     private void init(Context context, AttributeSet attrs) {
         LayoutInflater.from(context).inflate(R.layout.item_feature_card, this, true);
 
         TextView titleView = findViewById(R.id.cardTitle);
         TextView descView = findViewById(R.id.cardDescription);
         ImageView iconView = findViewById(R.id.cardIcon);
+        View iconCircleView = findViewById(R.id.cardIconCircle);
+        TextView arrowView = findViewById(R.id.cardArrow);
+        ImageView rightIconView = findViewById(R.id.cardRightIcon);
 
-        // 3. Configurar atributos solo si las vistas existen
-        if (attrs != null && titleView != null && descView != null) {
+        if (attrs != null) {
             TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.FeatureCard);
 
+            // Textos
             String title = a.getString(R.styleable.FeatureCard_cardTitle);
             String desc = a.getString(R.styleable.FeatureCard_cardDescription);
-            int iconRes = a.getResourceId(R.styleable.FeatureCard_cardIcon, R.drawable.ic_nav_home);
-            int tint = a.getColor(R.styleable.FeatureCard_cardIconTint, getResources().getColor(R.color.equilibra_primary));
+            if (titleView != null && title != null) titleView.setText(title);
+            if (descView != null && desc != null) descView.setText(desc);
 
-            if (title != null) titleView.setText(title);
-            if (desc != null) descView.setText(desc);
+            // Icono Principal y su TINTE (Color)
+            int iconRes = a.getResourceId(R.styleable.FeatureCard_cardIcon, R.drawable.ic_nav_home);
+            int tintColor = a.getColor(R.styleable.FeatureCard_cardIconTint,
+                    androidx.core.content.ContextCompat.getColor(context, R.color.white));
+
             if (iconView != null) {
                 iconView.setImageResource(iconRes);
-                iconView.setColorFilter(tint);
+                ImageViewCompat.setImageTintList(iconView, ColorStateList.valueOf(tintColor));
             }
 
-            // Estética por defecto
+            // Círculo de fondo (Drawable)
+            int iconCircleRes = a.getResourceId(R.styleable.FeatureCard_cardIconCircle, R.drawable.circle_accent);
+            if (iconCircleView != null) {
+                iconCircleView.setBackgroundResource(iconCircleRes);
+            }
+
+            // Elementos opcionales
+            boolean showArrow = a.getBoolean(R.styleable.FeatureCard_showArrow, false);
+            if (arrowView != null) {
+                arrowView.setVisibility(showArrow ? View.VISIBLE : View.GONE);
+            }
+
+            boolean showRightIcon = a.getBoolean(R.styleable.FeatureCard_showRightIcon, false);
+            int iconRightRes = a.getResourceId(R.styleable.FeatureCard_cardRightIcon, R.drawable.ic_nav_plus);
+            if (rightIconView != null) {
+                if (showRightIcon) {
+                    rightIconView.setVisibility(View.VISIBLE);
+                    rightIconView.setImageResource(iconRightRes);
+                } else {
+                    rightIconView.setVisibility(View.GONE);
+                }
+            }
+
+            // Estética
             setRadius(getResources().getDimension(R.dimen.card_corner_radius));
             setCardElevation(4);
+
             a.recycle();
         }
     }
-
 
 
 }
