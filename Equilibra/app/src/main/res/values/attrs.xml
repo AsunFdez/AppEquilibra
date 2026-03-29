@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <declare-styleable name="FeatureCard">
+        <attr name="cardBackgroundColor" format="color" />
         <attr name="cardIcon" format="reference" />
         <attr name="cardIconCircle" format="reference" />
         <attr name="cardIconTint" format="color" />

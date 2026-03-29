@@ -32,6 +32,11 @@ public class FeatureCard extends CardView {
         if (attrs != null) {
             TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.FeatureCard);
 
+            // Color de fondo
+            int defaultWhite = androidx.core.content.ContextCompat.getColor(context, R.color.white);
+            int bgColor = a.getColor(R.styleable.FeatureCard_cardBackgroundColor, defaultWhite);
+            setCardBackgroundColor(bgColor);
+
             // Textos
             String title = a.getString(R.styleable.FeatureCard_cardTitle);
             String desc = a.getString(R.styleable.FeatureCard_cardDescription);

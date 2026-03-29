@@ -44,6 +44,7 @@
                 android:clickable="true"
                 android:focusable="true"
                 android:foreground="?android:attr/selectableItemBackground"
+                app:cardBackgroundColor ="@color/expenses_card_bg"
                 app:cardIcon="@drawable/ic_fea_receipt_euro"
                 app:cardIconCircle="@drawable/circle_accent"
                 app:cardTitle="@string/my_expenses_tile"
