@@ -11,8 +11,7 @@ import asunfdiez.com.equilibra.utils.SharedPrefsManager;
  */
 public class UserController {
 
-    private final Context context;
-    private SharedPrefsManager preferencesManager;
+    private final SharedPrefsManager preferencesManager;
     private UserProfile user;
 
     /**
@@ -21,7 +20,6 @@ public class UserController {
      * @param context Contexto de la aplicación
      */
     public UserController(Context context) {
-        this.context = context;
         this.preferencesManager = SharedPrefsManager.getInstance(context);
     }
 
@@ -67,7 +65,6 @@ public class UserController {
         user.setId(1);
         user.setName("Usuario");
         user.setEmail("usuario@equilibra.com");
-        user.setMonthlyIncome(0.0);
         return user;
     }
 
@@ -83,7 +80,7 @@ public class UserController {
         }
 
         // Actualizar en PreferencesManager
-        preferencesManager.setIdNameEmailIncomeUserData(user.getId(), user.getEmail(), user.getEmail(), user.getMonthlyIncome());
+        preferencesManager.setIdNameEmailIncomeUserData(user.getId(), user.getName(), user.getEmail(), user.getMonthlyIncome());
 
         // TODO: Actualizar en base de datos SQLite
 

@@ -1,39 +1,34 @@
 package asunfdiez.com.equilibra.activities;
-import android.animation.ValueAnimator;
+
 import android.content.Intent;
-import android.content.SharedPreferences;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.os.Handler;
-import android.view.Gravity;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
-import android.view.animation.AccelerateDecelerateInterpolator;
-import android.view.animation.DecelerateInterpolator;
-import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.PopupWindow;
+import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.graphics.Typeface;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
 import androidx.core.widget.NestedScrollView;
+
 import asunfdiez.com.equilibra.R;
+import asunfdiez.com.equilibra.models.UserProfile;
+import asunfdiez.com.equilibra.utils.AnimationHelper;
+import asunfdiez.com.equilibra.utils.Constants;
+import asunfdiez.com.equilibra.utils.SharedPrefsManager;
 
 public class MainActivity extends AppCompatActivity {
 
+    private SharedPrefsManager preferencesManager;
 
-    private static final long FAB_ANIM_DURATION = 100;
-    private static final long CARD_STAGGER = 100;
-
-    // Views
+    // Header
     private TextView userNameText;
     private TextView dayCountText;
     private TextView progressText;
-    private View progressBar;
-    private TextView tipText;
+    private ProgressBar progressBar;
 
     // Bottom Navigation
     private LinearLayout navHome;
@@ -59,14 +54,10 @@ public class MainActivity extends AppCompatActivity {
     private CardView nextGoalCard;
     private CardView viewAllExpensesCard;
 
-    // Dummy Data
+    // UserProfile Data
     private int weekProgress = 4;
     private int weekGoal = 5;
-    private String userName = "Ana";
-    private int dayCount = 1;
     private String currentView = "beginner"; // beginner, intermediate, advanced
-
-
 
     // Handler
     private final Handler handler = new Handler();
@@ -76,8 +67,8 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        // Initialize views
-        initViews();
+        // initializeComponents
+        initializeComponents();
 
         // Load user data
         loadUserData();
@@ -86,10 +77,17 @@ public class MainActivity extends AppCompatActivity {
         setupListeners();
 
         // Animate cards
-        animateCardsEntrance();
+        View[] cards = {progressCard, tipCard, quickActionCard, nextGoalCard, viewAllExpensesCard};
+        AnimationHelper.animateCardsEntrance(cards);
 
         // Animate progress bar
-        //animateProgressBar();
+        AnimationHelper.animateProgressBar(weekProgress, weekGoal, progressBar);
+    }
+
+    private void initializeComponents() {
+        preferencesManager =  SharedPrefsManager.getInstance(this);
+        // Initialize views
+        initViews();
     }
 
     private void initViews() {
@@ -100,9 +98,9 @@ public class MainActivity extends AppCompatActivity {
         // Progress Card
         progressCard = findViewById(R.id.progressCard);
         progressText = findViewById(R.id.progressText);
-        progressBar = findViewById(R.id.progressBar);
+        progressBar = findViewById(R.id.weeklyProgressBar);
 
-        // Other Cards
+        // Content Cards
         tipCard = findViewById(R.id.tipCard);
         quickActionCard = findViewById(R.id.quickActionCard);
         nextGoalCard = findViewById(R.id.nextGoalCard);
@@ -127,17 +125,14 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void loadUserData() {
-        SharedPreferences prefs = getSharedPreferences("equilibra_prefs", MODE_PRIVATE);
-        userName = prefs.getString("user_name", "Ana");
-        dayCount = prefs.getInt("day_count", 1);
-        currentView = prefs.getString("current_view", "beginner");
-        weekProgress = prefs.getInt("week_progress", 4);
-        weekGoal = prefs.getInt("week_goal", 5);
-
+        UserProfile user = preferencesManager.getUserProfile();
+        weekProgress = user.getWeekProgress();
+        weekGoal = user.getWeekGoal();
+        currentView = user.getCurrentView();
         // Update UI
-        userNameText.setText(getString(R.string.hello_user, userName));
-        dayCountText.setText(getString(R.string.day_count, dayCount));
-        progressText.setText(getString(R.string.week_progress, weekProgress, weekGoal));
+        userNameText.setText(getString(R.string.hello_user, user.getName()));
+        dayCountText.setText(getString(R.string.day_count, user.getDayCount()));
+        progressText.setText(getString(R.string.week_progress, user.getWeekProgress(), user.getWeekGoal()));
 
         updateBottomNavigation("home");
     }
@@ -145,73 +140,48 @@ public class MainActivity extends AppCompatActivity {
     private void setupListeners() {
 
         // Quick Action
-        findViewById(R.id.quickActionButton).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+        findViewById(R.id.quickActionButton).setOnClickListener(v -> {
                 navigateTo(AddExpenseActivity.class);
-            }
         });
 
         // View All Expenses
-        viewAllExpensesCard.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+        viewAllExpensesCard.setOnClickListener(v -> {
                 navigateTo(ExpenseListActivity.class);
-            }
         });
 
         // Bottom Navigation
-        navHome.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+        navHome.setOnClickListener(v -> {
                 // Already on home, do nothing or scroll to top
                 NestedScrollView scrollView = findViewById(R.id.contentScroll);
                 scrollView.smoothScrollTo(0, 0);
-            }
         });
 
-        navAnalysis.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+        navAnalysis.setOnClickListener(v -> {
                 navigateTo(AnalysisActivity.class);
-            }
         });
 
         fabAddExpense.setOnClickListener(v -> {
-            animateFABPress(v);
-            handler.postDelayed(() -> navigateTo(AddExpenseActivity.class), FAB_ANIM_DURATION + 50);
+            AnimationHelper.animateFABPress(v);
+            handler.postDelayed(() -> navigateTo(AddExpenseActivity.class), Constants.FAB_ANIM_DURATION + 50);
         });
 
 
-        navAchievements.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+        navAchievements.setOnClickListener(v -> {
                 navigateTo(AchievementsActivity.class);
-            }
         });
 
-        navSettings.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                navigateTo(ProfileActivity.class);
-                //navigateTo(SettingsActivity.class);
-            }
+        navSettings.setOnClickListener ( v -> {
+             navigateTo(SettingsActivity.class);
         });
 
         // Notification Button
-        findViewById(R.id.notificationButton).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+        findViewById(R.id.notificationButton).setOnClickListener(v -> {
                 // TODO: Show notifications
-            }
         });
 
         // Avatar Button
-        findViewById(R.id.avatarButton).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+        findViewById(R.id.avatarButton).setOnClickListener(v -> {
                 navigateTo(ProfileActivity.class);
-            }
         });
     }
 
@@ -220,11 +190,9 @@ public class MainActivity extends AppCompatActivity {
         if (currentView.equals(newView)) return;
 
         currentView = newView;
-
-        // Save preference
-        SharedPreferences prefs = getSharedPreferences("equilibra_prefs", MODE_PRIVATE);
-        prefs.edit().putString("current_view", currentView).apply();
-
+        // Save in User profile
+        UserProfile user = preferencesManager.getUserProfile();
+        user.setCurrentView(newView);
         // TODO: Update content based on view level
 
     }
@@ -259,71 +227,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-    private void animateCardsEntrance() {
-        View[] cards = {progressCard, tipCard, quickActionCard, nextGoalCard, viewAllExpensesCard};
-
-        for (int i = 0; i < cards.length; i++) {
-            final View card = cards[i];
-            final int delay = i * 100;
-
-            card.setAlpha(0f);
-            card.setTranslationY(20f);
-
-            card.animate()
-                    .alpha(1f)
-                    .translationY(0f)
-                    .setDuration(300)
-                    .setStartDelay(delay)
-                    .setInterpolator(new DecelerateInterpolator())
-                    .start();
-        }
-    }
-
-    private void animateProgressBar() {
-        float progressPercentage = ((float) weekProgress / weekGoal);
-
-        ViewGroup.LayoutParams params = progressBar.getLayoutParams();
-        final int targetWidth = (int) (progressBar.getParent() instanceof View
-                ? ((View) progressBar.getParent()).getWidth() * progressPercentage
-                : 0);
-
-        progressBar.post(new Runnable() {
-            @Override
-            public void run() {
-                ValueAnimator animator = ValueAnimator.ofInt(0, targetWidth);
-                animator.setDuration(1000);
-                animator.setStartDelay(300);
-                animator.setInterpolator(new AccelerateDecelerateInterpolator());
-                animator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-                    @Override
-                    public void onAnimationUpdate(ValueAnimator animation) {
-                        ViewGroup.LayoutParams params = progressBar.getLayoutParams();
-                        params.width = (int) animation.getAnimatedValue();
-                        progressBar.setLayoutParams(params);
-                    }
-                });
-                animator.start();
-            }
-        });
-    }
-
-    private void animateFABPress(View fab) {
-        fab.animate()
-                .scaleX(0.9f)
-                .scaleY(0.9f)
-                .setDuration(100)
-                .withEndAction(new Runnable() {
-                    @Override
-                    public void run() {
-                        fab.animate()
-                                .scaleX(1f)
-                                .scaleY(1f)
-                                .setDuration(100)
-                                .start();
-                    }
-                })
-                .start();
-    }
 
     private void navigateTo(Class<?> activityClass) {
         Intent intent = new Intent(this, activityClass);
@@ -336,6 +239,12 @@ public class MainActivity extends AppCompatActivity {
         super.onResume();
         // Reload data when returning to this activity
         loadUserData();
+        if (progressBar != null) {
+            handler.postDelayed(() -> {
+                AnimationHelper.animateProgressBar(weekProgress, weekGoal, progressBar);
+            }, 200);
+        }
+
     }
 
     @Override

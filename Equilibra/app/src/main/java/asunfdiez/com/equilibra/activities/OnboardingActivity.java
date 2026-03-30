@@ -1,7 +1,5 @@
 package asunfdiez.com.equilibra.activities;
 
-import android.animation.Animator;
-import android.animation.AnimatorListenerAdapter;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
@@ -12,24 +10,23 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import com.google.android.material.button.MaterialButton;
-import java.util.List;
-
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
 
-import java.util.Arrays;
+import com.google.android.material.button.MaterialButton;
+
+import java.util.List;
 
 import asunfdiez.com.equilibra.R;
 import asunfdiez.com.equilibra.adapters.QuestionOptionAdapter;
 import asunfdiez.com.equilibra.models.EmotionalState;
-import asunfdiez.com.equilibra.models.UserProfile;
 import asunfdiez.com.equilibra.models.QuestionOption;
+import asunfdiez.com.equilibra.models.UserProfile;
 import asunfdiez.com.equilibra.utils.AnimationHelper;
-import asunfdiez.com.equilibra.utils.InputValidator;
 import asunfdiez.com.equilibra.utils.Constants;
 import asunfdiez.com.equilibra.utils.DatePickerHelper;
+import asunfdiez.com.equilibra.utils.InputValidator;
 import asunfdiez.com.equilibra.utils.SavingGoalValidator;
 import asunfdiez.com.equilibra.utils.SharedPrefsManager;
 
@@ -40,13 +37,8 @@ public class OnboardingActivity extends AppCompatActivity {
     private OnboardingStep currentStep = OnboardingStep.EMOTIONAL;
 
     // Datos del usuario
-    private final UserProfile profile = new UserProfile();
+    private UserProfile profile;
     private EmotionalState selectedEmotion;
-    private String mainConcern = "";
-    private String timeAvailable = "";
-    private String savingGoal = "";
-    private String savingAmount = "";
-    private String savingDate = "";
 
     private int currentQuestionIndex = 0;
 
@@ -74,6 +66,7 @@ public class OnboardingActivity extends AppCompatActivity {
     }
 
     private void initializeComponents() {
+        profile = new UserProfile();
         handler = new Handler(Looper.getMainLooper());
         questionAdapter = new QuestionOptionAdapter();
         stepContainer = findViewById(R.id.stepContainer);
@@ -250,6 +243,7 @@ public class OnboardingActivity extends AppCompatActivity {
 
     private void setupFirstQuestion(LinearLayout container) {
         questionAdapter.setOnOptionSelectedListener((id, text) -> {
+            profile.setMainConcernId(id);
             profile.setMainConcern(text);
             handleFirstQuestionAnswer(id);
         });
@@ -281,7 +275,7 @@ public class OnboardingActivity extends AppCompatActivity {
     }
 
     private void handleSecondQuestionAnswer() {
-        if (Constants.ANSWER_ID_SAVE_SPECIFIC.equals(profile.getMainConcern())) {
+        if (Constants.ANSWER_ID_SAVE_SPECIFIC.equals(profile.getMainConcernId())) {
             showStep(OnboardingStep.SAVING_GOAL);
         } else {
             showStep(OnboardingStep.SUMMARY);

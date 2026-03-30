@@ -100,7 +100,7 @@
     <string name="userEmailText">usuario@email.com</string>
 
     <string name="profile_title">Mi Perfil</string>
-    <string name="profile_personal_info">INFORMACIÓN PERSONAL</string>
+    <string name="profile_personal_info">Información Personal</string>
     <string name="profile_security">SEGURIDAD</string>
     <string name="profile_danger_zone">ZONA DE PELIGRO</string>
 
@@ -132,5 +132,6 @@
     <string name="delete">Eliminar</string>
     <string name="export">Exportar</string>
     <string name="feature_coming_soon">Función próximamente disponible</string>
+    <string name="profile_edition">Editar perfil</string>
 
 </resources>

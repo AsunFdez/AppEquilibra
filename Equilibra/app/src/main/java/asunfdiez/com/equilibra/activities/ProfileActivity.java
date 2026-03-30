@@ -6,17 +6,26 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.activity.OnBackPressedCallback;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+
+import java.util.Locale;
+
 import asunfdiez.com.equilibra.R;
 import asunfdiez.com.equilibra.controllers.UserController;
 import asunfdiez.com.equilibra.models.UserProfile;
-import asunfdiez.com.equilibra.utils.SharedPrefsManager;
 import asunfdiez.com.equilibra.utils.AnimationHelper;
+import asunfdiez.com.equilibra.utils.Constants;
+import asunfdiez.com.equilibra.utils.SharedPrefsManager;
 import asunfdiez.com.equilibra.utils.ValidationHelper;
+
 
 /**
  * Activity de perfil de usuario
@@ -41,7 +50,8 @@ public class ProfileActivity extends AppCompatActivity {
     private Button btnSaveProfile;
     private Button btnChangePassword;
     private Button btnDeleteAccount;
-    private View layoutProfile;
+    private ImageButton btnEditProfile;
+    private LinearLayout layoutProfile;
 
     private boolean isEditMode = false;
 
@@ -54,7 +64,9 @@ public class ProfileActivity extends AppCompatActivity {
         setupToolbar();
         loadUserProfile();
         setupListeners();
+        setupBackNavigation();
         AnimationHelper.fadeIn(layoutProfile);
+
     }
 
     /**
@@ -76,6 +88,7 @@ public class ProfileActivity extends AppCompatActivity {
         btnSaveProfile = findViewById(R.id.btnSaveProfile);
         btnChangePassword = findViewById(R.id.btnChangePassword);
         btnDeleteAccount = findViewById(R.id.btnDeleteAccount);
+        btnEditProfile = findViewById(R.id.btnEditProfile);
     }
 
     /**
@@ -87,6 +100,25 @@ public class ProfileActivity extends AppCompatActivity {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             getSupportActionBar().setTitle(R.string.profile_title);
         }
+
+        toolbar.setNavigationOnClickListener(v -> {
+            onBackPressedDispatcher(); // Llamamos a nuestra navegación personalizada
+        });
+    }
+    // Método para salir de la actividad
+    private void onBackPressedDispatcher() {
+
+        if (isEditMode) {
+            // Si estamos editando, cancelamos la edición y recargamos datos
+            setEditMode(false);
+            loadUserProfile();
+        } else {
+            // Si no estamos editando, salimos de la actividad
+            finish();
+            overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
+            //overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
+        }
+
     }
 
     /**
@@ -113,7 +145,9 @@ public class ProfileActivity extends AppCompatActivity {
         etName.setText(user.getName());
         etEmail.setText(user.getEmail());
         etPhone.setText(user.getPhone() != null ? user.getPhone() : "");
-        etMonthlyIncome.setText(String.valueOf(user.getMonthlyIncome()));
+        double income = user.getMonthlyIncome();
+        String formatted = String.format(Locale.getDefault(), Constants.CURRENCY_FORMAT, income);
+        etMonthlyIncome.setText(formatted);
 
         // Deshabilitar edición por defecto
         setEditMode(false);
@@ -130,8 +164,20 @@ public class ProfileActivity extends AppCompatActivity {
         etEmail.setEnabled(enabled);
         etPhone.setEnabled(enabled);
         etMonthlyIncome.setEnabled(enabled);
+        String emailDummy = getString(R.string.userEmailText);
+        String userDummyName = getString(R.string.userText);
+
+        if (etEmail.getText().toString().equals(emailDummy)) {
+            etEmail.setText("");
+        }
+
+        if (etName.getText().toString().equals(userDummyName)) {
+            etName.setText("");
+        }
 
         btnSaveProfile.setVisibility(enabled ? View.VISIBLE : View.GONE);
+        btnEditProfile.setVisibility(enabled ? View.GONE : View.VISIBLE);
+
     }
 
     /**
@@ -143,7 +189,7 @@ public class ProfileActivity extends AppCompatActivity {
             changeProfileImage();
         });
 
-        layoutProfile.setOnClickListener(v -> {
+        btnEditProfile.setOnClickListener(v -> {
             if (!isEditMode) {
                 setEditMode(true);
                 AnimationHelper.shakeAnimation(etName);
@@ -153,6 +199,7 @@ public class ProfileActivity extends AppCompatActivity {
         btnSaveProfile.setOnClickListener(v -> {
             AnimationHelper.scaleUp(v);
             saveProfileChanges();
+            onBackPressedDispatcher();
         });
 
         btnChangePassword.setOnClickListener(v -> {
@@ -189,7 +236,7 @@ public class ProfileActivity extends AppCompatActivity {
 
         double monthlyIncome = Double.parseDouble(incomeStr);
 
-        UserProfile user = userController.getCurrentUser();
+        user = userController.getCurrentUser();
         if (user != null) {
             user.setName(name);
             user.setEmail(email);
@@ -321,20 +368,22 @@ public class ProfileActivity extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == android.R.id.home) {
-            onBackPressed();
+            // Ejecutamos la lógica de ir atrás
+            onBackPressedDispatcher();
             return true;
         }
         return super.onOptionsItemSelected(item);
     }
 
-    @Override
-    public void onBackPressed() {
-        if (isEditMode) {
-            setEditMode(false);
-            loadUserProfile();
-        } else {
-            super.onBackPressed();
-            overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
-        }
+
+
+    private void setupBackNavigation() {
+
+        getOnBackPressedDispatcher().addCallback(this, new OnBackPressedCallback(true) {
+            @Override
+            public void handleOnBackPressed() {
+                onBackPressedDispatcher();
+            }
+        });
     }
 }

@@ -28,7 +28,7 @@
     </com.google.android.material.appbar.AppBarLayout>
 
     <androidx.core.widget.NestedScrollView
-        android:id="@+id/layoutProfile"
+
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         app:layout_behavior="@string/appbar_scrolling_view_behavior"
@@ -66,12 +66,13 @@
                     android:background="@drawable/circle_background_accent"
                     android:padding="6dp"
                     android:elevation="6dp"
-                    android:tint="@android:color/white" />
+                    app:tint="@android:color/white" />
 
             </RelativeLayout>
 
             <!-- Información del perfil -->
             <LinearLayout
+                android:id="@+id/layoutProfile"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
@@ -87,15 +88,34 @@
                     android:layout_gravity="center_horizontal"
                     android:layout_marginBottom="4dp" />
 
-                <TextView
-                    android:id="@+id/tvProfileEmail"
+                <!-- Contenedor para Email e Icono de Edición -->
+                <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/userEmailText"
-                    android:textSize="14sp"
-                    android:textColor="@color/text_secondary"
+                    android:orientation="horizontal"
                     android:layout_gravity="center_horizontal"
-                    android:layout_marginBottom="24dp" />
+                    android:gravity="center_vertical"
+                    android:layout_marginBottom="24dp">
+
+                    <TextView
+                        android:id="@+id/tvProfileEmail"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/userEmailText"
+                        android:textSize="14sp"
+                        android:textColor="@color/text_secondary"
+                        android:layout_marginEnd="8dp" />
+
+                    <ImageButton
+                        android:id="@+id/btnEditProfile"
+                        android:layout_width="32dp"
+                        android:layout_height="32dp"
+                        android:background="?attr/selectableItemBackgroundBorderless"
+                        android:src="@drawable/ic_edit"
+                        app:tint="@color/equilibra_primary"
+                        android:contentDescription="@string/profile_edition" />
+
+                </LinearLayout>
 
                 <!-- Formulario de edición -->
                 <TextView
@@ -167,7 +187,7 @@
                     android:layout_marginBottom="16dp"
                     app:boxBackgroundColor="@android:color/white"
                     app:boxStrokeColor="@color/equilibra_primary"
-                    app:prefixText="$"
+                    app:suffixText="€"
                     style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
 
                     <com.google.android.material.textfield.TextInputEditText
@@ -181,16 +201,12 @@
                 </com.google.android.material.textfield.TextInputLayout>
 
                 <!-- Botón guardar (oculto por defecto) -->
-                <Button
+                <com.google.android.material.button.MaterialButton
+                    style="@style/Equilibra.Button.Primary"
                     android:id="@+id/btnSaveProfile"
                     android:layout_width="match_parent"
-                    android:layout_height="56dp"
-                    android:text="@string/save_changes"
-                    android:textColor="@android:color/white"
-                    android:background="@drawable/button_primary"
-                    android:layout_marginBottom="16dp"
-                    android:visibility="gone"
-                    android:elevation="2dp" />
+                    android:layout_height="wrap_content"
+                    android:text="@string/save_changes" />
 
                 <!-- Sección de seguridad -->
                 <TextView
@@ -203,15 +219,13 @@
                     android:layout_marginBottom="12dp"
                     android:paddingStart="4dp" />
 
-                <Button
+
+                <com.google.android.material.button.MaterialButton
+                    style="@style/Equilibra.Button.Secondary"
                     android:id="@+id/btnChangePassword"
                     android:layout_width="match_parent"
-                    android:layout_height="56dp"
-                    android:text="@string/change_password"
-                    android:textColor="@color/equilibra_primary"
-                    android:background="@drawable/button_outline_primary"
-                    android:layout_marginBottom="24dp"
-                    android:elevation="0dp" />
+                    android:layout_height="wrap_content"
+                    android:text="@string/change_password" />
 
                 <!-- Zona de peligro -->
                 <TextView
@@ -223,15 +237,13 @@
                     android:layout_marginBottom="12dp"
                     android:paddingStart="4dp" />
 
-                <Button
+                <com.google.android.material.button.MaterialButton
+                    style="@style/Equilibra.Button.Accent"
                     android:id="@+id/btnDeleteAccount"
                     android:layout_width="match_parent"
-                    android:layout_height="56dp"
-                    android:text="@string/delete_account"
-                    android:textColor="@color/equilibra_accent"
-                    android:background="@drawable/button_outline_accent"
-                    android:layout_marginBottom="32dp"
-                    android:elevation="0dp" />
+                    android:layout_height="wrap_content"
+                    android:text="@string/delete_account" />
+
 
             </LinearLayout>
 

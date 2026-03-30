@@ -18,6 +18,9 @@ public final class Constants {
     public static final String USER_LEVEL_ADVANCED = "userAdvanced";
     public static final String KEY_ONBOARDING_COMPLETED_AT = "onboardingCompletedAt";
 
+    // FAB
+    public static final long FAB_ANIM_DURATION = 100;
+
     // Perfil de usuario
     public static final String KEY_USER_PROFILE = "userProfile";
 
@@ -26,7 +29,6 @@ public final class Constants {
 
     // Logros
     public static final String KEY_ACHIEVEMENTS = "achievement_";
-
 
     // Configuración
     public static final String KEY_NOTIFICATIONS_ENABLED = "notificationsEnabled";
@@ -70,8 +72,9 @@ public final class Constants {
     public static final String ANSWER_ID_SAVE_SPECIFIC = "save-specific";
 
 
-    // Formato de moneda
-    public static final String CURRENCY_FORMAT = "€%.2f";
+    // Formato de
+    public static final String CURRENCY_FORMAT = "%.2f";
+    //public static final String CURRENCY_FORMAT = "%.2f€";
 
     // Factor de división para ahorro mensual
     public static final int MONTHLY_DIVISION_FACTOR = 6;

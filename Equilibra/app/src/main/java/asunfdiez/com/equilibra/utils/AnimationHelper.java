@@ -5,18 +5,19 @@ import android.animation.AnimatorListenerAdapter;
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
+import android.app.Activity;
 import android.os.Handler;
 import android.os.Looper;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.AccelerateDecelerateInterpolator;
-import android.view.animation.DecelerateInterpolator;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.view.animation.DecelerateInterpolator;
 import android.view.animation.TranslateAnimation;
-import android.app.Activity;
+import android.widget.ProgressBar;
+
 import asunfdiez.com.equilibra.R;
-import asunfdiez.com.equilibra.utils.Constants;
 
 
 /**
@@ -519,5 +520,72 @@ public class AnimationHelper {
         shake.setRepeatMode(Animation.REVERSE);
         view.startAnimation(shake);
     }
+
+
+    public static void animateCardsEntrance( View[] cards) {
+
+        for (int i = 0; i < cards.length; i++) {
+            final View card = cards[i];
+            final int delay = i * 100;
+
+            card.setAlpha(0f);
+            card.setTranslationY(20f);
+
+            card.animate()
+                    .alpha(1f)
+                    .translationY(0f)
+                    .setDuration(300)
+                    .setStartDelay(delay)
+                    .setInterpolator(new DecelerateInterpolator())
+                    .start();
+        }
+    }
+
+    public static void animateProgressBar(int weekProgress, int weekGoal, ProgressBar progressBar) {
+        float progressPercentage = ((float) weekProgress / weekGoal);
+
+        ViewGroup.LayoutParams params = progressBar.getLayoutParams();
+        final int targetWidth = (int) (progressBar.getParent() instanceof View
+                ? ((View) progressBar.getParent()).getWidth() * progressPercentage
+                : 0);
+
+        progressBar.post(new Runnable() {
+            @Override
+            public void run() {
+                ValueAnimator animator = ValueAnimator.ofInt(0, targetWidth);
+                animator.setDuration(1000);
+                animator.setStartDelay(300);
+                animator.setInterpolator(new AccelerateDecelerateInterpolator());
+                animator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+                    @Override
+                    public void onAnimationUpdate(ValueAnimator animation) {
+                        ViewGroup.LayoutParams params = progressBar.getLayoutParams();
+                        params.width = (int) animation.getAnimatedValue();
+                        progressBar.setLayoutParams(params);
+                    }
+                });
+                animator.start();
+            }
+        });
+    }
+
+    public static void animateFABPress(View fab) {
+        fab.animate()
+                .scaleX(0.9f)
+                .scaleY(0.9f)
+                .setDuration(100)
+                .withEndAction(new Runnable() {
+                    @Override
+                    public void run() {
+                        fab.animate()
+                                .scaleX(1f)
+                                .scaleY(1f)
+                                .setDuration(100)
+                                .start();
+                    }
+                })
+                .start();
+    }
+
 
 }

@@ -9,6 +9,7 @@ public class UserProfile {
     private String passwordHash;
 
     private EmotionalState emotionalState;
+    private String mainConcernId;
     private String mainConcern;
     private String timeAvailable;
     private String savingGoal;
@@ -24,6 +25,11 @@ public class UserProfile {
     private int financialKnowledge;
     private int budgetExperience;
     private int savingsHabit;
+
+    private String currentView = "beginner"; // beginner, intermediate, advanced
+    private int dayCount = 1;
+    private int weekProgress = 0;
+    private int weekGoal = 5;
 
     public UserProfile() {
         this.id = -1;
@@ -85,6 +91,14 @@ public class UserProfile {
 
     public void setMainConcern(String a_mainConcern) {
         mainConcern = a_mainConcern;
+    }
+
+    public String getMainConcernId() {
+        return mainConcernId;
+    }
+
+    public void setMainConcernId(String mainConcernId) {
+        this.mainConcernId = mainConcernId;
     }
 
     public String getTimeAvailable() {
@@ -177,5 +191,37 @@ public class UserProfile {
 
     public void setSavingsHabit(int a_savingsHabit) {
         savingsHabit = a_savingsHabit;
+    }
+
+    public String getCurrentView() {
+        return currentView;
+    }
+
+    public void setCurrentView(String currentView) {
+        this.currentView = currentView;
+    }
+
+    public int getDayCount() {
+        return dayCount;
+    }
+
+    public void setDayCount(int dayCount) {
+        this.dayCount = dayCount;
+    }
+
+    public int getWeekProgress() {
+        return weekProgress;
+    }
+
+    public void setWeekProgress(int weekProgress) {
+        this.weekProgress = weekProgress;
+    }
+
+    public int getWeekGoal() {
+        return weekGoal;
+    }
+
+    public void setWeekGoal(int weekGoal) {
+        this.weekGoal = weekGoal;
     }
 }
