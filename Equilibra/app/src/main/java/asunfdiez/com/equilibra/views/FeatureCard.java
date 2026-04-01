@@ -1,33 +1,37 @@
 package asunfdiez.com.equilibra.views;
 
 import android.content.Context;
+import android.content.res.ColorStateList;
 import android.content.res.TypedArray;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
+import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.view.View;
-import androidx.core.widget.ImageViewCompat;
-import android.content.res.ColorStateList;
+
 import androidx.cardview.widget.CardView;
+import androidx.core.widget.ImageViewCompat;
+
 import asunfdiez.com.equilibra.R;
+import asunfdiez.com.equilibra.databinding.ItemFeatureCardBinding;
 
 public class FeatureCard extends CardView {
 
+    private ItemFeatureCardBinding binding;
     public FeatureCard(Context context, AttributeSet attrs) {
         super(context, attrs);
         init(context, attrs);
     }
 
     private void init(Context context, AttributeSet attrs) {
-        LayoutInflater.from(context).inflate(R.layout.item_feature_card, this, true);
+        binding = ItemFeatureCardBinding.inflate(LayoutInflater.from(context), this, true);
 
-        TextView titleView = findViewById(R.id.cardTitle);
-        TextView descView = findViewById(R.id.cardDescription);
-        ImageView iconView = findViewById(R.id.cardIcon);
-        View iconCircleView = findViewById(R.id.cardIconCircle);
-        TextView arrowView = findViewById(R.id.cardArrow);
-        ImageView rightIconView = findViewById(R.id.cardRightIcon);
+        TextView titleView = binding.cardTitle;
+        TextView descView = binding.cardDescription;
+        ImageView iconView = binding.cardIcon;
+        View iconCircleView = binding.cardIconCircle;
+        TextView arrowView = binding.cardArrow;
+        ImageView rightIconView = binding.cardRightIcon;
 
         if (attrs != null) {
             TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.FeatureCard);

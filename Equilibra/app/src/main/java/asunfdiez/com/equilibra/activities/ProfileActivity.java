@@ -2,7 +2,6 @@ package asunfdiez.com.equilibra.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,6 +22,8 @@ import java.util.Locale;
 
 import asunfdiez.com.equilibra.R;
 import asunfdiez.com.equilibra.controllers.UserController;
+import asunfdiez.com.equilibra.databinding.ActivityProfileBinding;
+import asunfdiez.com.equilibra.databinding.ViewSelectorPopupBinding;
 import asunfdiez.com.equilibra.models.UserProfile;
 import asunfdiez.com.equilibra.utils.AnimationHelper;
 import asunfdiez.com.equilibra.utils.Constants;
@@ -62,13 +63,16 @@ public class ProfileActivity extends AppCompatActivity {
     // Popup
     private PopupWindow viewSelectorPopup;
 
+    private ActivityProfileBinding binding;
+
 
     private boolean isEditMode = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_profile);
+        binding = ActivityProfileBinding.inflate(getLayoutInflater());
+        setContentView(binding.getRoot());
 
         initializeComponents();
         setupToolbar();
@@ -86,23 +90,23 @@ public class ProfileActivity extends AppCompatActivity {
         userController = new UserController(this);
         preferencesManager =  SharedPrefsManager.getInstance(this);
 
-        toolbar = findViewById(R.id.toolbarProfile);
-        layoutProfile = findViewById(R.id.layoutProfile);
-        ivProfileImage = findViewById(R.id.ivProfileImage);
-        tvProfileName = findViewById(R.id.tvProfileName);
-        tvProfileEmail = findViewById(R.id.tvProfileEmail);
-        etName = findViewById(R.id.etName);
-        etEmail = findViewById(R.id.etEmail);
-        etPhone = findViewById(R.id.etPhone);
-        etMonthlyIncome = findViewById(R.id.etMonthlyIncome);
-        btnSaveProfile = findViewById(R.id.btnSaveProfile);
-        btnChangePassword = findViewById(R.id.btnChangePassword);
-        btnDeleteAccount = findViewById(R.id.btnDeleteAccount);
-        btnEditProfile = findViewById(R.id.btnEditProfile);
+        toolbar = binding.toolbarProfile;
+        layoutProfile = binding.layoutProfile;
+        ivProfileImage = binding.ivProfileImage;
+        tvProfileName = binding.tvProfileName;
+        tvProfileEmail = binding.tvProfileEmail;
+        etName = binding.etName;
+        etEmail = binding.etEmail;
+        etPhone = binding.etPhone;
+        etMonthlyIncome = binding.etMonthlyIncome;
+        btnSaveProfile = binding.btnSaveProfile;
+        btnChangePassword = binding.btnChangePassword;
+        btnDeleteAccount = binding.btnDeleteAccount;
+        btnEditProfile = binding.btnEditProfile;
 
-        viewSelectorButton = findViewById(R.id.viewSelectorButton);
-        viewSelectorText = findViewById(R.id.viewSelectorText);
-        viewSelectorArrow = findViewById(R.id.viewSelectorArrow);
+        viewSelectorButton = binding.viewSelectorButton;
+        viewSelectorText = binding.viewSelectorText;
+        viewSelectorArrow = binding.viewSelectorArrow;
 
 
     }
@@ -331,7 +335,9 @@ public class ProfileActivity extends AppCompatActivity {
      * Muestra el popup de selección de vista
      */
     private void showViewSelectorPopup() {
-        View popupView = LayoutInflater.from(this).inflate(R.layout.view_selector_popup, (ViewGroup) findViewById(android.R.id.content), false);
+        ViewSelectorPopupBinding selectorBinding = ViewSelectorPopupBinding.inflate(getLayoutInflater());
+
+        View popupView = selectorBinding.getRoot();
 
         viewSelectorPopup = new PopupWindow(
                 popupView,
@@ -340,15 +346,23 @@ public class ProfileActivity extends AppCompatActivity {
                 true
         );
 
-        TextView option1 = popupView.findViewById(R.id.viewOption1);
-        TextView option2 = popupView.findViewById(R.id.viewOption2);
-        TextView option3 = popupView.findViewById(R.id.viewOption3);
 
-        highlightSelectedView(option1, option2, option3);
+        highlightSelectedView(selectorBinding.viewOption1, selectorBinding.viewOption2, selectorBinding.viewOption3);
 
-        option1.setOnClickListener(v -> { changeView("beginner"); viewSelectorPopup.dismiss(); });
-        option2.setOnClickListener(v -> { changeView("intermediate"); viewSelectorPopup.dismiss(); });
-        option3.setOnClickListener(v -> { changeView("advanced"); viewSelectorPopup.dismiss(); });
+        selectorBinding.viewOption1.setOnClickListener(v -> {
+            changeView("beginner");
+            viewSelectorPopup.dismiss();
+        });
+
+        selectorBinding.viewOption2.setOnClickListener(v -> {
+            changeView("intermediate");
+            viewSelectorPopup.dismiss();
+        });
+
+        selectorBinding.viewOption3.setOnClickListener(v -> {
+            changeView("advanced");
+            viewSelectorPopup.dismiss();
+        });
 
         viewSelectorArrow.animate().rotation(180f).setDuration(200).start();
 

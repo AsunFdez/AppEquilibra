@@ -2,8 +2,10 @@ package asunfdiez.com.equilibra.utils;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-import asunfdiez.com.equilibra.models.UserProfile;
+
 import com.google.gson.Gson;
+
+import asunfdiez.com.equilibra.models.UserProfile;
 
 /**
  * Gestor centralizado de SharedPreferences
@@ -73,6 +75,7 @@ public final class SharedPrefsManager {
      * Guarda el perfil del usuario
      */
     public void saveUserProfile(UserProfile profile) {
+        profile.setUpdatedAt(System.currentTimeMillis());
         String json = gson.toJson(profile);
         sharedPreferences.edit().putString(Constants.KEY_USER_PROFILE, json).apply();
         System.out.println("Perfil de usuario guardado: " + json);

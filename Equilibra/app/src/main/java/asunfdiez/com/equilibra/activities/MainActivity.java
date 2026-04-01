@@ -13,8 +13,14 @@ import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
 import androidx.core.widget.NestedScrollView;
+import androidx.databinding.DataBindingUtil;
+import androidx.databinding.ViewDataBinding;
 
 import asunfdiez.com.equilibra.R;
+import asunfdiez.com.equilibra.databinding.ActivityAdvancedUserBinding;
+import asunfdiez.com.equilibra.databinding.ActivityIntermediateUserBinding;
+import asunfdiez.com.equilibra.databinding.ActivityMainBinding;
+import asunfdiez.com.equilibra.databinding.ProgressCardBinding;
 import asunfdiez.com.equilibra.models.UserProfile;
 import asunfdiez.com.equilibra.utils.AnimationHelper;
 import asunfdiez.com.equilibra.utils.Constants;
@@ -24,11 +30,6 @@ public class MainActivity extends AppCompatActivity {
 
     private SharedPrefsManager preferencesManager;
     UserProfile user;
-
-    // Header
-    private TextView userNameText;
-    private TextView dayCountText;
-    private TextView progressText;
     private ProgressBar progressBar;
 
     // Bottom Navigation
@@ -49,21 +50,21 @@ public class MainActivity extends AppCompatActivity {
     private TextView navSettingsText;
 
     // Beginner Cards
-    private CardView progressCard;
-    private CardView tipCard;
-    private CardView quickActionCard;
-    private CardView nextGoalCard;
+    private ProgressCardBinding progressCard;
 
     // Common Cards
     private CardView viewAllExpensesCard;
 
     // UserProfile Data
-    private int weekProgress = 4;
+    private int weekProgress = 0;
     private int weekGoal = 5;
     private String currentView = "beginner"; // beginner, intermediate, advanced
 
     // Handler
     private final Handler handler = new Handler();
+    // dataBinding
+    private ViewDataBinding binding;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -75,25 +76,32 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void loadCurrentView() {
-        switch (currentView) {
-            case "intermediate":
-                setContentView(R.layout.activity_intermediate_user);
-                initIntermediateViews();
-                setIntermediateListeners();
-                break;
-            case "advanced":
-                setContentView(R.layout.activity_advanced_user);
-                initAdvancedViews();
-                setAdvancedListeners();
-                break;
-            case "beginner":
-            default:
-                setContentView(R.layout.activity_main);
-                initBeginnerViews();
-                setBeginnerListeners();
-                animateBeginnerCards();
-                break;
+        // Determinamos qué layout inflar
+        int layoutId = switch (currentView) {
+            case "intermediate" -> R.layout.activity_intermediate_user;
+            case "advanced" -> R.layout.activity_advanced_user;
+            default -> R.layout.activity_main;
+        };
+
+        // DataBindingUtil para inflar y establecer el contenido
+        binding = DataBindingUtil.setContentView(this, layoutId);
+        binding.setVariable(asunfdiez.com.equilibra.BR.user, user);
+        binding.executePendingBindings();
+
+        // Vincular vistas y listeners según el tipo de Binding
+        if (binding instanceof ActivityMainBinding b) {
+            initBeginnerViews(b);
+            setBeginnerListeners(b);
+            animateBeginnerCards(b);
+        } else if (binding instanceof ActivityIntermediateUserBinding b) {
+            initIntermediateViews(b);
+            setIntermediateListeners(b);
+        } else if (binding instanceof ActivityAdvancedUserBinding b) {
+            initAdvancedViews(b);
+            setAdvancedListeners(b);
         }
+
+        // Vincular vistas y listeners comunes
         initCommonViews();
         setupCommonListeners();
     }
@@ -103,60 +111,44 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void initCommonViews() {
-        // Header
-        userNameText = findViewById(R.id.userNameText);
-        dayCountText = findViewById(R.id.dayCountText);
-
+        View root = binding.getRoot();
 
         // Content Cards
-        viewAllExpensesCard = findViewById(R.id.viewAllExpensesCard);
+        viewAllExpensesCard = root.findViewById(R.id.viewAllExpensesCard);
 
         // Bottom Navigation
-        navHome = findViewById(R.id.navHome);
-        navAnalysis = findViewById(R.id.navAnalysis);
-        navAchievements = findViewById(R.id.navAchievements);
-        navSettings = findViewById(R.id.navSettings);
-        fabAddExpense = findViewById(R.id.fabAddExpense);
+        navHome = root.findViewById(R.id.navHome);
+        navAnalysis = root.findViewById(R.id.navAnalysis);
+        navAchievements = root.findViewById(R.id.navAchievements);
+        navSettings = root.findViewById(R.id.navSettings);
+        fabAddExpense = root.findViewById(R.id.fabAddExpense);
 
-        navHomeIcon = findViewById(R.id.navHomeIcon);
-        navAnalysisIcon = findViewById(R.id.navAnalysisIcon);
-        navAchievementsIcon = findViewById(R.id.navAchievementsIcon);
-        navSettingsIcon = findViewById(R.id.navSettingsIcon);
+        navHomeIcon = root.findViewById(R.id.navHomeIcon);
+        navAnalysisIcon = root.findViewById(R.id.navAnalysisIcon);
+        navAchievementsIcon = root.findViewById(R.id.navAchievementsIcon);
+        navSettingsIcon = root.findViewById(R.id.navSettingsIcon);
 
-        navHomeText = findViewById(R.id.navHomeText);
-        navAnalysisText = findViewById(R.id.navAnalysisText);
-        navAchievementsText = findViewById(R.id.navAchievementsText);
-        navSettingsText = findViewById(R.id.navSettingsText);
+        navHomeText = root.findViewById(R.id.navHomeText);
+        navAnalysisText = root.findViewById(R.id.navAnalysisText);
+        navAchievementsText = root.findViewById(R.id.navAchievementsText);
+        navSettingsText = root.findViewById(R.id.navSettingsText);
         updateBottomNavigation("home");
 
-        // Set user data
-        userNameText.setText(getString(R.string.hello_user, user.getName()));
-        dayCountText.setText(getString(R.string.day_count, user.getDayCount()));
-
-
     }
 
-    private void initBeginnerViews() {
+    private void initBeginnerViews(ActivityMainBinding b) {
         // Progress Card
-        progressCard = findViewById(R.id.progressCard);
-        progressText = findViewById(R.id.progressText);
-        progressBar = findViewById(R.id.weeklyProgressBar);
-
-        progressText.setText(getString(R.string.week_progress, user.getWeekProgress(), user.getWeekGoal()));
-
-
-        // Content Cards
-        tipCard = findViewById(R.id.tipCard);
-        quickActionCard = findViewById(R.id.quickActionCard);
-        nextGoalCard = findViewById(R.id.nextGoalCard);
-        viewAllExpensesCard = findViewById(R.id.viewAllExpensesCard);
+        progressCard = b.progressCard;
+        progressBar = b.progressCard.weeklyProgressBar;
+        b.progressCard.progressTitle.setText(getString(R.string.weekly_progress_title));
+        b.progressCard.progressText.setText(getString(R.string.week_progress, user.getWeekProgress(), user.getWeekGoal()));
     }
 
-    private void initIntermediateViews() {
+    private void initIntermediateViews(ActivityIntermediateUserBinding b) {
 
     }
 
-    private void initAdvancedViews() {
+    private void initAdvancedViews(ActivityAdvancedUserBinding b) {
 
     }
 
@@ -166,6 +158,10 @@ public class MainActivity extends AppCompatActivity {
         weekProgress = user.getWeekProgress();
         weekGoal = user.getWeekGoal();
         currentView = user.getCurrentView();
+        // calcular días transcurridos
+        int days = (int) ((System.currentTimeMillis() - user.getCreatedAt()) / (1000 * 60 * 60 * 24)) + 1;
+        user.setDayCount(days);
+        preferencesManager.saveUserProfile(user);
     }
 
     private void setupCommonListeners() {
@@ -211,27 +207,29 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    private void setBeginnerListeners() {
+    private void setBeginnerListeners(ActivityMainBinding b) {
         // Quick Action
-        findViewById(R.id.quickActionButton).setOnClickListener(v -> {
+        b.quickActionCard.quickActionButton.setOnClickListener(v -> {
             navigateTo(AddExpenseActivity.class);
         });
 
     }
-    private void setIntermediateListeners() {
-
+    private void setIntermediateListeners(ActivityIntermediateUserBinding b) {
+        // TODO
     }
-    private void setAdvancedListeners() {
-
+    private void setAdvancedListeners(ActivityAdvancedUserBinding b) {
+        // TODO
     }
 
-    private void animateBeginnerCards() {
+    private void animateBeginnerCards(ActivityMainBinding b) {
         // Animate cards
-        View[] cards = {progressCard, tipCard, quickActionCard, nextGoalCard, viewAllExpensesCard};
+        View[] cards = {b.progressCard.getRoot(), b.tipCard, b.quickActionCard.getRoot(), b.nextGoalCard, b.viewAllExpensesCard};
         AnimationHelper.animateCardsEntrance(cards);
 
         // Animate progress bar
-        AnimationHelper.animateProgressBar(weekProgress, weekGoal, progressBar);
+        if (progressBar != null) {
+            AnimationHelper.animateProgressBar(weekProgress, weekGoal, progressBar);
+        }
     }
 
     private void resetNavItem(ImageView icon, TextView text) {
@@ -296,9 +294,8 @@ public class MainActivity extends AppCompatActivity {
 
     // Crea este método para actualizar textos sin resetear el layout
     private void updateUI() {
-        if (userNameText != null) userNameText.setText(getString(R.string.hello_user, user.getName()));
-        if (dayCountText != null) dayCountText.setText(getString(R.string.day_count, user.getDayCount()));
-        // Actualiza aquí cualquier otro texto que pueda haber cambiado en ProfileActivity
+        binding.setVariable(asunfdiez.com.equilibra.BR.user, user);
+        binding.executePendingBindings();
     }
 
 

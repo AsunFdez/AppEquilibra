@@ -52,7 +52,7 @@ Notas y recomendaciones
 -----------------------
 - Mantener `OnboardingActivity` enfocada en UI y navegación; mover toda lógica de negocio a `controllers` o `utils`.
 - Mantener strings en `res/values/strings.xml` (localización y evitar hardcode).
-- Usar `OnboardingController` para todas las operaciones de persistencia y evitar lógica de SharedPreferences en activities.
+- Usar `UserController` para todas las operaciones de persistencia y evitar lógica de SharedPreferences en activities.
 - Reutilizar `AnimationHelper` desde otras activities si se comparte comportamiento de animación.
 - Agregar tests unitarios para `InputValidator` y `OnboardingController.convertToJson/convertFromJson`.
  - Agregar tests unitarios para `InputValidator` y `OnboardingController.convertToJson/convertFromJson`.

@@ -4,302 +4,308 @@
     Permite visualizar y editar información del usuario
 
 -->
-<androidx.coordinatorlayout.widget.CoordinatorLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@color/background_primary">
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <com.google.android.material.appbar.AppBarLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@color/equilibra_primary"
-        app:elevation="4dp">
+    <data>
 
-        <androidx.appcompat.widget.Toolbar
-            android:id="@+id/toolbarProfile"
-            android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize"
-            android:background="@color/equilibra_primary"
-            app:titleTextColor="@android:color/white"
-            app:navigationIcon="@drawable/ic_arrow_back" />
+    </data>
 
-    </com.google.android.material.appbar.AppBarLayout>
-
-    <androidx.core.widget.NestedScrollView
-
+    <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior"
-        android:fillViewport="true">
+        android:background="@color/background_primary">
 
-        <LinearLayout
+        <com.google.android.material.appbar.AppBarLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:background="@color/equilibra_primary"
+            app:elevation="4dp">
 
-            <!-- Header con imagen de perfil -->
-            <RelativeLayout
+            <androidx.appcompat.widget.Toolbar
+                android:id="@+id/toolbarProfile"
                 android:layout_width="match_parent"
-                android:layout_height="200dp"
-                android:background="@drawable/bg_gradient_primary">
+                android:layout_height="?attr/actionBarSize"
+                android:background="@color/equilibra_primary"
+                app:titleTextColor="@android:color/white"
+                app:navigationIcon="@drawable/ic_arrow_back" />
 
-                <ImageView
-                    android:id="@+id/ivProfileImage"
-                    android:layout_width="120dp"
-                    android:layout_height="120dp"
-                    android:layout_centerInParent="true"
-                    android:src="@drawable/ic_person_circle"
-                    android:background="@drawable/circle_background_white"
-                    android:padding="4dp"
-                    android:elevation="4dp"
-                    android:clickable="true"
-                    android:focusable="true" />
+        </com.google.android.material.appbar.AppBarLayout>
 
-                <ImageView
-                    android:layout_width="32dp"
-                    android:layout_height="32dp"
-                    android:layout_alignEnd="@id/ivProfileImage"
-                    android:layout_alignBottom="@id/ivProfileImage"
-                    android:src="@drawable/ic_camera"
-                    android:background="@drawable/circle_background_accent"
-                    android:padding="6dp"
-                    android:elevation="6dp"
-                    app:tint="@android:color/white" />
+        <androidx.core.widget.NestedScrollView
 
-            </RelativeLayout>
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior"
+            android:fillViewport="true">
 
-            <!-- Información del perfil -->
             <LinearLayout
-                android:id="@+id/layoutProfile"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:padding="16dp">
+                android:orientation="vertical">
 
-                <TextView
-                    android:id="@+id/tvProfileName"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/userText"
-                    android:textSize="24sp"
-                    android:textColor="@color/text_primary"
-                    android:layout_gravity="center_horizontal"
-                    android:layout_marginBottom="4dp" />
+                <!-- Header con imagen de perfil -->
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="200dp"
+                    android:background="@drawable/bg_gradient_primary">
 
-                <!-- Contenedor para Email e Icono de Edición -->
-                <LinearLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:layout_gravity="center_horizontal"
-                    android:gravity="center_vertical"
-                    android:layout_marginBottom="24dp">
+                    <ImageView
+                        android:id="@+id/ivProfileImage"
+                        android:layout_width="120dp"
+                        android:layout_height="120dp"
+                        android:layout_centerInParent="true"
+                        android:src="@drawable/ic_person_circle"
+                        android:background="@drawable/circle_background_white"
+                        android:padding="4dp"
+                        android:elevation="4dp"
+                        android:clickable="true"
+                        android:focusable="true" />
 
-                    <TextView
-                        android:id="@+id/tvProfileEmail"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@string/userEmailText"
-                        android:textSize="14sp"
-                        android:textColor="@color/text_secondary"
-                        android:layout_marginEnd="8dp" />
-
-                    <ImageButton
-                        android:id="@+id/btnEditProfile"
+                    <ImageView
                         android:layout_width="32dp"
                         android:layout_height="32dp"
-                        android:background="?attr/selectableItemBackgroundBorderless"
-                        android:src="@drawable/ic_edit"
-                        app:tint="@color/equilibra_primary"
-                        android:contentDescription="@string/profile_edition" />
+                        android:layout_alignEnd="@id/ivProfileImage"
+                        android:layout_alignBottom="@id/ivProfileImage"
+                        android:src="@drawable/ic_camera"
+                        android:background="@drawable/circle_background_accent"
+                        android:padding="6dp"
+                        android:elevation="6dp"
+                        app:tint="@android:color/white" />
+
+                </RelativeLayout>
+
+                <!-- Información del perfil -->
+                <LinearLayout
+                    android:id="@+id/layoutProfile"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="16dp">
+
+                    <TextView
+                        android:id="@+id/tvProfileName"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/userText"
+                        android:textSize="24sp"
+                        android:textColor="@color/text_primary"
+                        android:layout_gravity="center_horizontal"
+                        android:layout_marginBottom="4dp" />
+
+                    <!-- Contenedor para Email e Icono de Edición -->
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:layout_gravity="center_horizontal"
+                        android:gravity="center_vertical"
+                        android:layout_marginBottom="24dp">
+
+                        <TextView
+                            android:id="@+id/tvProfileEmail"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/userEmailText"
+                            android:textSize="14sp"
+                            android:textColor="@color/text_secondary"
+                            android:layout_marginEnd="8dp" />
+
+                        <ImageButton
+                            android:id="@+id/btnEditProfile"
+                            android:layout_width="32dp"
+                            android:layout_height="32dp"
+                            android:background="?attr/selectableItemBackgroundBorderless"
+                            android:src="@drawable/ic_edit"
+                            app:tint="@color/equilibra_primary"
+                            android:contentDescription="@string/profile_edition" />
+
+                    </LinearLayout>
+
+                    <!-- Formulario de edición -->
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/profile_personal_info"
+                        android:textSize="14sp"
+                        android:textColor="@color/text_secondary"
+                        android:layout_marginBottom="12dp"
+                        android:paddingStart="4dp" />
+
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="12dp"
+                        app:boxBackgroundColor="@android:color/white"
+                        app:boxStrokeColor="@color/equilibra_primary"
+                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/etName"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:hint="@string/profile_name"
+                            android:inputType="textPersonName"
+                            android:enabled="false" />
+
+                    </com.google.android.material.textfield.TextInputLayout>
+
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="12dp"
+                        app:boxBackgroundColor="@android:color/white"
+                        app:boxStrokeColor="@color/equilibra_primary"
+                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/etEmail"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:hint="@string/profile_email"
+                            android:inputType="textEmailAddress"
+                            android:enabled="false" />
+
+                    </com.google.android.material.textfield.TextInputLayout>
+
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="12dp"
+                        app:boxBackgroundColor="@android:color/white"
+                        app:boxStrokeColor="@color/equilibra_primary"
+                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/etPhone"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:hint="@string/profile_phone"
+                            android:inputType="phone"
+                            android:enabled="false" />
+
+                    </com.google.android.material.textfield.TextInputLayout>
+
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="16dp"
+                        app:boxBackgroundColor="@android:color/white"
+                        app:boxStrokeColor="@color/equilibra_primary"
+                        app:suffixText="€"
+                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/etMonthlyIncome"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:hint="@string/profile_monthly_income"
+                            android:inputType="numberDecimal"
+                            android:enabled="false" />
+
+                    </com.google.android.material.textfield.TextInputLayout>
+
+                    <!-- View Selector -->
+                    <FrameLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="end">
+
+                        <LinearLayout
+                            android:id="@+id/viewSelectorButton"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="end"
+                            android:background="@drawable/selector_background"
+                            android:clickable="true"
+                            android:focusable="true"
+                            android:gravity="center_vertical"
+                            android:orientation="horizontal"
+                            android:paddingStart="16dp"
+                            android:paddingTop="8dp"
+                            android:paddingEnd="16dp"
+                            android:paddingBottom="8dp">
+
+                            <TextView
+                                android:id="@+id/changeViewText"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="@string/view_selector_text"
+                                android:textColor="@color/gray_700"
+                                android:textSize="14sp"
+                                android:textStyle="bold" />
+
+                            <TextView
+                                android:id="@+id/viewSelectorText"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginStart="8dp"
+                                android:text="@string/view_selector_text_beginner"
+                                android:textColor="@color/gray_700"
+                                android:textSize="14sp"
+                                android:textStyle="bold" />
+
+                            <ImageView
+                                android:id="@+id/viewSelectorArrow"
+                                android:layout_width="16dp"
+                                android:layout_height="16dp"
+                                android:layout_marginStart="8dp"
+                                android:src="@drawable/ic_nav_chevron_down"
+                                app:tint="@color/gray_700" />
+                        </LinearLayout>
+                    </FrameLayout>
+
+
+                    <!-- Botón guardar (oculto por defecto) -->
+                    <com.google.android.material.button.MaterialButton
+                        style="@style/Equilibra.Button.Primary"
+                        android:id="@+id/btnSaveProfile"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/save_changes" />
+
+                    <!-- Sección de seguridad -->
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/profile_security"
+                        android:textSize="14sp"
+                        android:textColor="@color/text_secondary"
+                        android:layout_marginTop="8dp"
+                        android:layout_marginBottom="12dp"
+                        android:paddingStart="4dp" />
+
+
+                    <com.google.android.material.button.MaterialButton
+                        style="@style/Equilibra.Button.Secondary"
+                        android:id="@+id/btnChangePassword"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/change_password" />
+
+                    <!-- Zona de peligro -->
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/profile_danger_zone"
+                        android:textSize="14sp"
+                        android:textColor="@color/equilibra_accent"
+                        android:layout_marginBottom="12dp"
+                        android:paddingStart="4dp" />
+
+                    <com.google.android.material.button.MaterialButton
+                        style="@style/Equilibra.Button.Accent"
+                        android:id="@+id/btnDeleteAccount"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/delete_account" />
+
 
                 </LinearLayout>
 
-                <!-- Formulario de edición -->
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/profile_personal_info"
-                    android:textSize="14sp"
-                    android:textColor="@color/text_secondary"
-                    android:layout_marginBottom="12dp"
-                    android:paddingStart="4dp" />
-
-                <com.google.android.material.textfield.TextInputLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="12dp"
-                    app:boxBackgroundColor="@android:color/white"
-                    app:boxStrokeColor="@color/equilibra_primary"
-                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
-
-                    <com.google.android.material.textfield.TextInputEditText
-                        android:id="@+id/etName"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:hint="@string/profile_name"
-                        android:inputType="textPersonName"
-                        android:enabled="false" />
-
-                </com.google.android.material.textfield.TextInputLayout>
-
-                <com.google.android.material.textfield.TextInputLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="12dp"
-                    app:boxBackgroundColor="@android:color/white"
-                    app:boxStrokeColor="@color/equilibra_primary"
-                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
-
-                    <com.google.android.material.textfield.TextInputEditText
-                        android:id="@+id/etEmail"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:hint="@string/profile_email"
-                        android:inputType="textEmailAddress"
-                        android:enabled="false" />
-
-                </com.google.android.material.textfield.TextInputLayout>
-
-                <com.google.android.material.textfield.TextInputLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="12dp"
-                    app:boxBackgroundColor="@android:color/white"
-                    app:boxStrokeColor="@color/equilibra_primary"
-                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
-
-                    <com.google.android.material.textfield.TextInputEditText
-                        android:id="@+id/etPhone"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:hint="@string/profile_phone"
-                        android:inputType="phone"
-                        android:enabled="false" />
-
-                </com.google.android.material.textfield.TextInputLayout>
-
-                <com.google.android.material.textfield.TextInputLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="16dp"
-                    app:boxBackgroundColor="@android:color/white"
-                    app:boxStrokeColor="@color/equilibra_primary"
-                    app:suffixText="€"
-                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
-
-                    <com.google.android.material.textfield.TextInputEditText
-                        android:id="@+id/etMonthlyIncome"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:hint="@string/profile_monthly_income"
-                        android:inputType="numberDecimal"
-                        android:enabled="false" />
-
-                </com.google.android.material.textfield.TextInputLayout>
-
-                <!-- View Selector -->
-                <FrameLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="end">
-
-                    <LinearLayout
-                        android:id="@+id/viewSelectorButton"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="end"
-                        android:background="@drawable/selector_background"
-                        android:clickable="true"
-                        android:focusable="true"
-                        android:gravity="center_vertical"
-                        android:orientation="horizontal"
-                        android:paddingStart="16dp"
-                        android:paddingTop="8dp"
-                        android:paddingEnd="16dp"
-                        android:paddingBottom="8dp">
-
-                        <TextView
-                            android:id="@+id/changeViewText"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="@string/view_selector_text"
-                            android:textColor="@color/gray_700"
-                            android:textSize="14sp"
-                            android:textStyle="bold" />
-
-                        <TextView
-                            android:id="@+id/viewSelectorText"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginStart="8dp"
-                            android:text="@string/view_selector_text_beginner"
-                            android:textColor="@color/gray_700"
-                            android:textSize="14sp"
-                            android:textStyle="bold" />
-
-                        <ImageView
-                            android:id="@+id/viewSelectorArrow"
-                            android:layout_width="16dp"
-                            android:layout_height="16dp"
-                            android:layout_marginStart="8dp"
-                            android:src="@drawable/ic_nav_chevron_down"
-                            app:tint="@color/gray_700" />
-                    </LinearLayout>
-                </FrameLayout>
-
-
-                <!-- Botón guardar (oculto por defecto) -->
-                <com.google.android.material.button.MaterialButton
-                    style="@style/Equilibra.Button.Primary"
-                    android:id="@+id/btnSaveProfile"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="@string/save_changes" />
-
-                <!-- Sección de seguridad -->
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/profile_security"
-                    android:textSize="14sp"
-                    android:textColor="@color/text_secondary"
-                    android:layout_marginTop="8dp"
-                    android:layout_marginBottom="12dp"
-                    android:paddingStart="4dp" />
-
-
-                <com.google.android.material.button.MaterialButton
-                    style="@style/Equilibra.Button.Secondary"
-                    android:id="@+id/btnChangePassword"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="@string/change_password" />
-
-                <!-- Zona de peligro -->
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/profile_danger_zone"
-                    android:textSize="14sp"
-                    android:textColor="@color/equilibra_accent"
-                    android:layout_marginBottom="12dp"
-                    android:paddingStart="4dp" />
-
-                <com.google.android.material.button.MaterialButton
-                    style="@style/Equilibra.Button.Accent"
-                    android:id="@+id/btnDeleteAccount"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="@string/delete_account" />
-
-
             </LinearLayout>
 
-        </LinearLayout>
+        </androidx.core.widget.NestedScrollView>
 
-    </androidx.core.widget.NestedScrollView>
-
-</androidx.coordinatorlayout.widget.CoordinatorLayout>
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>
+</layout>

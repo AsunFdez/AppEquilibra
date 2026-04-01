@@ -1,88 +1,95 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:layout_marginBottom="16dp"
-    app:cardCornerRadius="16dp"
-    app:cardElevation="4dp"
-    app:cardBackgroundColor="@android:color/white">
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+    </data>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:gravity="center_vertical"
-        android:orientation="horizontal"
-        android:padding="16dp">
+        android:layout_marginBottom="16dp"
+        app:cardCornerRadius="16dp"
+        app:cardElevation="4dp"
+        app:cardBackgroundColor="@android:color/white">
 
-        <!-- Left Side -->
         <LinearLayout
-            android:layout_width="0dp"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
             android:gravity="center_vertical"
-            android:orientation="horizontal">
+            android:orientation="horizontal"
+            android:padding="16dp">
 
-            <!-- Icon -->
-            <FrameLayout
-                android:id="@+id/cardIconCircle"
-                android:layout_width="40dp"
-                android:layout_height="40dp"
-                android:layout_marginEnd="12dp"
-                android:background="@drawable/circle_accent">
-
-                <ImageView
-                    android:id="@+id/cardIcon"
-                    android:layout_width="20dp"
-                    android:layout_height="20dp"
-                    android:layout_gravity="center"
-                    android:src="@drawable/ic_fea_receipt_euro"
-                    android:tint="@android:color/white" />
-            </FrameLayout>
-
-            <!-- Text -->
+            <!-- Left Side -->
             <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <!-- Icon -->
+                <FrameLayout
+                    android:id="@+id/cardIconCircle"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:layout_marginEnd="12dp"
+                    android:background="@drawable/circle_accent">
+
+                    <ImageView
+                        android:id="@+id/cardIcon"
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:layout_gravity="center"
+                        android:src="@drawable/ic_fea_receipt_euro"
+                        android:tint="@android:color/white" />
+                </FrameLayout>
+
+                <!-- Text -->
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/cardTitle"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        tools:text="@string/my_expenses_tile"
+                        android:textColor="@color/gray_800"
+                        android:textSize="14sp"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:id="@+id/cardDescription"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        tools:text="@string/my_expenses_text"
+                        android:textColor="@color/gray_600"
+                        android:textSize="12sp" />
+                </LinearLayout>
+            </LinearLayout>
+
+            <!-- Arrow -->
+            <TextView
+                android:id="@+id/cardArrow"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:orientation="vertical">
+                android:text="→"
+                android:textColor="@color/equilibra_accent"
+                android:textSize="24sp"
+                android:visibility="gone" />
 
-                <TextView
-                    android:id="@+id/cardTitle"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/my_expenses_tile"
-                    android:textColor="@color/gray_800"
-                    android:textSize="14sp"
-                    android:textStyle="bold" />
+            <ImageView
+                android:id="@+id/cardRightIcon"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:src="@drawable/ic_nav_plus"
+                app:tint="@color/gray_400"
+                android:visibility="gone" />
 
-                <TextView
-                    android:id="@+id/cardDescription"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/my_expenses_text"
-                    android:textColor="@color/gray_600"
-                    android:textSize="12sp" />
-            </LinearLayout>
         </LinearLayout>
-
-        <!-- Arrow -->
-        <TextView
-            android:id="@+id/cardArrow"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="→"
-            android:textColor="@color/equilibra_accent"
-            android:textSize="24sp"
-            android:visibility="gone"/>
-
-        <ImageView
-            android:id="@+id/cardRightIcon"
-            android:layout_width="24dp"
-            android:layout_height="24dp"
-            android:src="@drawable/ic_nav_plus"
-            app:tint="@color/gray_400"
-            android:visibility="gone"/>
-
     </LinearLayout>
-</LinearLayout>
+</layout>
