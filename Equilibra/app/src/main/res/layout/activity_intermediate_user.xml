@@ -34,6 +34,27 @@
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
+            <!-- Resumen financiero principal -->
+            <include
+                layout="@layout/balance_card"
+                android:id="@+id/balanceCard" />
+
+            <!-- Gráfico de gastos -->
+            <include
+                layout="@layout/chart_card"
+                android:id="@+id/includeChartExpenses" />
+
+            <!-- Metas financieras -->
+            <include
+                layout="@layout/goal_card"
+                android:id="@+id/goalCard" />
+
+            <!-- Insight/Consejo -->
+            <include
+                layout="@layout/insight_card"
+                android:id="@+id/includeInsight" />
+
+
             <!-- Ver Todos los Gastos Card -->
             <asunfdiez.com.equilibra.views.FeatureCard
                 android:id="@+id/viewAllExpensesCard"

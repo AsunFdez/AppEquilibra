@@ -23,6 +23,7 @@ import asunfdiez.com.equilibra.utils.SharedPrefsManager;
 public class MainActivity extends AppCompatActivity {
 
     private SharedPrefsManager preferencesManager;
+    UserProfile user;
 
     // Header
     private TextView userNameText;
@@ -47,11 +48,13 @@ public class MainActivity extends AppCompatActivity {
     private TextView navAchievementsText;
     private TextView navSettingsText;
 
-    // Cards
+    // Beginner Cards
     private CardView progressCard;
     private CardView tipCard;
     private CardView quickActionCard;
     private CardView nextGoalCard;
+
+    // Common Cards
     private CardView viewAllExpensesCard;
 
     // UserProfile Data
@@ -65,45 +68,47 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
-
-        // initializeComponents
         initializeComponents();
-
-        // Load user data
         loadUserData();
+        loadCurrentView();
 
-        // Setup listeners
-        setupListeners();
+    }
 
-        // Animate cards
-        View[] cards = {progressCard, tipCard, quickActionCard, nextGoalCard, viewAllExpensesCard};
-        AnimationHelper.animateCardsEntrance(cards);
-
-        // Animate progress bar
-        AnimationHelper.animateProgressBar(weekProgress, weekGoal, progressBar);
+    private void loadCurrentView() {
+        switch (currentView) {
+            case "intermediate":
+                setContentView(R.layout.activity_intermediate_user);
+                initIntermediateViews();
+                setIntermediateListeners();
+                break;
+            case "advanced":
+                setContentView(R.layout.activity_advanced_user);
+                initAdvancedViews();
+                setAdvancedListeners();
+                break;
+            case "beginner":
+            default:
+                setContentView(R.layout.activity_main);
+                initBeginnerViews();
+                setBeginnerListeners();
+                animateBeginnerCards();
+                break;
+        }
+        initCommonViews();
+        setupCommonListeners();
     }
 
     private void initializeComponents() {
         preferencesManager =  SharedPrefsManager.getInstance(this);
-        // Initialize views
-        initViews();
     }
 
-    private void initViews() {
+    private void initCommonViews() {
         // Header
         userNameText = findViewById(R.id.userNameText);
         dayCountText = findViewById(R.id.dayCountText);
 
-        // Progress Card
-        progressCard = findViewById(R.id.progressCard);
-        progressText = findViewById(R.id.progressText);
-        progressBar = findViewById(R.id.weeklyProgressBar);
 
         // Content Cards
-        tipCard = findViewById(R.id.tipCard);
-        quickActionCard = findViewById(R.id.quickActionCard);
-        nextGoalCard = findViewById(R.id.nextGoalCard);
         viewAllExpensesCard = findViewById(R.id.viewAllExpensesCard);
 
         // Bottom Navigation
@@ -122,27 +127,48 @@ public class MainActivity extends AppCompatActivity {
         navAnalysisText = findViewById(R.id.navAnalysisText);
         navAchievementsText = findViewById(R.id.navAchievementsText);
         navSettingsText = findViewById(R.id.navSettingsText);
+        updateBottomNavigation("home");
+
+        // Set user data
+        userNameText.setText(getString(R.string.hello_user, user.getName()));
+        dayCountText.setText(getString(R.string.day_count, user.getDayCount()));
+
+
     }
 
+    private void initBeginnerViews() {
+        // Progress Card
+        progressCard = findViewById(R.id.progressCard);
+        progressText = findViewById(R.id.progressText);
+        progressBar = findViewById(R.id.weeklyProgressBar);
+
+        progressText.setText(getString(R.string.week_progress, user.getWeekProgress(), user.getWeekGoal()));
+
+
+        // Content Cards
+        tipCard = findViewById(R.id.tipCard);
+        quickActionCard = findViewById(R.id.quickActionCard);
+        nextGoalCard = findViewById(R.id.nextGoalCard);
+        viewAllExpensesCard = findViewById(R.id.viewAllExpensesCard);
+    }
+
+    private void initIntermediateViews() {
+
+    }
+
+    private void initAdvancedViews() {
+
+    }
+
+
     private void loadUserData() {
-        UserProfile user = preferencesManager.getUserProfile();
+        user = preferencesManager.getUserProfile();
         weekProgress = user.getWeekProgress();
         weekGoal = user.getWeekGoal();
         currentView = user.getCurrentView();
-        // Update UI
-        userNameText.setText(getString(R.string.hello_user, user.getName()));
-        dayCountText.setText(getString(R.string.day_count, user.getDayCount()));
-        progressText.setText(getString(R.string.week_progress, user.getWeekProgress(), user.getWeekGoal()));
-
-        updateBottomNavigation("home");
     }
 
-    private void setupListeners() {
-
-        // Quick Action
-        findViewById(R.id.quickActionButton).setOnClickListener(v -> {
-                navigateTo(AddExpenseActivity.class);
-        });
+    private void setupCommonListeners() {
 
         // View All Expenses
         viewAllExpensesCard.setOnClickListener(v -> {
@@ -185,18 +211,28 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
+    private void setBeginnerListeners() {
+        // Quick Action
+        findViewById(R.id.quickActionButton).setOnClickListener(v -> {
+            navigateTo(AddExpenseActivity.class);
+        });
 
-    private void changeView(String newView) {
-        if (currentView.equals(newView)) return;
+    }
+    private void setIntermediateListeners() {
 
-        currentView = newView;
-        // Save in User profile
-        UserProfile user = preferencesManager.getUserProfile();
-        user.setCurrentView(newView);
-        // TODO: Update content based on view level
+    }
+    private void setAdvancedListeners() {
 
     }
 
+    private void animateBeginnerCards() {
+        // Animate cards
+        View[] cards = {progressCard, tipCard, quickActionCard, nextGoalCard, viewAllExpensesCard};
+        AnimationHelper.animateCardsEntrance(cards);
+
+        // Animate progress bar
+        AnimationHelper.animateProgressBar(weekProgress, weekGoal, progressBar);
+    }
 
     private void resetNavItem(ImageView icon, TextView text) {
         int gray = getResources().getColor(R.color.gray_400);
@@ -234,18 +270,38 @@ public class MainActivity extends AppCompatActivity {
         overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
     }
 
+
     @Override
     protected void onResume() {
-        super.onResume();
-        // Reload data when returning to this activity
+        super.onResume();// Guardamos la vista antigua antes de cargar los nuevos datos
+        String previousView = currentView;
+
         loadUserData();
+
+        // Solo re-inflar si cambió su tipo de vista (beginner/int/adv)
+        if (!previousView.equals(currentView)) {
+            loadCurrentView();
+        } else {
+            // Si la vista es la misma, solo actualizamos los datos de los textos
+            // sin destruir los botones y listeners
+            updateUI();
+        }
+
         if (progressBar != null) {
             handler.postDelayed(() -> {
                 AnimationHelper.animateProgressBar(weekProgress, weekGoal, progressBar);
             }, 200);
         }
-
     }
+
+    // Crea este método para actualizar textos sin resetear el layout
+    private void updateUI() {
+        if (userNameText != null) userNameText.setText(getString(R.string.hello_user, user.getName()));
+        if (dayCountText != null) dayCountText.setText(getString(R.string.day_count, user.getDayCount()));
+        // Actualiza aquí cualquier otro texto que pueda haber cambiado en ProfileActivity
+    }
+
+
 
     @Override
     protected void onDestroy() {

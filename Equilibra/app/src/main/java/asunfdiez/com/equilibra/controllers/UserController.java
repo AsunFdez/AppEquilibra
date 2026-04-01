@@ -107,6 +107,14 @@ public class UserController {
         return userId;
     }
 
+    public void setCurrentView(String view) {
+        if (user == null) {
+            return;
+        }
+        user.setCurrentView(view);
+        preferencesManager.saveUserProfile(user);
+    }
+
     /**
      * Elimina el usuario actual
      *

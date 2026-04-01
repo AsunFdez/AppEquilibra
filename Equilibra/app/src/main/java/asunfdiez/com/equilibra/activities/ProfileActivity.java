@@ -2,13 +2,16 @@ package asunfdiez.com.equilibra.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.PopupWindow;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -53,6 +56,13 @@ public class ProfileActivity extends AppCompatActivity {
     private ImageButton btnEditProfile;
     private LinearLayout layoutProfile;
 
+    private LinearLayout viewSelectorButton;
+    private TextView viewSelectorText;
+    private ImageView viewSelectorArrow;
+    // Popup
+    private PopupWindow viewSelectorPopup;
+
+
     private boolean isEditMode = false;
 
     @Override
@@ -89,6 +99,12 @@ public class ProfileActivity extends AppCompatActivity {
         btnChangePassword = findViewById(R.id.btnChangePassword);
         btnDeleteAccount = findViewById(R.id.btnDeleteAccount);
         btnEditProfile = findViewById(R.id.btnEditProfile);
+
+        viewSelectorButton = findViewById(R.id.viewSelectorButton);
+        viewSelectorText = findViewById(R.id.viewSelectorText);
+        viewSelectorArrow = findViewById(R.id.viewSelectorArrow);
+
+
     }
 
     /**
@@ -149,6 +165,8 @@ public class ProfileActivity extends AppCompatActivity {
         String formatted = String.format(Locale.getDefault(), Constants.CURRENCY_FORMAT, income);
         etMonthlyIncome.setText(formatted);
 
+        updateViewSelectorText();
+
         // Deshabilitar edición por defecto
         setEditMode(false);
     }
@@ -184,6 +202,12 @@ public class ProfileActivity extends AppCompatActivity {
      * Configura los listeners de los componentes
      */
     private void setupListeners() {
+
+        // View Selector
+        viewSelectorButton.setOnClickListener(v -> {
+                showViewSelectorPopup();
+        });
+
         ivProfileImage.setOnClickListener(v -> {
             AnimationHelper.scaleUp(v);
             changeProfileImage();
@@ -302,6 +326,88 @@ public class ProfileActivity extends AppCompatActivity {
 
         return true;
     }
+
+    /**
+     * Muestra el popup de selección de vista
+     */
+    private void showViewSelectorPopup() {
+        View popupView = LayoutInflater.from(this).inflate(R.layout.view_selector_popup, (ViewGroup) findViewById(android.R.id.content), false);
+
+        viewSelectorPopup = new PopupWindow(
+                popupView,
+                ViewGroup.LayoutParams.WRAP_CONTENT,
+                ViewGroup.LayoutParams.WRAP_CONTENT,
+                true
+        );
+
+        TextView option1 = popupView.findViewById(R.id.viewOption1);
+        TextView option2 = popupView.findViewById(R.id.viewOption2);
+        TextView option3 = popupView.findViewById(R.id.viewOption3);
+
+        highlightSelectedView(option1, option2, option3);
+
+        option1.setOnClickListener(v -> { changeView("beginner"); viewSelectorPopup.dismiss(); });
+        option2.setOnClickListener(v -> { changeView("intermediate"); viewSelectorPopup.dismiss(); });
+        option3.setOnClickListener(v -> { changeView("advanced"); viewSelectorPopup.dismiss(); });
+
+        viewSelectorArrow.animate().rotation(180f).setDuration(200).start();
+
+        viewSelectorPopup.setOnDismissListener(() ->
+                viewSelectorArrow.animate().rotation(0f).setDuration(200).start()
+        );
+
+        viewSelectorPopup.showAsDropDown(viewSelectorButton, 0, 10);
+    }
+
+    private void highlightSelectedView(TextView option1, TextView option2, TextView option3) {
+        // ContextCompat.getColor para evitar depreciación
+        int colorGray = androidx.core.content.ContextCompat.getColor(this, R.color.gray_700);
+        int colorPrimary = androidx.core.content.ContextCompat.getColor(this, R.color.equilibra_primary);
+        int colorLight = androidx.core.content.ContextCompat.getColor(this, R.color.primary_lighter);
+        int colorTransparent = androidx.core.content.ContextCompat.getColor(this, android.R.color.transparent);
+
+        // Reset all
+        TextView[] options = {option1, option2, option3};
+        for (TextView opt : options) {
+            opt.setTextColor(colorGray);
+            opt.setTypeface(null, android.graphics.Typeface.NORMAL);
+            opt.setBackgroundColor(colorTransparent);
+        }
+
+        TextView selectedOption = switch (user.getCurrentView()) {
+            case "beginner" -> option1;
+            case "intermediate" -> option2;
+            case "advanced" -> option3;
+            default -> null;
+        };
+
+        if (selectedOption != null) {
+            selectedOption.setTextColor(colorPrimary);
+            selectedOption.setTypeface(null, android.graphics.Typeface.BOLD);
+            selectedOption.setBackgroundColor(colorLight);
+        }
+    }
+
+    private void updateViewSelectorText() {
+
+        String text = switch (user.getCurrentView()) {
+            case "intermediate" -> getString(R.string.view_selector_text_intermediate);
+            case "advanced" -> getString(R.string.view_selector_text_advanced);
+            default -> getString(R.string.view_selector_text_beginner);
+        };
+        viewSelectorText.setText(text);
+    }
+
+    private void changeView(String newView) {
+        if (user.getCurrentView().equals(newView)) return;
+
+        userController.setCurrentView(newView);
+
+        // Update UI
+        updateViewSelectorText();
+
+    }
+
 
     /**
      * Muestra diálogo para cambiar contraseña

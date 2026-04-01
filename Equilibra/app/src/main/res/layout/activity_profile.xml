@@ -200,6 +200,57 @@
 
                 </com.google.android.material.textfield.TextInputLayout>
 
+                <!-- View Selector -->
+                <FrameLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="end">
+
+                    <LinearLayout
+                        android:id="@+id/viewSelectorButton"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="end"
+                        android:background="@drawable/selector_background"
+                        android:clickable="true"
+                        android:focusable="true"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal"
+                        android:paddingStart="16dp"
+                        android:paddingTop="8dp"
+                        android:paddingEnd="16dp"
+                        android:paddingBottom="8dp">
+
+                        <TextView
+                            android:id="@+id/changeViewText"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/view_selector_text"
+                            android:textColor="@color/gray_700"
+                            android:textSize="14sp"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            android:id="@+id/viewSelectorText"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="8dp"
+                            android:text="@string/view_selector_text_beginner"
+                            android:textColor="@color/gray_700"
+                            android:textSize="14sp"
+                            android:textStyle="bold" />
+
+                        <ImageView
+                            android:id="@+id/viewSelectorArrow"
+                            android:layout_width="16dp"
+                            android:layout_height="16dp"
+                            android:layout_marginStart="8dp"
+                            android:src="@drawable/ic_nav_chevron_down"
+                            app:tint="@color/gray_700" />
+                    </LinearLayout>
+                </FrameLayout>
+
+
                 <!-- Botón guardar (oculto por defecto) -->
                 <com.google.android.material.button.MaterialButton
                     style="@style/Equilibra.Button.Primary"

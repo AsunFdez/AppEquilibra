@@ -126,6 +126,13 @@
     <string name="error_income_required">El ingreso mensual es obligatorio</string>
     <string name="error_income_invalid">El ingreso debe ser mayor a 0</string>
 
+    <string name="view_selector_text">Vista para usuario:</string>
+    <string name="view_selector_text_beginner">Principiante (Día 1)</string>
+    <string name="view_selector_text_intermediate">Intermedio (1-3 meses)</string>
+    <string name="view_selector_text_advanced">Avanzado (+3 meses)</string>
+
+
+
     <!-- Common -->
     <string name="ok">Aceptar</string>
     <string name="cancel">Cancelar</string>
@@ -133,5 +140,10 @@
     <string name="export">Exportar</string>
     <string name="feature_coming_soon">Función próximamente disponible</string>
     <string name="profile_edition">Editar perfil</string>
+
+
+    <string name="analytics_details">📊 Análisis Detallado</string>
+    <string name="view_patterns_waste">Visualiza tus patrones de gasto</string>
+
 
 </resources>
