@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Componente reutilizable: Card de gasto -->
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+
+    </data>
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/cardExpense"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="12dp"
+        app:cardCornerRadius="16dp"
+        app:cardElevation="4dp"
+        android:backgroundTint="@android:color/white">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:padding="16dp"
+            android:gravity="center_vertical">
+
+            <!-- Icono de categoría -->
+            <ImageView
+                android:id="@+id/imgCategoryIcon"
+                style="@style/Icon.Circle"
+                android:src="@drawable/ic_cat_shopping_cart"
+                android:background="@drawable/bg_circle_green_light" />
+
+            <!-- Información del gasto -->
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical"
+                android:layout_marginStart="16dp">
+
+                <TextView
+                    android:id="@+id/tvExpenseDescription"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Descripción del gasto"
+                    style="@style/TextAppearance.Body"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/tvExpenseCategory"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Categoría"
+                    style="@style/TextAppearance.Caption"
+                    android:layout_marginTop="4dp" />
+
+                <TextView
+                    android:id="@+id/tvExpenseDate"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="01/01/2024"
+                    style="@style/TextAppearance.Caption"
+                    android:layout_marginTop="2dp" />
+
+            </LinearLayout>
+
+            <!-- Monto -->
+            <TextView
+                android:id="@+id/tvExpenseAmount"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="$ 150.00"
+                android:textSize="18sp"
+                android:textColor="@color/equilibra_accent"
+                android:textStyle="bold" />
+
+        </LinearLayout>
+
+    </androidx.cardview.widget.CardView>
+</layout>

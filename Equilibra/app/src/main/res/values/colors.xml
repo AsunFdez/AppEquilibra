@@ -49,8 +49,9 @@
     <color name="secondary_lighter">#D6EAF8</color>
 
     <color name="accent_main">#E67E22</color>
-    <color name="accent_light">#D35400</color>
-    <color name="accent_lighter">#FFF4E6</color>
+    <color name="accent_dark">#D35400</color>
+    <color name="accent_lighter">#EB984E</color>
+    <color name="accent_light">#CA6F1E</color>
 
     <color name="purple">#9B59B6</color>
     <color name="red">#E74C3C</color>

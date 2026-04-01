@@ -1,97 +1,141 @@
-Estructura de proyecto y propósito de archivos
+# Proyecto Equilibra
+
+## Estructura actual
 
 app/src/main/java/asunfdiez/com/equilibra/
-├── activities/
-│   ├── OnboardingActivity.java    - UI y navegación del flujo de onboarding; coordina vistas y llama a controllers/utils.
-│   ├── MainActivity.java          - Actividad principal de la aplicación (después onboarding/main app UI).
-│   └── SplashActivity.java        - Pantalla de inicio y animaciones de presentación.
-├── controllers/
-│   └── OnboardingController.java  - Persistencia y carga de datos de onboarding (SharedPreferences, serialización JSON).
-├── models/
-│   ├── OnboardingData.java        - DTO que contiene los datos recopilados durante el onboarding (emoción, objetivo, cantidad, fecha).
-│   ├── EmotionalState.java        - Modelo inmutable que representa un estado emocional (id, texto, emoji, mensaje de validación).
-│   └── QuestionOption.java        - Modelo simple para opciones de pregunta (id y texto).
-├── adapters/
-│   └── QuestionOptionAdapter.java - Adapter/gestor de opciones que infla items y notifica selección a la activity.
-└── utils/
-    ├── AnimationHelper.java       - Centraliza animaciones reutilizables (entradas, salidas, botones, progreso).
-    ├── OnboardingConstants.java   - Constantes de configuración (duraciones, delays, formatos, ids).
-    ├── InputValidator.java        - Reglas de validación estáticas para formularios y cantidades.
-    ├── DatePickerHelper.java      - Encapsula lógica del DatePickerDialog y formateo de fechas.
-    └── SavingGoalValidator.java   - TextWatcher y lógica para habilitar/inhabilitar botón de envío.
 
-Otros ficheros y recursos importantes
------------------------------------
-build.gradle.kts                    - Script de Gradle para configuración del módulo raíz.
-settings.gradle.kts                 - Configuración de proyecto multi-módulo (incluye el módulo app).
-local.properties                    - Propiedades locales (SDK paths, etc.).
-gradle.properties                   - Propiedades compartidas de Gradle.
-gradlew / gradlew.bat               - Wrappers de Gradle para construir en cualquier equipo.
+├── activities/                    # Activities de la aplicación
+│   ├── SplashActivity.java
+│   ├── OnboardingActivity.java
+│   ├── IntermediateUserActivity.java
+│   ├── AdvancedUserActivity.java
+│   ├── MainActivity.java
+│   ├── AddExpenseActivity.java
+│   ├── SoftInterventionActivity.java
+│   ├── AnalysisActivity.java
+│   └── AchievementsActivity.java
+│
+├── controllers/                   # Lógica de negocio
+│   ├── ExpenseController.java
+│   ├── BudgetController.java
+│   ├── AchievementController.java
+│   ├── AnalyticsController.java
+│   └── OnboardingController.java
+│
+├── models/                        # Modelos de datos
+│   ├── Expense.java
+│   ├── Budget.java
+│   ├── Achievement.java
+│   ├── UserProfile.java
+│   ├── EmotionalState.java
+│   ├── QuestionOption.java
+│   ├── Category.java
+│   └── Mission.java
+│
+├── adapters/                      # Adapters para RecyclerView
+│   ├── QuestionOptionAdapter.java
+│   ├── ExpenseAdapter.java
+│   ├── CategoryAdapter.java
+│   ├── AchievementAdapter.java
+│   └── OnboardingPagerAdapter.java
+│
+├── database/                      # SQLite Database
+│   ├── DatabaseHelper.java
+│   ├── ExpenseDAO.java
+│   ├── BudgetDAO.java
+│   └── AchievementDAO.java
+│
+├── utils/                         # Utilidades y helpers
+│   ├── SharedPrefsManager.java
+│   ├── DateUtils.java
+│   ├── CurrencyUtils.java
+│   ├── ValidationUtils.java
+│   ├── AnimationUtils.java
+│   └── Constants.java
+│   ├── InputValidator.java
+│   ├── DatePickerHelper.java
+│   └── SavingGoalValidator.java
+└── views/                         # Custom Views
+    ├── FeatureCard.java
+    ├── CircularProgressView.java
+    ├── CategoryIconView.java
+    └── WaveLoadingView.java
+```
 
-app/
-├── build.gradle.kts                - Configuración específica del módulo `app` (dependencias, flavours, signing).
-├── proguard-rules.pro              - Reglas de ofuscación para builds de release.
-└── src/
-    ├── main/
-    │   ├── AndroidManifest.xml    - Declaración de actividades, permisos y componentes.
-    │   ├── java/                  - Código fuente (estructura descrita arriba).
-    │   └── res/
-    │       ├── layout/            - XML de layouts (activity_onboarding, step_emotional, step_validation, step_question, step_saving_goal, step_summary, step_mission, activity_splash, item_question_option, etc.).
-    │       ├── values/
-    │       │   ├── strings.xml    - Textos de la UI (localizables). Añadir los strings sugeridos para el onboarding.
-    │       │   └── colors, styles - Temas y colores de la app.
-    │       └── drawable/          - Recursos gráficos (ic_onb_target, ic_onb_clock, vectores generados de Lucide, bg_splash, etc.).
-    └── test/                       - Tests unitarios (si existen).
+## Estructura de Recursos
 
-Lucide-icons/                       - SVG fuente; contiene iconos por carpetas (se usa script para convertir a drawables).
-convert-lucide-to-drawables.ps1     - Script PowerShell para convertir SVGs Lucide a XML vector drawables en `res/drawable`.
-
-plantUML/                           - Diagramas PlantUML (arquitectura, onboarding flows, etc.).
-
-Notas y recomendaciones
------------------------
-- Mantener `OnboardingActivity` enfocada en UI y navegación; mover toda lógica de negocio a `controllers` o `utils`.
-- Mantener strings en `res/values/strings.xml` (localización y evitar hardcode).
-- Usar `UserController` para todas las operaciones de persistencia y evitar lógica de SharedPreferences en activities.
-- Reutilizar `AnimationHelper` desde otras activities si se comparte comportamiento de animación.
-- Agregar tests unitarios para `InputValidator` y `OnboardingController.convertToJson/convertFromJson`.
- - Agregar tests unitarios para `InputValidator` y `OnboardingController.convertToJson/convertFromJson`.
-
-SplashActivity
-----------------
-`SplashActivity.java` - Implementa la pantalla de bienvenida y las animaciones de entrada. Se encarga de:
-- Mostrar logo y animaciones (ObjectAnimator, AnimatorSet, ValueAnimator) en `res/layout/activity_splash.xml`.
-- Decidir la navegación inicial (por ejemplo: si `OnboardingController.isOnboardingCompleted()` es true -> `MainActivity`, si no -> `OnboardingActivity`).
-- Mantener la lógica de animaciones reutilizables en `AnimationHelper` o encapsular helpers específicos para la pantalla splash.
-
-Res (carpeta `app/src/main/res/`)
-------------------------------
-`res/` organiza los recursos usados por la UI:
-
-- `layout/` : XML de layouts (activity_onboarding.xml, activity_splash.xml, step_*.xml, item_question_option.xml, etc.).
-- `values/` : `strings.xml`, `colors.xml`, `styles.xml` (temas y textos localizables). Añadir los strings sugeridos para onboarding y splash.
-- `drawable/` : Imágenes y `vector` drawables (ic_onb_target, ic_onb_clock, iconos y fondos usados por splash). Los vectores pueden provenir de `Lucide-icons/` mediante `convert-lucide-to-drawables.ps1`.
-- `anim/` (opcional) : Recursos XML de animación si prefieres declararlos en recursos en lugar de código.
-
-Consejo: mantener los recursos de la pantalla splash ligeros y con tamaños adecuados para evitar retrasos en el arranque visual.
+```
+res/
+├── anim/                          # Animaciones XML
+│   ├── fade_in.xml
+│   ├── fade_out.xml
+│   ├── slide_in_right.xml
+│   ├── slide_in_left.xml
+│   ├── slide_out_right.xml
+│   ├── slide_out_left.xml
+│   ├── scale_up.xml
+│   └── bounce.xml
+│
+├── drawable/                      # Drawables y shapes
+│   ├── bg_button_primary.xml
+│   ├── bg_button_secondary.xml
+│   ├── bg_card.xml
+│   ├── bg_circular_progress.xml
+│   └── ... (otros drawables)
+│
+├── layout/                        # Layouts XML
+│   ├── activity_splash.xml
+│   ├── activity_onboarding.xml
+│   ├── activity_intermediate_user.xml
+│   ├── activity_advanced_user.xml
+│   ├── activity_main.xml
+│   ├── activity_add_expense.xml
+│   ├── activity_soft_intervention.xml
+│   ├── activity_analysis.xml
+│   ├── activity_achievements.xml
+│   ├── item_expense.xml
+│   ├── item_category.xml
+│   ├── item_achievement.xml
+│   └── component_*.xml (componentes reutilizables)
+│
+├── values/
+│   ├── colors.xml
+│   ├── strings.xml
+│   ├── dimens.xml
+│   ├── styles.xml
+│   └── themes.xml
+│
+└── 
 
 
-Styles (estilos y temas)
-------------------------
-- **Archivo**: `app/src/main/res/values/styles.xml` — contiene estilos reutilizables y temas de la UI.
-- **Ejemplos**: `Equilibra.Button.Primary`, `Equilibra.Button.Secondary`, `Equilibra.Button.Accent` (basados en `Widget.MaterialComponents.Button`) centralizan `backgroundTint`, `cornerRadius`, `textSize`, `textColor` y dimensiones visuales (`android:minHeight`, padding).
-- **Cómo usar**: aplica el estilo en un `MaterialButton` en XML:
+## MainActivity: según el nivel del usuario:
+    - muestra diferentes widgets/funcionalidades (utilizando tres layouts activity_main.xml, activity_intermediate_user.xml y activity_advanced_user.xml
+    - Ajustar la complejidad de los gráficos
+    - Ofrecer consejos específicos al nivel
 
-    ```xml
-    <com.google.android.material.button.MaterialButton
-            style="@style/Equilibra.Button.Primary"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/btn_start" />
-    ```
+## Estado actual frente a las recomendaciones de Android Studio
 
-- **Por qué**: usar estilos garantiza consistencia visual en toda la app (por ejemplo, mantener una altura y paddings homogéneos entre botones declarados como `MaterialButton` y aquellos que históricamente se renderizaban dentro de `CardView`).
-- **Personalización**: ajusta `minHeight`, paddings o `backgroundTint` en `styles.xml` para cambiar la apariencia sin editar múltiples layouts.
+- Lenguaje: Java
+- Arquitectura actual: principalmente Activities con lógica de UI y negocio mezclada
+- Persistencia: `SharedPreferences` a través de `SharedPrefsManager`
+- ViewBinding/DataBinding: DataBinding parcial en `MainActivity`, `OnboardingActivity` aún usa `findViewById`
+- MVVM: no implementado actualmente
+- Room/SQLite: no implementado actualmente
+- LifecycleObserver: no implementado actualmente
+
+## Próximos objetivos
+
+1. Refactorizar a MVVM con `ViewModel` y repositorios.
+2. Usar ViewBinding en todas las Activities.
+3. Añadir Room para datos estructurados y DAOs.
+4. Usar `@NonNull` y `@Nullable`.
+5. Mantener `Activities` limpias y relegar la lógica de negocio a `ViewModels`/controladores.
+
+## Dependencias importantes
+
+- AndroidX AppCompat
+- Material Components
+- DataBinding (actualmente usada en `MainActivity`)
 
 
 

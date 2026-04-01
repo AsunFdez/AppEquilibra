@@ -80,6 +80,55 @@ public final class Constants {
     public static final int MONTHLY_DIVISION_FACTOR = 6;
 
 
+    // ========================================
+    // DATABASE CONSTANTS
+    // ========================================
+    public static final String DATABASE_NAME = "equilibra.db";
+    public static final int DATABASE_VERSION = 1;
 
+    // Tabla Expenses
+    public static final String TABLE_EXPENSES = "expenses";
+    public static final String COLUMN_EXPENSE_ID = "_id";
+    public static final String COLUMN_EXPENSE_TYPE = "type";
+    // Tipos de transacción
+    public static final String TYPE_EXPENSE = "expense";
+    public static final String TYPE_INCOME = "income";
+    public static final String COLUMN_EXPENSE_AMOUNT = "amount";
+    public static final String COLUMN_EXPENSE_CATEGORY = "category";
+    public static final String COLUMN_EXPENSE_DESCRIPTION = "description";
+    public static final String COLUMN_EXPENSE_NOTES = "notes";
+    public static final String COLUMN_EXPENSE_DATE = "date";
+    public static final String COLUMN_EXPENSE_TIMESTAMP = "timestamp";
+
+    // Tabla Budgets
+    public static final String TABLE_BUDGETS = "budgets";
+    public static final String COLUMN_BUDGET_ID = "_id";
+    public static final String COLUMN_BUDGET_CATEGORY = "category";
+    public static final String COLUMN_BUDGET_AMOUNT = "amount";
+    public static final String COLUMN_BUDGET_PERIOD = "period";
+    public static final String COLUMN_BUDGET_MONTH = "month";
+    public static final String COLUMN_BUDGET_YEAR = "year";
+
+    // Tabla Achievements
+    public static final String TABLE_ACHIEVEMENTS = "achievements";
+    public static final String COLUMN_ACHIEVEMENT_ID = "_id";
+    public static final String COLUMN_ACHIEVEMENT_TITLE = "title";
+    public static final String COLUMN_ACHIEVEMENT_DESCRIPTION = "description";
+    public static final String COLUMN_ACHIEVEMENT_XP = "xp";
+    public static final String COLUMN_ACHIEVEMENT_ICON = "icon";
+    public static final String COLUMN_ACHIEVEMENT_UNLOCKED = "unlocked";
+    public static final String COLUMN_ACHIEVEMENT_DATE_UNLOCKED = "date_unlocked";
+
+    // ========================================
+    // CATEGORÍAS DE GASTOS
+    // ========================================
+    public static final String CATEGORY_FOOD = "Comida";
+    public static final String CATEGORY_TRANSPORT = "Transporte";
+    public static final String CATEGORY_ENTERTAINMENT = "Entretenimiento";
+    public static final String CATEGORY_SHOPPING = "Compras";
+    public static final String CATEGORY_HEALTH = "Salud";
+    public static final String CATEGORY_EDUCATION = "Educación";
+    public static final String CATEGORY_BILLS = "Servicios";
+    public static final String CATEGORY_OTHERS = "Otros";
 
 }
