@@ -478,6 +478,47 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return count;
     }
 
+    /**
+     * Obtiene la categoría con más gastos este mes
+     */
+    public String getTopExpenseCategory() {
+
+        String topCategory = "";
+
+        String selectQuery = "SELECT category, SUM(amount) as total FROM "+ Constants.TABLE_EXPENSES  +
+                " WHERE strftime('%Y-%m', date/1000, 'unixepoch') = strftime('%Y-%m', 'now') " +
+                "GROUP BY category ORDER BY total DESC LIMIT 1";
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        Cursor cursor = db.rawQuery(selectQuery, null);
+        if (cursor.moveToFirst()) {
+            topCategory = cursor.getString(cursor.getColumnIndex("category"));
+        }
+        cursor.close();
+
+        return topCategory;
+    }
+
+    /**
+     * Obtiene el total de gastos de una categoría este mes
+     */
+    public double getCategoryExpensesThisMonth(String category) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        double total = 0;
+
+        String selectQuery = "SELECT SUM(amount) as total FROM "+ Constants.TABLE_EXPENSES  +
+                " WHERE category = ? AND " +
+                "strftime('%Y-%m', date/1000, 'unixepoch') = strftime('%Y-%m', 'now')";
+
+        Cursor cursor = db.rawQuery(selectQuery, new String[]{category});
+        if (cursor.moveToFirst()) {
+            total = cursor.getDouble(cursor.getColumnIndex("total"));
+        }
+        cursor.close();
+
+        return total;
+    }
+
     // ==================== UTILIDADES ====================
 
     /**

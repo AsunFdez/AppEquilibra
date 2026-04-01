@@ -14,6 +14,7 @@ import android.view.animation.AccelerateDecelerateInterpolator;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.view.animation.DecelerateInterpolator;
+import android.view.animation.ScaleAnimation;
 import android.view.animation.TranslateAnimation;
 import android.widget.ProgressBar;
 
@@ -500,6 +501,29 @@ public class AnimationHelper {
         for (int i = 0; i < views.length; i++) {
             fadeInWithDelay(views[i], i * delayBetween);
         }
+    }
+
+
+     /* Aplica una animación de escala a una vista (efecto de click)
+     *
+     * @param view Vista a animar
+     */
+    public static void applyScaleAnimation(View view) {
+        if (view == null) {
+            return;
+        }
+
+        ScaleAnimation scaleAnimation = new ScaleAnimation(
+                1.0f, 0.95f,  // Escala X de 1.0 a 0.95
+                1.0f, 0.95f,  // Escala Y de 1.0 a 0.95
+                Animation.RELATIVE_TO_SELF, 0.5f,  // Pivot X en el centro
+                Animation.RELATIVE_TO_SELF, 0.5f   // Pivot Y en el centro
+        );
+
+        scaleAnimation.setDuration(Constants.DURATION_SHORT);
+        scaleAnimation.setRepeatCount(1);
+        scaleAnimation.setRepeatMode(Animation.REVERSE);
+        view.startAnimation(scaleAnimation);
     }
 
     /**

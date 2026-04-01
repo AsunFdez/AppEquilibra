@@ -132,7 +132,6 @@
     <string name="view_selector_text_advanced">Avanzado (+3 meses)</string>
 
 
-
     <!-- Common -->
     <string name="ok">Aceptar</string>
     <string name="cancel">Cancelar</string>
@@ -144,6 +143,72 @@
 
     <string name="analytics_details">📊 Análisis Detallado</string>
     <string name="view_patterns_waste">Visualiza tus patrones de gasto</string>
+
+
+    <!-- SoftIntervention Activity -->
+    <!-- Títulos -->
+    <string name="intervention_title_default">¡Momento de reflexión!</string>
+    <string name="intervention_title_high">¡Alerta de gastos!</string>
+    <string name="intervention_title_very_high">¡Cuidado con tu presupuesto!</string>
+
+    <!-- Subtítulos -->
+    <string name="intervention_subtitle_default">Tus gastos están un poco altos este mes</string>
+    <string name="intervention_subtitle_high">Estás cerca de superar tu presupuesto</string>
+    <string name="intervention_subtitle_very_high">Has superado tu presupuesto mensual</string>
+
+    <!-- Estadísticas -->
+    <string name="intervention_spent">Has gastado</string>
+    <string name="intervention_percentage">%1$d%% de tu presupuesto mensual</string>
+    <string name="intervention_remaining">Te quedan $%1$.2f este mes</string>
+
+    <!-- Mensajes motivacionales -->
+    <string name="intervention_motivation_1">Pequeños cambios pueden hacer una gran diferencia en tus finanzas</string>
+    <string name="intervention_motivation_2">Cada peso ahorrado es un paso hacia tus metas</string>
+    <string name="intervention_motivation_3">¡Tú puedes tener el control de tus finanzas!</string>
+    <string name="intervention_motivation_4">La disciplina de hoy es la libertad de mañana</string>
+    <string name="intervention_motivation_5">Tus metas están más cerca de lo que piensas</string>
+
+    <!-- Sugerencias - Títulos -->
+    <string name="suggestion_entertainment">Revisa tus gastos en entretenimiento</string>
+    <string name="suggestion_restaurants">Reduce gastos en restaurantes</string>
+    <string name="suggestion_daily_limit">Establece un límite diario</string>
+    <string name="suggestion_subscriptions">Revisa tus suscripciones</string>
+    <string name="suggestion_shopping">Controla tus compras impulsivas</string>
+    <string name="suggestion_transport">Optimiza tus gastos de transporte</string>
+
+    <!-- Sugerencias - Descripciones -->
+    <string name="suggestion_entertainment_desc">Has gastado $%1$.2f más que el mes pasado</string>
+    <string name="suggestion_restaurants_desc">Cocinar en casa podría ahorrarte $%1$.2f/mes</string>
+    <string name="suggestion_daily_limit_desc">Te ayudará a cumplir tu presupuesto</string>
+    <string name="suggestion_subscriptions_desc">Podrías ahorrar $%1$.2f cancelando las que no usas</string>
+    <string name="suggestion_shopping_desc">Espera 24 horas antes de comprar algo no esencial</string>
+    <string name="suggestion_transport_desc">Considera usar transporte público o compartir viajes</string>
+
+    <!-- Botones -->
+    <string name="btn_view_details">Ver análisis detallado</string>
+    <string name="btn_adjust_budget">Ajustar mi presupuesto</string>
+    <string name="btn_set_limit">Establecer límite</string>
+    <string name="btn_view_tips">Ver más consejos</string>
+    <string name="btn_dismiss">Entendido, continuar</string>
+    <string name="btn_remind_later">Recordar más tarde</string>
+
+    <!-- Mensajes de apoyo -->
+    <string name="intervention_support">Estamos aquí para ayudarte a alcanzar tus metas 💪</string>
+    <string name="intervention_support_2">Juntos podemos mejorar tus finanzas 🎯</string>
+    <string name="intervention_support_3">Cada día es una oportunidad para mejorar ✨</string>
+
+    <!-- Consejo del día -->
+    <string name="tip_of_the_day">Consejo del día</string>
+    <string name="insight_title">Insight financiero</string>
+    <string name="alert_title">Alerta importante</string>
+
+    <!-- Categorías comunes -->
+    <string name="category_entertainment">Entretenimiento</string>
+    <string name="category_restaurants">Restaurantes</string>
+    <string name="category_shopping">Compras</string>
+    <string name="category_transport">Transporte</string>
+    <string name="category_subscriptions">Suscripciones</string>
+    <string name="category_other">Otros</string>
 
 
 </resources>

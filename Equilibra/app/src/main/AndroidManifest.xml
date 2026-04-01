@@ -12,6 +12,9 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Equilibra">
         <activity
+            android:name=".activities.SoftInterventionActivity"
+            android:exported="false" />
+        <activity
             android:name=".activities.IntermediateUserActivity"
             android:exported="false" />
         <activity

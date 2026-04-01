@@ -131,4 +131,10 @@ public final class Constants {
     public static final String CATEGORY_BILLS = "Servicios";
     public static final String CATEGORY_OTHERS = "Otros";
 
+
+    // Umbrales para intervenciones
+    public static final double HIGH_EXPENSE_THRESHOLD = 0.8; // 80% del ingreso
+    public static final int CONSECUTIVE_HIGH_DAYS = 3; // 3 días seguidos con gastos altos
+
+
 }

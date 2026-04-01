@@ -17,6 +17,7 @@ import androidx.databinding.DataBindingUtil;
 import androidx.databinding.ViewDataBinding;
 
 import asunfdiez.com.equilibra.R;
+import asunfdiez.com.equilibra.controllers.WellbeingController;
 import asunfdiez.com.equilibra.databinding.ActivityAdvancedUserBinding;
 import asunfdiez.com.equilibra.databinding.ActivityIntermediateUserBinding;
 import asunfdiez.com.equilibra.databinding.ActivityMainBinding;
@@ -30,6 +31,8 @@ public class MainActivity extends AppCompatActivity {
 
     private SharedPrefsManager preferencesManager;
     UserProfile user;
+
+    private WellbeingController wellbeingController;
     private ProgressBar progressBar;
 
     // Bottom Navigation
@@ -108,6 +111,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void initializeComponents() {
         preferencesManager =  SharedPrefsManager.getInstance(this);
+        wellbeingController = new WellbeingController(this);
     }
 
     private void initCommonViews() {
@@ -268,6 +272,16 @@ public class MainActivity extends AppCompatActivity {
         overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
     }
 
+    private void checkWellbeingStatus() {
+
+        boolean shouldShowIntervention = wellbeingController.shouldShowIntervention();
+
+        if (shouldShowIntervention) {
+            Intent intent = new Intent(this, SoftInterventionActivity.class);
+            startActivity(intent);
+            overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
+        }
+    }
 
     @Override
     protected void onResume() {
@@ -297,8 +311,6 @@ public class MainActivity extends AppCompatActivity {
         binding.setVariable(asunfdiez.com.equilibra.BR.user, user);
         binding.executePendingBindings();
     }
-
-
 
     @Override
     protected void onDestroy() {
