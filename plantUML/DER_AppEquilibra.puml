@@ -1,0 +1,249 @@
+@startuml AppEquilibra_ERD
+
+!define TABLENAME(x) class x << (T, #FFCCCC) >>
+!define PRIMARY_KEY(x) <b>PK:</b> x
+!define FOREIGN_KEY(x) <b>FK:</b> x
+
+title Diagrama Entidad-Relación - AppEquilibra
+' Configuración de los diagramas
+'skinparam backgroundColor #FEFEFE
+'skinparam ClassBorderColor #000000
+
+' ============================================================
+' TABLAS DE USUARIO Y PERFIL
+' ============================================================
+
+TABLENAME(UserProfile) {
+    <b>PK: id</b> : INTEGER
+    --
+    name : TEXT
+    email : TEXT
+    phone : TEXT
+    passwordHash : TEXT
+    level : TEXT (beginner, intermediate, advanced)
+    monthlyIncome : REAL
+    savingsPlan : TEXT
+    emotionalState : TEXT
+    mainConcernId : TEXT
+    mainConcern : TEXT
+    timeAvailable : TEXT (2, 5, 15 min)
+    currentView : TEXT
+    dayCount : INTEGER
+    weekProgress : INTEGER
+    weekGoal : INTEGER
+    financialKnowledge : INTEGER
+    budgetExperience : INTEGER
+    savingsHabit : INTEGER
+    createdAt : LONG
+    updatedAt : LONG
+}
+
+TABLENAME(SavingGoal) {
+    <b>PK: id</b> : INTEGER
+    --
+    <b>FK: userId</b> : INTEGER
+    name : TEXT
+    targetAmount : REAL
+    currentAmount : REAL
+    deadline : TEXT (DATE)
+    createdAt : LONG
+    updatedAt : LONG
+    completed : INTEGER (0/1)
+}
+
+' ============================================================
+' TABLAS DE TRANSACCIONES FINANCIERAS
+' ============================================================
+
+TABLENAME(Category) {
+    <b>PK: id</b> : INTEGER
+    --
+    name : TEXT (UNIQUE)
+    icon : TEXT
+    color : TEXT
+    createdAt : LONG
+}
+
+TABLENAME(Expense) {
+    <b>PK: _id</b> : INTEGER
+    --
+    type : TEXT (expense/income)
+    amount : REAL
+    <b>FK: category</b> : TEXT
+    description : TEXT
+    notes : TEXT
+    date : TEXT (dd/MM/yyyy)
+    timestamp : LONG
+}
+
+TABLENAME(Budget) {
+    <b>PK: _id</b> : INTEGER
+    --
+    <b>FK: category</b> : TEXT
+    amount : REAL
+    period : TEXT (monthly)
+    month : INTEGER
+    year : INTEGER
+    UNIQUE: (category, month, year)
+}
+
+' ============================================================
+' TABLAS DE GAMIFICACIÓN
+' ============================================================
+
+TABLENAME(Achievement) {
+    <b>PK: _id</b> : INTEGER
+    --
+    title : TEXT
+    description : TEXT
+    xp : INTEGER
+    icon : TEXT
+    unlocked : INTEGER (0/1)
+    date_unlocked : LONG
+}
+
+TABLENAME(UserXP) {
+    <b>PK: id</b> : INTEGER
+    --
+    <b>FK: userId</b> : INTEGER
+    totalXP : INTEGER
+    currentLevel : INTEGER
+    xpForNextLevel : INTEGER
+    achievementsUnlocked : INTEGER
+    lastXPEarnedAt : LONG
+}
+
+TABLENAME(Streak) {
+    <b>PK: id</b> : INTEGER
+    --
+    <b>FK: userId</b> : INTEGER
+    consecutiveDays : INTEGER
+    startDate : TEXT (DATE)
+    lastActivityDate : TEXT (DATE)
+    maxStreakRecord : INTEGER
+    isActive : INTEGER (0/1)
+}
+
+TABLENAME(Challenge) {
+    <b>PK: id</b> : INTEGER
+    --
+    <b>FK: userId</b> : INTEGER
+    title : TEXT
+    description : TEXT
+    category : TEXT
+    targetAmount : REAL
+    currentAmount : REAL
+    startDate : TEXT (DATE)
+    endDate : TEXT (DATE)
+    completed : INTEGER (0/1)
+    xpReward : INTEGER
+}
+
+' ============================================================
+' TABLAS DE INTERVENCIONES Y ANÁLISIS
+' ============================================================
+
+TABLENAME(InterventionLog) {
+    <b>PK: id</b> : INTEGER
+    --
+    <b>FK: userId</b> : INTEGER
+    <b>FK: expenseId</b> : LONG
+    interveationType : TEXT
+    message : TEXT
+    impactOnGoal : TEXT
+    alternativeSuggestion : TEXT
+    timestamp : LONG
+}
+
+TABLENAME(EmotionalState) {
+    <b>PK: id</b> : INTEGER
+    --
+    <b>FK: userId</b> : INTEGER
+    state : TEXT (anxiety, calmness, confusion, etc)
+    recordedAt : LONG
+    spendingThatDay : REAL
+}
+
+TABLENAME(DailyAnalysis) {
+    <b>PK: id</b> : INTEGER
+    --
+    <b>FK: userId</b> : INTEGER
+    analysisDate : TEXT (DATE)
+    totalSpent : REAL
+    totalIncome : REAL
+    netBalance : REAL
+    categoryBreakdown : TEXT (JSON)
+    anomalyDetected : INTEGER (0/1)
+}
+
+' ============================================================
+' RELACIONES
+' ============================================================
+
+UserProfile "1" -- "1" SavingGoal : fija
+UserProfile "1" -- "*" Expense : registra
+UserProfile "1" -- "*" Budget : crea
+UserProfile "1" -- "*" UserXP : tiene
+UserProfile "1" -- "*" Streak : tracks
+UserProfile "1" -- "*" Challenge : participa
+UserProfile "1" -- "*" InterventionLog : recibe
+UserProfile "1" -- "*" EmotionalState : registra
+UserProfile "1" -- "*" DailyAnalysis : genera
+
+Category "1" -- "*" Expense : clasifica
+Category "1" -- "*" Budget : limita
+
+Expense "*" -- "1" SavingGoal : impacts
+
+Achievement "*" -- "*" UserXP : desbloquea
+
+Challenge "*" -- "*" Category : targets
+
+Expense "1" -- "*" InterventionLog : lanza
+
+note right of UserProfile
+  Almacena información completa del usuario
+  incluyendo perfil, nivel y configuración
+end note
+
+note right of SavingGoal
+  Objetivo de ahorro del usuario
+  Solo está activo un objetivo a la vez
+end note
+
+note right of Expense
+  Registro de todas las transacciones
+  (gastos e ingresos)
+end note
+
+note right of Budget
+  Límite de gasto mensual por categoría
+  Facilita monitoreo de cumplimiento
+end note
+
+note right of UserXP
+  Seguimiento de progreso gamificado
+  Experiencia y logros desbloqueados
+end note
+
+note right of Streak
+  Contabilidad de días de uso consecutivos
+  Para fomentar el hábito
+end note
+
+note right of Challenge
+  Desafíos semanales/mensuales
+  Cálculo de cumplimiento
+end note
+
+note right of InterventionLog
+  Registro de intervenciones inteligentes
+  Sugerencias de ahorro
+end note
+
+note right of DailyAnalysis
+  Análisis diario de gastos
+  Detección de anomalías
+end note
+
+@enduml

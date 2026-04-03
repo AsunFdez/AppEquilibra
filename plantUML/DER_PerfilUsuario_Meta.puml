@@ -1,0 +1,65 @@
+@startuml AppEquilibra_ERD
+
+!define TABLENAME(x) class x << (T, #FFCCCC) >>
+!define PRIMARY_KEY(x) <b>PK:</b> x
+!define FOREIGN_KEY(x) <b>FK:</b> x
+
+title Diagrama Entidad-Relación - AppEquilibra - Tablas Perfil de Usuario
+' Configuración de los diagramas
+'skinparam backgroundColor #FEFEFE
+'skinparam ClassBorderColor #000000
+
+' ============================================================
+' TABLAS DE USUARIO Y PERFIL
+' ============================================================
+
+TABLENAME(UserProfile) {
+    <b>PK: id</b> : INTEGER
+    --
+    name : TEXT
+    email : TEXT
+    phone : TEXT
+    passwordHash : TEXT
+    level : TEXT (beginner, intermediate, advanced)
+    monthlyIncome : REAL
+    savingsPlan : TEXT
+    emotionalState : TEXT
+    mainConcernId : TEXT
+    mainConcern : TEXT
+    timeAvailable : TEXT (2, 5, 15 min)
+    currentView : TEXT
+    dayCount : INTEGER
+    weekProgress : INTEGER
+    weekGoal : INTEGER
+    financialKnowledge : INTEGER
+    budgetExperience : INTEGER
+    savingsHabit : INTEGER
+    createdAt : LONG
+    updatedAt : LONG
+}
+
+TABLENAME(SavingGoal) {
+    <b>PK: id</b> : INTEGER
+    --
+    <b>FK: userId</b> : INTEGER
+    name : TEXT
+    targetAmount : REAL
+    currentAmount : REAL
+    deadline : TEXT (DATE)
+    createdAt : LONG
+    updatedAt : LONG
+    completed : INTEGER (0/1)
+}
+
+UserProfile "1" -- "1" SavingGoal : fija
+
+
+note right of UserProfile
+  Almacena información completa del usuario
+  incluyendo perfil, nivel y configuración
+end note
+
+note right of SavingGoal
+  Objetivo de ahorro del usuario
+  Solo está activo un objetivo a la vez
+end note

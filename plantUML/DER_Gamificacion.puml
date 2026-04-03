@@ -1,0 +1,96 @@
+@startuml AppEquilibra_ERD
+
+!define TABLENAME(x) class x << (T, #FFCCCC) >>
+!define PRIMARY_KEY(x) <b>PK:</b> x
+!define FOREIGN_KEY(x) <b>FK:</b> x
+
+title Diagrama Entidad-Relación - AppEquilibra- TABLAS DE GAMIFICACIÓN
+' Configuración de los diagramas
+'skinparam backgroundColor #FEFEFE
+'skinparam ClassBorderColor #000000
+
+' ============================================================
+' TABLAS DE GAMIFICACIÓN
+' ============================================================
+TABLENAME(UserProfile) {
+}
+
+TABLENAME(Category) {
+}
+
+TABLENAME(Achievement) {
+    <b>PK: _id</b> : INTEGER
+    --
+    title : TEXT
+    description : TEXT
+    xp : INTEGER
+    icon : TEXT
+    unlocked : INTEGER (0/1)
+    date_unlocked : LONG
+}
+
+TABLENAME(UserXP) {
+    <b>PK: id</b> : INTEGER
+    --
+    <b>FK: userId</b> : INTEGER
+    totalXP : INTEGER
+    currentLevel : INTEGER
+    xpForNextLevel : INTEGER
+    achievementsUnlocked : INTEGER
+    lastXPEarnedAt : LONG
+}
+
+TABLENAME(Streak) {
+    <b>PK: id</b> : INTEGER
+    --
+    <b>FK: userId</b> : INTEGER
+    consecutiveDays : INTEGER
+    startDate : TEXT (DATE)
+    lastActivityDate : TEXT (DATE)
+    maxStreakRecord : INTEGER
+    isActive : INTEGER (0/1)
+}
+
+TABLENAME(Challenge) {
+    <b>PK: id</b> : INTEGER
+    --
+    <b>FK: userId</b> : INTEGER
+    title : TEXT
+    description : TEXT
+    category : TEXT
+    targetAmount : REAL
+    currentAmount : REAL
+    startDate : TEXT (DATE)
+    endDate : TEXT (DATE)
+    completed : INTEGER (0/1)
+    xpReward : INTEGER
+}
+
+
+UserProfile "1" -- "*" UserXP : tiene
+UserProfile "1" -- "*" Streak : genera
+UserProfile "1" -- "*" Challenge : participa
+Achievement "*" -- "*" UserXP : desbloquea
+Challenge  ..>  Category : puede estar enfocada a
+
+
+note bottom of Achievement
+    Logro desbloqueado por el usuario
+    Otorga experiencia (XP)
+end note
+
+note bottom of UserXP
+  Seguimiento de progreso gamificado
+  Experiencia y logros desbloqueados
+end note
+
+note bottom of Streak
+  Contabilidad de días de uso consecutivos
+  Para fomentar el hábito
+end note
+
+note bottom of Challenge
+  Desafíos semanales/mensuales
+  Cálculo de cumplimiento
+end note
+
