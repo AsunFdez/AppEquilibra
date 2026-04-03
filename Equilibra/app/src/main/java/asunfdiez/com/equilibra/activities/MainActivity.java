@@ -15,23 +15,21 @@ import androidx.cardview.widget.CardView;
 import androidx.core.widget.NestedScrollView;
 import androidx.databinding.DataBindingUtil;
 import androidx.databinding.ViewDataBinding;
+import androidx.lifecycle.ViewModelProvider;
 
 import asunfdiez.com.equilibra.R;
 import asunfdiez.com.equilibra.controllers.WellbeingController;
 import asunfdiez.com.equilibra.databinding.ActivityAdvancedUserBinding;
 import asunfdiez.com.equilibra.databinding.ActivityIntermediateUserBinding;
 import asunfdiez.com.equilibra.databinding.ActivityMainBinding;
-import asunfdiez.com.equilibra.databinding.ProgressCardBinding;
 import asunfdiez.com.equilibra.models.UserProfile;
 import asunfdiez.com.equilibra.utils.AnimationHelper;
 import asunfdiez.com.equilibra.utils.Constants;
-import asunfdiez.com.equilibra.utils.SharedPrefsManager;
+import asunfdiez.com.equilibra.viewmodels.MainActivityViewModel;
 
 public class MainActivity extends AppCompatActivity {
 
-    private SharedPrefsManager preferencesManager;
-    UserProfile user;
-
+    private MainActivityViewModel viewModel;
     private WellbeingController wellbeingController;
     private ProgressBar progressBar;
 
@@ -52,50 +50,82 @@ public class MainActivity extends AppCompatActivity {
     private TextView navAchievementsText;
     private TextView navSettingsText;
 
-    // Beginner Cards
-    private ProgressCardBinding progressCard;
-
     // Common Cards
     private CardView viewAllExpensesCard;
 
-    // UserProfile Data
-    private int weekProgress = 0;
-    private int weekGoal = 5;
-    private String currentView = Constants.USER_LEVEL_BEGINNER;
+    // View State
+    private String currentViewType;
 
     // Handler
     private final Handler handler = new Handler();
     // dataBinding
     private ViewDataBinding binding;
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        
+        // Inicializar ViewModel
+        viewModel = new ViewModelProvider(this).get(MainActivityViewModel.class);
+        
         initializeComponents();
-        loadUserData();
-        loadCurrentView();
-
+        setupObservers();
     }
 
-    private void loadCurrentView() {
-        // Determinamos qué layout inflar
-        int layoutId = switch (currentView) {
-            case "intermediate" -> R.layout.activity_intermediate_user;
-            case "advanced" -> R.layout.activity_advanced_user;
+    private void initializeComponents() {
+        wellbeingController = new WellbeingController(this);
+    }
+
+    private void setupObservers() {
+        // Observar el perfil de usuario para manejar cambios de datos y de vista
+        viewModel.getUserProfile().observe(this, user -> {
+            if (user != null) {
+                handleUserProfileUpdate(user);
+            }
+        });
+    }
+
+    private void handleUserProfileUpdate(UserProfile user) {
+        String viewType = user.getCurrentView();
+        
+        // Si el tipo de vista ha cambiado o es la primera vez, cargamos el layout
+        if (binding == null || !viewType.equals(currentViewType)) {
+            currentViewType = viewType;
+            loadLayout(viewType, user);
+        } else {
+            // Si es la misma vista, solo actualizamos los datos vinculados
+            binding.setVariable(asunfdiez.com.equilibra.BR.user, user);
+            binding.executePendingBindings();
+            
+            // Actualizar elementos manuales o animaciones que dependen del progreso
+            if (binding instanceof ActivityMainBinding) {
+                updateBeginnerAnimations(user);
+            }
+        }
+    }
+
+    private void loadLayout(String viewType, UserProfile user) {
+        int layoutId = switch (viewType) {
+            case Constants.USER_LEVEL_INTERMEDIATE -> R.layout.activity_intermediate_user;
+            case Constants.USER_LEVEL_ADVANCED -> R.layout.activity_advanced_user;
             default -> R.layout.activity_main;
         };
 
         // DataBindingUtil para inflar y establecer el contenido
         binding = DataBindingUtil.setContentView(this, layoutId);
+        binding.setLifecycleOwner(this);
         binding.setVariable(asunfdiez.com.equilibra.BR.user, user);
         binding.executePendingBindings();
 
+        // Vincular vistas y listeners comunes
+        initCommonViews();
+        setupCommonListeners();
+
         // Vincular vistas y listeners según el tipo de Binding
         if (binding instanceof ActivityMainBinding b) {
-            initBeginnerViews(b);
+            initBeginnerViews(b, user);
             setBeginnerListeners(b);
-            animateBeginnerCards(b);
+            animateBeginnerCards(b, user);
         } else if (binding instanceof ActivityIntermediateUserBinding b) {
             initIntermediateViews(b);
             setIntermediateListeners(b);
@@ -103,15 +133,6 @@ public class MainActivity extends AppCompatActivity {
             initAdvancedViews(b);
             setAdvancedListeners(b);
         }
-
-        // Vincular vistas y listeners comunes
-        initCommonViews();
-        setupCommonListeners();
-    }
-
-    private void initializeComponents() {
-        preferencesManager =  SharedPrefsManager.getInstance(this);
-        wellbeingController = new WellbeingController(this);
     }
 
     private void initCommonViews() {
@@ -136,103 +157,74 @@ public class MainActivity extends AppCompatActivity {
         navAnalysisText = root.findViewById(R.id.navAnalysisText);
         navAchievementsText = root.findViewById(R.id.navAchievementsText);
         navSettingsText = root.findViewById(R.id.navSettingsText);
+        
         updateBottomNavigation("home");
-
     }
 
-    private void initBeginnerViews(ActivityMainBinding b) {
-        // Progress Card
-        progressCard = b.progressCard;
+    private void initBeginnerViews(ActivityMainBinding b, UserProfile user) {
         progressBar = b.progressCard.weeklyProgressBar;
         b.progressCard.progressTitle.setText(getString(R.string.weekly_progress_title));
         b.progressCard.progressText.setText(getString(R.string.week_progress, user.getWeekProgress(), user.getWeekGoal()));
     }
 
-    private void initIntermediateViews(ActivityIntermediateUserBinding b) {
+    private void updateBeginnerAnimations(UserProfile user) {
+        if (progressBar != null) {
+            AnimationHelper.animateProgressBar(user.getWeekProgress(), user.getWeekGoal(), progressBar);
+        }
+    }
 
+    private void initIntermediateViews(ActivityIntermediateUserBinding b) {
+        // Implementación futura
     }
 
     private void initAdvancedViews(ActivityAdvancedUserBinding b) {
-
-    }
-
-
-    private void loadUserData() {
-        user = preferencesManager.getUserProfile();
-        weekProgress = user.getWeekProgress();
-        weekGoal = user.getWeekGoal();
-        currentView = user.getCurrentView();
-        // calcular días transcurridos
-        int days = (int) ((System.currentTimeMillis() - user.getCreatedAt()) / (1000 * 60 * 60 * 24)) + 1;
-        user.setDayCount(days);
-        preferencesManager.saveUserProfile(user);
+        // Implementación futura
     }
 
     private void setupCommonListeners() {
-
         // View All Expenses
-        viewAllExpensesCard.setOnClickListener(v -> {
-                navigateTo(ExpenseListActivity.class);
-        });
+        viewAllExpensesCard.setOnClickListener(v -> navigateTo(ExpenseListActivity.class));
 
         // Bottom Navigation
         navHome.setOnClickListener(v -> {
-                // Already on home, do nothing or scroll to top
-                NestedScrollView scrollView = findViewById(R.id.contentScroll);
+            NestedScrollView scrollView = findViewById(R.id.contentScroll);
+            if (scrollView != null) {
                 scrollView.smoothScrollTo(0, 0);
+            }
         });
 
-        navAnalysis.setOnClickListener(v -> {
-                navigateTo(AnalysisActivity.class);
-        });
+        navAnalysis.setOnClickListener(v -> navigateTo(AnalysisActivity.class));
 
         fabAddExpense.setOnClickListener(v -> {
             AnimationHelper.animateFABPress(v);
             handler.postDelayed(() -> navigateTo(AddExpenseActivity.class), Constants.FAB_ANIM_DURATION + 50);
         });
 
-
-        navAchievements.setOnClickListener(v -> {
-                navigateTo(AchievementsActivity.class);
-        });
-
-        navSettings.setOnClickListener ( v -> {
-             navigateTo(SettingsActivity.class);
-        });
+        navAchievements.setOnClickListener(v -> navigateTo(AchievementsActivity.class));
+        navSettings.setOnClickListener(v -> navigateTo(SettingsActivity.class));
 
         // Notification Button
         findViewById(R.id.notificationButton).setOnClickListener(v -> {
-                // TODO: Show notifications
+            // TODO: Show notifications
         });
 
         // Avatar Button
-        findViewById(R.id.avatarButton).setOnClickListener(v -> {
-                navigateTo(ProfileActivity.class);
-        });
+        findViewById(R.id.avatarButton).setOnClickListener(v -> navigateTo(ProfileActivity.class));
     }
 
     private void setBeginnerListeners(ActivityMainBinding b) {
-        // Quick Action
-        b.quickActionCard.quickActionButton.setOnClickListener(v -> {
-            navigateTo(AddExpenseActivity.class);
-        });
-
-    }
-    private void setIntermediateListeners(ActivityIntermediateUserBinding b) {
-        // TODO
-    }
-    private void setAdvancedListeners(ActivityAdvancedUserBinding b) {
-        // TODO
+        b.quickActionCard.quickActionButton.setOnClickListener(v -> navigateTo(AddExpenseActivity.class));
     }
 
-    private void animateBeginnerCards(ActivityMainBinding b) {
-        // Animate cards
+    private void setIntermediateListeners(ActivityIntermediateUserBinding b) { }
+    private void setAdvancedListeners(ActivityAdvancedUserBinding b) { }
+
+    private void animateBeginnerCards(ActivityMainBinding b, UserProfile user) {
         View[] cards = {b.progressCard.getRoot(), b.tipCard, b.quickActionCard.getRoot(), b.nextGoalCard, b.viewAllExpensesCard};
         AnimationHelper.animateCardsEntrance(cards);
 
-        // Animate progress bar
         if (progressBar != null) {
-            AnimationHelper.animateProgressBar(weekProgress, weekGoal, progressBar);
+            AnimationHelper.animateProgressBar(user.getWeekProgress(), user.getWeekGoal(), progressBar);
         }
     }
 
@@ -264,19 +256,22 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-
-
     private void navigateTo(Class<?> activityClass) {
         Intent intent = new Intent(this, activityClass);
         startActivity(intent);
         overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        // Refrescar datos a través del ViewModel
+        viewModel.refreshData();
+        checkWellbeingStatus();
+    }
+
     private void checkWellbeingStatus() {
-
-        boolean shouldShowIntervention = wellbeingController.shouldShowIntervention();
-
-        if (shouldShowIntervention) {
+        if (wellbeingController.shouldShowIntervention()) {
             Intent intent = new Intent(this, SoftInterventionActivity.class);
             startActivity(intent);
             overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
@@ -284,38 +279,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @Override
-    protected void onResume() {
-        super.onResume();// Guardamos la vista antigua antes de cargar los nuevos datos
-        String previousView = currentView;
-
-        loadUserData();
-
-        // Solo re-inflar si cambió su tipo de vista (beginner/int/adv)
-        if (!previousView.equals(currentView)) {
-            loadCurrentView();
-        } else {
-            // Si la vista es la misma, solo actualizamos los datos de los textos
-            // sin destruir los botones y listeners
-            updateUI();
-        }
-
-        if (progressBar != null) {
-            handler.postDelayed(() -> {
-                AnimationHelper.animateProgressBar(weekProgress, weekGoal, progressBar);
-            }, 200);
-        }
-    }
-
-    // Crea este método para actualizar textos sin resetear el layout
-    private void updateUI() {
-        binding.setVariable(asunfdiez.com.equilibra.BR.user, user);
-        binding.executePendingBindings();
-    }
-
-    @Override
     protected void onDestroy() {
         super.onDestroy();
         handler.removeCallbacksAndMessages(null);
-
     }
 }

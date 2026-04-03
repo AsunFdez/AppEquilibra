@@ -28,9 +28,11 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     private static final String CREATE_TABLE_EXPENSES =
             "CREATE TABLE " + Constants.TABLE_EXPENSES + " (" +
                     Constants.COLUMN_EXPENSE_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                    Constants.COLUMN_EXPENSE_TYPE + " TEXT NOT NULL, " +
                     Constants.COLUMN_EXPENSE_AMOUNT + " REAL NOT NULL, " +
                     Constants.COLUMN_EXPENSE_CATEGORY + " TEXT NOT NULL, " +
                     Constants.COLUMN_EXPENSE_DESCRIPTION + " TEXT, " +
+                    Constants.COLUMN_EXPENSE_NOTES + " TEXT, " +
                     Constants.COLUMN_EXPENSE_DATE + " TEXT NOT NULL, " +
                     Constants.COLUMN_EXPENSE_TIMESTAMP + " INTEGER NOT NULL" +
                     ")";
