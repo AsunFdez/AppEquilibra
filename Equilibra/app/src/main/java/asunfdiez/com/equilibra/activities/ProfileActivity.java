@@ -2,340 +2,125 @@ package asunfdiez.com.equilibra.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.EditText;
-import android.widget.ImageButton;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.PopupWindow;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.activity.OnBackPressedCallback;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
-
-import java.util.Locale;
+import androidx.lifecycle.ViewModelProvider;
 
 import asunfdiez.com.equilibra.R;
-import asunfdiez.com.equilibra.controllers.UserController;
 import asunfdiez.com.equilibra.databinding.ActivityProfileBinding;
 import asunfdiez.com.equilibra.databinding.ViewSelectorPopupBinding;
-import asunfdiez.com.equilibra.models.UserProfile;
 import asunfdiez.com.equilibra.utils.AnimationHelper;
 import asunfdiez.com.equilibra.utils.Constants;
-import asunfdiez.com.equilibra.utils.SharedPrefsManager;
-import asunfdiez.com.equilibra.utils.ValidationHelper;
-
+import asunfdiez.com.equilibra.viewmodels.ProfileViewModel;
 
 /**
  * Activity de perfil de usuario
  * Permite visualizar y editar información del perfil personal
- *
  */
 public class ProfileActivity extends AppCompatActivity {
 
-
-    private UserController userController;
-    private UserProfile user;
-    private SharedPrefsManager preferencesManager;
-
-    private Toolbar toolbar;
-    private ImageView ivProfileImage;
-    private TextView tvProfileName;
-    private TextView tvProfileEmail;
-    private EditText etName;
-    private EditText etEmail;
-    private EditText etPhone;
-    private EditText etMonthlyIncome;
-    private Button btnSaveProfile;
-    private Button btnChangePassword;
-    private Button btnDeleteAccount;
-    private ImageButton btnEditProfile;
-    private LinearLayout layoutProfile;
-
-    private LinearLayout viewSelectorButton;
-    private TextView viewSelectorText;
-    private ImageView viewSelectorArrow;
-    // Popup
-    private PopupWindow viewSelectorPopup;
-
+    private ProfileViewModel viewModel;
     private ActivityProfileBinding binding;
-
-
-    private boolean isEditMode = false;
+    private PopupWindow viewSelectorPopup;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         binding = ActivityProfileBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
-        initializeComponents();
+        viewModel = new ViewModelProvider(this).get(ProfileViewModel.class);
+
+        // Vincular el ciclo de vida al binding (Importante para LiveData)
+        binding.setLifecycleOwner(this);
+
+        binding.setViewModel(viewModel);
+
         setupToolbar();
-        loadUserProfile();
+        setupObservers();
         setupListeners();
         setupBackNavigation();
-        AnimationHelper.fadeIn(layoutProfile);
-
+        AnimationHelper.fadeIn(binding.layoutProfile);
     }
 
-    /**
-     * Inicializa los componentes de la UI
-     */
-    private void initializeComponents() {
-        userController = new UserController(this);
-        preferencesManager =  SharedPrefsManager.getInstance(this);
-
-        toolbar = binding.toolbarProfile;
-        layoutProfile = binding.layoutProfile;
-        ivProfileImage = binding.ivProfileImage;
-        tvProfileName = binding.tvProfileName;
-        tvProfileEmail = binding.tvProfileEmail;
-        etName = binding.etName;
-        etEmail = binding.etEmail;
-        etPhone = binding.etPhone;
-        etMonthlyIncome = binding.etMonthlyIncome;
-        btnSaveProfile = binding.btnSaveProfile;
-        btnChangePassword = binding.btnChangePassword;
-        btnDeleteAccount = binding.btnDeleteAccount;
-        btnEditProfile = binding.btnEditProfile;
-
-        viewSelectorButton = binding.viewSelectorButton;
-        viewSelectorText = binding.viewSelectorText;
-        viewSelectorArrow = binding.viewSelectorArrow;
-
-
-    }
-
-    /**
-     * Configura la toolbar con navegación
-     */
     private void setupToolbar() {
-        setSupportActionBar(toolbar);
+        setSupportActionBar(binding.toolbarProfile);
         if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             getSupportActionBar().setTitle(R.string.profile_title);
         }
+        binding.toolbarProfile.setNavigationOnClickListener(v ->
+                getOnBackPressedDispatcher().onBackPressed()
+        );
 
-        toolbar.setNavigationOnClickListener(v -> {
-            onBackPressedDispatcher(); // Llamamos a nuestra navegación personalizada
+    }
+
+    private void setupObservers() {
+        viewModel.getUserProfile().observe(this, user -> {
+            if (user != null) {
+                binding.setUser(user);
+            }
+        });
+
+        viewModel.getEditMode().observe(this, enabled -> {
+            if (enabled) AnimationHelper.shakeAnimation(binding.etName);
+        });
+
+        viewModel.getErrorMessage().observe(this, message -> {
+            if (message != null) {
+                showMessage(message);
+            }
+        });
+
+        viewModel.getSuccessMessage().observe(this, message -> {
+            if (message != null) {
+                showMessage(message);
+            }
+        });
+
+        viewModel.isAccountDeleted().observe(this, deleted -> {
+            if (deleted) {
+                navigateToOnboarding();
+            }
         });
     }
-    // Método para salir de la actividad
-    private void onBackPressedDispatcher() {
 
-        if (isEditMode) {
-            // Si estamos editando, cancelamos la edición y recargamos datos
-            setEditMode(false);
-            loadUserProfile();
-        } else {
-            // Si no estamos editando, salimos de la actividad
-            finish();
-            overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
-            //overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
-        }
-
-    }
-
-    /**
-     * Carga el perfil del usuario
-     */
-    private void loadUserProfile() {
-        user = userController.getCurrentUser();
-
-        if (user != null) {
-            displayUserData(user);
-        } else {
-            showError(getString(R.string.error_loading_profile));
-        }
-    }
-
-    /**
-     * Muestra los datos del usuario en la interfaz
-     *
-     * @param user Usuario a mostrar
-     */
-    private void displayUserData(UserProfile user) {
-        tvProfileName.setText(user.getName());
-        tvProfileEmail.setText(user.getEmail());
-        etName.setText(user.getName());
-        etEmail.setText(user.getEmail());
-        etPhone.setText(user.getPhone() != null ? user.getPhone() : "");
-        double income = user.getMonthlyIncome();
-        String formatted = String.format(Locale.getDefault(), Constants.CURRENCY_FORMAT, income);
-        etMonthlyIncome.setText(formatted);
-
-        updateViewSelectorText();
-
-        // Deshabilitar edición por defecto
-        setEditMode(false);
-    }
-
-    /**
-     * Configura el modo de edición de los campos
-     *
-     * @param enabled true para habilitar edición
-     */
-    private void setEditMode(boolean enabled) {
-        isEditMode = enabled;
-        etName.setEnabled(enabled);
-        etEmail.setEnabled(enabled);
-        etPhone.setEnabled(enabled);
-        etMonthlyIncome.setEnabled(enabled);
-        String emailDummy = getString(R.string.userEmailText);
-        String userDummyName = getString(R.string.userText);
-
-        if (etEmail.getText().toString().equals(emailDummy)) {
-            etEmail.setText("");
-        }
-
-        if (etName.getText().toString().equals(userDummyName)) {
-            etName.setText("");
-        }
-
-        btnSaveProfile.setVisibility(enabled ? View.VISIBLE : View.GONE);
-        btnEditProfile.setVisibility(enabled ? View.GONE : View.VISIBLE);
-
-    }
-
-    /**
-     * Configura los listeners de los componentes
-     */
     private void setupListeners() {
+        binding.viewSelectorButton.setOnClickListener(v -> showViewSelectorPopup());
 
-        // View Selector
-        viewSelectorButton.setOnClickListener(v -> {
-                showViewSelectorPopup();
-        });
-
-        ivProfileImage.setOnClickListener(v -> {
+        binding.ivProfileImage.setOnClickListener(v -> {
             AnimationHelper.scaleUp(v);
             changeProfileImage();
         });
 
-        btnEditProfile.setOnClickListener(v -> {
-            if (!isEditMode) {
-                setEditMode(true);
-                AnimationHelper.shakeAnimation(etName);
-            }
-        });
+        binding.btnEditProfile.setOnClickListener(v -> viewModel.setEditMode(true));
 
-        btnSaveProfile.setOnClickListener(v -> {
+        binding.btnSaveProfile.setOnClickListener(v -> {
             AnimationHelper.scaleUp(v);
-            saveProfileChanges();
-            onBackPressedDispatcher();
+            viewModel.saveProfileChanges();
         });
 
-        btnChangePassword.setOnClickListener(v -> {
+        binding.btnChangePassword.setOnClickListener(v -> {
             AnimationHelper.scaleUp(v);
             showChangePasswordDialog();
         });
 
-        btnDeleteAccount.setOnClickListener(v -> {
+        binding.btnDeleteAccount.setOnClickListener(v -> {
             AnimationHelper.scaleUp(v);
             showDeleteAccountDialog();
         });
     }
 
-    /**
-     * Permite cambiar la imagen de perfil
-     */
-    private void changeProfileImage() {
-        // TODO: Implementar selección de imagen desde galería o cámara
-        Toast.makeText(this, R.string.feature_coming_soon, Toast.LENGTH_SHORT).show();
-    }
-
-    /**
-     * Guarda los cambios del perfil
-     */
-    private void saveProfileChanges() {
-        String name = etName.getText().toString().trim();
-        String email = etEmail.getText().toString().trim();
-        String phone = etPhone.getText().toString().trim();
-        String incomeStr = etMonthlyIncome.getText().toString().trim();
-
-        if (!validateInput(name, email, incomeStr)) {
-            return;
-        }
-
-        double monthlyIncome = Double.parseDouble(incomeStr);
-
-        user = userController.getCurrentUser();
-        if (user != null) {
-            user.setName(name);
-            user.setEmail(email);
-            user.setPhone(phone);
-            user.setMonthlyIncome(monthlyIncome);
-
-            boolean success = userController.updateUser(user);
-
-            if (success) {
-                showSuccess(getString(R.string.profile_updated_success));
-                setEditMode(false);
-                displayUserData(user);
-            } else {
-                showError(getString(R.string.error_updating_profile));
-            }
-        }
-    }
-
-    /**
-     * Valida la entrada del usuario
-     *
-     * @param name Nombre a validar
-     * @param email Email a validar
-     * @param incomeStr Ingreso mensual a validar
-     * @return true si es válido
-     */
-    private boolean validateInput(String name, String email, String incomeStr) {
-        if (name.isEmpty()) {
-            etName.setError(getString(R.string.error_name_required));
-            etName.requestFocus();
-            AnimationHelper.shakeAnimation(etName);
-            return false;
-        }
-
-        if (email.isEmpty() || !ValidationHelper.isValidEmail(email)) {
-            etEmail.setError(getString(R.string.error_invalid_email));
-            etEmail.requestFocus();
-            AnimationHelper.shakeAnimation(etEmail);
-            return false;
-        }
-
-        if (incomeStr.isEmpty()) {
-            etMonthlyIncome.setError(getString(R.string.error_income_required));
-            etMonthlyIncome.requestFocus();
-            AnimationHelper.shakeAnimation(etMonthlyIncome);
-            return false;
-        }
-
-        try {
-            double income = Double.parseDouble(incomeStr);
-            if (income <= 0) {
-                etMonthlyIncome.setError(getString(R.string.error_income_invalid));
-                etMonthlyIncome.requestFocus();
-                AnimationHelper.shakeAnimation(etMonthlyIncome);
-                return false;
-            }
-        } catch (NumberFormatException e) {
-            etMonthlyIncome.setError(getString(R.string.error_income_invalid));
-            etMonthlyIncome.requestFocus();
-            AnimationHelper.shakeAnimation(etMonthlyIncome);
-            return false;
-        }
-
-        return true;
-    }
-
-    /**
-     * Muestra el popup de selección de vista
-     */
     private void showViewSelectorPopup() {
+
         ViewSelectorPopupBinding selectorBinding = ViewSelectorPopupBinding.inflate(getLayoutInflater());
+        selectorBinding.setUser(viewModel.getUserProfile().getValue());
 
         View popupView = selectorBinding.getRoot();
 
@@ -346,120 +131,51 @@ public class ProfileActivity extends AppCompatActivity {
                 true
         );
 
+        selectorBinding.viewOption1.setOnClickListener(v -> selectViewMode(Constants.USER_LEVEL_BEGINNER));
+        selectorBinding.viewOption2.setOnClickListener(v -> selectViewMode(Constants.USER_LEVEL_INTERMEDIATE));
+        selectorBinding.viewOption3.setOnClickListener(v -> selectViewMode(Constants.USER_LEVEL_ADVANCED));
 
-        highlightSelectedView(selectorBinding.viewOption1, selectorBinding.viewOption2, selectorBinding.viewOption3);
-
-        selectorBinding.viewOption1.setOnClickListener(v -> {
-            changeView("beginner");
-            viewSelectorPopup.dismiss();
-        });
-
-        selectorBinding.viewOption2.setOnClickListener(v -> {
-            changeView("intermediate");
-            viewSelectorPopup.dismiss();
-        });
-
-        selectorBinding.viewOption3.setOnClickListener(v -> {
-            changeView("advanced");
-            viewSelectorPopup.dismiss();
-        });
-
-        viewSelectorArrow.animate().rotation(180f).setDuration(200).start();
-
+        binding.viewSelectorArrow.animate().rotation(180f).setDuration(200).start();
         viewSelectorPopup.setOnDismissListener(() ->
-                viewSelectorArrow.animate().rotation(0f).setDuration(200).start()
+                binding.viewSelectorArrow.animate().rotation(0f).setDuration(200).start()
         );
 
-        viewSelectorPopup.showAsDropDown(viewSelectorButton, 0, 10);
+        viewSelectorPopup.setOnDismissListener(() ->
+                binding.viewSelectorArrow.animate().rotation(0f).setDuration(200).start()
+        );
+
+        viewSelectorPopup.showAsDropDown(binding.viewSelectorButton, 0, 10);
+
     }
 
-    private void highlightSelectedView(TextView option1, TextView option2, TextView option3) {
-        // ContextCompat.getColor para evitar depreciación
-        int colorGray = androidx.core.content.ContextCompat.getColor(this, R.color.gray_700);
-        int colorPrimary = androidx.core.content.ContextCompat.getColor(this, R.color.equilibra_primary);
-        int colorLight = androidx.core.content.ContextCompat.getColor(this, R.color.primary_lighter);
-        int colorTransparent = androidx.core.content.ContextCompat.getColor(this, android.R.color.transparent);
+    private void selectViewMode(String mode) {
+        viewModel.changeView(mode);
+        viewSelectorPopup.dismiss();
+    }
 
-        // Reset all
-        TextView[] options = {option1, option2, option3};
-        for (TextView opt : options) {
-            opt.setTextColor(colorGray);
-            opt.setTypeface(null, android.graphics.Typeface.NORMAL);
-            opt.setBackgroundColor(colorTransparent);
-        }
-
-        TextView selectedOption = switch (user.getCurrentView()) {
-            case "beginner" -> option1;
-            case "intermediate" -> option2;
-            case "advanced" -> option3;
-            default -> null;
-        };
-
-        if (selectedOption != null) {
-            selectedOption.setTextColor(colorPrimary);
-            selectedOption.setTypeface(null, android.graphics.Typeface.BOLD);
-            selectedOption.setBackgroundColor(colorLight);
+    private void showMessage(String message) {
+        if (message != null) {
+            Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
         }
     }
 
-    private void updateViewSelectorText() {
-
-        String text = switch (user.getCurrentView()) {
-            case "intermediate" -> getString(R.string.view_selector_text_intermediate);
-            case "advanced" -> getString(R.string.view_selector_text_advanced);
-            default -> getString(R.string.view_selector_text_beginner);
-        };
-        viewSelectorText.setText(text);
+    private void changeProfileImage() {
+        showMessage(getString(R.string.feature_coming_soon));
     }
 
-    private void changeView(String newView) {
-        if (user.getCurrentView().equals(newView)) return;
-
-        userController.setCurrentView(newView);
-
-        // Update UI
-        updateViewSelectorText();
-
-    }
-
-
-    /**
-     * Muestra diálogo para cambiar contraseña
-     */
     private void showChangePasswordDialog() {
-        // TODO: Implementar cambio de contraseña
-        Toast.makeText(this, R.string.feature_coming_soon, Toast.LENGTH_SHORT).show();
+        showMessage(getString(R.string.feature_coming_soon));
     }
 
-    /**
-     * Muestra diálogo de confirmación para eliminar cuenta
-     */
     private void showDeleteAccountDialog() {
         android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(this);
         builder.setTitle(R.string.delete_account_title);
         builder.setMessage(R.string.delete_account_message);
-        builder.setPositiveButton(R.string.delete, (dialog, which) -> deleteAccount());
+        builder.setPositiveButton(R.string.delete, (dialog, which) -> viewModel.deleteAccount());
         builder.setNegativeButton(R.string.cancel, null);
         builder.show();
     }
 
-    /**
-     * Elimina la cuenta del usuario
-     */
-    private void deleteAccount() {
-        boolean success = userController.deleteCurrentUser();
-
-        if (success) {
-            preferencesManager.clearAll();
-            navigateToOnboarding();
-        } else {
-            showError(getString(R.string.error_deleting_account));
-        }
-    }
-
-    /**
-     * Navega al onboarding después de eliminar la cuenta
-     */
     private void navigateToOnboarding() {
         Intent intent = new Intent(this, SplashActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
@@ -467,42 +183,14 @@ public class ProfileActivity extends AppCompatActivity {
         finish();
     }
 
-    /**
-     * Muestra mensaje de éxito
-     *
-     * @param message Mensaje a mostrar
-     */
-    private void showSuccess(String message) {
-        Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
-    }
-
-    /**
-     * Muestra mensaje de error
-     *
-     * @param message Mensaje a mostrar
-     */
-    private void showError(String message) {
-        Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        if (item.getItemId() == android.R.id.home) {
-            // Ejecutamos la lógica de ir atrás
-            onBackPressedDispatcher();
-            return true;
-        }
-        return super.onOptionsItemSelected(item);
-    }
-
-
-
     private void setupBackNavigation() {
-
         getOnBackPressedDispatcher().addCallback(this, new OnBackPressedCallback(true) {
             @Override
             public void handleOnBackPressed() {
-                onBackPressedDispatcher();
+                viewModel.handleBackPress(() -> {
+                    finish();
+                    overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
+                });
             }
         });
     }

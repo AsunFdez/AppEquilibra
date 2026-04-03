@@ -61,7 +61,7 @@ public class MainActivity extends AppCompatActivity {
     // UserProfile Data
     private int weekProgress = 0;
     private int weekGoal = 5;
-    private String currentView = "beginner"; // beginner, intermediate, advanced
+    private String currentView = Constants.USER_LEVEL_BEGINNER;
 
     // Handler
     private final Handler handler = new Handler();

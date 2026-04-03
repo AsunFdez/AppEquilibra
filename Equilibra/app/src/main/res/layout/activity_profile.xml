@@ -8,7 +8,13 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <data>
-
+        <import type="android.view.View" />
+        <variable
+            name="viewModel"
+            type="asunfdiez.com.equilibra.viewmodels.ProfileViewModel" />
+        <variable
+            name="user"
+            type="asunfdiez.com.equilibra.models.UserProfile" />
     </data>
 
     <androidx.coordinatorlayout.widget.CoordinatorLayout
@@ -87,7 +93,7 @@
                         android:id="@+id/tvProfileName"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="@string/userText"
+                        android:text="@{user.name}"
                         android:textSize="24sp"
                         android:textColor="@color/text_primary"
                         android:layout_gravity="center_horizontal"
@@ -106,7 +112,7 @@
                             android:id="@+id/tvProfileEmail"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="@string/userEmailText"
+                            android:text="@{user.email}"
                             android:textSize="14sp"
                             android:textColor="@color/text_secondary"
                             android:layout_marginEnd="8dp" />
@@ -144,9 +150,10 @@
                             android:id="@+id/etName"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
+                            android:text="@={user.name}"
                             android:hint="@string/profile_name"
                             android:inputType="textPersonName"
-                            android:enabled="false" />
+                            android:enabled="@{viewModel.editMode}"/>
 
                     </com.google.android.material.textfield.TextInputLayout>
 
@@ -162,9 +169,10 @@
                             android:id="@+id/etEmail"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
+                            android:text="@={user.email}"
                             android:hint="@string/profile_email"
                             android:inputType="textEmailAddress"
-                            android:enabled="false" />
+                            android:enabled="@{viewModel.editMode}" />
 
                     </com.google.android.material.textfield.TextInputLayout>
 
@@ -180,9 +188,10 @@
                             android:id="@+id/etPhone"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
+                            android:text="@={user.phone}"
                             android:hint="@string/profile_phone"
                             android:inputType="phone"
-                            android:enabled="false" />
+                            android:enabled="@{viewModel.editMode}" />
 
                     </com.google.android.material.textfield.TextInputLayout>
 
@@ -199,17 +208,31 @@
                             android:id="@+id/etMonthlyIncome"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
+                            app:etMonthlyIncome = "@={user.monthlyIncome}"
                             android:hint="@string/profile_monthly_income"
                             android:inputType="numberDecimal"
-                            android:enabled="false" />
+                            android:enabled="@{viewModel.editMode}" />
 
                     </com.google.android.material.textfield.TextInputLayout>
+
+
+                    <!-- Botón guardar (oculto por defecto) -->
+                    <com.google.android.material.button.MaterialButton
+                        style="@style/Equilibra.Button.Primary"
+                        android:id="@+id/btnSaveProfile"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/save_changes"
+                        android:visibility="@{viewModel.editMode ? View.VISIBLE : View.GONE}" />
+
 
                     <!-- View Selector -->
                     <FrameLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_gravity="end">
+                        android:layout_gravity="end"
+                        android:background="@color/background_accent_light"
+                        android:visibility="@{viewModel.editMode ? View.GONE : View.VISIBLE}">
 
                         <LinearLayout
                             android:id="@+id/viewSelectorButton"
@@ -222,16 +245,16 @@
                             android:gravity="center_vertical"
                             android:orientation="horizontal"
                             android:paddingStart="16dp"
-                            android:paddingTop="8dp"
+                            android:paddingTop="16dp"
                             android:paddingEnd="16dp"
-                            android:paddingBottom="8dp">
+                            android:paddingBottom="16dp">
 
                             <TextView
                                 android:id="@+id/changeViewText"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:text="@string/view_selector_text"
-                                android:textColor="@color/gray_700"
+                                android:textColor="@color/white"
                                 android:textSize="14sp"
                                 android:textStyle="bold" />
 
@@ -240,8 +263,8 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_marginStart="8dp"
-                                android:text="@string/view_selector_text_beginner"
-                                android:textColor="@color/gray_700"
+                                app:viewModeText="@{user.currentView}"
+                                android:textColor="@color/white"
                                 android:textSize="14sp"
                                 android:textStyle="bold" />
 
@@ -251,18 +274,9 @@
                                 android:layout_height="16dp"
                                 android:layout_marginStart="8dp"
                                 android:src="@drawable/ic_nav_chevron_down"
-                                app:tint="@color/gray_700" />
+                                app:tint="@color/white" />
                         </LinearLayout>
                     </FrameLayout>
-
-
-                    <!-- Botón guardar (oculto por defecto) -->
-                    <com.google.android.material.button.MaterialButton
-                        style="@style/Equilibra.Button.Primary"
-                        android:id="@+id/btnSaveProfile"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="@string/save_changes" />
 
                     <!-- Sección de seguridad -->
                     <TextView
@@ -273,15 +287,17 @@
                         android:textColor="@color/text_secondary"
                         android:layout_marginTop="8dp"
                         android:layout_marginBottom="12dp"
-                        android:paddingStart="4dp" />
+                        android:paddingStart="4dp"
+                        android:visibility="@{viewModel.editMode ? View.GONE : View.VISIBLE}"/>
 
 
                     <com.google.android.material.button.MaterialButton
-                        style="@style/Equilibra.Button.Secondary"
+                        style="@style/Equilibra.Button.Accent"
                         android:id="@+id/btnChangePassword"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="@string/change_password" />
+                        android:text="@string/change_password"
+                        android:visibility="@{viewModel.editMode ? View.GONE : View.VISIBLE}"/>
 
                     <!-- Zona de peligro -->
                     <TextView
@@ -291,14 +307,16 @@
                         android:textSize="14sp"
                         android:textColor="@color/equilibra_accent"
                         android:layout_marginBottom="12dp"
-                        android:paddingStart="4dp" />
+                        android:paddingStart="4dp"
+                        android:visibility="@{viewModel.editMode ? View.GONE : View.VISIBLE}"/>
 
                     <com.google.android.material.button.MaterialButton
                         style="@style/Equilibra.Button.Accent"
                         android:id="@+id/btnDeleteAccount"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="@string/delete_account" />
+                        android:text="@string/delete_account"
+                        android:visibility="@{viewModel.editMode ? View.GONE : View.VISIBLE}"/>
 
 
                 </LinearLayout>

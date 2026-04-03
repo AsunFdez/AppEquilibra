@@ -1,5 +1,7 @@
 package asunfdiez.com.equilibra.models;
 
+import asunfdiez.com.equilibra.utils.Constants;
+
 public class UserProfile {
 
     private long id;
@@ -26,7 +28,7 @@ public class UserProfile {
     private int budgetExperience;
     private int savingsHabit;
 
-    private String currentView = "beginner"; // beginner, intermediate, advanced
+    private String currentView = Constants.USER_LEVEL_BEGINNER;
     private int dayCount = 1;
     private int weekProgress = 0;
     private int weekGoal = 5;

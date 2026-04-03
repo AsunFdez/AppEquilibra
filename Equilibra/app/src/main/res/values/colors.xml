@@ -23,7 +23,7 @@
     <color name="background_card">#FFFFFF</color>
     <color name="background_light">#F9FAFB</color>
     <color name="tip_card_bg">#D5F4E6</color>
-    <color name="expenses_card_bg">#FFF5EE</color>
+    <color name="background_accent_light">#FFF5EE</color>
 
 
     <!-- Status Bar -->

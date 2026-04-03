@@ -13,9 +13,9 @@ public final class Constants {
     // Onboarding
     public static final String KEY_ONBOARDING_COMPLETE = "onboardingComplete";
     public static final String KEY_USER_LEVEL = "userLevel";
-    public static final String USER_LEVEL_BEGINNER = "userBeginner";
-    public static final String USER_LEVEL_INTERMEDIATE = "userIntermediate";
-    public static final String USER_LEVEL_ADVANCED = "userAdvanced";
+    public static final String USER_LEVEL_BEGINNER = "beginner";
+    public static final String USER_LEVEL_INTERMEDIATE = "intermediate";
+    public static final String USER_LEVEL_ADVANCED = "advanced";
     public static final String KEY_ONBOARDING_COMPLETED_AT = "onboardingCompletedAt";
 
     // FAB
