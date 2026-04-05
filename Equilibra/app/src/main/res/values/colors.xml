@@ -2,10 +2,9 @@
 <resources>
 
     <!-- Equilibra Brand Colors -->
-    <color name="equilibra_primary">#2ECC71</color>
-    <color name="equilibra_primary_dark">#27AE60</color>
-    <color name="equilibra_secondary">#3498DB</color>
-    <color name="equilibra_accent">#E67E22</color>
+    <color name="primary">#2ECC71</color>
+    <color name="secondary">#3498DB</color>
+    <color name="accent">#E67E22</color>
 
     <!-- Gray Scale -->
     <color name="gray_800">#1F2937</color>
@@ -38,16 +37,18 @@
 
     <!-- Primary Variations -->
     <color name="primary_dark">#27AE60</color>
-
     <color name="primary_main">#2ECC71</color>
     <color name="primary_light">#27AE60</color>
     <color name="primary_lighter">#D5F4E6</color>
     <color name="primary_lightest">#E8F8F0</color>
 
+    <!-- Secondary Variations -->
+    <color name="secondary_dark">#2980B9</color>
     <color name="secondary_main">#3498DB</color>
     <color name="secondary_light">#5DADE2</color>
     <color name="secondary_lighter">#D6EAF8</color>
 
+    <!-- Accent Variations -->
     <color name="accent_main">#E67E22</color>
     <color name="accent_dark">#D35400</color>
     <color name="accent_lighter">#EB984E</color>
@@ -62,8 +63,6 @@
     <color name="text_secondary">#4A5565</color>
     <color name="border_gray">#E5E7EB</color>
 
-
-    <color name="brand_green">#2ECC71</color>
 
     <!-- Estados -->
     <color name="success">#2ECC71</color>
@@ -80,5 +79,30 @@
     <color name="border">#E0E0E0</color>
     <color name="divider">#EEEEEE</color>
 
+    <!-- Primario con alpha -->
+    <color name="primary_alpha">#332ECC71</color>
+    <color name="primaryDark">#27AE60</color>
+
+    <!-- Secundario con alpha -->
+    <color name="secondary_alpha">#333498DB</color>
+    <color name="secondaryDark">#2980B9</color>
+
+    <!-- Acento con alpha -->
+    <color name="accentLight">#FFFBF3</color>
+
+    <!-- Error con alpha -->
+    <color name="errorLight">#FFF5F5</color>
+    <color name="error_alpha">#33E74C3C</color>
+
+    <!-- Warning -->
+    <color name="warningLight">#FFFAEF</color>
+
+    <!-- Backgrounds -->
+    <color name="background">#F5F6FA</color>
+    <color name="backgroundCard">#FFFFFF</color>
+
+    <!-- Textos (alias para compatibilidad) -->
+    <color name="textPrimary">#2C3E50</color>
+    <color name="textSecondary">#7F8C8D</color>
 
 </resources>

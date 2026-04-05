@@ -33,23 +33,28 @@ android {
 
     buildFeatures {
         dataBinding = true
+        viewBinding = true
     }
 }
 
 dependencies {
-    implementation("androidx.appcompat:appcompat:1.6.1")
-    implementation("androidx.constraintlayout:constraintlayout:2.1.4")
-    implementation("com.google.android.material:material:1.11.0")
-    implementation("androidx.cardview:cardview:1.0.0")
-    implementation("com.google.code.gson:gson:2.10.1")
-
-    //implementation(libs.appcompat)
-    //implementation(libs.material)
-    //implementation(libs.constraintlayout)
-
+    // AndroidX Core
+    implementation(libs.appcompat)
+    implementation(libs.constraintlayout)
     implementation(libs.activity)
     implementation(libs.recyclerview)
     testImplementation(libs.junit)
     androidTestImplementation(libs.ext.junit)
     androidTestImplementation(libs.espresso.core)
+    implementation(libs.cardview)
+
+    implementation(libs.material.v1110)
+    implementation(libs.gson)
+
+    // AGREGAR LIFECYCLE (LiveData + ViewModel)
+    implementation(libs.lifecycle.viewmodel)
+    implementation(libs.lifecycle.livedata)
+    implementation(libs.lifecycle.common.java8)
+    implementation(libs.lifecycle.runtime)
+
 }

@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+        <variable
+            name="category"
+            type="asunfdiez.com.equilibra.models.ExpenseCategory" />
+    </data>
+
+    <LinearLayout
+        android:id="@+id/layoutCategory"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:gravity="center"
+        android:padding="12dp"
+        android:background="@{category.selected ? @drawable/bg_category_selected : @drawable/bg_category_normal}">
+
+        <ImageView
+            android:id="@+id/ivCategoryIcon"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            app:imageResource="@{category.iconResId}"
+            app:imageTint="@{category.color}"
+            android:contentDescription="@string/category_icon" />
+
+        <TextView
+            android:id="@+id/tvCategoryName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text="@{category.name}"
+            android:textSize="12sp"
+            android:textColor="@{category.selected ? @color/primary : @color/textPrimary}"
+            android:textStyle="@{category.selected ? `bold` : `normal`}"
+            android:maxLines="1"
+            android:ellipsize="end" />
+
+    </LinearLayout>
+
+</layout>

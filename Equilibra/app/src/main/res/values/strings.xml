@@ -113,6 +113,8 @@
     <string name="change_password">Cambiar contraseña</string>
     <string name="delete_account">Eliminar cuenta</string>
 
+    <string name="save_expense">Guardar gasto</string>
+
     <string name="delete_account_title">¿Eliminar cuenta?</string>
     <string name="delete_account_message">Esta acción eliminará permanentemente tu cuenta y todos tus datos. Esta acción no se puede deshacer.</string>
 
@@ -140,9 +142,41 @@
     <string name="feature_coming_soon">Función próximamente disponible</string>
     <string name="profile_edition">Editar perfil</string>
 
+    <string name="btn_back">Atrás</string>
+    <string name="btn_skip">Saltar</string>
+    <string name="btn_finish">Finalizar</string>
 
     <string name="analytics_details">📊 Análisis Detallado</string>
     <string name="view_patterns_waste">Visualiza tus patrones de gasto</string>
+
+    <!-- Add Expense -->
+    <string name="add_expense_title">Añadir Transacción</string>
+    <string name="add_expense_type">Tipo</string>
+    <string name="add_expense_expense">Gasto</string>
+    <string name="add_expense_income">Ingreso</string>
+    <string name="add_expense_amount">Monto</string>
+    <string name="add_expense_description">Descripción</string>
+    <string name="add_expense_category">Categoría</string>
+    <string name="add_expense_date">Fecha</string>
+    <string name="add_expense_save">Guardar</string>
+
+
+    <!-- Intervention -->
+    <string name="intervention_title">Un momento para reflexionar</string>
+    <string name="intervention_understood">Entendido</string>
+    <string name="intervention_view_analysis">Ver análisis</string>
+
+    <!-- Analysis -->
+    <string name="analysis_title">Análisis Financiero</string>
+    <string name="analysis_insights">Insights</string>
+    <string name="analysis_categories">Por categorías</string>
+
+    <!-- Achievements -->
+    <string name="achievements_title">Logros y Progreso</string>
+    <string name="achievements_your_level">Tu nivel</string>
+    <string name="achievements_total_points">Puntos totales</string>
+    <string name="achievements_unlocked">desbloqueados</string>
+
 
 
     <!-- SoftIntervention Activity -->
@@ -202,13 +236,37 @@
     <string name="insight_title">Insight financiero</string>
     <string name="alert_title">Alerta importante</string>
 
-    <!-- Categorías comunes -->
-    <string name="category_entertainment">Entretenimiento</string>
+    <!-- Categorías -->
+    <string name="category_food">Comida</string>
+    <string name="category_transport">Transporte</string>
+    <string name="category_home">Vivienda</string>
+    <string name="category_health">Salud</string>
+    <string name="category_leisure">Ocio</string>
+    <string name="category_clothes">Ropa</string>
+    <string name="category_education">Educación</string>
+    <string name="category_care">Cuidado</string>
+    <string name="category_others">Otros</string>
+    <string name="category_icon">Icono de categoría</string>
     <string name="category_restaurants">Restaurantes</string>
     <string name="category_shopping">Compras</string>
-    <string name="category_transport">Transporte</string>
     <string name="category_subscriptions">Suscripciones</string>
     <string name="category_other">Otros</string>
+
+    <string name="add_expense">Añadir Gasto</string>
+    <string name="expense_amount">Cantidad del gasto</string>
+    <string name="category">Categoría</string>
+    <string name="optional_description">Descripción (opcional)</string>
+    <string name="date">Fecha</string>
+    <string name="big_expense">⚠️ Gasto Grande</string>
+    <string name="target_impact">⚠️ Impacto en objetivo:</string>
+    <string name="alternatives">💡 Alternativas:</string>
+    <string name="what_decides">❓ ¿Qué decides?</string>
+    <string name="purchase_answer">Comprar igual</string>
+    <string name="think_answer">Pensarlo</string>
+    <string name="alternatives_answer">Buscar alternativas</string>
+    <string name="quantity">Cantidad</string>
+    <string name="chose_category">Selecciona categoría</string>
+    <string name="example_expense">Ej: Cena en restaurante italiano</string>
 
 
 </resources>

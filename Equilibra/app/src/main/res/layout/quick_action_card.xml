@@ -39,7 +39,7 @@
                         android:layout_height="20dp"
                         android:layout_gravity="center"
                         android:src="@drawable/ic_fea_zap"
-                        android:tint="@color/equilibra_accent" />
+                        android:tint="@color/accent" />
                 </FrameLayout>
 
                 <!-- Title -->
@@ -61,7 +61,7 @@
                 android:clickable="true"
                 android:focusable="true"
                 android:text="@string/register_last_expense"
-                android:textColor="@color/equilibra_secondary"
+                android:textColor="@color/secondary"
                 android:textSize="16sp"
                 android:textStyle="bold" />
         </LinearLayout>

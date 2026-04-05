@@ -40,7 +40,7 @@
             android:layout_width="40dp"
             android:layout_height="40dp"
             android:src="@drawable/ic_uti_check"
-            android:tint="@color/equilibra_secondary"
+            android:tint="@color/secondary"
             android:layout_marginEnd="16dp"
             android:visibility="visible" />
 
@@ -77,7 +77,7 @@
             android:layout_width="24dp"
             android:layout_height="24dp"
             android:src="@drawable/ic_uti_check"
-            android:tint="@color/equilibra_primary"
+            android:tint="@color/primary"
             android:visibility="gone" />
 
     </LinearLayout>

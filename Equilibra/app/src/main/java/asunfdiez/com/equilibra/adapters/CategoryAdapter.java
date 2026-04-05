@@ -1,0 +1,98 @@
+package asunfdiez.com.equilibra.adapters;
+
+import android.content.Context;
+import android.view.LayoutInflater;
+import android.view.ViewGroup;
+
+import androidx.annotation.NonNull;
+import androidx.databinding.DataBindingUtil;
+import androidx.recyclerview.widget.RecyclerView;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import asunfdiez.com.equilibra.R;
+import asunfdiez.com.equilibra.databinding.ItemCategoryBinding;
+import asunfdiez.com.equilibra.models.ExpenseCategory;
+
+/**
+ * CategoryAdapter - Adapter para mostrar categorías en grid
+ * Utiliza Data Binding para vincular datos con la vista
+ */
+public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.CategoryViewHolder> {
+
+    private Context context;
+    private List<ExpenseCategory> categories;
+    private OnCategoryClickListener listener;
+
+    /**
+     * Interface para manejar clicks en categorías
+     */
+    public interface OnCategoryClickListener {
+        void onCategoryClick(ExpenseCategory category);
+    }
+
+    public CategoryAdapter(Context context, OnCategoryClickListener listener) {
+        this.context = context;
+        this.categories = new ArrayList<>();
+        this.listener = listener;
+    }
+
+    @NonNull
+    @Override
+    public CategoryViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        LayoutInflater inflater = LayoutInflater.from(context);
+        ItemCategoryBinding binding = DataBindingUtil.inflate(
+                inflater,
+                R.layout.item_category,
+                parent,
+                false
+        );
+        return new CategoryViewHolder(binding);
+    }
+
+    @Override
+    public void onBindViewHolder(@NonNull CategoryViewHolder holder, int position) {
+        ExpenseCategory category = categories.get(position);
+        holder.bind(category, listener);
+    }
+
+    @Override
+    public int getItemCount() {
+        return categories.size();
+    }
+
+    /**
+     * Actualiza la lista de categorías
+     */
+    public void updateCategories(List<ExpenseCategory> newCategories) {
+        this.categories = newCategories;
+        notifyDataSetChanged();
+    }
+
+    /**
+     * ViewHolder con Data Binding
+     */
+    static class CategoryViewHolder extends RecyclerView.ViewHolder {
+
+        private ItemCategoryBinding binding;
+
+        public CategoryViewHolder(ItemCategoryBinding binding) {
+            super(binding.getRoot());
+            this.binding = binding;
+        }
+
+        public void bind(ExpenseCategory category, OnCategoryClickListener listener) {
+            binding.setCategory(category);
+            binding.executePendingBindings();
+
+            // Configurar click listener
+            binding.layoutCategory.setOnClickListener(v -> {
+                if (listener != null) {
+                    listener.onCategoryClick(category);
+                }
+            });
+        }
+    }
+}
+

@@ -236,7 +236,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void activateNavItem(ImageView icon, TextView text) {
-        int primary = getResources().getColor(R.color.equilibra_primary);
+        int primary = getResources().getColor(R.color.primary);
         icon.setColorFilter(primary);
         text.setTextColor(primary);
         text.setTypeface(null, Typeface.BOLD);

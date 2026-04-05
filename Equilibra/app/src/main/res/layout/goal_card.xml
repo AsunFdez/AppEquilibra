@@ -40,7 +40,7 @@
                 android:layout_width="40dp"
                 android:layout_height="40dp"
                 android:src="@drawable/ic_ach_target"
-                android:tint="@color/equilibra_secondary"
+                android:tint="@color/secondary"
                 android:layout_marginEnd="12dp" />
 
             <!-- Título y cantidad -->
@@ -76,7 +76,7 @@
                 android:layout_height="wrap_content"
                 android:text="0%"
                 android:textSize="18sp"
-                android:textColor="@color/equilibra_secondary" />
+                android:textColor="@color/secondary" />
 
         </LinearLayout>
 

@@ -94,7 +94,7 @@
 
                     app:cardIconCircle="@drawable/circle_secondary_light"
                     app:cardIcon="@drawable/ic_fea_flag"
-                    app:cardIconTint="@color/equilibra_secondary"
+                    app:cardIconTint="@color/secondary"
                     app:cardTitle="@string/next_goal_title"
                     app:cardDescription="@string/next_goal_1"
                     app:showArrow="false"

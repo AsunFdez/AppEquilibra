@@ -2,12 +2,15 @@ package asunfdiez.com.equilibra.adapters;
 
 
 import android.content.Context;
+import android.content.res.ColorStateList;
 import android.graphics.Typeface;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.core.content.ContextCompat;
+import androidx.core.widget.ImageViewCompat;
 import androidx.databinding.BindingAdapter;
 import androidx.databinding.InverseBindingAdapter;
 import androidx.databinding.InverseBindingListener;
@@ -50,7 +53,7 @@ public class ProfileBindingAdapter {
     public static void setSelectedViewStyle(TextView view, boolean isSelected) {
         Context context = view.getContext();
         if (isSelected) {
-            view.setTextColor(ContextCompat.getColor(context, R.color.equilibra_primary));
+            view.setTextColor(ContextCompat.getColor(context, R.color.primary));
             view.setTypeface(null, Typeface.BOLD);
             view.setBackgroundColor(ContextCompat.getColor(context, R.color.primary_lighter));
         } else {
@@ -91,6 +94,34 @@ public class ProfileBindingAdapter {
                     listener.onChange();
                 }
             });
+        }
+    }
+
+    @BindingAdapter("android:textStyle")
+    public static void setTextStyle(TextView view, String style) {
+        if (style == null) return;
+        switch (style) {
+            case "bold":
+                view.setTypeface(null, Typeface.BOLD);
+                break;
+            case "italic":
+                view.setTypeface(null, Typeface.ITALIC);
+                break;
+            default:
+                view.setTypeface(null, Typeface.NORMAL);
+                break;
+        }
+    }
+
+    @BindingAdapter("app:tint")
+    public static void setImageTint(ImageView view, int color) {
+        ImageViewCompat.setImageTintList(view, ColorStateList.valueOf(color));
+    }
+
+    @BindingAdapter("app:srcCompat")
+    public static void setImageResource(ImageView imageView, int resourceId) {
+        if (resourceId != 0) {
+            imageView.setImageResource(resourceId);
         }
     }
 }

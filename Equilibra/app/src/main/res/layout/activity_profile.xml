@@ -25,14 +25,14 @@
         <com.google.android.material.appbar.AppBarLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/equilibra_primary"
+            android:background="@color/primary"
             app:elevation="4dp">
 
             <androidx.appcompat.widget.Toolbar
                 android:id="@+id/toolbarProfile"
                 android:layout_width="match_parent"
                 android:layout_height="?attr/actionBarSize"
-                android:background="@color/equilibra_primary"
+                android:background="@color/primary"
                 app:titleTextColor="@android:color/white"
                 app:navigationIcon="@drawable/ic_arrow_back" />
 
@@ -123,7 +123,7 @@
                             android:layout_height="32dp"
                             android:background="?attr/selectableItemBackgroundBorderless"
                             android:src="@drawable/ic_edit"
-                            app:tint="@color/equilibra_primary"
+                            app:tint="@color/primary"
                             android:contentDescription="@string/profile_edition" />
 
                     </LinearLayout>
@@ -143,7 +143,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginBottom="12dp"
                         app:boxBackgroundColor="@android:color/white"
-                        app:boxStrokeColor="@color/equilibra_primary"
+                        app:boxStrokeColor="@color/primary"
                         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
 
                         <com.google.android.material.textfield.TextInputEditText
@@ -162,7 +162,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginBottom="12dp"
                         app:boxBackgroundColor="@android:color/white"
-                        app:boxStrokeColor="@color/equilibra_primary"
+                        app:boxStrokeColor="@color/primary"
                         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
 
                         <com.google.android.material.textfield.TextInputEditText
@@ -181,7 +181,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginBottom="12dp"
                         app:boxBackgroundColor="@android:color/white"
-                        app:boxStrokeColor="@color/equilibra_primary"
+                        app:boxStrokeColor="@color/primary"
                         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
 
                         <com.google.android.material.textfield.TextInputEditText
@@ -200,7 +200,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginBottom="16dp"
                         app:boxBackgroundColor="@android:color/white"
-                        app:boxStrokeColor="@color/equilibra_primary"
+                        app:boxStrokeColor="@color/primary"
                         app:suffixText="€"
                         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
 
@@ -305,7 +305,7 @@
                         android:layout_height="wrap_content"
                         android:text="@string/profile_danger_zone"
                         android:textSize="14sp"
-                        android:textColor="@color/equilibra_accent"
+                        android:textColor="@color/accent"
                         android:layout_marginBottom="12dp"
                         android:paddingStart="4dp"
                         android:visibility="@{viewModel.editMode ? View.GONE : View.VISIBLE}"/>

@@ -80,7 +80,7 @@ public class SoftInterventionActivity extends AppCompatActivity {
     private void updateUIBySeverity(InterventionMessage message) {
         int colorRes = switch (message.getSeverity()) {
             case "high" -> R.color.error;
-            case "medium" -> R.color.equilibra_accent;
+            case "medium" -> R.color.accent;
             default -> R.color.warning;
         };
         binding.ivInterventionIcon.setColorFilter(getColor(colorRes));

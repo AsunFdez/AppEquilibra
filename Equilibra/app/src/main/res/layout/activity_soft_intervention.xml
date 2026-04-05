@@ -70,7 +70,7 @@
                         android:layout_height="120dp"
                         android:layout_gravity="center"
                         android:src="@drawable/ic_alert_soft"
-                        android:tint="@color/equilibra_accent" />
+                        android:tint="@color/accent" />
 
                 </FrameLayout>
 
@@ -173,7 +173,7 @@
                             android:layout_width="48dp"
                             android:layout_height="48dp"
                             android:src="@drawable/ic_fea_lightbulb"
-                            android:tint="@color/equilibra_accent"
+                            android:tint="@color/accent"
                             android:layout_marginEnd="16dp" />
 
                         <LinearLayout
@@ -230,7 +230,7 @@
                         android:layout_width="40dp"
                         android:layout_height="40dp"
                         android:src="@drawable/ic_check_circle"
-                        android:tint="@color/equilibra_primary"
+                        android:tint="@color/primary"
                         android:layout_marginEnd="16dp" />
 
                     <LinearLayout
@@ -283,7 +283,7 @@
                         android:layout_width="40dp"
                         android:layout_height="40dp"
                         android:src="@drawable/ic_check_circle"
-                        android:tint="@color/equilibra_primary"
+                        android:tint="@color/primary"
                         android:layout_marginEnd="16dp" />
 
                     <LinearLayout
@@ -336,7 +336,7 @@
                         android:layout_width="40dp"
                         android:layout_height="40dp"
                         android:src="@drawable/ic_check_circle"
-                        android:tint="@color/equilibra_primary"
+                        android:tint="@color/primary"
                         android:layout_marginEnd="16dp" />
 
                     <LinearLayout
@@ -397,7 +397,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="56dp"
                         android:text="Ajustar mi presupuesto"
-                        android:textColor="@color/equilibra_primary"
+                        android:textColor="@color/primary"
                         android:textSize="16sp"
                         android:background="@drawable/button_outline_primary"
                         android:layout_marginBottom="12dp" />

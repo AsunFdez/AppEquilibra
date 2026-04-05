@@ -71,7 +71,7 @@
                 android:layout_height="wrap_content"
                 android:text="$ 150.00"
                 android:textSize="18sp"
-                android:textColor="@color/equilibra_accent"
+                android:textColor="@color/accent"
                 android:textStyle="bold" />
 
         </LinearLayout>

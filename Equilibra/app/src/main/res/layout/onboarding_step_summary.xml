@@ -127,7 +127,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:text="€1200.00"
-                        android:textColor="@color/equilibra_primary"
+                        android:textColor="@color/primary"
                         android:textSize="28sp"
                         android:textStyle="bold" />
 
@@ -161,7 +161,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:text="€200.00"
-                        android:textColor="@color/equilibra_secondary"
+                        android:textColor="@color/secondary"
                         android:textSize="24sp"
                         android:textStyle="bold" />
 

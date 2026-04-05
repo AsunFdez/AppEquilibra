@@ -84,7 +84,7 @@ public final class Constants {
     // DATABASE CONSTANTS
     // ========================================
     public static final String DATABASE_NAME = "equilibra.db";
-    public static final int DATABASE_VERSION = 1;
+    public static final int DATABASE_VERSION = 4;
 
     // Tabla Expenses
     public static final String TABLE_EXPENSES = "expenses";
@@ -99,6 +99,10 @@ public final class Constants {
     public static final String COLUMN_EXPENSE_NOTES = "notes";
     public static final String COLUMN_EXPENSE_DATE = "date";
     public static final String COLUMN_EXPENSE_TIMESTAMP = "timestamp";
+
+    public static final String COLUMN_EXPENSE_PATTERN_COUNT = "pattern_count";
+    public static final String COLUMN_EXPENSE_IS_RECURRING = "is_recurring";
+
 
     // Tabla Budgets
     public static final String TABLE_BUDGETS = "budgets";
@@ -119,10 +123,87 @@ public final class Constants {
     public static final String COLUMN_ACHIEVEMENT_UNLOCKED = "unlocked";
     public static final String COLUMN_ACHIEVEMENT_DATE_UNLOCKED = "date_unlocked";
 
-    // ========================================
+    // Tabla Categories
+    public static final String TABLE_CATEGORIES = "categories";
+    public static final String COLUMN_CATEGORY_ID = "_id";
+    public static final String COLUMN_CATEGORY_NAME = "name";
+    public static final String COLUMN_CATEGORY_ICON = "icon";
+    public static final String COLUMN_CATEGORY_COLOR = "color";
+    public static final String COLUMN_CATEGORY_DEFAULT = "default";
+    public static final String COLUMN_CATEGORY_CREATED_AT = "created_at";
+
+    // Tabla Saving Goals
+    public static final String TABLE_SAVING_GOALS = "saving_goals";
+    public static final String COLUMN_SAVING_GOAL_ID = "_id";
+    public static final String COLUMN_SAVING_GOAL_USER_ID = "user_id";
+    public static final String COLUMN_SAVING_GOAL_NAME = "name";
+    public static final String COLUMN_SAVING_GOAL_TARGET_AMOUNT = "target_amount";
+    public static final String COLUMN_SAVING_GOAL_CURRENT_AMOUNT = "current_amount";
+    public static final String COLUMN_SAVING_GOAL_DEADLINE = "deadline";
+    public static final String COLUMN_SAVING_GOAL_COMPLETED = "completed";
+    public static final String COLUMN_SAVING_GOAL_CREATED_AT = "created_at";
+    public static final String COLUMN_SAVING_GOAL_UPDATED_AT = "updated_at";
+
+    // Tabla User XP
+    public static final String TABLE_USER_XP = "user_xp";
+    public static final String COLUMN_USER_XP_ID = "_id";
+    public static final String COLUMN_USER_XP_USER_ID = "user_id";
+    public static final String COLUMN_USER_XP_TOTAL_XP = "total_xp";
+    public static final String COLUMN_USER_XP_CURRENT_LEVEL = "current_level";
+    public static final String COLUMN_USER_XP_XP_FOR_NEXT_LEVEL = "xp_for_next_level";
+    public static final String COLUMN_USER_XP_ACHIEVEMENTS_UNLOCKED = "achievements_unlocked";
+    public static final String COLUMN_USER_XP_LAST_XP_EARNED_AT = "last_xp_earned_at";
+
+    // Tabla Streak
+    public static final String TABLE_STREAK = "streak";
+    public static final String COLUMN_STREAK_ID = "_id";
+    public static final String COLUMN_STREAK_USER_ID = "user_id";
+    public static final String COLUMN_STREAK_CONSECUTIVE_DAYS = "consecutive_days";
+    public static final String COLUMN_STREAK_START_DATE = "start_date";
+    public static final String COLUMN_STREAK_LAST_ACTIVITY_DATE = "last_activity_date";
+    public static final String COLUMN_STREAK_MAX_RECORD = "max_streak_record";
+    public static final String COLUMN_STREAK_IS_ACTIVE = "is_active";
+
+    // Tabla Challenges
+    public static final String TABLE_CHALLENGES = "challenges";
+    public static final String COLUMN_CHALLENGE_ID = "_id";
+    public static final String COLUMN_CHALLENGE_USER_ID = "user_id";
+    public static final String COLUMN_CHALLENGE_TITLE = "title";
+    public static final String COLUMN_CHALLENGE_DESCRIPTION = "description";
+    public static final String COLUMN_CHALLENGE_CATEGORY = "category";
+    public static final String COLUMN_CHALLENGE_TARGET_AMOUNT = "target_amount";
+    public static final String COLUMN_CHALLENGE_CURRENT_AMOUNT = "current_amount";
+    public static final String COLUMN_CHALLENGE_START_DATE = "start_date";
+    public static final String COLUMN_CHALLENGE_END_DATE = "end_date";
+    public static final String COLUMN_CHALLENGE_COMPLETED = "completed";
+    public static final String COLUMN_CHALLENGE_XP_REWARD = "xp_reward";
+
+    // Tabla Intervention Log
+    public static final String TABLE_INTERVENTION_LOG = "intervention_log";
+    public static final String COLUMN_INTERVENTION_ID = "_id";
+    public static final String COLUMN_INTERVENTION_USER_ID = "user_id";
+    public static final String COLUMN_INTERVENTION_EXPENSE_ID = "expense_id";
+    public static final String COLUMN_INTERVENTION_TYPE = "intervention_type";
+    public static final String COLUMN_INTERVENTION_MESSAGE = "message";
+    public static final String COLUMN_INTERVENTION_IMPACT_ON_GOAL = "impact_on_goal";
+    public static final String COLUMN_INTERVENTION_ALTERNATIVE_SUGGESTION = "alternative_suggestion";
+    public static final String COLUMN_INTERVENTION_TIMESTAMP = "timestamp";
+
+    // Tabla Daily Analysis
+    public static final String TABLE_DAILY_ANALYSIS = "daily_analysis";
+    public static final String COLUMN_DAILY_ANALYSIS_ID = "_id";
+    public static final String COLUMN_DAILY_ANALYSIS_USER_ID = "user_id";
+    public static final String COLUMN_DAILY_ANALYSIS_DATE = "analysis_date";
+    public static final String COLUMN_DAILY_ANALYSIS_TOTAL_SPENT = "total_spent";
+    public static final String COLUMN_DAILY_ANALYSIS_TOTAL_INCOME = "total_income";
+    public static final String COLUMN_DAILY_ANALYSIS_NET_BALANCE = "net_balance";
+    public static final String COLUMN_DAILY_ANALYSIS_CATEGORY_BREAKDOWN = "category_breakdown";
+    public static final String COLUMN_DAILY_ANALYSIS_ANOMALY_DETECTED = "anomaly_detected";
+
+    // ================= ========================
     // CATEGORÍAS DE GASTOS
     // ========================================
-    public static final String CATEGORY_FOOD = "Comida";
+    public static final String CATEGORY_FOOD = "Alimentación";
     public static final String CATEGORY_TRANSPORT = "Transporte";
     public static final String CATEGORY_ENTERTAINMENT = "Entretenimiento";
     public static final String CATEGORY_SHOPPING = "Compras";
