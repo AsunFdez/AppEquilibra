@@ -48,6 +48,19 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.Catego
                 parent,
                 false
         );
+
+        // Ajustar el ancho para que quepan exactamente 3 columnas en la pantalla
+        int parentWidth = parent.getMeasuredWidth();
+        if (parentWidth <= 0) {
+            // Fallback: usar el ancho de la pantalla menos el padding estimado (16dp * 2)
+            float density = context.getResources().getDisplayMetrics().density;
+            parentWidth = (int) (context.getResources().getDisplayMetrics().widthPixels - (32 * density));
+        }
+        
+        ViewGroup.LayoutParams layoutParams = binding.getRoot().getLayoutParams();
+        layoutParams.width = parentWidth / 3;
+        binding.getRoot().setLayoutParams(layoutParams);
+
         return new CategoryViewHolder(binding);
     }
 

@@ -101,7 +101,7 @@ public class ExpenseRepository {
         List<String> suggestions = new ArrayList<>();
 
         if ("Comida".equalsIgnoreCase(category) || "Café".equalsIgnoreCase(category)) {
-            suggestions.add("Lleva termo de casa: ahorra €40/mes");
+            suggestions.add("Lleva termo de casa: ahorra 40€/mes");
             suggestions.add("Máquina de oficina: ahorro del 70%");
         } else if ("Transporte".equalsIgnoreCase(category)) {
             suggestions.add("Bicicleta o caminar: ahorro del 100%");

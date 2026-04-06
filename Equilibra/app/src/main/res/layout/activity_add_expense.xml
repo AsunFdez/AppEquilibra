@@ -121,10 +121,11 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="24dp"
+                    android:orientation="horizontal"
                     app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
-                    app:spanCount="3"
-                    tools:listitem="@layout/item_category"
-                    tools:itemCount="9" />
+                    app:spanCount="2"
+                    app:categories="@{viewModel.categories}"
+                    tools:listitem="@layout/item_category" />
 
                 <!-- Descripción (opcional) -->
                 <TextView
@@ -150,16 +151,13 @@
                     android:textColorHint="@color/textSecondary"
                     android:layout_marginBottom="24dp" />
 
-                <!-- Botón Agregar Gasto -->
-                <Button
+                <!-- Botón Añadir Gasto -->
+                <com.google.android.material.button.MaterialButton
+                    style="@style/Equilibra.Button.Primary"
                     android:id="@+id/btnSaveExpense"
                     android:layout_width="match_parent"
-                    android:layout_height="56dp"
+                    android:layout_height="wrap_content"
                     android:text="@string/add_expense"
-                    android:textColor="@android:color/white"
-                    android:textSize="16sp"
-                    android:textStyle="bold"
-                    android:background="@drawable/bg_button_primary"
                     android:enabled="@{viewModel.isFormValid}"
                     android:layout_marginBottom="16dp" />
 

@@ -267,6 +267,8 @@
     <string name="quantity">Cantidad</string>
     <string name="chose_category">Selecciona categoría</string>
     <string name="example_expense">Ej: Cena en restaurante italiano</string>
+    <string name="complete_all_fields">Completa todos los campos</string>
+    <string name="invalid_input_number">Formato de importe inválido</string>
 
 
 </resources>

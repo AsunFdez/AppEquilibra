@@ -12,6 +12,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.databinding.DataBindingUtil;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.PagerSnapHelper;
 
 import java.util.List;
 
@@ -56,13 +57,14 @@ public class AddExpenseActivity extends AppCompatActivity {
         // Inicializar ViewModel
         viewModel = new ViewModelProvider(this).get(AddExpenseViewModel.class);
 
+        // Configurar UI
+        setupToolbar();
+        setupCategoryRecyclerView();
+
         // Vincular ViewModel con el binding
         binding.setViewModel(viewModel);
         binding.setLifecycleOwner(this);
 
-        // Configurar UI
-        setupToolbar();
-        setupCategoryRecyclerView();
         setupListeners();
         setupObservers();
         applyAnimations();
@@ -88,8 +90,13 @@ public class AddExpenseActivity extends AppCompatActivity {
      * Configura el RecyclerView de categorías
      */
     private void setupCategoryRecyclerView() {
-        GridLayoutManager layoutManager = new GridLayoutManager(this, 3);
+        // Configurar GridLayoutManager horizontal con 2 filas (para matriz 3x2 por scroll)
+        GridLayoutManager layoutManager = new GridLayoutManager(this, 2, GridLayoutManager.HORIZONTAL, false);
         binding.rvCategories.setLayoutManager(layoutManager);
+
+        // Añadir PagerSnapHelper para que el scroll sea por "páginas" de la matriz
+        PagerSnapHelper snapHelper = new PagerSnapHelper();
+        snapHelper.attachToRecyclerView(binding.rvCategories);
 
         categoryAdapter = new CategoryAdapter(this, category -> {
             // Al hacer click en una categoría
@@ -136,13 +143,6 @@ public class AddExpenseActivity extends AppCompatActivity {
      * Configura los observadores de LiveData
      */
     private void setupObservers() {
-        // Observar cambios en las categorías
-        viewModel.getCategories().observe(this, categories -> {
-            if (categories != null) {
-                categoryAdapter.updateCategories(categories);
-            }
-        });
-
         // Observar cuando se guarda el gasto
         viewModel.getExpenseSaved().observe(this, saved -> {
             if (saved != null && saved) {

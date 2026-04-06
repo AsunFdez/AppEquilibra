@@ -1,6 +1,7 @@
 package asunfdiez.com.equilibra.viewmodels;
 
 import android.app.Application;
+import android.content.Context;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
@@ -12,6 +13,7 @@ import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
 
+import asunfdiez.com.equilibra.R;
 import asunfdiez.com.equilibra.models.Expense;
 import asunfdiez.com.equilibra.models.ExpenseCategory;
 import asunfdiez.com.equilibra.models.SmartReminder;
@@ -23,6 +25,7 @@ import asunfdiez.com.equilibra.repositories.ExpenseRepository;
  */
 public class AddExpenseViewModel extends AndroidViewModel {
 
+    private final Context mContext;
     private ExpenseRepository repository;
 
     // LiveData para el monto actual
@@ -58,6 +61,7 @@ public class AddExpenseViewModel extends AndroidViewModel {
         super(application);
         repository = new ExpenseRepository(application);
         initializeCategories();
+        this.mContext = application.getApplicationContext();
 
         // Observar cambios para validar el formulario automáticamente
         currentAmount.observeForever(s -> validateForm());
@@ -122,8 +126,8 @@ public class AddExpenseViewModel extends AndroidViewModel {
     }
 
     /**
-     * Formatea el monto para mostrar con símbolo de euro
-     * (Usado ahora principalmente para los diálogos de confirmación)
+     * Formatea el importe para mostrar con símbolo de euro
+     * (Usado principalmente para los diálogos de confirmación)
      */
     public String getFormattedAmount() {
         String amount = currentAmount.getValue();
@@ -141,7 +145,7 @@ public class AddExpenseViewModel extends AndroidViewModel {
         ExpenseCategory category = selectedCategory.getValue();
 
         if (amount == null || amount.isEmpty() || category == null) {
-            errorMessage.setValue("Completa todos los campos");
+            errorMessage.setValue(mContext.getString(R.string.complete_all_fields));
             return;
         }
 
@@ -174,7 +178,7 @@ public class AddExpenseViewModel extends AndroidViewModel {
             saveExpenseDirectly();
 
         } catch (NumberFormatException e) {
-            errorMessage.setValue("Formato de monto inválido");
+            errorMessage.setValue(mContext.getString(R.string.invalid_input_number));
         }
     }
 
@@ -187,7 +191,7 @@ public class AddExpenseViewModel extends AndroidViewModel {
         String desc = description.getValue();
 
         if (amount == null || category == null) {
-            errorMessage.setValue("Completa todos los campos");
+            errorMessage.setValue(mContext.getString(R.string.complete_all_fields));
             return;
         }
 
@@ -218,7 +222,7 @@ public class AddExpenseViewModel extends AndroidViewModel {
     }
 
     /**
-     * Cancela el guardado del gasto
+     * Cancela guardar el gasto
      */
     public void cancelExpense() {
         currentAmount.setValue("");
@@ -239,8 +243,6 @@ public class AddExpenseViewModel extends AndroidViewModel {
     @Override
     protected void onCleared() {
         super.onCleared();
-        // Nota: en una app real, si usamos observeForever deberíamos removerlos,
-        // pero aquí el ViewModel muere con la Activity, así que es aceptable.
     }
 
     // Getters para LiveData

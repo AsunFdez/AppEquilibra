@@ -42,7 +42,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                     Constants.COLUMN_EXPENSE_DESCRIPTION + " TEXT, " +
                     Constants.COLUMN_EXPENSE_NOTES + " TEXT, " +
                     Constants.COLUMN_EXPENSE_DATE + " TEXT NOT NULL, " +
-                    Constants.COLUMN_EXPENSE_TIMESTAMP + " INTEGER NOT NULL" +
+                    Constants.COLUMN_EXPENSE_TIMESTAMP + " INTEGER NOT NULL, " +
+                    Constants.COLUMN_EXPENSE_IS_RECURRING + " INTEGER DEFAULT 0, " +
+                    Constants.COLUMN_EXPENSE_PATTERN_COUNT + " INTEGER DEFAULT 0" +
                     ")";
 
     // SQL para crear tabla de presupuestos
@@ -686,6 +688,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         expense.setDate(cursor.getString(cursor.getColumnIndexOrThrow(Constants.COLUMN_EXPENSE_DATE)));
         expense.setTimestamp(cursor.getLong(cursor.getColumnIndexOrThrow(Constants.COLUMN_EXPENSE_TIMESTAMP)));
         expense.setNotes(cursor.getString(cursor.getColumnIndexOrThrow(Constants.COLUMN_EXPENSE_NOTES)));
+        expense.setRecurring(cursor.getInt(cursor.getColumnIndexOrThrow(Constants.COLUMN_EXPENSE_IS_RECURRING)) == 1);
+        expense.setPatternCount(cursor.getInt(cursor.getColumnIndexOrThrow(Constants.COLUMN_EXPENSE_PATTERN_COUNT)));
         return expense;
     }
 

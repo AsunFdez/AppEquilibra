@@ -44,7 +44,7 @@ app/src/main/java/asunfdiez/com/equilibra/
 │   ├── ExpenseDAO.java
 │   ├── BudgetDAO.java
 │   └── AchievementDAO.java
-│
+├── repositories/                  # para obtener datos
 ├── utils/                         # Utilidades y helpers
 │   ├── SharedPrefsManager.java
 │   ├── DateUtils.java
@@ -127,8 +127,26 @@ SplashActivity
             └── AchievementsActivity
                     └── volver a MainActivity
 
+## Flujo de Funcionamiento añadir gasto
 
-## LISTADO COMPLETO DE ARCHIVOS
+### Usuario ingresa importe y categoría. Presiona "Añadir Gasto"**
+
+AddExpenseActivity 
+    ↓
+btnSaveExpense.click() → viewModel.saveExpense()
+    ↓
+Repository.isImportantExpense(amount)?
+    ├─ SÍ → showImportantExpenseDialog()
+    └─ NO ↓
+Repository.detectExpensePattern(category)?
+    ├─ SÍ → showSmartReminderDialog()
+    └─ NO ↓
+Repository.shouldShowConfirmation(amount)?
+    ├─ SÍ → showConfirmExpenseDialog()
+    └─ NO ↓
+saveExpenseDirectly()
+
+## LISTADO DE ARCHIVOS
 
 ### **1. ACTIVITIES (7 archivos)**
 

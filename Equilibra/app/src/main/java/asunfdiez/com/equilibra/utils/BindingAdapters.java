@@ -28,4 +28,12 @@ public class BindingAdapters {
             ImageViewCompat.setImageTintList(imageView, ColorStateList.valueOf(Color.GRAY));
         }
     }
+
+    @BindingAdapter("categories")
+    public static void setCategories(androidx.recyclerview.widget.RecyclerView recyclerView, java.util.List<asunfdiez.com.equilibra.models.ExpenseCategory> categories) {
+        asunfdiez.com.equilibra.adapters.CategoryAdapter adapter = (asunfdiez.com.equilibra.adapters.CategoryAdapter) recyclerView.getAdapter();
+        if (adapter != null && categories != null) {
+            adapter.updateCategories(categories);
+        }
+    }
 }

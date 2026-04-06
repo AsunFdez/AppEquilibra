@@ -64,12 +64,12 @@
 
             </LinearLayout>
 
-            <!-- Monto -->
+            <!-- Importe -->
             <TextView
                 android:id="@+id/tvExpenseAmount"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="$ 150.00"
+                android:text="150.00 €"
                 android:textSize="18sp"
                 android:textColor="@color/accent"
                 android:textStyle="bold" />
