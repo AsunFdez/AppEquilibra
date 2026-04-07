@@ -1,11 +1,21 @@
 package asunfdiez.com.equilibra.models;
 
+import androidx.annotation.NonNull;
+import androidx.room.Entity;
+import androidx.room.PrimaryKey;
+
+import asunfdiez.com.equilibra.utils.Constants;
+
 /**
  * InterventionLog - Modelo de datos para registro de intervenciones
  * Almacena las intervenciones inteligentes sugeridas al usuario
  */
+
+@Entity(tableName = Constants.TABLE_INTERVENTION_LOG)
 public class InterventionLog {
 
+    @PrimaryKey(autoGenerate = true)
+    @NonNull
     private long id;
     private long userId;
     private long expenseId;
@@ -20,10 +30,9 @@ public class InterventionLog {
     }
 
     // Constructor completo
-    public InterventionLog(long id, long userId, long expenseId, String interventionType,
+    public InterventionLog(long userId, long expenseId, String interventionType,
                           String message, String impactOnGoal, String alternativeSuggestion,
                           long timestamp) {
-        this.id = id;
         this.userId = userId;
         this.expenseId = expenseId;
         this.interventionType = interventionType;
@@ -53,6 +62,7 @@ public class InterventionLog {
     public void setId(long id) {
         this.id = id;
     }
+
 
     public long getUserId() {
         return userId;

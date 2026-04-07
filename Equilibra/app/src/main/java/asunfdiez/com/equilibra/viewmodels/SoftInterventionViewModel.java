@@ -7,14 +7,14 @@ import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
+import asunfdiez.com.equilibra.repositories.ExpenseRepository;
 import asunfdiez.com.equilibra.controllers.WellbeingController;
-import asunfdiez.com.equilibra.database.DatabaseHelper;
 import asunfdiez.com.equilibra.models.FinancialData;
 import asunfdiez.com.equilibra.models.InterventionMessage;
 
 public class SoftInterventionViewModel extends AndroidViewModel {
 
-    private final DatabaseHelper databaseHelper;
+    private final ExpenseRepository expenseRepository;
     private final WellbeingController wellbeingController;
 
     private final MutableLiveData<FinancialData> financialData = new MutableLiveData<>();
@@ -22,20 +22,28 @@ public class SoftInterventionViewModel extends AndroidViewModel {
 
     public SoftInterventionViewModel(@NonNull Application application) {
         super(application);
-        databaseHelper = DatabaseHelper.getInstance(application);
+        expenseRepository = new ExpenseRepository(application);
         wellbeingController = new WellbeingController(application);
         loadData();
     }
 
     public void loadData() {
-        double income = databaseHelper.getTotalIncomeThisMonth();
-        double expenses = databaseHelper.getTotalExpensesThisMonth();
-        double percentage = (income > 0) ? (expenses / income) * 100 : 0;
-        String topCategory = databaseHelper.getTopExpenseCategory();
-        double topCategoryAmount = databaseHelper.getCategoryExpensesThisMonth(topCategory);
+        new Thread(() -> {
+            double income = expenseRepository.getTotalIncomeThisMonth();
+            double expenses = expenseRepository.getTotalExpensesThisMonth();
+            double percentage = (income > 0) ? (expenses / income) * 100 : 0;
+            String topCategory = expenseRepository.getTopExpenseCategoryThisMonth();
+            double topCategoryAmount = 0;
+            if (topCategory != null) {
+                topCategoryAmount = expenseRepository.getCategoryExpensesThisMonth(topCategory);
+            }
 
-        financialData.setValue(new FinancialData(income, expenses, percentage, topCategory, topCategoryAmount));
-        interventionMessage.setValue(wellbeingController.getInterventionMessage());
+            FinancialData data = new FinancialData(income, expenses, percentage, topCategory, topCategoryAmount);
+            InterventionMessage message = wellbeingController.getInterventionMessage();
+
+            financialData.postValue(data);
+            interventionMessage.postValue(message);
+        }).start();
     }
 
     public LiveData<FinancialData> getFinancialData() { return financialData; }

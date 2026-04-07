@@ -208,7 +208,7 @@
                             android:id="@+id/etMonthlyIncome"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            app:etMonthlyIncome = "@={user.monthlyIncome}"
+                            app:etMonthlyIncome ="@={user.monthlyIncome}"
                             android:hint="@string/profile_monthly_income"
                             android:inputType="numberDecimal"
                             android:enabled="@{viewModel.editMode}" />

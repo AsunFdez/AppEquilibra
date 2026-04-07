@@ -1,13 +1,22 @@
 package asunfdiez.com.equilibra.models;
 
+import androidx.annotation.NonNull;
+import androidx.room.Entity;
+import androidx.room.PrimaryKey;
+
 import org.json.JSONObject;
+
+import asunfdiez.com.equilibra.utils.Constants;
 
 /**
  * DailyAnalysis - Modelo de datos para análisis diario de gastos
  * Contiene resumen diario de transacciones y análisis de patrones
  */
-public class DailyAnalysis {
 
+@Entity(tableName = Constants.TABLE_DAILY_ANALYSIS)
+public class DailyAnalysis {
+    @PrimaryKey(autoGenerate = true)
+    @NonNull
     private long id;
     private long userId;
     private String analysisDate; // Formato: yyyy-MM-dd
@@ -21,39 +30,14 @@ public class DailyAnalysis {
     public DailyAnalysis() {
     }
 
-    // Constructor completo
-    public DailyAnalysis(long id, long userId, String analysisDate, double totalSpent,
-                        double totalIncome, double netBalance, String categoryBreakdown,
-                        boolean anomalyDetected) {
-        this.id = id;
-        this.userId = userId;
-        this.analysisDate = analysisDate;
-        this.totalSpent = totalSpent;
-        this.totalIncome = totalIncome;
-        this.netBalance = netBalance;
-        this.categoryBreakdown = categoryBreakdown;
-        this.anomalyDetected = anomalyDetected;
-    }
-
-    // Constructor para nuevo análisis
-    public DailyAnalysis(long userId, String analysisDate) {
-        this.userId = userId;
-        this.analysisDate = analysisDate;
-        this.totalSpent = 0.0;
-        this.totalIncome = 0.0;
-        this.netBalance = 0.0;
-        this.categoryBreakdown = "{}";
-        this.anomalyDetected = false;
-    }
-
     // Getters y Setters
     public long getId() {
         return id;
     }
-
     public void setId(long id) {
         this.id = id;
     }
+
 
     public long getUserId() {
         return userId;

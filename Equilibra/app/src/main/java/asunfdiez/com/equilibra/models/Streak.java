@@ -1,14 +1,23 @@
 package asunfdiez.com.equilibra.models;
 
+import androidx.annotation.NonNull;
+import androidx.room.Entity;
+import androidx.room.PrimaryKey;
+
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+
+import asunfdiez.com.equilibra.utils.Constants;
 
 /**
  * Streak - Modelo de datos para racha de uso consecutivo
  * Contabiliza los días consecutivos de interacción con la app
  */
+@Entity(tableName = Constants.TABLE_STREAK)
 public class Streak {
 
+    @PrimaryKey (autoGenerate = true)
+    @NonNull
     private long id;
     private long userId;
     private int consecutiveDays;
@@ -24,28 +33,6 @@ public class Streak {
     public Streak() {
     }
 
-    // Constructor completo
-    public Streak(long id, long userId, int consecutiveDays, String startDate,
-                  String lastActivityDate, int maxStreakRecord, boolean isActive) {
-        this.id = id;
-        this.userId = userId;
-        this.consecutiveDays = consecutiveDays;
-        this.startDate = startDate;
-        this.lastActivityDate = lastActivityDate;
-        this.maxStreakRecord = maxStreakRecord;
-        this.isActive = isActive;
-    }
-
-    // Constructor para nuevo usuario
-    public Streak(long userId) {
-        this.userId = userId;
-        this.consecutiveDays = 0;
-        this.startDate = LocalDate.now().format(DATE_FORMATTER);
-        this.lastActivityDate = LocalDate.now().format(DATE_FORMATTER);
-        this.maxStreakRecord = 0;
-        this.isActive = false;
-    }
-
     // Getters y Setters
     public long getId() {
         return id;
@@ -54,6 +41,8 @@ public class Streak {
     public void setId(long id) {
         this.id = id;
     }
+
+
 
     public long getUserId() {
         return userId;

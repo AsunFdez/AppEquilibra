@@ -84,11 +84,11 @@ public final class Constants {
     // DATABASE CONSTANTS
     // ========================================
     public static final String DATABASE_NAME = "equilibra.db";
-    public static final int DATABASE_VERSION = 4;
+    public static final int DATABASE_VERSION = 1;
 
     // Tabla Expenses
     public static final String TABLE_EXPENSES = "expenses";
-    public static final String COLUMN_EXPENSE_ID = "_id";
+    public static final String COLUMN_EXPENSE_ID = "id";
     public static final String COLUMN_EXPENSE_TYPE = "type";
     // Tipos de transacción
     public static final String TYPE_EXPENSE = "expense";
@@ -106,7 +106,7 @@ public final class Constants {
 
     // Tabla Budgets
     public static final String TABLE_BUDGETS = "budgets";
-    public static final String COLUMN_BUDGET_ID = "_id";
+    public static final String COLUMN_BUDGET_ID = "id";
     public static final String COLUMN_BUDGET_CATEGORY = "category";
     public static final String COLUMN_BUDGET_AMOUNT = "amount";
     public static final String COLUMN_BUDGET_PERIOD = "period";
@@ -115,7 +115,7 @@ public final class Constants {
 
     // Tabla Achievements
     public static final String TABLE_ACHIEVEMENTS = "achievements";
-    public static final String COLUMN_ACHIEVEMENT_ID = "_id";
+    public static final String COLUMN_ACHIEVEMENT_ID = "id";
     public static final String COLUMN_ACHIEVEMENT_TITLE = "title";
     public static final String COLUMN_ACHIEVEMENT_DESCRIPTION = "description";
     public static final String COLUMN_ACHIEVEMENT_XP = "xp";
@@ -125,12 +125,10 @@ public final class Constants {
 
     // Tabla Categories
     public static final String TABLE_CATEGORIES = "categories";
-    public static final String COLUMN_CATEGORY_ID = "_id";
+    public static final String COLUMN_CATEGORY_ID = "id";
     public static final String COLUMN_CATEGORY_NAME = "name";
-    public static final String COLUMN_CATEGORY_ICON = "icon";
+    public static final String COLUMN_CATEGORY_ICON = "iconName";
     public static final String COLUMN_CATEGORY_COLOR = "color";
-    public static final String COLUMN_CATEGORY_DEFAULT = "default";
-    public static final String COLUMN_CATEGORY_CREATED_AT = "created_at";
 
     // Tabla Saving Goals
     public static final String TABLE_SAVING_GOALS = "saving_goals";
@@ -199,18 +197,6 @@ public final class Constants {
     public static final String COLUMN_DAILY_ANALYSIS_NET_BALANCE = "net_balance";
     public static final String COLUMN_DAILY_ANALYSIS_CATEGORY_BREAKDOWN = "category_breakdown";
     public static final String COLUMN_DAILY_ANALYSIS_ANOMALY_DETECTED = "anomaly_detected";
-
-    // ================= ========================
-    // CATEGORÍAS DE GASTOS
-    // ========================================
-    public static final String CATEGORY_FOOD = "Alimentación";
-    public static final String CATEGORY_TRANSPORT = "Transporte";
-    public static final String CATEGORY_ENTERTAINMENT = "Entretenimiento";
-    public static final String CATEGORY_SHOPPING = "Compras";
-    public static final String CATEGORY_HEALTH = "Salud";
-    public static final String CATEGORY_EDUCATION = "Educación";
-    public static final String CATEGORY_BILLS = "Servicios";
-    public static final String CATEGORY_OTHERS = "Otros";
 
 
     // Umbrales para intervenciones

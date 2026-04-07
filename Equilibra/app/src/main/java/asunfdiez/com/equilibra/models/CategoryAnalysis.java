@@ -1,5 +1,7 @@
 package asunfdiez.com.equilibra.models;
 
+import androidx.room.Ignore;
+
 /**
  * CategoryAnalysis - Modelo para análisis por categoría
  * Contiene el total gastado por categoría para gráficos y estadísticas
@@ -9,17 +11,11 @@ public class CategoryAnalysis {
     private String category;
     private double amount;
     private int count; // Número de transacciones en esta categoría
+    @Ignore
     private double percentage; // Porcentaje del total
 
     // Constructor vacío
     public CategoryAnalysis() {
-    }
-
-    // Constructor completo
-    public CategoryAnalysis(String category, double amount, int count) {
-        this.category = category;
-        this.amount = amount;
-        this.count = count;
     }
 
     // Getters y Setters

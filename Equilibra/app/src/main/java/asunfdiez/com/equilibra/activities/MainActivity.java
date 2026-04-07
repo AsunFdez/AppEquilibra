@@ -83,6 +83,16 @@ public class MainActivity extends AppCompatActivity {
                 handleUserProfileUpdate(user);
             }
         });
+
+        // Observar si se debe mostrar una intervención (Bienestar financiero)
+        viewModel.getShouldShowIntervention().observe(this, shouldShow -> {
+            if (shouldShow != null && shouldShow) {
+                viewModel.resetInterventionTrigger();
+                Intent intent = new Intent(this, SoftInterventionActivity.class);
+                startActivity(intent);
+                overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
+            }
+        });
     }
 
     private void handleUserProfileUpdate(UserProfile user) {
@@ -265,17 +275,8 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        // Refrescar datos a través del ViewModel
+        // Refrescar datos a través del ViewModel (dispara checkWellbeing en 2º plano)
         viewModel.refreshData();
-        checkWellbeingStatus();
-    }
-
-    private void checkWellbeingStatus() {
-        if (wellbeingController.shouldShowIntervention()) {
-            Intent intent = new Intent(this, SoftInterventionActivity.class);
-            startActivity(intent);
-            overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
-        }
     }
 
     @Override

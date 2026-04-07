@@ -1,11 +1,20 @@
 package asunfdiez.com.equilibra.models;
 
+import androidx.annotation.NonNull;
+import androidx.room.Entity;
+import androidx.room.PrimaryKey;
+
+import asunfdiez.com.equilibra.utils.Constants;
+
 /**
  * Challenge - Modelo de datos para desafíos semanales/mensuales
  * Representa un reto temporal con recompensa en XP
  */
+@Entity (tableName = Constants.TABLE_CHALLENGES)
 public class Challenge {
 
+    @PrimaryKey(autoGenerate = true)
+    @NonNull
     private long id;
     private long userId;
     private String title;
@@ -22,38 +31,6 @@ public class Challenge {
     public Challenge() {
     }
 
-    // Constructor completo
-    public Challenge(long id, long userId, String title, String description,
-                     String category, double targetAmount, double currentAmount,
-                     String startDate, String endDate, boolean completed, int xpReward) {
-        this.id = id;
-        this.userId = userId;
-        this.title = title;
-        this.description = description;
-        this.category = category;
-        this.targetAmount = targetAmount;
-        this.currentAmount = currentAmount;
-        this.startDate = startDate;
-        this.endDate = endDate;
-        this.completed = completed;
-        this.xpReward = xpReward;
-    }
-
-    // Constructor para nuevo desafío
-    public Challenge(long userId, String title, String description, String category,
-                     double targetAmount, String startDate, String endDate, int xpReward) {
-        this.userId = userId;
-        this.title = title;
-        this.description = description;
-        this.category = category;
-        this.targetAmount = targetAmount;
-        this.currentAmount = 0.0;
-        this.startDate = startDate;
-        this.endDate = endDate;
-        this.completed = false;
-        this.xpReward = xpReward;
-    }
-
     // Getters y Setters
     public long getId() {
         return id;
@@ -62,6 +39,7 @@ public class Challenge {
     public void setId(long id) {
         this.id = id;
     }
+
 
     public long getUserId() {
         return userId;

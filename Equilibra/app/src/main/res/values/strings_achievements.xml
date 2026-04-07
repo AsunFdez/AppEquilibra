@@ -7,4 +7,29 @@
     <string name="achievements_total_points">Puntos totales</string>
     <string name="achievements_unlocked">desbloqueados</string>
 
+    <!-- Logros de inicio -->
+    <string name="firs_step_title">Primer Paso</string>
+    <string name="first_step_description">Registra tu primer gasto</string>
+    <string name="constant_title">Constante" </string>
+    <string name="constant_description">Registra gastos durante 7 días seguidos</string>
+    <string name="saver_title">Ahorrador</string>
+    <string name="saver_description">Mantén tus gastos bajo el presupuesto durante un mes</string>
+    <string name="disciplined_title">Disciplinado</string>
+    <string name="disciplined_description">Completa 30 días de seguimiento</string>
+    <string name="master_title">Maestro Financiero</string>
+    <string name="master_description">Alcanza 3 meses sin exceder tu presupuesto</string>
+
+    <!--  Logros de categorías -->
+    <string name="gourmet_title">Gourmet Consciente</string>
+    <string name="gourmet_description">Reduce gastos en comida un 20%</string>
+    <string name="transport_title">Movilidad Eficiente</string>
+    <string name="transport_description">Reduce gastos en transporte un 15%</string>
+    <string name= "fun_title">Diversión Inteligente</string>
+    <string name="fun_description">Mantén entretenimiento bajo control</string>
+
+    <!-- Logros especiales -->
+    <string name="goal_title">Meta Alcanzada</string>
+    <string name="goal_description">Completa tu primera meta de ahorro</string>
+    <string name="expert_title">Experto</string>
+    <string name="expert_description">Alcanza el nivel Avanzado</string>
 </resources>

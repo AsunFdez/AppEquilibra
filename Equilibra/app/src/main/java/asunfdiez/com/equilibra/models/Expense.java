@@ -1,10 +1,19 @@
 package asunfdiez.com.equilibra.models;
 
+import androidx.annotation.NonNull;
+import androidx.room.Entity;
+import androidx.room.PrimaryKey;
+
+import asunfdiez.com.equilibra.utils.Constants;
+
 /**
  * Expense - Modelo para representar un gasto o ingreso
  */
+@Entity(tableName = Constants.TABLE_EXPENSES)
 public class Expense {
 
+    @PrimaryKey (autoGenerate = true)
+    @NonNull
     private long id;
     private String type; // "expense" o "income"
     private double amount;
@@ -16,44 +25,8 @@ public class Expense {
     private int patternCount; // Cuántas veces se ha repetido este patrón
     private String notes; // Notas adicionales
 
-    // Constructor vacío
-    public Expense() {
-        this.timestamp = System.currentTimeMillis();
-        this.type = "expense";
-        this.isRecurring = false;
-        this.patternCount = 0;
-        this.notes = "";
-    }
-
-    // Constructor completo
-    public Expense(long id, String type, double amount, String category,
-                   String description, String date, long timestamp,
-                   boolean isRecurring, int patternCount, String notes) {
-        this.id = id;
-        this.type = type;
-        this.amount = amount;
-        this.category = category;
-        this.description = description;
-        this.date = date;
-        this.timestamp = timestamp;
-        this.isRecurring = isRecurring;
-        this.patternCount = patternCount;
-        this.notes = notes;
-    }
-
-    // Constructor sin ID (para nuevos gastos)
-    public Expense(String type, double amount, String category,
-                   String description, String date) {
-        this.type = type;
-        this.amount = amount;
-        this.category = category;
-        this.description = description;
-        this.date = date;
-        this.timestamp = System.currentTimeMillis();
-        this.isRecurring = false;
-        this.patternCount = 0;
-        this.notes = "";
-    }
+    // Constructor vacío requerido por Room si hay otros constructores
+    public Expense() {}
 
     public long getId() {
         return id;

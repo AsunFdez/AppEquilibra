@@ -1,137 +1,56 @@
 package asunfdiez.com.equilibra.controllers;
 
 import android.content.Context;
-
 import java.util.List;
-
-import asunfdiez.com.equilibra.database.DatabaseHelper;
+import asunfdiez.com.equilibra.repositories.ExpenseRepository;
 import asunfdiez.com.equilibra.models.CategoryAnalysis;
 import asunfdiez.com.equilibra.models.Expense;
 
 /**
  * ExpenseController - Controlador para la gestión de gastos e ingresos
- * Intermedia entre las Activities y la base de datos
- * Implementa lógica de negocio para gastos
+ * Intermedia entre las Activities y el Repositorio (Capa de Datos)
  */
 public class ExpenseController {
 
-    private DatabaseHelper databaseHelper;
-    private Context context;
+    private final ExpenseRepository expenseRepository;
 
     public ExpenseController(Context context) {
-        this.context = context;
-        this.databaseHelper = DatabaseHelper.getInstance(context);
+        this.expenseRepository = new ExpenseRepository(context);
     }
 
-    /**
-     * Añade un nuevo gasto o ingreso
-     */
-    public long addExpense(Expense expense) {
-        return databaseHelper.insertExpense(expense);
+    public void addExpense(Expense expense) {
+        expenseRepository.saveExpense(expense);
     }
 
-    /**
-     * Obtiene todos los gastos
-     */
-    public List<Expense> getAllExpenses() {
-        return databaseHelper.getAllExpenses();
-    }
-
-    /**
-     * Obtiene gastos recientes limitados
-     */
-    public List<Expense> getRecentExpenses(int limit) {
-        return databaseHelper.getRecentExpenses(limit);
-    }
-
-    /**
-     * Obtiene gastos del mes actual
-     */
     public List<Expense> getExpensesThisMonth() {
-        return databaseHelper.getExpensesThisMonth();
+        return expenseRepository.getExpensesThisMonth();
     }
 
-    /**
-     * Obtiene gastos del mes anterior
-     */
-    public List<Expense> getExpensesLastMonth() {
-        return databaseHelper.getExpensesLastMonth();
-    }
-
-    /**
-     * Obtiene un gasto por ID
-     */
-    public Expense getExpenseById(long id) {
-        return databaseHelper.getExpenseById(id);
-    }
-
-    /**
-     * Actualiza un gasto existente
-     */
-    public int updateExpense(Expense expense) {
-        return databaseHelper.updateExpense(expense);
-    }
-
-    /**
-     * Elimina un gasto
-     */
-    public int deleteExpense(long id) {
-        return databaseHelper.deleteExpense(id);
-    }
-
-    /**
-     * Calcula el total de ingresos del mes actual
-     */
     public double getTotalIncomeThisMonth() {
-        return databaseHelper.getTotalIncomeThisMonth();
+        return expenseRepository.getTotalIncomeThisMonth();
     }
 
-    /**
-     * Calcula el total de gastos del mes actual
-     */
     public double getTotalExpensesThisMonth() {
-        return databaseHelper.getTotalExpensesThisMonth();
+        return expenseRepository.getTotalExpensesThisMonth();
     }
 
-    /**
-     * Calcula el total de gastos del mes anterior
-     */
     public double getTotalExpensesLastMonth() {
-        return databaseHelper.getTotalExpensesLastMonth();
+        return expenseRepository.getTotalExpensesLastMonth();
     }
 
-    /**
-     * Obtiene análisis por categoría
-     */
     public List<CategoryAnalysis> getCategoryAnalysis() {
-        return databaseHelper.getCategoryAnalysis();
+        return expenseRepository.getCategoryAnalysis();
     }
 
-    /**
-     * Calcula el promedio de gasto diario
-     */
     public double getAverageDailyExpense() {
-        return databaseHelper.getAverageDailyExpense();
+        return expenseRepository.getAverageDailyExpense();
     }
 
-    /**
-     * Obtiene el total de gastos de los últimos N días
-     */
     public double getExpensesLastNDays(int days) {
-        return databaseHelper.getExpensesLastNDays(days);
+        return expenseRepository.getExpensesLastNDays(days);
     }
 
-    /**
-     * Verifica si hay gastos registrados
-     */
     public boolean hasExpenses() {
-        return databaseHelper.getExpenseCount() > 0;
-    }
-
-    /**
-     * Obtiene el número total de gastos
-     */
-    public int getExpenseCount() {
-        return databaseHelper.getExpenseCount();
+        return expenseRepository.getExpenseCount() > 0;
     }
 }

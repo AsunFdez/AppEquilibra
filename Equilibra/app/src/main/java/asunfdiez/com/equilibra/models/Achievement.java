@@ -1,12 +1,21 @@
 package asunfdiez.com.equilibra.models;
 
+import androidx.annotation.NonNull;
+import androidx.room.Entity;
+import androidx.room.PrimaryKey;
+
+import asunfdiez.com.equilibra.utils.Constants;
+
 /**
  * Achievement - Modelo de datos para logros gamificados
  * Representa un logro que el usuario puede desbloquear
  */
+@Entity(tableName = Constants.TABLE_ACHIEVEMENTS)
 public class Achievement {
 
-    private int id;
+    @PrimaryKey (autoGenerate = true)
+    @NonNull
+    private long id;
     private String title;
     private String description;
     private int points;
@@ -14,14 +23,10 @@ public class Achievement {
     private boolean unlocked;
     private long unlockedAt; // Timestamp cuando se desbloqueó
 
-    // Constructor vacío
-    public Achievement() {
-    }
 
     // Constructor completo
-    public Achievement(int id, String title, String description, int points,
+    public Achievement(String title, String description, int points,
                        String key, boolean unlocked) {
-        this.id = id;
         this.title = title;
         this.description = description;
         this.points = points;
@@ -31,11 +36,11 @@ public class Achievement {
     }
 
     // Getters y Setters
-    public int getId() {
+    public long getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(long id) {
         this.id = id;
     }
 

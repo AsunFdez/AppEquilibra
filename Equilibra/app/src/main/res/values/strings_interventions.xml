@@ -38,5 +38,36 @@
     <string name="intervention_support_2">Juntos podemos mejorar tus finanzas 🎯</string>
     <string name="intervention_support_3">Cada día es una oportunidad para mejorar ✨</string>
 
+    <string name="intervention_expenses_very_high_title">Un momento para reflexionar 🌱</string>
+    <string name="intervention_expenses_very_high_description">Hemos notado que tus gastos están muy cerca de tus ingresos este mes.
+                            No te preocupes, esto puede pasar. Lo importante es que estás consciente de ello.
+                            Vamos a trabajar juntos para encontrar el equilibrio.</string>
+
+    <string name="intervention_expenses_very_high_tip1">💡 Revisa tus gastos de los últimos días e identifica cuáles eran realmente necesarios</string>
+    <string name="intervention_expenses_very_high_tip2">🎯 Considera establecer un límite diario para los próximos días</string>
+    <string name="intervention_expenses_very_high_tip3">🌟 Pequeños ajustes pueden hacer una gran diferencia</string>
+
+
+    <string name="intervention_expenses_high_title">Momento de ajustar el rumbo 🧭</string>
+    <string name="intervention_expenses_high_description">Tus gastos han sido altos últimamente. Esto es completamente normal,
+                            pero es un buen momento para hacer una pausa y revisar tu situación.</string>
+
+    <string name="intervention_expenses_high_tip1">📊 Revisa tus categorías de gasto principales</string>
+    <string name="intervention_expenses_high_tip2">💰 Intenta identificar gastos que puedas posponer</string>
+    <string name="intervention_expenses_high_tip3">🎯 Recuerda tu meta de ahorro, cada paso cuenta</string>
+
+
+    <string name="intervention_concentrated_expenses_title">Gastos concentrados 📈</string>
+    <string name="intervention_concentrated_expenses_description">Has tenido varios gastos importantes en los últimos días.
+                            Puede que sean necesarios, pero es bueno estar consciente del impacto en tu presupuesto..</string>
+
+    <string name="intervention_concentrated_expenses_tip1">📝 Revisa si estos gastos eran planificados</string>
+    <string name="intervention_concentrated_expenses_tip2">🗓️ Intenta espaciar gastos grandes cuando sea posible</string>
+    <string name="intervention_concentrated_expenses_tip3">💪 Mantén el equilibrio en los próximos días</string>
+
+    <string name="wellbeing_excellent_message">¡Excelente! Tu bienestar financiero es muy bueno 🌟</string>
+    <string name="wellbeing_good_job_message">Buen trabajo. Vas por buen camino 👍</string>
+    <string name="wellbeing_improve_message">Vas bien, pero hay oportunidades de mejora 💪</string>
+
 
 </resources>

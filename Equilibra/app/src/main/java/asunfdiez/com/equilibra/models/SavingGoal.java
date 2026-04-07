@@ -1,11 +1,19 @@
 package asunfdiez.com.equilibra.models;
 
+import androidx.annotation.NonNull;
+import androidx.room.Entity;
+import androidx.room.PrimaryKey;
+
+import asunfdiez.com.equilibra.utils.Constants;
+
 /**
  * SavingGoal - Modelo de datos para objetivos de ahorro
  * Representa un objetivo de ahorro del usuario con meta y plazo
  */
+@Entity(tableName = Constants.TABLE_SAVING_GOALS)
 public class SavingGoal {
-
+    @PrimaryKey(autoGenerate = true)
+    @NonNull
     private long id;
     private long userId;
     private String name;

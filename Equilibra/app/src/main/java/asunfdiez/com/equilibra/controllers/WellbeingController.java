@@ -1,9 +1,12 @@
 package asunfdiez.com.equilibra.controllers;
+
 import android.content.Context;
-import asunfdiez.com.equilibra.database.DatabaseHelper;
+
+import asunfdiez.com.equilibra.R;
 import asunfdiez.com.equilibra.models.InterventionMessage;
-import asunfdiez.com.equilibra.utils.SharedPrefsManager;
+import asunfdiez.com.equilibra.repositories.ExpenseRepository;
 import asunfdiez.com.equilibra.utils.Constants;
+import asunfdiez.com.equilibra.utils.SharedPrefsManager;
 
 /**
  * WellbeingController - Controlador para el bienestar financiero
@@ -12,13 +15,13 @@ import asunfdiez.com.equilibra.utils.Constants;
 public class WellbeingController {
 
     private Context context;
-    private DatabaseHelper databaseHelper;
+    private ExpenseRepository expenseRepository;
     private SharedPrefsManager prefsManager;
 
 
     public WellbeingController(Context context) {
         this.context = context;
-        this.databaseHelper = DatabaseHelper.getInstance(context);
+        this.expenseRepository = new ExpenseRepository (context);
         this.prefsManager = SharedPrefsManager.getInstance(context);
     }
 
@@ -39,8 +42,8 @@ public class WellbeingController {
      * Verifica si los gastos están altos
      */
     private boolean areExpensesHigh() {
-        double monthlyIncome = databaseHelper.getTotalIncomeThisMonth();
-        double monthlyExpenses = databaseHelper.getTotalExpensesThisMonth();
+        double monthlyIncome = expenseRepository.getTotalIncomeThisMonth();
+        double monthlyExpenses = expenseRepository.getTotalExpensesThisMonth();
 
         // Si no hay ingresos registrados, no mostrar intervención
         if (monthlyIncome == 0) {
@@ -56,7 +59,7 @@ public class WellbeingController {
         }
 
         // Verificar gastos de últimos 3 días
-        double last3DaysExpenses = databaseHelper.getExpensesLastNDays(3);
+        double last3DaysExpenses = expenseRepository.getExpensesLastNDays(3);
         double dailyBudget = monthlyIncome / 30;
         double threeDayBudget = dailyBudget * 3;
 
@@ -67,49 +70,40 @@ public class WellbeingController {
      * Obtiene el mensaje de intervención personalizado
      */
     public InterventionMessage getInterventionMessage() {
-        double monthlyIncome = databaseHelper.getTotalIncomeThisMonth();
-        double monthlyExpenses = databaseHelper.getTotalExpensesThisMonth();
+        double monthlyIncome = expenseRepository.getTotalIncomeThisMonth();
+        double monthlyExpenses = expenseRepository.getTotalExpensesThisMonth();
         double expenseRatio = monthlyIncome > 0 ? monthlyExpenses / monthlyIncome : 0;
 
         InterventionMessage message = new InterventionMessage();
 
         if (expenseRatio >= 0.9) {
             // Gastos muy altos (90%+)
-            message.setTitle("Un momento para reflexionar 🌱");
-            message.setMessage(
-                    "Hemos notado que tus gastos están muy cerca de tus ingresos este mes. " +
-                            "No te preocupes, esto puede pasar. Lo importante es que estás consciente de ello. " +
-                            "Vamos a trabajar juntos para encontrar el equilibrio."
-            );
+            message.setTitle(context.getString(R.string.intervention_expenses_very_high_title));
+            message.setMessage(context.getString(R.string.intervention_expenses_very_high_description));
             message.setTips(new String[]{
-                    "💡 Revisa tus gastos de los últimos días e identifica cuáles eran realmente necesarios",
-                    "🎯 Considera establecer un límite diario para los próximos días",
-                    "🌟 Pequeños ajustes pueden hacer una gran diferencia"
+                    context.getString(R.string.intervention_expenses_very_high_tip1),
+                    context.getString(R.string.intervention_expenses_very_high_tip2),
+                    context.getString(R.string.intervention_expenses_very_high_tip3)
             });
+
         } else if (expenseRatio >= 0.8) {
             // Gastos altos (80-90%)
-            message.setTitle("Momento de ajustar el rumbo 🧭");
-            message.setMessage(
-                    "Tus gastos han sido altos últimamente. Esto es completamente normal, " +
-                            "pero es un buen momento para hacer una pausa y revisar tu situación."
-            );
+            message.setTitle(context.getString(R.string.intervention_expenses_high_title));
+            message.setMessage(context.getString(R.string.intervention_expenses_high_description));
             message.setTips(new String[]{
-                    "📊 Revisa tus categorías de gasto principales",
-                    "💰 Intenta identificar gastos que puedas posponer",
-                    "🎯 Recuerda tu meta de ahorro, cada paso cuenta"
+                    context.getString(R.string.intervention_expenses_high_tip1),
+                    context.getString(R.string.intervention_expenses_high_tip2),
+                    context.getString(R.string.intervention_expenses_high_tip3)
             });
         } else {
             // Gastos concentrados en pocos días
-            message.setTitle("Gastos concentrados 📈");
-            message.setMessage(
-                    "Has tenido varios gastos importantes en los últimos días. " +
-                            "Puede que sean necesarios, pero es bueno estar consciente del impacto en tu presupuesto."
-            );
-            message.setTips(new String[]{
-                    "📝 Revisa si estos gastos eran planificados",
-                    "🗓️ Intenta espaciar gastos grandes cuando sea posible",
-                    "💪 Mantén el equilibrio en los próximos días"
-            });
+                message.setTitle(context.getString(R.string.intervention_concentrated_expenses_title));
+                message.setMessage(context.getString(R.string.intervention_concentrated_expenses_description));
+                message.setTips(new String[]{
+                        context.getString(R.string.intervention_concentrated_expenses_tip1),
+                        context.getString(R.string.intervention_concentrated_expenses_tip2),
+                        context.getString(R.string.intervention_concentrated_expenses_tip3)
+                });
         }
 
         return message;
@@ -126,8 +120,8 @@ public class WellbeingController {
      * Calcula el nivel de bienestar financiero (0-100)
      */
     public int getWellbeingScore() {
-        double monthlyIncome = databaseHelper.getTotalIncomeThisMonth();
-        double monthlyExpenses = databaseHelper.getTotalExpensesThisMonth();
+        double monthlyIncome = expenseRepository.getTotalIncomeThisMonth();
+        double monthlyExpenses = expenseRepository.getTotalExpensesThisMonth();
 
         if (monthlyIncome == 0) {
             return 50; // Score neutral si no hay datos
@@ -157,13 +151,13 @@ public class WellbeingController {
      */
     public String getWellbeingMessage(int score) {
         if (score >= 85) {
-            return "¡Excelente! Tu bienestar financiero es muy bueno 🌟";
+            return context.getString(R.string.wellbeing_excellent_message);
         } else if (score >= 70) {
-            return "Buen trabajo. Vas por buen camino 👍";
+            return context.getString(R.string.wellbeing_good_job_message);
         } else if (score >= 55) {
-            return "Vas bien, pero hay oportunidades de mejora 💪";
+            return context.getString(R.string.wellbeing_improve_message);
         } else {
-            return "Enfoquémonos en recuperar el equilibrio 🌱";
+            return context.getString(R.string.wellbeing_recover_balance_message);
         }
     }
 }

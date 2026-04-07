@@ -1,23 +1,27 @@
 package asunfdiez.com.equilibra.models;
 
+import androidx.annotation.NonNull;
+import androidx.room.Entity;
+import androidx.room.PrimaryKey;
+
+import asunfdiez.com.equilibra.utils.Constants;
+
 /**
  * ExpenseCategory - Modelo de datos para categorías de gastos
  * Representa una categoría predefinida para clasificar transacciones
  */
+@Entity (tableName = Constants.TABLE_CATEGORIES)
 public class ExpenseCategory {
+
+    @PrimaryKey (autoGenerate = true)
+    @NonNull
+    private long id;
 
     private String name;
     private int iconResId;
     private String iconName; // Nombre del drawable
     private String color;    // Color en formato hexadecimal #RRGGBB
     private boolean isSelected;
-
-    public ExpenseCategory(String name, int iconResId, String iconName) {
-        this.name = name;
-        this.iconResId = iconResId;
-        this.iconName = iconName;
-        this.isSelected = false;
-    }
 
     public ExpenseCategory(String name, int iconResId, String iconName, String color) {
         this.name = name;
@@ -27,11 +31,13 @@ public class ExpenseCategory {
         this.isSelected = false;
     }
 
-
-    // Constructor vacío
-    public ExpenseCategory() {
+    public long getId() {
+        return id;
     }
 
+    public void setId(long id) {
+        this.id = id;
+    }
 
     public String getName() {
         return name;
@@ -72,6 +78,8 @@ public class ExpenseCategory {
     public void setSelected(boolean selected) {
         isSelected = selected;
     }
+
+
 
     @Override
     public boolean equals(Object o) {

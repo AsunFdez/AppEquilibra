@@ -131,7 +131,7 @@ public class AddExpenseActivity extends AppCompatActivity {
             public void afterTextChanged(android.text.Editable s) {}
         });
 
-        // Asegurar que el teclado numérico se muestra al hacer focus en el monto
+        // Asegurar que el teclado numérico se muestra al hacer focus en el importe
         binding.etAmount.setOnFocusChangeListener((v, hasFocus) -> {
             if (hasFocus) {
                 AnimationHelper.applyScaleAnimation(binding.cardAmount);
@@ -146,7 +146,7 @@ public class AddExpenseActivity extends AppCompatActivity {
         // Observar cuando se guarda el gasto
         viewModel.getExpenseSaved().observe(this, saved -> {
             if (saved != null && saved) {
-                Toast.makeText(this, "Gasto guardado exitosamente", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, R.string.expense_saved_ok, Toast.LENGTH_SHORT).show();
                 finish();
                 overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
             }

@@ -3,60 +3,195 @@ package asunfdiez.com.equilibra.repositories;
 import android.content.Context;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
+import java.util.concurrent.Executors;
 
-import asunfdiez.com.equilibra.database.DatabaseHelper;
+import asunfdiez.com.equilibra.database.AppDatabase;
+import asunfdiez.com.equilibra.database.ExpenseCategoryDao;
+import asunfdiez.com.equilibra.database.ExpenseDao;
+import asunfdiez.com.equilibra.models.CategoryAnalysis;
 import asunfdiez.com.equilibra.models.Expense;
 import asunfdiez.com.equilibra.models.ExpenseCategory;
 import asunfdiez.com.equilibra.models.SmartReminder;
+import asunfdiez.com.equilibra.utils.Constants;
 
 /**
  * ExpenseRepository - Repositorio para gestionar datos de gastos
- * Intermedia entre ViewModel y DatabaseHelper
+ * Intermedia entre ViewModel y Room DAOs
  */
 public class ExpenseRepository {
 
-    private DatabaseHelper databaseHelper;
+    private ExpenseCategoryDao expenseCategoryDao;
+    private ExpenseDao expenseDao;
     private Context context;
 
     public ExpenseRepository(Context context) {
         this.context = context;
-        this.databaseHelper = DatabaseHelper.getInstance(context);
+        this.expenseCategoryDao = AppDatabase.getInstance(context).expenseCategoryDao();
+        this.expenseDao = AppDatabase.getInstance(context).expenseDao();
     }
 
     /**
-     * Guarda un nuevo gasto en la base de datos
+     * Guarda un nuevo gasto en la base de datos (Room)
      */
-    public long saveExpense(Expense expense) {
-        return databaseHelper.insertExpense(expense);
+    public void saveExpense(Expense expense) {
+        Executors.newSingleThreadExecutor().execute(() -> {
+            expenseDao.insertExpense(expense);
+        });
     }
 
     /**
-     * Obtiene todos los gastos del mes actual
+     * Obtiene todos los gastos del mes actual (Room)
      */
     public List<Expense> getExpensesThisMonth() {
-        return databaseHelper.getExpensesThisMonth();
+        Calendar calendar = Calendar.getInstance();
+        calendar.set(Calendar.DAY_OF_MONTH, 1);
+        calendar.set(Calendar.HOUR_OF_DAY, 0);
+        calendar.set(Calendar.MINUTE, 0);
+        calendar.set(Calendar.SECOND, 0);
+        calendar.set(Calendar.MILLISECOND, 0);
+        long startTime = calendar.getTimeInMillis();
+
+        calendar.set(Calendar.DAY_OF_MONTH, calendar.getActualMaximum(Calendar.DAY_OF_MONTH));
+        calendar.set(Calendar.HOUR_OF_DAY, 23);
+        calendar.set(Calendar.MINUTE, 59);
+        calendar.set(Calendar.SECOND, 59);
+        long endTime = calendar.getTimeInMillis();
+
+        return expenseDao.getExpensesInRange(startTime, endTime);
     }
 
     /**
-     * Obtiene el total de gastos del mes actual
+     * Obtiene el total de gastos del mes actual (Room)
      */
     public double getTotalExpensesThisMonth() {
-        return databaseHelper.getTotalExpensesThisMonth();
+        Calendar calendar = Calendar.getInstance();
+        calendar.set(Calendar.DAY_OF_MONTH, 1);
+        calendar.set(Calendar.HOUR_OF_DAY, 0);
+        calendar.set(Calendar.MINUTE, 0);
+        calendar.set(Calendar.SECOND, 0);
+        calendar.set(Calendar.MILLISECOND, 0);
+        long startTime = calendar.getTimeInMillis();
+
+        calendar.set(Calendar.DAY_OF_MONTH, calendar.getActualMaximum(Calendar.DAY_OF_MONTH));
+        calendar.set(Calendar.HOUR_OF_DAY, 23);
+        calendar.set(Calendar.MINUTE, 59);
+        calendar.set(Calendar.SECOND, 59);
+        long endTime = calendar.getTimeInMillis();
+
+        Double total = expenseDao.getTotalForTypeInRange(Constants.TYPE_EXPENSE, startTime, endTime);
+        return total != null ? total : 0.0;
     }
 
     /**
-     * Obtiene el total de ingresos del mes actual
+     * Obtiene el total de ingresos del mes actual (Room)
      */
     public double getTotalIncomeThisMonth() {
-        return databaseHelper.getTotalIncomeThisMonth();
+        long startTime = getStartOfMonth();
+        long endTime = getEndOfMonth();
+
+        Double total = expenseDao.getTotalForTypeInRange(Constants.TYPE_INCOME, startTime, endTime);
+        return total != null ? total : 0.0;
     }
 
     /**
-     * Obtiene las categorías predeterminadas
+     * Obtiene la categoría con más gastos en el mes actual (Room)
      */
-    public List<ExpenseCategory> getDefaultCategories() {
-        return databaseHelper.getDefaultCategories(context);
+    public String getTopExpenseCategoryThisMonth() {
+        return expenseDao.getTopExpenseCategoryInRange(getStartOfMonth(), getEndOfMonth());
+    }
+
+    /**
+     * Obtiene el total gastado en una categoría específica este mes (Room)
+     */
+    public double getCategoryExpensesThisMonth(String category) {
+        Double total = expenseDao.getCategoryTotalInRange(category, getStartOfMonth(), getEndOfMonth());
+        return total != null ? total : 0.0;
+    }
+
+    /**
+     * Obtiene el total de gastos de los últimos N días
+     */
+    public double getExpensesLastNDays(int days) {
+        Calendar calendar = Calendar.getInstance();
+        calendar.add(Calendar.DAY_OF_YEAR, -days);
+        long startTime = calendar.getTimeInMillis();
+        Double total = expenseDao.getTotalForTypeSince(Constants.TYPE_EXPENSE, startTime);
+        return total != null ? total : 0.0;
+    }
+
+    /**
+     * Obtiene el número total de gastos
+     */
+    public int getExpenseCount() {
+        return expenseDao.getExpenseCount();
+    }
+
+    private long getStartOfMonth() {
+        Calendar calendar = Calendar.getInstance();
+        calendar.set(Calendar.DAY_OF_MONTH, 1);
+        calendar.set(Calendar.HOUR_OF_DAY, 0);
+        calendar.set(Calendar.MINUTE, 0);
+        calendar.set(Calendar.SECOND, 0);
+        calendar.set(Calendar.MILLISECOND, 0);
+        return calendar.getTimeInMillis();
+    }
+
+    private long getEndOfMonth() {
+        Calendar calendar = Calendar.getInstance();
+        calendar.set(Calendar.DAY_OF_MONTH, calendar.getActualMaximum(Calendar.DAY_OF_MONTH));
+        calendar.set(Calendar.HOUR_OF_DAY, 23);
+        calendar.set(Calendar.MINUTE, 59);
+        calendar.set(Calendar.SECOND, 59);
+        calendar.set(Calendar.MILLISECOND, 999);
+        return calendar.getTimeInMillis();
+    }
+
+    /**
+     * Obtiene el total de gastos del mes anterior (Room)
+     */
+    public double getTotalExpensesLastMonth() {
+        Calendar calendar = Calendar.getInstance();
+        calendar.add(Calendar.MONTH, -1);
+        calendar.set(Calendar.DAY_OF_MONTH, 1);
+        calendar.set(Calendar.HOUR_OF_DAY, 0);
+        calendar.set(Calendar.MINUTE, 0);
+        calendar.set(Calendar.SECOND, 0);
+        calendar.set(Calendar.MILLISECOND, 0);
+        long startTime = calendar.getTimeInMillis();
+
+        calendar.set(Calendar.DAY_OF_MONTH, calendar.getActualMaximum(Calendar.DAY_OF_MONTH));
+        calendar.set(Calendar.HOUR_OF_DAY, 23);
+        calendar.set(Calendar.MINUTE, 59);
+        calendar.set(Calendar.SECOND, 59);
+        long endTime = calendar.getTimeInMillis();
+
+        Double total = expenseDao.getTotalForTypeInRange(Constants.TYPE_EXPENSE, startTime, endTime);
+        return total != null ? total : 0.0;
+    }
+
+    /**
+     * Obtiene el análisis por categoría del mes actual
+     */
+    public List<CategoryAnalysis> getCategoryAnalysis() {
+        return expenseDao.getCategoryAnalysisSince(Constants.TYPE_EXPENSE, getStartOfMonth());
+    }
+
+    /**
+     * Calcula el promedio de gasto diario en el mes actual
+     */
+    public double getAverageDailyExpense() {
+        double total = getTotalExpensesThisMonth();
+        int dayOfMonth = Calendar.getInstance().get(Calendar.DAY_OF_MONTH);
+        return total / dayOfMonth;
+    }
+
+    /**
+     * Obtiene las categorías disponibles (Room)
+     */
+    public List<ExpenseCategory> getCategories() {
+        return expenseCategoryDao.getCategories();
     }
 
     /**
@@ -67,11 +202,20 @@ public class ExpenseRepository {
      */
     public SmartReminder detectExpensePattern(String category, double amount) {
         // Verificar cuántas veces se ha gastado en esta categoría esta semana
-        int weekCount = databaseHelper.countCategoryExpensesThisWeek(category);
+        Calendar calendar = Calendar.getInstance();
+        calendar.set(Calendar.DAY_OF_WEEK, calendar.getFirstDayOfWeek());
+        calendar.set(Calendar.HOUR_OF_DAY, 0);
+        calendar.set(Calendar.MINUTE, 0);
+        calendar.set(Calendar.SECOND, 0);
+        calendar.set(Calendar.MILLISECOND, 0);
+        long startOfWeek = calendar.getTimeInMillis();
+
+        int weekCount = expenseDao.countCategoryExpensesSince(category, startOfWeek);
 
         // Si es la 3ra vez o más, generar recordatorio
         if (weekCount >= 3) {
-            double weekTotal = databaseHelper.getCategoryExpensesThisWeek(category);
+            Double weekTotalObj = expenseDao.getTotalSpentInCategorySince(category, startOfWeek);
+            double weekTotal = weekTotalObj != null ? weekTotalObj : 0.0;
 
             SmartReminder reminder = new SmartReminder();
             reminder.setCategory(category);
@@ -129,7 +273,7 @@ public class ExpenseRepository {
         double monthlyIncome = getTotalIncomeThisMonth();
 
         if (monthlyIncome == 0) {
-            // Si no hay ingresos, considerar gasto importante si es >€100
+            // Si no hay ingresos, considerar gasto importante si es >100€
             return amount >= 100;
         }
 

@@ -2,15 +2,12 @@ package asunfdiez.com.equilibra.adapters;
 
 
 import android.content.Context;
-import android.content.res.ColorStateList;
 import android.graphics.Typeface;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.core.content.ContextCompat;
-import androidx.core.widget.ImageViewCompat;
 import androidx.databinding.BindingAdapter;
 import androidx.databinding.InverseBindingAdapter;
 import androidx.databinding.InverseBindingListener;
@@ -113,15 +110,4 @@ public class ProfileBindingAdapter {
         }
     }
 
-    @BindingAdapter("app:tint")
-    public static void setImageTint(ImageView view, int color) {
-        ImageViewCompat.setImageTintList(view, ColorStateList.valueOf(color));
-    }
-
-    @BindingAdapter("app:srcCompat")
-    public static void setImageResource(ImageView imageView, int resourceId) {
-        if (resourceId != 0) {
-            imageView.setImageResource(resourceId);
-        }
-    }
 }

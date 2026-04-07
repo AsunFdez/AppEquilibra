@@ -1,11 +1,20 @@
 package asunfdiez.com.equilibra.models;
 
+import androidx.annotation.NonNull;
+import androidx.room.Entity;
+import androidx.room.PrimaryKey;
+
+import asunfdiez.com.equilibra.utils.Constants;
+
 /**
  * UserXP - Modelo de datos para experiencia y progreso gamificado
  * Almacena puntos de experiencia, nivel actual y logros desbloqueados
  */
+@Entity(tableName = Constants.TABLE_USER_XP)
 public class UserXP {
 
+    @PrimaryKey(autoGenerate = true)
+    @NonNull
     private long id;
     private long userId;
     private int totalXP;
@@ -18,27 +27,6 @@ public class UserXP {
     public UserXP() {
     }
 
-    // Constructor completo
-    public UserXP(long id, long userId, int totalXP, int currentLevel,
-                  int xpForNextLevel, int achievementsUnlocked, long lastXPEarnedAt) {
-        this.id = id;
-        this.userId = userId;
-        this.totalXP = totalXP;
-        this.currentLevel = currentLevel;
-        this.xpForNextLevel = xpForNextLevel;
-        this.achievementsUnlocked = achievementsUnlocked;
-        this.lastXPEarnedAt = lastXPEarnedAt;
-    }
-
-    // Constructor para inicializar nuevo usuario
-    public UserXP(long userId) {
-        this.userId = userId;
-        this.totalXP = 0;
-        this.currentLevel = 1;
-        this.xpForNextLevel = 100;
-        this.achievementsUnlocked = 0;
-        this.lastXPEarnedAt = System.currentTimeMillis();
-    }
 
     // Getters y Setters
     public long getId() {
@@ -48,6 +36,7 @@ public class UserXP {
     public void setId(long id) {
         this.id = id;
     }
+
 
     public long getUserId() {
         return userId;
