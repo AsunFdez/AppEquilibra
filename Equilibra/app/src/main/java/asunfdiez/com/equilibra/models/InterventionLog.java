@@ -29,31 +29,6 @@ public class InterventionLog {
     public InterventionLog() {
     }
 
-    // Constructor completo
-    public InterventionLog(long userId, long expenseId, String interventionType,
-                          String message, String impactOnGoal, String alternativeSuggestion,
-                          long timestamp) {
-        this.userId = userId;
-        this.expenseId = expenseId;
-        this.interventionType = interventionType;
-        this.message = message;
-        this.impactOnGoal = impactOnGoal;
-        this.alternativeSuggestion = alternativeSuggestion;
-        this.timestamp = timestamp;
-    }
-
-    // Constructor para nueva intervención
-    public InterventionLog(long userId, long expenseId, String interventionType,
-                          String message, String impactOnGoal, String alternativeSuggestion) {
-        this.userId = userId;
-        this.expenseId = expenseId;
-        this.interventionType = interventionType;
-        this.message = message;
-        this.impactOnGoal = impactOnGoal;
-        this.alternativeSuggestion = alternativeSuggestion;
-        this.timestamp = System.currentTimeMillis();
-    }
-
     // Getters y Setters
     public long getId() {
         return id;

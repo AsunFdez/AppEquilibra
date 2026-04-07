@@ -1,92 +1,103 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:fillViewport="true">
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <LinearLayout
+    <data>
+        <import type="android.view.View" />
+        <import type="asunfdiez.com.equilibra.utils.Constants" />
+        <variable
+            name="viewModel"
+            type="asunfdiez.com.equilibra.viewmodels.OnboardingViewModel" />
+    </data>
+
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:padding="24dp">
+        android:layout_height="match_parent"
+        android:fillViewport="true">
 
-        <!-- Progress Indicator -->
         <LinearLayout
-            android:id="@+id/progressContainer"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="24dp"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:padding="24dp">
 
-            <TextView
-                android:id="@+id/progressText"
+            <!-- Progress Indicator -->
+            <LinearLayout
+                android:id="@+id/progressContainer"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="16dp"
-                android:gravity="center"
-                android:text="Pregunta 1 de 2"
-                android:textColor="@color/gray_500"
-                android:textSize="14sp" />
+                android:layout_marginBottom="24dp"
+                android:orientation="vertical">
 
-            <!-- Progress Bar Background -->
+                <TextView
+                    android:id="@+id/progressText"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="16dp"
+                    android:gravity="center"
+                    android:text='@{@string/onboarding_progress_text(viewModel.currentQuestionIndex + 1, Constants.TOTAL_QUESTIONS)}'
+                    android:textColor="@color/gray_500"
+                    android:textSize="14sp" />
+
+                <!-- Progress Bar Background -->
+                <FrameLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="8dp"
+                    android:background="@drawable/progress_background">
+
+                    <!-- Progress Bar Foreground -->
+                    <View
+                        android:id="@+id/progressBar"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:background="@drawable/progress_foreground" />
+                </FrameLayout>
+            </LinearLayout>
+
+            <!-- Icon Container -->
             <FrameLayout
-                android:layout_width="match_parent"
-                android:layout_height="8dp"
-                android:background="@drawable/progress_background">
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginBottom="32dp">
 
-                <!-- Progress Bar Foreground -->
                 <View
-                    android:id="@+id/progressBar"
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:background="@drawable/progress_foreground" />
+                    android:layout_width="96dp"
+                    android:layout_height="96dp"
+                    android:layout_gravity="center"
+                    android:background="@drawable/circle_primary" />
+
+                <ImageView
+                    android:id="@+id/questionIcon"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:layout_gravity="center"
+                    android:src="@drawable/ic_onb_target"
+                    android:tint="@android:color/white" />
             </FrameLayout>
+
+            <!-- Question Title -->
+            <TextView
+                android:id="@+id/questionTitle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="48dp"
+                android:gravity="center"
+                android:text="@string/question_1_title"
+                android:textColor="@color/gray_800"
+                android:textSize="24sp"
+                android:textStyle="bold" />
+
+            <!-- Options Container -->
+            <LinearLayout
+                android:id="@+id/questionOptionsContainer"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <!-- Las opciones se agregarán dinámicamente -->
+            </LinearLayout>
+
         </LinearLayout>
-
-        <!-- Icon Container -->
-        <FrameLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_marginBottom="32dp">
-
-            <View
-                android:layout_width="96dp"
-                android:layout_height="96dp"
-                android:layout_gravity="center"
-                android:background="@drawable/circle_primary" />
-
-            <ImageView
-                android:id="@+id/questionIcon"
-                android:layout_width="48dp"
-                android:layout_height="48dp"
-                android:layout_gravity="center"
-                android:src="@drawable/ic_onb_target"
-                android:tint="@android:color/white" />
-        </FrameLayout>
-
-        <!-- Question Title -->
-        <TextView
-            android:id="@+id/questionTitle"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="48dp"
-            android:gravity="center"
-            android:text="@string/question_1_title"
-            android:textColor="@color/gray_800"
-            android:textSize="24sp"
-            android:textStyle="bold" />
-
-        <!-- Options Container -->
-        <LinearLayout
-            android:id="@+id/questionOptionsContainer"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical">
-
-            <!-- Las opciones se agregarán dinámicamente -->
-        </LinearLayout>
-
-    </LinearLayout>
-</ScrollView>
+    </ScrollView>
+</layout>

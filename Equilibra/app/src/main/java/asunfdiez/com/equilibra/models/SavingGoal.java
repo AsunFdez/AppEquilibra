@@ -28,33 +28,6 @@ public class SavingGoal {
     public SavingGoal() {
     }
 
-    // Constructor completo
-    public SavingGoal(long id, long userId, String name, double targetAmount,
-                      double currentAmount, String deadline, long createdAt,
-                      long updatedAt, boolean completed) {
-        this.id = id;
-        this.userId = userId;
-        this.name = name;
-        this.targetAmount = targetAmount;
-        this.currentAmount = currentAmount;
-        this.deadline = deadline;
-        this.createdAt = createdAt;
-        this.updatedAt = updatedAt;
-        this.completed = completed;
-    }
-
-    // Constructor sin ID (para inserciones nuevas)
-    public SavingGoal(long userId, String name, double targetAmount,
-                      String deadline) {
-        this.userId = userId;
-        this.name = name;
-        this.targetAmount = targetAmount;
-        this.currentAmount = 0.0;
-        this.deadline = deadline;
-        this.createdAt = System.currentTimeMillis();
-        this.updatedAt = System.currentTimeMillis();
-        this.completed = false;
-    }
 
     // Getters y Setters
     public long getId() {

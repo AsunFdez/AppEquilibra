@@ -6,71 +6,78 @@ import android.os.Handler;
 import android.os.Looper;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.FrameLayout;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.TextView;
 
+import androidx.activity.OnBackPressedCallback;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
-
-import com.google.android.material.button.MaterialButton;
+import androidx.lifecycle.ViewModelProvider;
 
 import java.util.List;
 
 import asunfdiez.com.equilibra.R;
 import asunfdiez.com.equilibra.adapters.QuestionOptionAdapter;
+import asunfdiez.com.equilibra.databinding.ActivityOnboardingBinding;
+import asunfdiez.com.equilibra.databinding.OnboardingStepEmotionalBinding;
+import asunfdiez.com.equilibra.databinding.OnboardingStepMissionBinding;
+import asunfdiez.com.equilibra.databinding.OnboardingStepQuestionBinding;
+import asunfdiez.com.equilibra.databinding.OnboardingStepSavingGoalBinding;
+import asunfdiez.com.equilibra.databinding.OnboardingStepSummaryBinding;
+import asunfdiez.com.equilibra.databinding.OnboardingStepValidationBinding;
 import asunfdiez.com.equilibra.models.EmotionalState;
 import asunfdiez.com.equilibra.models.QuestionOption;
-import asunfdiez.com.equilibra.models.UserProfile;
 import asunfdiez.com.equilibra.utils.AnimationHelper;
 import asunfdiez.com.equilibra.utils.Constants;
 import asunfdiez.com.equilibra.utils.DatePickerHelper;
 import asunfdiez.com.equilibra.utils.InputValidator;
 import asunfdiez.com.equilibra.utils.SavingGoalValidator;
 import asunfdiez.com.equilibra.utils.SharedPrefsManager;
+import asunfdiez.com.equilibra.viewmodels.OnboardingViewModel;
+import asunfdiez.com.equilibra.viewmodels.OnboardingViewModel.OnboardingStep;
 
 
 public class OnboardingActivity extends AppCompatActivity {
 
-    private FrameLayout stepContainer;
-    private OnboardingStep currentStep = OnboardingStep.EMOTIONAL;
-
-    // Datos del usuario
-    private UserProfile profile;
-    private EmotionalState selectedEmotion;
-
-    private int currentQuestionIndex = 0;
+    private OnboardingViewModel viewModel;
+    private ActivityOnboardingBinding activityBinding;
 
     private Handler handler;
     private QuestionOptionAdapter questionAdapter;
     private SharedPrefsManager sharedPrefsManager;
 
-    private enum OnboardingStep {
-        EMOTIONAL,
-        VALIDATION,
-        QUESTIONS,
-        SAVING_GOAL,
-        SUMMARY,
-        MISSION
-    }
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_onboarding);
+        activityBinding = ActivityOnboardingBinding.inflate(getLayoutInflater());
+        setContentView(activityBinding.getRoot());
 
         initializeComponents();
         hideSystemUI();
-        showStep(OnboardingStep.EMOTIONAL);
+        setupObservers();
+        setupBackNavigation();
+    }
+
+    private void setupBackNavigation() {
+        getOnBackPressedDispatcher().addCallback(this, new OnBackPressedCallback(true) {
+            @Override
+            public void handleOnBackPressed() {
+                if (!viewModel.previousStep()) {
+                    setEnabled(false);
+                    getOnBackPressedDispatcher().onBackPressed();
+                }
+            }
+        });
     }
 
     private void initializeComponents() {
-        profile = new UserProfile();
+        viewModel = new ViewModelProvider(this).get(OnboardingViewModel.class);
         handler = new Handler(Looper.getMainLooper());
         questionAdapter = new QuestionOptionAdapter();
-        stepContainer = findViewById(R.id.stepContainer);
         sharedPrefsManager = SharedPrefsManager.getInstance(this);
+    }
+
+    private void setupObservers() {
+        viewModel.getCurrentStep().observe(this, this::showStep);
     }
 
     private void hideSystemUI() {
@@ -82,7 +89,6 @@ public class OnboardingActivity extends AppCompatActivity {
     // ==================== NAVEGACIÓN ====================
 
     private void showStep(OnboardingStep step) {
-        currentStep = step;
         View newView = createViewForStep(step);
 
         if (newView != null) {
@@ -112,13 +118,13 @@ public class OnboardingActivity extends AppCompatActivity {
     }
 
     private void transitionToView(View newView) {
-        View currentView = stepContainer.getChildCount() > 0
-                ? stepContainer.getChildAt(0)
+        View currentView = activityBinding.stepContainer.getChildCount() > 0
+                ? activityBinding.stepContainer.getChildAt(0)
                 : null;
 
         newView.setAlpha(0f);
         newView.setTranslationX(Constants.TRANSITION_DISTANCE);
-        stepContainer.addView(newView);
+        activityBinding.stepContainer.addView(newView);
 
         if (currentView != null) {
             AnimationHelper.animateViewExit(currentView);
@@ -132,18 +138,15 @@ public class OnboardingActivity extends AppCompatActivity {
     // ==================== PASO 1: ESTADO EMOCIONAL ====================
 
     private View createEmotionalStep() {
-        View view = LayoutInflater.from(this).inflate(R.layout.onboarding_step_emotional, null);
+        OnboardingStepEmotionalBinding binding = OnboardingStepEmotionalBinding.inflate(getLayoutInflater());
+        binding.setLifecycleOwner(this);
+        binding.setViewModel(viewModel);
 
-        ImageView heartIcon = view.findViewById(R.id.heartIcon);
-        View iconBackground = view.findViewById(R.id.iconBackground);
-        AnimationHelper.animateIcon(heartIcon, iconBackground);
+        AnimationHelper.animateIcon(binding.heartIcon, binding.iconBackground);
+        setupEmotionalOptions(binding.getRoot());
+        AnimationHelper.animateOptionsStagger(binding.optionsContainer);
 
-        setupEmotionalOptions(view);
-
-        LinearLayout optionsContainer = view.findViewById(R.id.optionsContainer);
-        AnimationHelper.animateOptionsStagger(optionsContainer);
-
-        return view;
+        return binding.getRoot();
     }
 
     private void setupEmotionalOptions(View parent) {
@@ -159,92 +162,70 @@ public class OnboardingActivity extends AppCompatActivity {
     private void setupEmotionalOption(View parent, int cardId, final EmotionalState emotion) {
         CardView card = parent.findViewById(cardId);
         card.setOnClickListener(v -> {
-            selectedEmotion = emotion;
-            profile.setEmotionalState(emotion);
+            viewModel.setSelectedEmotion(emotion);
             AnimationHelper.animateCardSelection(v, () ->
-                    showStep(OnboardingStep.VALIDATION));
+                    viewModel.nextStep(OnboardingStep.VALIDATION));
         });
     }
 
     // ==================== PASO 2: VALIDACION ====================
 
     private View createValidationStep() {
-        View view = LayoutInflater.from(this).inflate(R.layout.onboarding_step_validation, null);
+        OnboardingStepValidationBinding binding = OnboardingStepValidationBinding.inflate(getLayoutInflater());
+        binding.setLifecycleOwner(this);
+        binding.setViewModel(viewModel);
 
-        TextView emojiText = view.findViewById(R.id.emojiText);
-        TextView validationMessage = view.findViewById(R.id.validationMessage);
+        AnimationHelper.animateSparklesIcon(binding.sparklesIcon, binding.iconBackground);
+        AnimationHelper.animateCardScale(binding.messageCard);
 
-        if (selectedEmotion != null) {
-            emojiText.setText(selectedEmotion.emoji());
-            validationMessage.setText(selectedEmotion.validation());
-        }
-
-        ImageView sparklesIcon = view.findViewById(R.id.sparklesIcon);
-        View iconBackground = view.findViewById(R.id.iconBackground);
-        AnimationHelper.animateSparklesIcon(sparklesIcon, iconBackground);
-
-        CardView messageCard = view.findViewById(R.id.messageCard);
-        AnimationHelper.animateCardScale(messageCard);
-
-        MaterialButton continueButton = view.findViewById(R.id.continueButton);
-        continueButton.setOnClickListener(v -> {
+        binding.continueButton.setOnClickListener(v -> {
             AnimationHelper.animateButtonPress(v, () -> {
-                currentQuestionIndex = 0;
-                showStep(OnboardingStep.QUESTIONS);
+                viewModel.setCurrentQuestionIndex(0);
+                viewModel.nextStep(OnboardingStep.QUESTIONS);
             });
         });
 
-        return view;
+        return binding.getRoot();
     }
 
     // ==================== PASO 3: PREGUNTAS ====================
 
     private View createQuestionStep() {
-        View view = LayoutInflater.from(this).inflate(R.layout.onboarding_step_question, null);
+        OnboardingStepQuestionBinding binding = OnboardingStepQuestionBinding.inflate(getLayoutInflater());
+        binding.setLifecycleOwner(this);
+        binding.setViewModel(viewModel);
 
-        updateProgressUI(view);
-        setupQuestionContent(view);
+        updateProgressUI(binding);
+        setupQuestionContent(binding);
 
-        LinearLayout optionsContainer = view.findViewById(R.id.questionOptionsContainer);
-        AnimationHelper.animateOptionsStagger(optionsContainer);
+        AnimationHelper.animateOptionsStagger(binding.questionOptionsContainer);
 
-        return view;
+        return binding.getRoot();
     }
 
-    private void updateProgressUI(View view) {
-        TextView progressText = view.findViewById(R.id.progressText);
-        View progressBar = view.findViewById(R.id.progressBar);
-
-        String progress = getString(R.string.onboarding_progress_text,
-                currentQuestionIndex + 1,
-                Constants.TOTAL_QUESTIONS);
-
-        progressText.setText(progress);
-
+    private void updateProgressUI(OnboardingStepQuestionBinding binding) {
+        // Data binding handles most of this now
+        int currentQuestionIndex = viewModel.getCurrentQuestionIndex().getValue() != null ? viewModel.getCurrentQuestionIndex().getValue() : 0;
         float progressValue = (currentQuestionIndex + 1) / (float) Constants.TOTAL_QUESTIONS;
-        AnimationHelper.animateProgressBar(progressBar, progressValue);
+        AnimationHelper.animateProgressBar(binding.progressBar, progressValue);
     }
 
-    private void setupQuestionContent(View view) {
-        TextView questionTitle = view.findViewById(R.id.questionTitle);
-        ImageView questionIcon = view.findViewById(R.id.questionIcon);
-        LinearLayout optionsContainer = view.findViewById(R.id.questionOptionsContainer);
-
+    private void setupQuestionContent(OnboardingStepQuestionBinding binding) {
+        int currentQuestionIndex = viewModel.getCurrentQuestionIndex().getValue() != null ? viewModel.getCurrentQuestionIndex().getValue() : 0;
         if (currentQuestionIndex == Constants.QUESTION_INDEX_FIRST) {
-            questionTitle.setText(getString(R.string.question_1_title));
-            questionIcon.setImageResource(R.drawable.ic_onb_target);
-            setupFirstQuestion(optionsContainer);
+            binding.questionTitle.setText(getString(R.string.question_1_title));
+            binding.questionIcon.setImageResource(R.drawable.ic_onb_target);
+            setupFirstQuestion(binding.questionOptionsContainer);
         } else if (currentQuestionIndex == Constants.QUESTION_INDEX_SECOND) {
-            questionTitle.setText(getString(R.string.question_2_title));
-            questionIcon.setImageResource(R.drawable.ic_onb_clock);
-            setupSecondQuestion(optionsContainer);
+            binding.questionTitle.setText(getString(R.string.question_2_title));
+            binding.questionIcon.setImageResource(R.drawable.ic_onb_clock);
+            setupSecondQuestion(binding.questionOptionsContainer);
         }
     }
 
     private void setupFirstQuestion(LinearLayout container) {
         questionAdapter.setOnOptionSelectedListener((id, text) -> {
-            profile.setMainConcernId(id);
-            profile.setMainConcern(text);
+            viewModel.setMainConcern(id, text);
             handleFirstQuestionAnswer(id);
         });
 
@@ -256,7 +237,7 @@ public class OnboardingActivity extends AppCompatActivity {
 
     private void setupSecondQuestion(LinearLayout container) {
         questionAdapter.setOnOptionSelectedListener((id, text) -> {
-            profile.setTimeAvailable(id);
+            viewModel.setTimeAvailable(id);
             handleSecondQuestionAnswer();
         });
 
@@ -267,173 +248,113 @@ public class OnboardingActivity extends AppCompatActivity {
 
     private void handleFirstQuestionAnswer(String answerId) {
         if (Constants.ANSWER_ID_SAVE_SPECIFIC.equals(answerId)) {
-            currentQuestionIndex++;
-            showStep(OnboardingStep.QUESTIONS);
+            int currentQuestionIndex = viewModel.getCurrentQuestionIndex().getValue() != null ? viewModel.getCurrentQuestionIndex().getValue() : 0;
+            viewModel.setCurrentQuestionIndex(currentQuestionIndex + 1);
+            viewModel.nextStep(OnboardingStep.QUESTIONS);
         } else {
             proceedToNextStep();
         }
     }
 
     private void handleSecondQuestionAnswer() {
-        if (Constants.ANSWER_ID_SAVE_SPECIFIC.equals(profile.getMainConcernId())) {
-            showStep(OnboardingStep.SAVING_GOAL);
+        if (Constants.ANSWER_ID_SAVE_SPECIFIC.equals(viewModel.getProfile().getMainConcernId())) {
+            viewModel.nextStep(OnboardingStep.SAVING_GOAL);
         } else {
-            showStep(OnboardingStep.SUMMARY);
+            viewModel.nextStep(OnboardingStep.SUMMARY);
         }
     }
 
     private void proceedToNextStep() {
-        currentQuestionIndex++;
-        if (currentQuestionIndex < Constants.TOTAL_QUESTIONS) {
-            showStep(OnboardingStep.QUESTIONS);
+        int currentQuestionIndex = viewModel.getCurrentQuestionIndex().getValue() != null ? viewModel.getCurrentQuestionIndex().getValue() : 0;
+        int nextIndex = currentQuestionIndex + 1;
+        if (nextIndex < Constants.TOTAL_QUESTIONS) {
+            viewModel.setCurrentQuestionIndex(nextIndex);
+            viewModel.nextStep(OnboardingStep.QUESTIONS);
         } else {
-            showStep(OnboardingStep.SUMMARY);
+            viewModel.nextStep(OnboardingStep.SUMMARY);
         }
     }
 
     // ==================== PASO 4: ESTABLECER OBJETIVO ====================
 
     private View createSavingGoalStep() {
-        View view = LayoutInflater.from(this).inflate(R.layout.onboarding_step_saving_goal, null);
+        OnboardingStepSavingGoalBinding binding = OnboardingStepSavingGoalBinding.inflate(getLayoutInflater());
+        binding.setLifecycleOwner(this);
+        binding.setUser(viewModel.getProfile());
 
-        setupSavingGoalForm(view);
+        setupSavingGoalForm(binding);
 
-        return view;
+        return binding.getRoot();
     }
 
-    private void setupSavingGoalForm(View view) {
-        com.google.android.material.textfield.TextInputEditText goalInput =
-                view.findViewById(R.id.goalInput);
-        com.google.android.material.textfield.TextInputEditText amountInput =
-                view.findViewById(R.id.amountInput);
-        com.google.android.material.textfield.TextInputEditText dateInput =
-                view.findViewById(R.id.dateInput);
-        MaterialButton submitButton = view.findViewById(R.id.submitButton);
-
-        dateInput.setOnClickListener(v ->
-                new DatePickerHelper(this).showDatePicker(dateInput));
+    private void setupSavingGoalForm(OnboardingStepSavingGoalBinding binding) {
+        binding.dateInput.setOnClickListener(v ->
+                new DatePickerHelper(this).showDatePicker(binding.dateInput));
 
         SavingGoalValidator validator = new SavingGoalValidator(
-                goalInput, amountInput, submitButton, handler);
+                binding.goalInput, binding.amountInput, binding.submitButton, handler);
         validator.setupValidation();
 
-        submitButton.setOnClickListener(v -> {
-            if (saveSavingGoalData(goalInput, amountInput, dateInput)) {
+        binding.submitButton.setOnClickListener(v -> {
+            if (saveSavingGoalData(binding)) {
                 AnimationHelper.animateButtonPress(v,
-                        () -> showStep(OnboardingStep.SUMMARY));
+                        () -> viewModel.nextStep(OnboardingStep.SUMMARY));
             }
         });
 
-        submitButton.setEnabled(false);
-        submitButton.setAlpha(0.5f);
+        binding.submitButton.setEnabled(false);
+        binding.submitButton.setAlpha(0.5f);
     }
 
-    private boolean saveSavingGoalData(
-            com.google.android.material.textfield.TextInputEditText goalInput,
-            com.google.android.material.textfield.TextInputEditText amountInput,
-            com.google.android.material.textfield.TextInputEditText dateInput) {
-
-        String goal = goalInput.getText().toString().trim();
-        String amount = amountInput.getText().toString().trim();
-        String date = dateInput.getText().toString().trim();
+    private boolean saveSavingGoalData(OnboardingStepSavingGoalBinding binding) {
+        String goal = binding.goalInput.getText().toString().trim();
+        String amount = binding.amountInput.getText().toString().trim();
+        String date = binding.dateInput.getText().toString().trim();
 
         if (!InputValidator.isValidSavingGoalInputs(goal, amount)) {
             return false;
         }
 
-        profile.setSavingGoal(goal);
-        profile.setSavingAmount(amount);
-        profile.setSavingDate(date);
+        viewModel.setSavingGoal(goal, amount, date);
         return true;
     }
 
     // ==================== PASO 5: RESUMEN ====================
 
     private View createSummaryStep() {
-        View view = LayoutInflater.from(this).inflate(R.layout.onboarding_step_summary, null);
+        OnboardingStepSummaryBinding binding = OnboardingStepSummaryBinding.inflate(getLayoutInflater());
+        binding.setLifecycleOwner(this);
+        binding.setUser(viewModel.getProfile());
 
-        View iconBackground = view.findViewById(R.id.iconBackground);
-        AnimationHelper.animateCheckIcon(iconBackground);
+        AnimationHelper.animateCheckIcon(binding.iconBackground);
 
-        setupSummaryContent(view);
-
-        MaterialButton continueButton = view.findViewById(R.id.continueButton);
-        continueButton.setOnClickListener(v -> {
-            AnimationHelper.animateButtonPress(v, () -> showStep(OnboardingStep.MISSION));
+        binding.continueButton.setOnClickListener(v -> {
+            AnimationHelper.animateButtonPress(v, () -> viewModel.nextStep(OnboardingStep.MISSION));
         });
 
-        return view;
-    }
-
-    private void setupSummaryContent(View view) {
-        displayGoalSection(view);
-        displaySavingAmountSection(view);
-        displayEmotionSection(view);
-    }
-
-    private void displayGoalSection(View view) {
-        if (profile.getSavingGoal() != null && !profile.getSavingGoal().isEmpty()) {
-            LinearLayout section = view.findViewById(R.id.goalSection);
-            TextView text = view.findViewById(R.id.goalText);
-            section.setVisibility(View.VISIBLE);
-            text.setText(profile.getSavingGoal());
-        }
-    }
-
-    private void displaySavingAmountSection(View view) {
-        if (profile.getSavingAmount() != null && !profile.getSavingAmount().isEmpty()) {
-            try {
-                double amount = Double.parseDouble(profile.getSavingAmount());
-                displayAmountUI(view, amount);
-            } catch (NumberFormatException e) {
-                // ignorar formato inválido
-            }
-        }
-    }
-
-    private void displayAmountUI(View view, double amount) {
-        LinearLayout amountSection = view.findViewById(R.id.savingAmountSection);
-        TextView amountText = view.findViewById(R.id.savingAmountText);
-        amountSection.setVisibility(View.VISIBLE);
-        amountText.setText(String.format(Constants.CURRENCY_FORMAT, amount));
-
-        double monthlyAmount = amount / Constants.MONTHLY_DIVISION_FACTOR;
-        LinearLayout monthlySection = view.findViewById(R.id.monthlySavingSection);
-        TextView monthlyText = view.findViewById(R.id.monthlySavingText);
-        monthlySection.setVisibility(View.VISIBLE);
-        monthlyText.setText(String.format(Constants.CURRENCY_FORMAT, monthlyAmount));
-    }
-
-    private void displayEmotionSection(View view) {
-        if (selectedEmotion != null) {
-            TextView emotionEmoji = view.findViewById(R.id.emotionEmoji);
-            TextView emotionText = view.findViewById(R.id.emotionText);
-            emotionEmoji.setText(selectedEmotion.emoji());
-            emotionText.setText(selectedEmotion.text());
-        }
+        return binding.getRoot();
     }
 
     // ==================== PASO 6: GUARDAR MISION ====================
 
     private View createMissionStep() {
-        View view = LayoutInflater.from(this).inflate(R.layout.onboarding_step_mission, null);
+        OnboardingStepMissionBinding binding = OnboardingStepMissionBinding.inflate(getLayoutInflater());
+        binding.setLifecycleOwner(this);
+        binding.setViewModel(viewModel);
 
-        ImageView zapIcon = view.findViewById(R.id.zapIcon);
-        View iconBackground = view.findViewById(R.id.iconBackground);
-        AnimationHelper.animateZapIcon(zapIcon, iconBackground);
+        AnimationHelper.animateZapIcon(binding.zapIcon, binding.iconBackground);
 
-        MaterialButton startButton = view.findViewById(R.id.startButton);
-        startButton.setOnClickListener(v -> {
+        binding.startButton.setOnClickListener(v -> {
             AnimationHelper.animateButtonPress(v, this::completeOnboarding);
         });
 
-        return view;
+        return binding.getRoot();
     }
 
     private void completeOnboarding() {
         sharedPrefsManager.setOnboardingComplete(true);
         sharedPrefsManager.setOnboardingCompletedAt(System.currentTimeMillis());
-        sharedPrefsManager.saveUserProfile(profile);
+        sharedPrefsManager.saveUserProfile(viewModel.getProfile());
         navigateToMainActivity();
     }
 
