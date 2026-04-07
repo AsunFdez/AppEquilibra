@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!-- Categorías -->
+    <string name="category_food">Comida</string>
+    <string name="category_transport">Transporte</string>
+    <string name="category_home">Vivienda</string>
+    <string name="category_health">Salud</string>
+    <string name="category_leisure">Ocio</string>
+    <string name="category_clothes">Ropa</string>
+    <string name="category_education">Educación</string>
+    <string name="category_care">Cuidado</string>
+    <string name="category_others">Otros</string>
+    <string name="category_icon">Icono de categoría</string>
+    <string name="category_restaurants">Restaurantes</string>
+    <string name="category_shopping">Compras</string>
+    <string name="category_subscriptions">Suscripciones</string>
+    <string name="category_other">Otros</string>
+
+</resources>

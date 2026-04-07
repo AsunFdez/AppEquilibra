@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!-- Achievements -->
+    <string name="achievements_title">Logros y Progreso</string>
+    <string name="achievements_your_level">Tu nivel</string>
+    <string name="achievements_total_points">Puntos totales</string>
+    <string name="achievements_unlocked">desbloqueados</string>
+
+</resources>

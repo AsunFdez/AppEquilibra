@@ -5,73 +5,7 @@
 
     <string name="money_bag_emoji">💰</string>
     <string name="stars_emoji">✨</string>
-
-    <string name="question_0_title">¿Cómo te sientes cuando piensas en tu dinero?</string>
-    <string name="question_0_subtitle">Tu bienestar emocional es importante para nosotros</string>
-
-    <string name="label_option">Opción</string>
-
-    <string name="emotion_tranquilo_text">Tranquilo/a y en control</string>
-    <string name="emotion_ansioso_text">Un poco ansioso/a</string>
-    <string name="emotion_estresado_text">Muy estresado/a</string>
-    <string name="emotion_confundido_text">Confundido/a</string>
-
-    <string name="emotion_tranquilo_emoji">😌</string>
-    <string name="emotion_ansioso_emoji">😟</string>
-    <string name="emotion_estresado_emoji">😰</string>
-    <string name="emotion_confundido_emoji">😕</string>
-
-    <string name="validation_calm">¡Genial! Tu tranquilidad es una fortaleza. Equilibra te ayudará a mantener ese control y seguir creciendo.</string>
-    <string name="validation_anxious">Es completamente normal sentirse así. Equilibra está aquí para darte claridad y reducir ese estrés financiero paso a paso.</string>
-    <string name="validation_stressed">Entendemos tu preocupación. Dar este primer paso es valiente. Juntos trabajaremos para transformar ese estrés en confianza.</string>
-    <string name="validation_confused">La confusión es el inicio del aprendizaje. Equilibra te guiará con claridad para que tomes el control de tus finanzas.</string>
-
-    <string name="onboarding_progress_text">Pregunta %1$d de %2$d</string>
-    <string name="question_1_title">¿Cuál es tu mayor preocupación financiera?</string>
-
-    <string name="q1_option_1">Controlar mis gastos</string>
-    <string name="q1_option_2">Ahorrar para algo específico</string>
-    <string name="q1_option_3">Reducir estrés financiero</string>
-    <string name="q1_option_4">Aprender sobre dinero</string>
-
-    <string name="question_2_title">¿Cuánto tiempo tienes disponible diariamente?</string>
-
-    <string name="q2_option_1">5 minutos (básico)</string>
-    <string name="q2_option_2">10 minutos (recomendado)</string>
-    <string name="q2_option_3">15+ minutos (análisis detallado)</string>
-
-    <string name="btn_continue">Continuar</string>
-    <string name="btn_submit_goal">Guardar objetivo</string>
-    <string name="btn_start_mission">Comenzar misión</string>
-
-    <string name="saving_goal_title">¿Para qué quieres ahorrar y cuánto necesitas?</string>
-    <string name="saving_goal_subtitle">Por ejemplo: &quot;Vacaciones&quot;, &quot;Nuevo móvil&quot;, &quot;Regalo de boda&quot;</string>
-
-    <string name="label_goal">Objetivo</string>
-    <string name="hint_goal">Tu objetivo</string>
-    <string name="hint_input_goal">Ej: Vacaciones en verano</string>
-    <string name="example_goal">Vacaciones en verano</string>
-    <string name="label_amount">Cantidad</string>
-    <string name="hint_amount">¿Cuánto necesitas?</string>
-    <string name="label_date">Fecha límite</string>
-    <string name="hint_date">¿Para cuándo? (opcional)</string>
-    <string name="calculate_plan">Calcular plan</string>
-
-    <string name="saving_plan">Hemos calculado tu plan de ahorro personalizado</string>
-    <string name="plan_ready">¡Tu plan está listo!</string>
-    <string name="emotional_state">Tu estado emocional</string>
-    <string name="savings_goal">Meta de ahorro</string>
-    <string name="suggested_savings_monthly">Ahorro sugerido mensual</string>
-    <string name="goal_time">Alcanzarás tu meta en 6 meses</string>
-    <string name="first_mission_title">¡Primera Misión!</string>
-    <string name="first_mission_subtitle">Estás listo para comenzar tu viaje financiero</string>
     <string name="goal_emoji">🎯</string>
-    <string name="first_expense_today">Registra tu primer gasto hoy</string>
-    <string name="first_expense_today_explanation">Comienza a tomar control de tus finanzas registrando cualquier gasto que hagas hoy. ¡Así de simple!</string>
-    <string name="first_expense_today_example">Puede ser un café, el transporte o la comida</string>
-    <string name="register_expense_motivate">Solo toma 30 segundos registrarlo</string>
-    <string name="first_expense_gamification">Ganarás tu primer logro al completarlo</string>
-    <string name="btn_start">¡Comenzar mi viaje!</string>
     <string name="checked_emoji">✓</string>
 
 
@@ -113,8 +47,6 @@
     <string name="change_password">Cambiar contraseña</string>
     <string name="delete_account">Eliminar cuenta</string>
 
-    <string name="save_expense">Guardar gasto</string>
-
     <string name="delete_account_title">¿Eliminar cuenta?</string>
     <string name="delete_account_message">Esta acción eliminará permanentemente tu cuenta y todos tus datos. Esta acción no se puede deshacer.</string>
 
@@ -149,126 +81,17 @@
     <string name="analytics_details">📊 Análisis Detallado</string>
     <string name="view_patterns_waste">Visualiza tus patrones de gasto</string>
 
-    <!-- Add Expense -->
-    <string name="add_expense_title">Añadir Transacción</string>
-    <string name="add_expense_type">Tipo</string>
-    <string name="add_expense_expense">Gasto</string>
-    <string name="add_expense_income">Ingreso</string>
-    <string name="add_expense_amount">Monto</string>
-    <string name="add_expense_description">Descripción</string>
-    <string name="add_expense_category">Categoría</string>
-    <string name="add_expense_date">Fecha</string>
-    <string name="add_expense_save">Guardar</string>
-
-
-    <!-- Intervention -->
-    <string name="intervention_title">Un momento para reflexionar</string>
-    <string name="intervention_understood">Entendido</string>
-    <string name="intervention_view_analysis">Ver análisis</string>
 
     <!-- Analysis -->
     <string name="analysis_title">Análisis Financiero</string>
     <string name="analysis_insights">Insights</string>
     <string name="analysis_categories">Por categorías</string>
 
-    <!-- Achievements -->
-    <string name="achievements_title">Logros y Progreso</string>
-    <string name="achievements_your_level">Tu nivel</string>
-    <string name="achievements_total_points">Puntos totales</string>
-    <string name="achievements_unlocked">desbloqueados</string>
-
-
-
-    <!-- SoftIntervention Activity -->
-    <!-- Títulos -->
-    <string name="intervention_title_default">¡Momento de reflexión!</string>
-    <string name="intervention_title_high">¡Alerta de gastos!</string>
-    <string name="intervention_title_very_high">¡Cuidado con tu presupuesto!</string>
-
-    <!-- Subtítulos -->
-    <string name="intervention_subtitle_default">Tus gastos están un poco altos este mes</string>
-    <string name="intervention_subtitle_high">Estás cerca de superar tu presupuesto</string>
-    <string name="intervention_subtitle_very_high">Has superado tu presupuesto mensual</string>
-
-    <!-- Estadísticas -->
-    <string name="intervention_spent">Has gastado</string>
-    <string name="intervention_percentage">%1$d%% de tu presupuesto mensual</string>
-    <string name="intervention_remaining">Te quedan $%1$.2f este mes</string>
-
-    <!-- Mensajes motivacionales -->
-    <string name="intervention_motivation_1">Pequeños cambios pueden hacer una gran diferencia en tus finanzas</string>
-    <string name="intervention_motivation_2">Cada peso ahorrado es un paso hacia tus metas</string>
-    <string name="intervention_motivation_3">¡Tú puedes tener el control de tus finanzas!</string>
-    <string name="intervention_motivation_4">La disciplina de hoy es la libertad de mañana</string>
-    <string name="intervention_motivation_5">Tus metas están más cerca de lo que piensas</string>
-
-    <!-- Sugerencias - Títulos -->
-    <string name="suggestion_entertainment">Revisa tus gastos en entretenimiento</string>
-    <string name="suggestion_restaurants">Reduce gastos en restaurantes</string>
-    <string name="suggestion_daily_limit">Establece un límite diario</string>
-    <string name="suggestion_subscriptions">Revisa tus suscripciones</string>
-    <string name="suggestion_shopping">Controla tus compras impulsivas</string>
-    <string name="suggestion_transport">Optimiza tus gastos de transporte</string>
-
-    <!-- Sugerencias - Descripciones -->
-    <string name="suggestion_entertainment_desc">Has gastado $%1$.2f más que el mes pasado</string>
-    <string name="suggestion_restaurants_desc">Cocinar en casa podría ahorrarte $%1$.2f/mes</string>
-    <string name="suggestion_daily_limit_desc">Te ayudará a cumplir tu presupuesto</string>
-    <string name="suggestion_subscriptions_desc">Podrías ahorrar $%1$.2f cancelando las que no usas</string>
-    <string name="suggestion_shopping_desc">Espera 24 horas antes de comprar algo no esencial</string>
-    <string name="suggestion_transport_desc">Considera usar transporte público o compartir viajes</string>
-
-    <!-- Botones -->
-    <string name="btn_view_details">Ver análisis detallado</string>
-    <string name="btn_adjust_budget">Ajustar mi presupuesto</string>
-    <string name="btn_set_limit">Establecer límite</string>
-    <string name="btn_view_tips">Ver más consejos</string>
-    <string name="btn_dismiss">Entendido, continuar</string>
-    <string name="btn_remind_later">Recordar más tarde</string>
-
-    <!-- Mensajes de apoyo -->
-    <string name="intervention_support">Estamos aquí para ayudarte a alcanzar tus metas 💪</string>
-    <string name="intervention_support_2">Juntos podemos mejorar tus finanzas 🎯</string>
-    <string name="intervention_support_3">Cada día es una oportunidad para mejorar ✨</string>
 
     <!-- Consejo del día -->
     <string name="tip_of_the_day">Consejo del día</string>
     <string name="insight_title">Insight financiero</string>
     <string name="alert_title">Alerta importante</string>
-
-    <!-- Categorías -->
-    <string name="category_food">Comida</string>
-    <string name="category_transport">Transporte</string>
-    <string name="category_home">Vivienda</string>
-    <string name="category_health">Salud</string>
-    <string name="category_leisure">Ocio</string>
-    <string name="category_clothes">Ropa</string>
-    <string name="category_education">Educación</string>
-    <string name="category_care">Cuidado</string>
-    <string name="category_others">Otros</string>
-    <string name="category_icon">Icono de categoría</string>
-    <string name="category_restaurants">Restaurantes</string>
-    <string name="category_shopping">Compras</string>
-    <string name="category_subscriptions">Suscripciones</string>
-    <string name="category_other">Otros</string>
-
-    <string name="add_expense">Añadir Gasto</string>
-    <string name="expense_amount">Cantidad del gasto</string>
-    <string name="category">Categoría</string>
-    <string name="optional_description">Descripción (opcional)</string>
-    <string name="date">Fecha</string>
-    <string name="big_expense">⚠️ Gasto Grande</string>
-    <string name="target_impact">⚠️ Impacto en objetivo:</string>
-    <string name="alternatives">💡 Alternativas:</string>
-    <string name="what_decides">❓ ¿Qué decides?</string>
-    <string name="purchase_answer">Comprar igual</string>
-    <string name="think_answer">Pensarlo</string>
-    <string name="alternatives_answer">Buscar alternativas</string>
-    <string name="quantity">Cantidad</string>
-    <string name="chose_category">Selecciona categoría</string>
-    <string name="example_expense">Ej: Cena en restaurante italiano</string>
-    <string name="complete_all_fields">Completa todos los campos</string>
-    <string name="invalid_input_number">Formato de importe inválido</string>
 
 
 </resources>

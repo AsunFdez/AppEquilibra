@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!-- Sugerencias - Títulos -->
+    <string name="suggestion_entertainment">Revisa tus gastos en entretenimiento</string>
+    <string name="suggestion_restaurants">Reduce gastos en restaurantes</string>
+    <string name="suggestion_daily_limit">Establece un límite diario</string>
+    <string name="suggestion_subscriptions">Revisa tus suscripciones</string>
+    <string name="suggestion_shopping">Controla tus compras impulsivas</string>
+    <string name="suggestion_transport">Optimiza tus gastos de transporte</string>
+
+    <!-- Sugerencias - Descripciones -->
+    <string name="suggestion_entertainment_desc">Has gastado $%1$.2f más que el mes pasado</string>
+    <string name="suggestion_restaurants_desc">Cocinar en casa podría ahorrarte $%1$.2f/mes</string>
+    <string name="suggestion_daily_limit_desc">Te ayudará a cumplir tu presupuesto</string>
+    <string name="suggestion_subscriptions_desc">Podrías ahorrar $%1$.2f cancelando las que no usas</string>
+    <string name="suggestion_shopping_desc">Espera 24 horas antes de comprar algo no esencial</string>
+    <string name="suggestion_transport_desc">Considera usar transporte público o compartir viajes</string>
+
+
+</resources>

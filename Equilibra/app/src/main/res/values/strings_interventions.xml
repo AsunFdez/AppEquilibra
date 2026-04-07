@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!-- SoftIntervention Activity -->
+    <!-- Títulos -->
+    <string name="intervention_title_default">¡Momento de reflexión!</string>
+    <string name="intervention_title_high">¡Alerta de gastos!</string>
+    <string name="intervention_title_very_high">¡Cuidado con tu presupuesto!</string>
+
+    <!-- Subtítulos -->
+    <string name="intervention_subtitle_default">Tus gastos están un poco altos este mes</string>
+    <string name="intervention_subtitle_high">Estás cerca de superar tu presupuesto</string>
+    <string name="intervention_subtitle_very_high">Has superado tu presupuesto mensual</string>
+
+    <!-- Estadísticas -->
+    <string name="intervention_spent">Has gastado</string>
+    <string name="intervention_percentage">%1$d%% de tu presupuesto mensual</string>
+    <string name="intervention_remaining">Te quedan $%1$.2f este mes</string>
+
+    <!-- Mensajes motivacionales -->
+    <string name="intervention_motivation_1">Pequeños cambios pueden hacer una gran diferencia en tus finanzas</string>
+    <string name="intervention_motivation_2">Cada peso ahorrado es un paso hacia tus metas</string>
+    <string name="intervention_motivation_3">¡Tú puedes tener el control de tus finanzas!</string>
+    <string name="intervention_motivation_4">La disciplina de hoy es la libertad de mañana</string>
+    <string name="intervention_motivation_5">Tus metas están más cerca de lo que piensas</string>
+
+
+    <!-- Botones -->
+    <string name="btn_view_details">Ver análisis detallado</string>
+    <string name="btn_adjust_budget">Ajustar mi presupuesto</string>
+    <string name="btn_set_limit">Establecer límite</string>
+    <string name="btn_view_tips">Ver más consejos</string>
+    <string name="btn_dismiss">Entendido, continuar</string>
+    <string name="btn_remind_later">Recordar más tarde</string>
+
+    <!-- Mensajes de apoyo -->
+    <string name="intervention_support">Estamos aquí para ayudarte a alcanzar tus metas 💪</string>
+    <string name="intervention_support_2">Juntos podemos mejorar tus finanzas 🎯</string>
+    <string name="intervention_support_3">Cada día es una oportunidad para mejorar ✨</string>
+
+
+</resources>

@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!-- Add Expense -->
+    <string name="add_expense_title">Añadir Gasto</string>
+    <string name="add_expense_type">Tipo</string>
+    <string name="add_expense_expense">Gasto</string>
+    <string name="add_expense_income">Ingreso</string>
+    <string name="add_expense_amount">Importe</string>
+    <string name="add_expense_description">Descripción</string>
+    <string name="add_expense_category">Categoría</string>
+    <string name="add_expense_date">Fecha</string>
+    <string name="add_expense_save">Guardar</string>
+
+    <string name="save_expense">Guardar gasto</string>
+    <string name="add_expense">Añadir Gasto</string>
+    <string name="expense_amount">Cantidad del gasto</string>
+    <string name="category">Categoría</string>
+    <string name="optional_description">Descripción (opcional)</string>
+    <string name="date">Fecha</string>
+    <string name="quantity">Cantidad</string>
+    <string name="chose_category">Selecciona categoría</string>
+    <string name="example_expense">Ej: Cena en restaurante italiano</string>
+
+    <string name="complete_all_fields">Completa todos los campos</string>
+    <string name="invalid_input_number">Formato de importe inválido</string>
+    <string name="expense_saved_ok">Gasto guardado correctamente</string>
+    <string name="saving_expense_error">Error al procesar el gasto</string>
+
+
+    <!-- Intervention -->
+    <string name="intervention_title">Un momento para reflexionar</string>
+    <string name="intervention_understood">Entendido</string>
+    <string name="intervention_view_analysis">Ver análisis</string>
+
+    <string name="big_expense">⚠️ Gasto Grande</string>
+    <string name="target_impact">⚠️ Impacto en objetivo:</string>
+    <string name="alternatives">💡 Alternativas:</string>
+    <string name="what_decides">❓ ¿Qué decides?</string>
+    <string name="purchase_answer">Comprar igual</string>
+    <string name="think_answer">Pensarlo</string>
+    <string name="alternatives_answer">Buscar alternativas</string>
+
+
+
+</resources>
