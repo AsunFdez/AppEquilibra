@@ -5,8 +5,10 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.view.View;
+
 import androidx.appcompat.app.AppCompatActivity;
-import asunfdiez.com.equilibra.R;
+
+import asunfdiez.com.equilibra.databinding.ActivitySplashBinding;
 import asunfdiez.com.equilibra.utils.AnimationHelper;
 import asunfdiez.com.equilibra.utils.SharedPrefsManager;
 
@@ -17,21 +19,15 @@ import asunfdiez.com.equilibra.utils.SharedPrefsManager;
 
 public class SplashActivity extends AppCompatActivity {
 
-    private View logoContainer;
-    private View piggyBankIcon;
-    private View coinEmoji;
-    private View sparkleLeft;
-    private View sparkleRight;
-    private View appTitle;
-    private View appSubtitle;
-
     private final Handler handler = new Handler(Looper.getMainLooper());
     private SharedPrefsManager prefsManager;
+    ActivitySplashBinding binding;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_splash);
+        binding = ActivitySplashBinding.inflate(getLayoutInflater());
+        setContentView(binding.getRoot());
 
         prefsManager = SharedPrefsManager.getInstance(this);
 
@@ -42,19 +38,9 @@ public class SplashActivity extends AppCompatActivity {
                         | View.SYSTEM_UI_FLAG_FULLSCREEN
         );
 
-        initViews();
         startAnimations();
     }
 
-    private void initViews() {
-        logoContainer = findViewById(R.id.logoContainer);
-        piggyBankIcon = findViewById(R.id.piggyBankIcon);
-        coinEmoji = findViewById(R.id.coinEmoji);
-        sparkleLeft = findViewById(R.id.sparkleLeft);
-        sparkleRight = findViewById(R.id.sparkleRight);
-        appTitle = findViewById(R.id.appTitle);
-        appSubtitle = findViewById(R.id.appSubtitle);
-    }
 
     private void startAnimations() {
         // Background fade in
@@ -62,21 +48,21 @@ public class SplashActivity extends AppCompatActivity {
         AnimationHelper.backgroundFadeIn(decorView, 100);
 
         // Contenedor Logo: animación inicial con escalado y rotación
-        AnimationHelper.logoRotation(logoContainer, 600, 100);
+        AnimationHelper.logoRotation(binding.logoContainer, 600, 100);
 
         // Piggy bank bounce loop
-        AnimationHelper.animatePiggyBankBounce(piggyBankIcon, 3000, 700);
+        AnimationHelper.animatePiggyBankBounce(binding.piggyBankIcon, 3000, 700);
 
         // Coin sparkle animation
-        AnimationHelper.animateCoinSparkle(coinEmoji, 2500, 700);
+        AnimationHelper.animateCoinSparkle(binding.coinEmoji, 2500, 700);
 
         // Sparkle animations
-        AnimationHelper.animateSparkle(sparkleLeft, -20f, -80f, -15f, -30f, 2500, 800);
-        AnimationHelper.animateSparkle(sparkleRight, 20f, 80f, 15f, 30f, 2500, 1500);
+        AnimationHelper.animateSparkle(binding.sparkleLeft, -20f, -80f, -15f, -30f, 2500, 800);
+        AnimationHelper.animateSparkle(binding.sparkleRight, 20f, 80f, 15f, 30f, 2500, 1500);
 
         // Title and subtitle animations
-        AnimationHelper.animateTitle(appTitle, 500, 800);
-        AnimationHelper.animateTitle(appSubtitle, 500, 1200);
+        AnimationHelper.animateTitle(binding.appTitle, 500, 800);
+        AnimationHelper.animateTitle(binding.appSubtitle, 500, 1200);
 
         navigateAfterDelay(2500);
     }
