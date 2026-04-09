@@ -1,7 +1,14 @@
 package asunfdiez.com.equilibra.controllers;
 
 import android.content.Context;
+
+import androidx.lifecycle.LiveData;
+
+import java.util.concurrent.Executors;
+import java.util.concurrent.atomic.AtomicBoolean;
+
 import asunfdiez.com.equilibra.models.UserProfile;
+import asunfdiez.com.equilibra.repositories.UserProfileRepository;
 import asunfdiez.com.equilibra.utils.SharedPrefsManager;
 
 /**
@@ -11,8 +18,11 @@ import asunfdiez.com.equilibra.utils.SharedPrefsManager;
  */
 public class UserController {
 
-    private final SharedPrefsManager preferencesManager;
+    private final UserProfileRepository userRepository;
+    private final SharedPrefsManager prefsManager;
     private UserProfile user;
+    private final WellbeingController wellbeingController;
+
 
     /**
      * Constructor del controller
@@ -20,7 +30,9 @@ public class UserController {
      * @param context Contexto de la aplicación
      */
     public UserController(Context context) {
-        this.preferencesManager = SharedPrefsManager.getInstance(context);
+        this.userRepository = new UserProfileRepository(context);
+        this.prefsManager = SharedPrefsManager.getInstance(context);
+        this.wellbeingController = new WellbeingController(context);
     }
 
     /**
@@ -28,132 +40,51 @@ public class UserController {
      *
      * @return Usuario actual o null si no existe
      */
-    public UserProfile getCurrentUser() {
-        user = preferencesManager.getUserProfile();
-
-        if (user.getId() == -1) {
-            return createDefaultUser();
-        }
-        return user;
-
+    public LiveData<UserProfile> getCurrentUser() {
+        return userRepository.getUserProfile();
     }
 
-    /**
-     * Obtiene un usuario por su ID
-     *
-     * @param userId ID del usuario
-     * @return Usuario encontrado o null
-     */
-    public UserProfile getUserById(long userId) {
-        // TODO: Implementar obtención real desde base de datos
-        // Por ahora retornamos un usuario de ejemplo
-        user = new UserProfile();
-        user.setId(userId);
-        user.setName(preferencesManager.getUserName());
-        user.setEmail(preferencesManager.getUserEmail());
-        user.setMonthlyIncome(preferencesManager.getMonthlyIncome());
-        return user;
+    public void updateUser(UserProfile user) {
+        if (user == null) return;
+        // Las operaciones de escritura en Room deben ser asíncronas
+        Executors.newSingleThreadExecutor().execute(() -> {
+            userRepository.updateProfile(user);
+            android.util.Log.d("User Controller updateUser", user.toString());
+        });
     }
 
-    /**
-     * Crea un usuario por defecto
-     *
-     * @return Usuario por defecto
-     */
-    private UserProfile createDefaultUser() {
-        user = new UserProfile();
-        user.setId(1);
-        user.setName("Usuario");
-        user.setEmail("usuario@equilibra.com");
-        return user;
+    public void deleteCurrentUser() {
+        Executors.newSingleThreadExecutor().execute(() -> {
+            // Limpiar Room
+            userRepository.deleteAll();
+            //  Limpiar SharedPreferences para que SplashActivity detecte que no hay onboarding
+            prefsManager.resetOnboarding();
+            prefsManager.clearAll();
+        });
     }
-
-    /**
-     * Actualiza los datos del usuario
-     *
-     * @param user Usuario con datos actualizados
-     * @return true si se actualizó correctamente
-     */
-    public boolean updateUser(UserProfile user) {
-        if (user == null) {
-            return false;
-        }
-
-        // Actualizar en PreferencesManager
-        preferencesManager.setIdNameEmailIncomeUserData(user.getId(), user.getName(), user.getEmail(), user.getMonthlyIncome());
-
-        // TODO: Actualizar en base de datos SQLite
-
-        return true;
-    }
-
-    /**
-     * Crea un nuevo usuario
-     *
-     * @param user Usuario a crear
-     * @return ID del usuario creado o -1 si falla
-     */
-    public long createUser(UserProfile user) {
-        if (user == null) {
-            return -1;
-        }
-
-        // TODO: Guardar en base de datos SQLite
-        long userId = 1; // ID temporal
-
-        // Guardar en preferencias
-        preferencesManager.setIdNameEmailIncomeUserData(userId, user.getName(), user.getEmail(), user.getMonthlyIncome());
-
-        return userId;
-    }
-
+    /*
+    * Actualiza la vista actual del usuario
+    */
     public void setCurrentView(String view) {
         if (user == null) {
             return;
         }
         user.setCurrentView(view);
-        preferencesManager.saveUserProfile(user);
+        userRepository.updateProfile(user);
     }
 
-    /**
-     * Elimina el usuario actual
-     *
-     * @return true si se eliminó correctamente
-     */
-    public boolean deleteCurrentUser() {
-        long userId = preferencesManager.getCurrentUserId();
-
-        if (userId == -1) {
-            return false;
-        }
-
-        // TODO: Eliminar de base de datos SQLite
-
-        // Limpiar preferencias
-        preferencesManager.clearAll();
-
-        return true;
-    }
-
-    /**
-     * Elimina todos los datos del usuario
-     *
-     * @return true si se eliminó correctamente
-     */
-    public boolean deleteAllUserData() {
-        // TODO: Eliminar todos los datos de la base de datos SQLite
-        // (gastos, metas, logros, etc.)
-
-        return deleteCurrentUser();
-    }
-
-    /**
-     * Verifica si existe un usuario activo
-     *
-     * @return true si existe un usuario
-     */
-    public boolean hasActiveUser() {
-        return preferencesManager.getCurrentUserId() != -1;
+    public boolean checkWellbeing() {
+        AtomicBoolean shouldShow = new AtomicBoolean(false);
+        // Usamos un Executor para sacar la consulta a la base de datos del hilo UI
+        Executors.newSingleThreadExecutor().execute(() -> {
+            try {
+                // Esta llamada se ejecuta en segundo plano
+                shouldShow.set(wellbeingController.shouldShowIntervention());
+            } catch (Exception e) {
+                android.util.Log.e("ViewModel", "Error al comprobar bienestar", e);
+            }
+        });
+        return shouldShow.get();
     }
 
     /**
@@ -183,10 +114,5 @@ public class UserController {
         return null;
     }
 
-    /**
-     * Cierra la sesión del usuario actual
-     */
-    public void logout() {
-        preferencesManager.setCurrentUserId(-1);
-    }
+
 }

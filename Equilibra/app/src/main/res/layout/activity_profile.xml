@@ -99,34 +99,30 @@
                         android:layout_gravity="center_horizontal"
                         android:layout_marginBottom="4dp" />
 
-                    <!-- Contenedor para Email e Icono de Edición -->
-                    <LinearLayout
+
+                    <TextView
+                        android:id="@+id/tvProfileEmail"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:orientation="horizontal"
-                        android:layout_gravity="center_horizontal"
-                        android:gravity="center_vertical"
-                        android:layout_marginBottom="24dp">
+                        android:text="@{user.email}"
+                        android:textSize="14sp"
+                        android:textColor="@color/text_secondary"
+                        android:layout_gravity="center_horizontal" />
 
-                        <TextView
-                            android:id="@+id/tvProfileEmail"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="@{user.email}"
-                            android:textSize="14sp"
-                            android:textColor="@color/text_secondary"
-                            android:layout_marginEnd="8dp" />
+                    <com.google.android.material.button.MaterialButton
+                        style="@style/Equilibra.Button.Primary"
+                        android:id="@+id/btnEditProfile"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/profile_edition"
+                        app:icon="@drawable/ic_edit"
+                        app:iconGravity="textStart"
+                        app:iconTint="@android:color/white"
+                        app:iconPadding="12dp"
+                        app:iconSize="24dp"
+                        app:rippleColor="@android:color/white"
+                        android:visibility="@{viewModel.editMode ? View.GONE : View.VISIBLE}"/>
 
-                        <ImageButton
-                            android:id="@+id/btnEditProfile"
-                            android:layout_width="32dp"
-                            android:layout_height="32dp"
-                            android:background="?attr/selectableItemBackgroundBorderless"
-                            android:src="@drawable/ic_edit"
-                            app:tint="@color/primary"
-                            android:contentDescription="@string/profile_edition" />
-
-                    </LinearLayout>
 
                     <!-- Formulario de edición -->
                     <TextView

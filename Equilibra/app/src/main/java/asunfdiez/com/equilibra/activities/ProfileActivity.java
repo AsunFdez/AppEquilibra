@@ -42,6 +42,11 @@ public class ProfileActivity extends AppCompatActivity {
 
         binding.setViewModel(viewModel);
 
+        // Observar el usuario y pasarlo al binding
+        viewModel.getUserProfile().observe(this, user -> {
+            binding.setUser(user);
+        });
+
         setupToolbar();
         setupObservers();
         setupListeners();

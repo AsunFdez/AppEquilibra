@@ -43,29 +43,40 @@ public class OnboardingViewModel extends AndroidViewModel {
         return false;
     }
 
-    public UserProfile getProfile() { return profile; }
+    public UserProfile getProfile() {
+        return profile;
+    }
 
     public void setMainConcern(String id, String text) {
         profile.setMainConcernId(id);
         profile.setMainConcern(text);
+        android.util.Log.d("OnboardingViewModel", "Main concern set: " + id + " " + text);
     }
 
     public void setTimeAvailable(String id) {
         profile.setTimeAvailable(id);
+        android.util.Log.d("OnboardingViewModel", "Time available set: " + id);
     }
 
     public void setSavingGoal(String goal, String amount, String date) {
         profile.setSavingGoal(goal);
         profile.setSavingAmount(amount);
         profile.setSavingDate(date);
+        android.util.Log.d("OnboardingViewModel", "Saving goal set: " + goal + " " + amount + " " + date);
+
     }
 
     public LiveData<EmotionalState> getSelectedEmotion() { return selectedEmotion; }
     public void setSelectedEmotion(EmotionalState emotion) {
         selectedEmotion.setValue(emotion);
         profile.setEmotionalState(emotion);
+        android.util.Log.d("OnboardingViewModel", "Selected emotion: " + emotion.toString());
     }
-    public LiveData<Integer> getCurrentQuestionIndex() { return currentQuestionIndex; }
-    public void setCurrentQuestionIndex(int index) { currentQuestionIndex.setValue(index); }
+    public LiveData<Integer> getCurrentQuestionIndex() {
+        return currentQuestionIndex;
+    }
+    public void setCurrentQuestionIndex(int index) {
+        currentQuestionIndex.setValue(index);
+    }
 
 }

@@ -1,6 +1,6 @@
 package asunfdiez.com.equilibra.models;
 
-// Clase POJO para agrupar datos financieros
+// Clase para agrupar datos financieros
 public class FinancialData {
     public final double income, expenses, percentage, topCategoryAmount;
     public final String topCategory;

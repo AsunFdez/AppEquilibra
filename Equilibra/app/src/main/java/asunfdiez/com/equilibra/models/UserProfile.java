@@ -1,10 +1,16 @@
 package asunfdiez.com.equilibra.models;
 
+import androidx.room.Entity;
+import androidx.room.PrimaryKey;
+
 import asunfdiez.com.equilibra.utils.Constants;
 
+
+@Entity(tableName = Constants.TABLE_USER_PROFILE)
 public class UserProfile {
 
-    private long id;
+    @PrimaryKey
+    private long id = 1; // Solo habrá un perfil, usamos un ID fijo.
     private String name;
     private String email;
     private String phone;
@@ -17,7 +23,7 @@ public class UserProfile {
     private String savingGoal;
     private String savingAmount;
     private String savingDate;
-    private final long createdAt;
+    private long createdAt;
     private long updatedAt;
 
     private String level;
@@ -34,7 +40,6 @@ public class UserProfile {
     private int weekGoal = 5;
 
     public UserProfile() {
-        this.id = -1;
         this.createdAt = System.currentTimeMillis();
         this.updatedAt = System.currentTimeMillis();
     }
@@ -139,6 +144,10 @@ public class UserProfile {
         return createdAt;
     }
 
+    public void setCreatedAt(long a_createdAt) {
+        createdAt = a_createdAt;
+    }
+
     public long getUpdatedAt() {
         return updatedAt;
     }
@@ -225,5 +234,35 @@ public class UserProfile {
 
     public void setWeekGoal(int weekGoal) {
         this.weekGoal = weekGoal;
+    }
+
+    @Override
+    public String toString() {
+        return "UserProfile{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", email='" + email + '\'' +
+                ", phone='" + phone + '\'' +
+                ", passwordHash='" + passwordHash + '\'' +
+                ", emotionalState=" + emotionalState +
+                ", mainConcernId='" + mainConcernId + '\'' +
+                ", mainConcern='" + mainConcern + '\'' +
+                ", timeAvailable='" + timeAvailable + '\'' +
+                ", savingGoal='" + savingGoal + '\'' +
+                ", savingAmount='" + savingAmount + '\'' +
+                ", savingDate='" + savingDate + '\'' +
+                ", createdAt=" + createdAt +
+                ", updatedAt=" + updatedAt +
+                ", level='" + level + '\'' +
+                ", monthlyIncome=" + monthlyIncome +
+                ", savingsPlan='" + savingsPlan + '\'' +
+                ", financialKnowledge=" + financialKnowledge +
+                ", budgetExperience=" + budgetExperience +
+                ", savingsHabit=" + savingsHabit +
+                ", currentView='" + currentView + '\'' +
+                ", dayCount=" + dayCount +
+                ", weekProgress=" + weekProgress +
+                ", weekGoal=" + weekGoal +
+                '}';
     }
 }

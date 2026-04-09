@@ -6,6 +6,7 @@ import androidx.annotation.NonNull;
 import androidx.room.Database;
 import androidx.room.Room;
 import androidx.room.RoomDatabase;
+import androidx.room.TypeConverters;
 import androidx.sqlite.db.SupportSQLiteDatabase;
 
 import java.util.ArrayList;
@@ -22,14 +23,17 @@ import asunfdiez.com.equilibra.models.ExpenseCategory;
 import asunfdiez.com.equilibra.models.InterventionLog;
 import asunfdiez.com.equilibra.models.SavingGoal;
 import asunfdiez.com.equilibra.models.Streak;
-import asunfdiez.com.equilibra.models.UserXP;
+import asunfdiez.com.equilibra.models.UserProfile;
 import asunfdiez.com.equilibra.utils.Constants;
 
-@Database(entities = { Achievement.class, Budget.class, Challenge.class, DailyAnalysis.class, Expense.class, ExpenseCategory.class, InterventionLog.class, SavingGoal.class, Streak.class, UserXP.class }, version = Constants.DATABASE_VERSION, exportSchema = false)
+@Database(entities = { Achievement.class, Budget.class, Challenge.class, DailyAnalysis.class, Expense.class, ExpenseCategory.class, InterventionLog.class, SavingGoal.class, Streak.class, UserProfile.class }, version = Constants.DATABASE_VERSION, exportSchema = false)
+@TypeConverters ({ Converters.class })
 public abstract class AppDatabase extends RoomDatabase {
 
     private static volatile AppDatabase INSTANCE;
     private static Context mContext;
+
+    public abstract UserProfileDao userProfileDao();
 
     public abstract ExpenseDao expenseDao();
 

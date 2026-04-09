@@ -17,6 +17,7 @@ import java.util.List;
 
 import asunfdiez.com.equilibra.R;
 import asunfdiez.com.equilibra.adapters.QuestionOptionAdapter;
+import asunfdiez.com.equilibra.controllers.UserController;
 import asunfdiez.com.equilibra.databinding.ActivityOnboardingBinding;
 import asunfdiez.com.equilibra.databinding.OnboardingStepEmotionalBinding;
 import asunfdiez.com.equilibra.databinding.OnboardingStepMissionBinding;
@@ -26,6 +27,7 @@ import asunfdiez.com.equilibra.databinding.OnboardingStepSummaryBinding;
 import asunfdiez.com.equilibra.databinding.OnboardingStepValidationBinding;
 import asunfdiez.com.equilibra.models.EmotionalState;
 import asunfdiez.com.equilibra.models.QuestionOption;
+import asunfdiez.com.equilibra.models.UserProfile;
 import asunfdiez.com.equilibra.utils.AnimationHelper;
 import asunfdiez.com.equilibra.utils.Constants;
 import asunfdiez.com.equilibra.utils.DatePickerHelper;
@@ -354,7 +356,12 @@ public class OnboardingActivity extends AppCompatActivity {
     private void completeOnboarding() {
         sharedPrefsManager.setOnboardingComplete(true);
         sharedPrefsManager.setOnboardingCompletedAt(System.currentTimeMillis());
-        sharedPrefsManager.saveUserProfile(viewModel.getProfile());
+        // Obtenemos el perfil construido durante los pasos
+        UserProfile profile = viewModel.getProfile();
+        android.util.Log.d("OnboardingActivity_completeOnboarding Profile", profile.toString());
+        // Actualizamos el perfil en la base de datos
+        UserController userController = new UserController(getApplicationContext());
+        userController.updateUser(profile);
         navigateToMainActivity();
     }
 

@@ -6,69 +6,82 @@ import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
+import androidx.lifecycle.Observer;
 
-import java.util.concurrent.Executors;
-
-import asunfdiez.com.equilibra.controllers.WellbeingController;
+import asunfdiez.com.equilibra.controllers.UserController;
 import asunfdiez.com.equilibra.models.UserProfile;
-import asunfdiez.com.equilibra.utils.SharedPrefsManager;
 
 public class MainActivityViewModel extends AndroidViewModel {
 
-    private final SharedPrefsManager preferencesManager;
-    private final WellbeingController wellbeingController;
-    private final MutableLiveData<UserProfile> userProfile = new MutableLiveData<>();
-    private final MutableLiveData<String> currentView = new MutableLiveData<>();
-    private final MutableLiveData<Boolean> shouldShowIntervention = new MutableLiveData<>();
+    private final UserController userController;
+
+    // LiveData principal de Room
+    private final LiveData<UserProfile> userProfile;
+
+    // Estados de UI encapsulados (Patrón _variable / variable)
+    private final MutableLiveData<String> _currentView = new MutableLiveData<>();
+    private final MutableLiveData<Boolean> _shouldShowIntervention = new MutableLiveData<>();
+
+    // Observer persistente para reaccionar a cambios en el perfil
+    private final Observer<UserProfile> profileObserver = profile -> {
+        if (profile != null) {
+            if (!profile.getCurrentView().equals(_currentView.getValue())) {
+                _currentView.setValue(profile.getCurrentView());
+            }
+            updateDayCount(profile);
+        }
+    };
 
     public MainActivityViewModel(@NonNull Application application) {
         super(application);
-        preferencesManager = SharedPrefsManager.getInstance(application);
-        wellbeingController = new WellbeingController(application);
-        loadUserData();
+
+        // Inicialización de controladores (Capa de Dominio)
+        userController = new UserController(application);
+
+        // Obtenemos el flujo de datos (No el valor estático)
+        userProfile = userController.getCurrentUser();
+
+        // IMPORTANTE: Observamos el LiveData de forma segura
+        userProfile.observeForever(profileObserver);
     }
 
-    public LiveData<UserProfile> getUserProfile() {
-        return userProfile;
-    }
+    // Getters públicos (Solo lectura)
+    public LiveData<UserProfile> getUserProfile() { return userProfile; }
+    public LiveData<String> getCurrentView() { return _currentView; }
+    public LiveData<Boolean> getShouldShowIntervention() { return _shouldShowIntervention; }
 
-    public LiveData<String> getCurrentView() {
-        return currentView;
-    }
+    /**
+     * Calcula y actualiza el contador de días.
+     * y actualizamos el dato en el usuario.
+     */
+    public void updateDayCount(@NonNull UserProfile user) {
+        long diff = System.currentTimeMillis() - user.getCreatedAt();
+        int days = (int) (diff / (1000 * 60 * 60 * 24)) + 1;
 
-    public LiveData<Boolean> getShouldShowIntervention() {
-        return shouldShowIntervention;
-    }
-
-    public void loadUserData() {
-        UserProfile user = preferencesManager.getUserProfile();
-        
-        // Calcular días transcurridos
-        int days = (int) ((System.currentTimeMillis() - user.getCreatedAt()) / (1000 * 60 * 60 * 24)) + 1;
-        user.setDayCount(days);
-        
-        // Guardar si hubo cambios (como el dayCount)
-        preferencesManager.saveUserProfile(user);
-        
-        userProfile.setValue(user);
-        currentView.setValue(user.getCurrentView());
-    }
-
-    public void refreshData() {
-        loadUserData();
-        checkWellbeing();
+        if (user.getDayCount() != days) {
+            user.setDayCount(days);
+            android.util.Log.d("MainActivityViewModel_updateDayCount", "UserProfile updated: " + user.toString());
+            // Actualizamos el perfil en la base de datos"
+            userController.updateUser(user);
+        }
     }
 
     public void checkWellbeing() {
-        Executors.newSingleThreadExecutor().execute(() -> {
-            boolean shouldShow = wellbeingController.shouldShowIntervention();
-            if (shouldShow) {
-                shouldShowIntervention.postValue(true);
-            }
-        });
+        _shouldShowIntervention.postValue(userController.checkWellbeing());
     }
 
     public void resetInterventionTrigger() {
-        shouldShowIntervention.setValue(false);
+        _shouldShowIntervention.setValue(false);
+    }
+
+    @Override
+    protected void onCleared() {
+        super.onCleared();
+        // Limpieza obligatoria al usar observeForever para evitar memory leaks
+        userProfile.removeObserver(profileObserver);
+    }
+
+    public void refreshData() {
+        checkWellbeing();
     }
 }

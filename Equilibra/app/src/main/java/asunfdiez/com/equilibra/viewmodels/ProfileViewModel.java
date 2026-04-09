@@ -14,7 +14,7 @@ import asunfdiez.com.equilibra.utils.ValidationHelper;
 
 public class ProfileViewModel extends AndroidViewModel {
     private final UserController userController;
-    private final MutableLiveData<UserProfile> userProfile = new MutableLiveData<>();
+    private final LiveData<UserProfile> userProfile;
     private final MutableLiveData<Boolean> editMode = new MutableLiveData<>(false);
     private final MutableLiveData<String> errorMessage = new MutableLiveData<>();
     private final MutableLiveData<String> successMessage = new MutableLiveData<>();
@@ -23,7 +23,7 @@ public class ProfileViewModel extends AndroidViewModel {
     public ProfileViewModel(@NonNull Application application) {
         super(application);
         this.userController = new UserController(application);
-        loadUserProfile();
+        userProfile = userController.getCurrentUser();
     }
 
     public LiveData<UserProfile> getUserProfile() {
@@ -49,39 +49,26 @@ public class ProfileViewModel extends AndroidViewModel {
         return accountDeleted;
     }
 
-    public void loadUserProfile() {
-        UserProfile user = userController.getCurrentUser();
-        if (user != null) {
-            userProfile.setValue(user);
-        } else {
-            errorMessage.setValue(getApplication().getString(R.string.error_loading_profile));
-        }
-    }
 
-    public void  saveProfileChanges() {
+    public void saveProfileChanges() {
+        // Obtenemos el objeto que el DataBinding ha estado actualizando
         UserProfile user = userProfile.getValue();
-        if (user == null) {
-            errorMessage.setValue(getApplication().getString(R.string.error_updating_profile));
-            return;
-        }
-        if (!validateInput(user.getName(), user.getEmail(), String.valueOf(user.getMonthlyIncome()))) {
-            return;
-        }
+
+        if (user == null) return;
+
+        boolean isValid = validateInput(user.getName(), user.getEmail(), String.valueOf(user.getMonthlyIncome()));
+        if (!isValid ) return;
 
         try {
-            boolean success = userController.updateUser(user);
-            if (success) {
-                userProfile.setValue(user);
-                successMessage.setValue(getApplication().getString(R.string.profile_updated_success));
-                editMode.setValue(false);
-            } else {
-                errorMessage.setValue(getApplication().getString(R.string.error_updating_profile));
-            }
-        } catch (NumberFormatException e) {
-            errorMessage.setValue(getApplication().getString(R.string.error_income_invalid));
+            userController.updateUser(user);
+            // Notificar éxito al hilo principal
+            successMessage.postValue(getApplication().getString(R.string.profile_updated_success));
+            editMode.postValue(false);
+        } catch (Exception e) {
+            errorMessage.postValue(getApplication().getString(R.string.error_updating_profile));
         }
-    }
 
+    }
     private boolean validateInput(String name, String email, String incomeStr) {
         if (name.isEmpty()) {
             errorMessage.setValue(getApplication().getString(R.string.error_name_required));
@@ -115,25 +102,25 @@ public class ProfileViewModel extends AndroidViewModel {
     public void changeView(String newView) {
         UserProfile user = userProfile.getValue();
         if (user != null && !user.getCurrentView().equals(newView)) {
-            userController.setCurrentView(newView);
             user.setCurrentView(newView);
-            userProfile.setValue(user);
+            userController.updateUser(user);
         }
     }
 
     public void deleteAccount() {
-        boolean success = userController.deleteCurrentUser();
-        if (success) {
-            accountDeleted.setValue(true);
-        } else {
-            errorMessage.setValue(getApplication().getString(R.string.error_deleting_account));
+        try {
+            userController.deleteCurrentUser();
+            accountDeleted.postValue(true);
+            editMode.postValue(false);
+        } catch (Exception e) {
+            errorMessage.postValue(getApplication().getString(R.string.error_deleting_account));
         }
+
     }
 
     public void handleBackPress(Runnable onFinish) {
         if (Boolean.TRUE.equals(editMode.getValue())) {
             setEditMode(false);
-            loadUserProfile(); // Revertir cambios no guardados
         } else {
             onFinish.run();
         }

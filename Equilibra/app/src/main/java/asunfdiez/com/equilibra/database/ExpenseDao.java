@@ -42,10 +42,11 @@ public interface ExpenseDao {
             " ORDER BY " + Constants.COLUMN_EXPENSE_TIMESTAMP + " DESC")
     List<Expense> getExpensesInRange(long startTime, long endTime);
 
+
     @Query("SELECT SUM(" + Constants.COLUMN_EXPENSE_AMOUNT + ") FROM " + Constants.TABLE_EXPENSES +
             " WHERE " + Constants.COLUMN_EXPENSE_TYPE + " = :type AND " +
             Constants.COLUMN_EXPENSE_TIMESTAMP + " BETWEEN :startTime AND :endTime")
-    Double getTotalForTypeInRange(String type, long startTime, long endTime);
+    double getTotalForTypeInRange(String type, long startTime, long endTime);
 
     @Query("SELECT " + Constants.COLUMN_EXPENSE_CATEGORY + ", " +
             "SUM(" + Constants.COLUMN_EXPENSE_AMOUNT + ") as amount, " +
@@ -60,7 +61,7 @@ public interface ExpenseDao {
     @Query("SELECT SUM(" + Constants.COLUMN_EXPENSE_AMOUNT + ") FROM " + Constants.TABLE_EXPENSES +
             " WHERE " + Constants.COLUMN_EXPENSE_TYPE + " = :type AND " +
             Constants.COLUMN_EXPENSE_TIMESTAMP + " >= :startTime")
-    Double getTotalForTypeSince(String type, long startTime);
+    double getTotalForTypeSince(String type, long startTime);
 
     @Query("SELECT COUNT(*) FROM " + Constants.TABLE_EXPENSES)
     int getExpenseCount();
@@ -73,7 +74,7 @@ public interface ExpenseDao {
     @Query("SELECT SUM(" + Constants.COLUMN_EXPENSE_AMOUNT + ") FROM " + Constants.TABLE_EXPENSES +
             " WHERE " + Constants.COLUMN_EXPENSE_CATEGORY + " = :category AND " +
             Constants.COLUMN_EXPENSE_TIMESTAMP + " BETWEEN :startTime AND :endTime")
-    Double getCategoryTotalInRange(String category, long startTime, long endTime);
+    double getCategoryTotalInRange(String category, long startTime, long endTime);
 
     /**
      * Cuenta cuántas veces se ha gastado en una categoría desde un timestamp dado
@@ -89,5 +90,5 @@ public interface ExpenseDao {
     @Query("SELECT SUM(" + Constants.COLUMN_EXPENSE_AMOUNT + ") FROM " + Constants.TABLE_EXPENSES +
             " WHERE " + Constants.COLUMN_EXPENSE_CATEGORY + " = :category AND " +
             Constants.COLUMN_EXPENSE_TIMESTAMP + " >= :sinceTimestamp")
-    Double getTotalSpentInCategorySince(String category, long sinceTimestamp);
+    double getTotalSpentInCategorySince(String category, long sinceTimestamp);
 }

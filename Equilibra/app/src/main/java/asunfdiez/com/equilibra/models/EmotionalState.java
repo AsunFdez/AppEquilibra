@@ -1,9 +1,11 @@
 package asunfdiez.com.equilibra.models;
 
 import android.content.Context;
-import asunfdiez.com.equilibra.R;
+
 import java.util.ArrayList;
 import java.util.List;
+
+import asunfdiez.com.equilibra.R;
 
 public record EmotionalState(String id, String text, String emoji, String validation) {
 
@@ -41,5 +43,15 @@ public record EmotionalState(String id, String text, String emoji, String valida
                 .filter(e -> e.id().equals(id))
                 .findFirst()
                 .orElse(null);
+    }
+
+    @Override
+    public String toString() {
+        return "EmotionalState{" +
+                "id='" + id + '\'' +
+                ", text='" + text + '\'' +
+                ", emoji='" + emoji + '\'' +
+                ", validation='" + validation + '\'' +
+                '}';
     }
 }
