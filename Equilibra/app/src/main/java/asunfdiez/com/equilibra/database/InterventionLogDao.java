@@ -24,6 +24,10 @@ public interface InterventionLogDao {
     @Delete
     void deleteInterventionLog(InterventionLog log);
 
+    @Query("DELETE FROM " + Constants.TABLE_INTERVENTION_LOG)
+    void deleteAll();
+
+
     /**
      * Obtiene los registros de intervención recientes de un usuario
      */

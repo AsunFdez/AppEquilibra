@@ -7,8 +7,6 @@ import androidx.room.OnConflictStrategy;
 import androidx.room.Query;
 import androidx.room.Update;
 
-import java.util.List;
-
 import asunfdiez.com.equilibra.models.SavingGoal;
 import asunfdiez.com.equilibra.utils.Constants;
 
@@ -16,7 +14,7 @@ import asunfdiez.com.equilibra.utils.Constants;
 public interface SavingGoalDao {
 
     @Insert (onConflict = OnConflictStrategy.REPLACE)
-    void insertSavingGoal(SavingGoal savingGoal);
+    void insertOrUpdateSavingGoal(SavingGoal savingGoal);
 
     @Update
     void updateSavingGoal(SavingGoal savingGoal);
@@ -24,8 +22,11 @@ public interface SavingGoalDao {
     @Delete
     void deleteSavingGoal(SavingGoal savingGoal);
 
-    @Query("SELECT * FROM "+ Constants.TABLE_SAVING_GOALS+" WHERE userId = :userId")
-    List<SavingGoal> getAllSavingGoalsByUserId(long userId);
+    @Query("DELETE FROM " + Constants.TABLE_SAVING_GOALS)
+    void deleteAll();
+
+    @Query("SELECT * FROM "+ Constants.TABLE_SAVING_GOALS+" WHERE userId = :userId and completed = 0 LIMIT 1")
+    SavingGoal getFirstSavingGoalActiveByUserId(long userId);
 
 
 

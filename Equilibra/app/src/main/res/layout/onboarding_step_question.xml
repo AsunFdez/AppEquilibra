@@ -39,19 +39,14 @@
                     android:textColor="@color/gray_500"
                     android:textSize="14sp" />
 
-                <!-- Progress Bar Background -->
-                <FrameLayout
+                <!-- Progress Bar -->
+                <ProgressBar
+                    android:id="@+id/progressBar"
+                    style="?android:attr/progressBarStyleHorizontal"
                     android:layout_width="match_parent"
                     android:layout_height="8dp"
-                    android:background="@drawable/progress_background">
-
-                    <!-- Progress Bar Foreground -->
-                    <View
-                        android:id="@+id/progressBar"
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
-                        android:background="@drawable/progress_foreground" />
-                </FrameLayout>
+                    android:max="100"
+                    android:progressDrawable="@drawable/progress_bar_states" />
             </LinearLayout>
 
             <!-- Icon Container -->

@@ -20,6 +20,7 @@ public class Expense {
     private String category;
     private String description;
     private String date;
+    private String time;
     private long timestamp;
     private boolean isRecurring; // Si es un gasto recurrente
     private int patternCount; // Cuántas veces se ha repetido este patrón
@@ -74,6 +75,14 @@ public class Expense {
 
     public void setDate(String date) {
         this.date = date;
+    }
+
+    public String getTime() {
+        return time;
+    }
+
+    public void setTime(String time) {
+        this.time = time;
     }
 
     public long getTimestamp() {

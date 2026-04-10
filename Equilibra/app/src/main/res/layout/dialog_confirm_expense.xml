@@ -4,14 +4,8 @@
 
     <data>
         <variable
-            name="amount"
-            type="String" />
-        <variable
-            name="category"
-            type="String" />
-        <variable
-            name="percentage"
-            type="Integer" />
+            name="viewModel"
+            type="asunfdiez.com.equilibra.viewmodels.AddExpenseViewModel" />
     </data>
 
     <androidx.cardview.widget.CardView
@@ -39,7 +33,7 @@
                 <ImageView
                     android:layout_width="32dp"
                     android:layout_height="32dp"
-                    android:src="@drawable/ic_fea_circle_alert"
+                    android:src="@drawable/ic_alert_soft"
                     app:tint="@android:color/white" />
 
                 <TextView
@@ -47,7 +41,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:layout_marginStart="12dp"
-                    android:text="Confirma tu gasto"
+                    android:text="@string/confirm_expense_title"
                     android:textColor="@android:color/white"
                     android:textSize="18sp"
                     android:textStyle="bold" />
@@ -65,17 +59,17 @@
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Revisa antes de continuar"
+                    android:text="@string/confirm_expense_description"
                     android:textColor="@color/textSecondary"
                     android:textSize="13sp"
                     android:layout_marginBottom="16dp" />
 
-                <!-- Monto grande -->
+                <!-- Importe grande -->
                 <TextView
                     android:id="@+id/tvAmountLarge"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="@{`€` + amount}"
+                    android:text='@{viewModel.currentAmount + "€"}'
                     android:textColor="@color/accent"
                     android:textSize="42sp"
                     android:textStyle="bold"
@@ -87,7 +81,7 @@
                     android:id="@+id/tvCategoryName"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="@{category}"
+                    android:text="@{viewModel.selectedCategory.name}"
                     android:textColor="@color/textPrimary"
                     android:textSize="16sp"
                     android:gravity="center"
@@ -105,48 +99,25 @@
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:orientation="vertical"
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical"
                         android:padding="16dp">
 
-                        <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:orientation="horizontal"
-                            android:gravity="center_vertical">
-
-                            <ImageView
-                                android:layout_width="16dp"
-                                android:layout_height="16dp"
-                                android:src="@drawable/ic_info"
-                                app:tint="@color/accent" />
-
-                            <TextView
-                                android:layout_width="0dp"
-                                android:layout_height="wrap_content"
-                                android:layout_weight="1"
-                                android:layout_marginStart="8dp"
-                                android:text="Este gasto representa el"
-                                android:textColor="@color/textSecondary"
-                                android:textSize="13sp" />
-
-                            <TextView
-                                android:id="@+id/tvPercentage"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="@{percentage + `%`}"
-                                android:textColor="@color/accent"
-                                android:textSize="18sp"
-                                android:textStyle="bold" />
-
-                        </LinearLayout>
+                        <ImageView
+                            android:layout_width="20dp"
+                            android:layout_height="20dp"
+                            android:src="@drawable/ic_info"
+                            app:tint="@color/accent" />
 
                         <TextView
-                            android:layout_width="match_parent"
+                            android:id="@+id/tvPercentageMessage"
+                            android:layout_width="0dp"
                             android:layout_height="wrap_content"
-                            android:layout_marginTop="4dp"
-                            android:text="de tu presupuesto semanal."
-                            android:textColor="@color/textSecondary"
-                            android:textSize="13sp" />
+                            android:layout_weight="1"
+                            android:layout_marginStart="12dp"
+                            android:text="@{@string/percentage_budget(viewModel.budgetPercentage)}"
+                            android:textColor="@color/textPrimary"
+                            android:textSize="14sp" />
 
                     </LinearLayout>
 
@@ -157,31 +128,22 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"
-                    android:gravity="end">
+                    android:gravity="center">
 
-                    <Button
+                    <com.google.android.material.button.MaterialButton
+                        style="@style/Equilibra.Button.Primary"
                         android:id="@+id/btnCancel"
                         android:layout_width="wrap_content"
-                        android:layout_height="48dp"
-                        android:text="Cancelar"
-                        android:textColor="@color/textPrimary"
-                        android:textSize="14sp"
-                        android:paddingStart="24dp"
-                        android:paddingEnd="24dp"
-                        android:background="?attr/selectableItemBackground"
-                        style="@style/Widget.AppCompat.Button.Borderless" />
+                        android:layout_height="wrap_content"
+                        android:text="@string/cancel" />
 
-                    <Button
+                    <com.google.android.material.button.MaterialButton
+                        style="@style/Equilibra.Button.Primary"
                         android:id="@+id/btnConfirmExpense"
                         android:layout_width="wrap_content"
-                        android:layout_height="48dp"
+                        android:layout_height="wrap_content"
                         android:layout_marginStart="8dp"
-                        android:text="Confirmar"
-                        android:textColor="@android:color/white"
-                        android:textSize="14sp"
-                        android:paddingStart="32dp"
-                        android:paddingEnd="32dp"
-                        android:background="@drawable/bg_button_primary" />
+                        android:text="@string/confirm" />
 
                 </LinearLayout>
 

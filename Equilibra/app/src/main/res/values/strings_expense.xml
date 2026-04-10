@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
+
     <!-- Add Expense -->
     <string name="add_expense_title">Añadir Gasto</string>
     <string name="add_expense_type">Tipo</string>
@@ -9,11 +10,13 @@
     <string name="add_expense_amount">Importe</string>
     <string name="add_expense_description">Descripción</string>
     <string name="add_expense_category">Categoría</string>
-    <string name="add_expense_date">Fecha</string>
+    <string name="add_expense_date">Fecha (opcional)</string>
     <string name="add_expense_save">Guardar</string>
+    <string name="add_expense_hour">Hora (opcional)</string>
 
     <string name="save_expense">Guardar gasto</string>
-    <string name="add_expense">Añadir Gasto</string>
+    <string name="add_expense">Añadir gasto</string>
+    <string name="edit_expense">Editar gasto</string>
     <string name="expense_amount">Cantidad del gasto</string>
     <string name="category">Categoría</string>
     <string name="optional_description">Descripción (opcional)</string>
@@ -28,6 +31,20 @@
     <string name="saving_expense_error">Error al procesar el gasto</string>
 
 
+    <string name="confirm_expense_title">Confirma tu gasto</string>
+    <string name="confirm_expense_description">Revisa antes de continuar</string>
+
+
+
+    <string name="this_week">Esta semana</string>
+    <string name="days">días</string>
+    <string name="weeks">semanas</string>
+    <string name="months">meses</string>
+    <string name="day">día</string>
+    <string name="week">semana</string>
+    <string name="month">mes</string>
+
+
     <!-- Intervention -->
     <string name="intervention_title">Un momento para reflexionar</string>
     <string name="intervention_understood">Entendido</string>
@@ -40,6 +57,23 @@
     <string name="purchase_answer">Comprar igual</string>
     <string name="think_answer">Pensarlo</string>
     <string name="alternatives_answer">Buscar alternativas</string>
+
+    <string name="smart_reminder_title">Recordatorio Inteligente</string>
+
+    <string name="percentage_budget">Este gasto representa el %1$d%% de tu presupuesto semanal</string>
+    <string name="can_not_save">No podrás ahorrar este mes</string>
+    <string name="delay_from_saving">Se retrasa %d %s tu objetivo</string>
+    <string name="delay_target">Tu objetivo %s se retrasará %s</string>
+
+    <string name="expense_pattern">Es tu %d° %s esta semana. Total: %.2f.€ ¿Todo bien?</string>
+    <string name="alternative_suggested">%s: ahorra un %.0f%% (€%.2f)"</string>
+
+    <string name="suggested_1">Posponer la compra una semana para reflexionar</string>
+    <string name="suggested_2">Buscar el mismo producto en tiendas de segunda mano</string>
+
+
+    <string name="delete_record_title">¿Eliminar registro?</string>
+    <string name="delete_record_message">Esta acción no se puede deshacer. El registro se borrará permanentemente de tu historial.</string>
 
 
 

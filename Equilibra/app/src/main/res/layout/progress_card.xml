@@ -37,7 +37,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="8dp"
-                android:text="@string/recorded_expenses"
+                android:text="@{@string/week_progress(user.weekProgress, user.weekGoal)}"
                 android:textColor="@color/gray_600"
                 android:textSize="14sp" />
 
@@ -49,8 +49,9 @@
                 android:layout_height="8dp"
                 android:layout_marginBottom="8dp"
                 android:max="100"
-                android:progress="50"
-                android:progressDrawable="@drawable/custom_progress_bar" />
+                android:progressDrawable="@drawable/custom_progress_bar"
+                android:progressTint="@null"
+                android:progressBackgroundTint="@null" />
 
 
         </LinearLayout>

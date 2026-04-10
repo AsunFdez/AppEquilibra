@@ -6,6 +6,10 @@ public final class Constants {
     }
 
 
+    public static final String TIME_FORMAT = "HH:mm";
+    public static final String DATE_FORMAT = "dd/MM/yyyy";
+
+
     //---- SHARED PREFERENCES KEYS
 
     public static final String PREFS_NAME = "EquilibraPrefs";
@@ -88,6 +92,9 @@ public final class Constants {
 
     //Tabla UserProfile
     public static final String TABLE_USER_PROFILE = "user_profile";
+    public static final String COLUMN_USER_WEEK_PROGRESS = "weekProgress";
+    public static final String COLUMN_USER_DAY_COUNT = "dayCount";
+
 
     // Tabla Expenses
     public static final String TABLE_EXPENSES = "expenses";
@@ -157,49 +164,57 @@ public final class Constants {
 
     // Tabla Streak
     public static final String TABLE_STREAK = "streak";
-    public static final String COLUMN_STREAK_ID = "_id";
-    public static final String COLUMN_STREAK_USER_ID = "user_id";
-    public static final String COLUMN_STREAK_CONSECUTIVE_DAYS = "consecutive_days";
-    public static final String COLUMN_STREAK_START_DATE = "start_date";
-    public static final String COLUMN_STREAK_LAST_ACTIVITY_DATE = "last_activity_date";
-    public static final String COLUMN_STREAK_MAX_RECORD = "max_streak_record";
-    public static final String COLUMN_STREAK_IS_ACTIVE = "is_active";
+    public static final String COLUMN_STREAK_ID = "id";
+    public static final String COLUMN_STREAK_USER_ID = "userId";
+    public static final String COLUMN_STREAK_CONSECUTIVE_DAYS = "consecutiveDays";
+    public static final String COLUMN_STREAK_START_DATE = "startDate";
+    public static final String COLUMN_STREAK_LAST_ACTIVITY_DATE = "lastActivityDate";
+    public static final String COLUMN_STREAK_MAX_RECORD = "maxStreakRecord";
+    public static final String COLUMN_STREAK_IS_ACTIVE = "isActive";
 
     // Tabla Challenges
     public static final String TABLE_CHALLENGES = "challenges";
-    public static final String COLUMN_CHALLENGE_ID = "_id";
-    public static final String COLUMN_CHALLENGE_USER_ID = "user_id";
+    public static final String COLUMN_CHALLENGE_ID = "id";
+    public static final String COLUMN_CHALLENGE_USER_ID = "userId";
     public static final String COLUMN_CHALLENGE_TITLE = "title";
     public static final String COLUMN_CHALLENGE_DESCRIPTION = "description";
     public static final String COLUMN_CHALLENGE_CATEGORY = "category";
-    public static final String COLUMN_CHALLENGE_TARGET_AMOUNT = "target_amount";
-    public static final String COLUMN_CHALLENGE_CURRENT_AMOUNT = "current_amount";
-    public static final String COLUMN_CHALLENGE_START_DATE = "start_date";
-    public static final String COLUMN_CHALLENGE_END_DATE = "end_date";
+    public static final String COLUMN_CHALLENGE_TARGET_AMOUNT = "targetAmount";
+    public static final String COLUMN_CHALLENGE_CURRENT_AMOUNT = "currentAmount";
+    public static final String COLUMN_CHALLENGE_START_DATE = "startDate";
+    public static final String COLUMN_CHALLENGE_END_DATE = "endDate";
     public static final String COLUMN_CHALLENGE_COMPLETED = "completed";
-    public static final String COLUMN_CHALLENGE_XP_REWARD = "xp_reward";
+    public static final String COLUMN_CHALLENGE_XP_REWARD = "xpReward";
 
     // Tabla Intervention Log
     public static final String TABLE_INTERVENTION_LOG = "intervention_log";
-    public static final String COLUMN_INTERVENTION_ID = "_id";
-    public static final String COLUMN_INTERVENTION_USER_ID = "user_id";
-    public static final String COLUMN_INTERVENTION_EXPENSE_ID = "expense_id";
-    public static final String COLUMN_INTERVENTION_TYPE = "intervention_type";
+    public static final String COLUMN_INTERVENTION_ID = "id";
+    public static final String COLUMN_INTERVENTION_USER_ID = "userId";
+    public static final String COLUMN_INTERVENTION_EXPENSE_ID = "expenseId";
+    public static final String COLUMN_INTERVENTION_TYPE = "interventionType";
     public static final String COLUMN_INTERVENTION_MESSAGE = "message";
-    public static final String COLUMN_INTERVENTION_IMPACT_ON_GOAL = "impact_on_goal";
-    public static final String COLUMN_INTERVENTION_ALTERNATIVE_SUGGESTION = "alternative_suggestion";
+    public static final String COLUMN_INTERVENTION_IMPACT_ON_GOAL = "impactOnGoal";
+    public static final String COLUMN_INTERVENTION_ALTERNATIVE_SUGGESTION = "alternativeSuggestion";
     public static final String COLUMN_INTERVENTION_TIMESTAMP = "timestamp";
 
     // Tabla Daily Analysis
     public static final String TABLE_DAILY_ANALYSIS = "daily_analysis";
-    public static final String COLUMN_DAILY_ANALYSIS_ID = "_id";
-    public static final String COLUMN_DAILY_ANALYSIS_USER_ID = "user_id";
-    public static final String COLUMN_DAILY_ANALYSIS_DATE = "analysis_date";
-    public static final String COLUMN_DAILY_ANALYSIS_TOTAL_SPENT = "total_spent";
-    public static final String COLUMN_DAILY_ANALYSIS_TOTAL_INCOME = "total_income";
-    public static final String COLUMN_DAILY_ANALYSIS_NET_BALANCE = "net_balance";
-    public static final String COLUMN_DAILY_ANALYSIS_CATEGORY_BREAKDOWN = "category_breakdown";
-    public static final String COLUMN_DAILY_ANALYSIS_ANOMALY_DETECTED = "anomaly_detected";
+    public static final String COLUMN_DAILY_ANALYSIS_ID = "id";
+    public static final String COLUMN_DAILY_ANALYSIS_USER_ID = "userId";
+    public static final String COLUMN_DAILY_ANALYSIS_DATE = "analysisDate";
+    public static final String COLUMN_DAILY_ANALYSIS_TOTAL_SPENT = "totalSpent";
+    public static final String COLUMN_DAILY_ANALYSIS_TOTAL_INCOME = "totalIncome";
+    public static final String COLUMN_DAILY_ANALYSIS_NET_BALANCE = "netBalance";
+    public static final String COLUMN_DAILY_ANALYSIS_CATEGORY_BREAKDOWN = "categoryBreakdown";
+    public static final String COLUMN_DAILY_ANALYSIS_ANOMALY_DETECTED = "anomalyDetected";
+
+    // Tabla Alternatives
+    public static final String TABLE_ALTERNATIVES = "alternatives";
+    public static final String COLUMN_ALTERNATIVE_ID = "id";
+    public static final String COLUMN_ALTERNATIVE_CATEGORY = "category";
+    public static final String COLUMN_ALTERNATIVE_KEYWORD = "descriptionKeyword";
+    public static final String COLUMN_ALTERNATIVE_SUGGESTION = "suggestion";
+    public static final String COLUMN_ALTERNATIVE_SAVINGS = "savingsPercentage";
 
 
     // Umbrales para intervenciones

@@ -12,6 +12,8 @@ import android.widget.TextView;
 import androidx.cardview.widget.CardView;
 import androidx.core.widget.ImageViewCompat;
 
+import androidx.databinding.BindingAdapter;
+
 import asunfdiez.com.equilibra.R;
 import asunfdiez.com.equilibra.databinding.ItemFeatureCardBinding;
 
@@ -88,5 +90,17 @@ public class FeatureCard extends CardView {
         }
     }
 
+    @BindingAdapter("cardTitle")
+    public static void setCardTitle(FeatureCard view, String title) {
+        if (view.binding != null && view.binding.cardTitle != null) {
+            view.binding.cardTitle.setText(title);
+        }
+    }
 
+    @BindingAdapter("cardDescription")
+    public static void setCardDescription(FeatureCard view, String description) {
+        if (view.binding != null && view.binding.cardDescription != null) {
+            view.binding.cardDescription.setText(description);
+        }
+    }
 }

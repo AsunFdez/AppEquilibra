@@ -25,6 +25,9 @@ public interface BudgetDao {
     @Query("SELECT * FROM "+ Constants.TABLE_BUDGETS+" WHERE category = :category")
     Budget getBudgetByCategory(String category);
 
+    @Query("DELETE FROM " + Constants.TABLE_BUDGETS)
+    void deleteAll();
+
 
 
 }

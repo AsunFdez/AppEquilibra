@@ -4,8 +4,8 @@
 
     <data>
         <variable
-            name="user"
-            type="asunfdiez.com.equilibra.models.UserProfile" />
+            name="viewModel"
+            type="asunfdiez.com.equilibra.viewmodels.OnboardingViewModel" />
     </data>
 
     <ScrollView
@@ -85,7 +85,7 @@
                     android:layout_height="wrap_content"
                     android:hint="@string/hint_input_goal"
                     android:inputType="text"
-                    android:text="@={user.savingGoal}"
+                    android:text="@{viewModel.savingGoal.name}"
                     android:padding="16dp"
                     android:textSize="18sp" />
             </com.google.android.material.textfield.TextInputLayout>
@@ -115,7 +115,7 @@
                     android:layout_height="wrap_content"
                     android:hint="0.00"
                     android:inputType="numberDecimal"
-                    android:text="@={user.savingAmount}"
+                    android:text='@{String.valueOf(viewModel.savingGoal.targetAmount)}'
                     android:padding="16dp"
                     android:textSize="18sp"
                     android:textStyle="bold" />
@@ -145,7 +145,7 @@
                     android:clickable="true"
                     android:focusable="false"
                     android:inputType="none"
-                    android:text="@={user.savingDate}"
+                    android:text="@{viewModel.savingGoal.deadline}"
                     android:padding="16dp"
                     android:textSize="18sp" />
             </com.google.android.material.textfield.TextInputLayout>

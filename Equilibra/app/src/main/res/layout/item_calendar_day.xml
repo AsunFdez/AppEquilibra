@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+        <import type="android.view.View" />
+        <variable
+            name="day"
+            type="Integer" />
+        <variable
+            name="hasExpense"
+            type="Boolean" />
+        <variable
+            name="isSelected"
+            type="Boolean" />
+    </data>
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:background="?attr/selectableItemBackgroundBorderless">
+
+        <View
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:layout_gravity="center"
+            android:background="@drawable/bg_circle_green_light"
+            android:visibility="@{isSelected ? View.VISIBLE : View.GONE}" />
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/tvDay"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text='@{day > 0 ? String.valueOf(day) : ""}'
+                android:textColor="@{isSelected ? @color/white : @color/text_primary}"
+                android:textSize="14sp" />
+
+            <View
+                android:id="@+id/viewIndicator"
+                android:layout_width="4dp"
+                android:layout_height="4dp"
+                android:layout_marginTop="2dp"
+                android:background="@drawable/circle_bullet"
+                android:backgroundTint="@color/accent"
+                android:visibility="@{hasExpense &amp;&amp; !isSelected ? View.VISIBLE : View.GONE}" />
+        </LinearLayout>
+    </FrameLayout>
+</layout>

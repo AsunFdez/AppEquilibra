@@ -13,8 +13,52 @@
     <string name="category_others">Otros</string>
     <string name="category_icon">Icono de categoría</string>
     <string name="category_restaurants">Restaurantes</string>
-    <string name="category_shopping">Compras</string>
+    <string name="category_shopping">Supermercado</string>
+    <string name="category_gifts">Regalos</string>
     <string name="category_subscriptions">Suscripciones</string>
+    <string name="category_gym">Entrenamiento</string>
+    <string name="category_pets">Mascotas</string>
     <string name="category_other">Otros</string>
+
+    <!-- descripciones posibles para gasto -->
+    <string name="description_food_1">Café</string>
+    <string name="description_food_2">Restaurante</string>
+
+    <string name="description_transport_1">Taxi</string>
+    <string name="description_transport_2">Bus</string>
+    <string name="description_transport_3">Metro</string>
+
+    <string name="description_leisure_1">Cine</string>
+    <string name="description_leisure_2">Cena</string>
+
+    <string name="description_clothes_1">Zapatillas</string>
+
+
+    <!--alternativas para categorias -->
+    <string name="alternative_food_1">Llevar termo de casa: ahorra 40€/mes</string>
+    <string name="alternative_food_2">Máquina de oficina: ahorro del 70%</string>
+    <string name="alternative_food_3">Pedir menú del día</string>
+
+    <string name="alternative_leisure_1">Buscar actividades gratuitas</string>
+    <string name="alternative_leisure_2">"Día del espectador: ahorra un 40%"</string>
+    <string name="alternative_leisure_3">Cocinar en casa con amigos</string>"
+
+    <string name="alternative_clothes_1">Esperar a rebajas: ahorra un 50%</string>
+    <string name="alternative_clothes_2">Buscar similar online: ahorra un 30%</string>
+    <string name="alternative_clothes_3">Revisar tiendas de outlet</string>
+
+    <string name="alternative_transport_1">Bicicleta o caminar: ahorro del 100%</string>
+    <string name="alternative_transport_2">Transporte compartido: ahorro del 50%</string>
+    <string name="alternative_transport_3">"Usar bus o metro: ahorra un 80%"</string>
+    <string name="alternative_transport_4">Usar transporte público</string>
+
+
+
+
+
+
+
+
+
 
 </resources>

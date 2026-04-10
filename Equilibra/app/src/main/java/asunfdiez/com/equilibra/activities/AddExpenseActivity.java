@@ -14,7 +14,7 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.PagerSnapHelper;
 
-import java.util.List;
+import java.util.Calendar;
 
 import asunfdiez.com.equilibra.R;
 import asunfdiez.com.equilibra.adapters.CategoryAdapter;
@@ -22,10 +22,11 @@ import asunfdiez.com.equilibra.databinding.ActivityAddExpenseBinding;
 import asunfdiez.com.equilibra.databinding.DialogConfirmExpenseBinding;
 import asunfdiez.com.equilibra.databinding.DialogImportantExpenseBinding;
 import asunfdiez.com.equilibra.databinding.DialogSmartReminderBinding;
-import asunfdiez.com.equilibra.models.ExpenseCategory;
 import asunfdiez.com.equilibra.models.SmartReminder;
 import asunfdiez.com.equilibra.utils.AnimationHelper;
+import asunfdiez.com.equilibra.utils.DatePickerHelper;
 import asunfdiez.com.equilibra.viewmodels.AddExpenseViewModel;
+
 
 /**
  * AddExpenseActivity - Pantalla para añadir gastos con MVVM
@@ -47,6 +48,8 @@ public class AddExpenseActivity extends AppCompatActivity {
     private Dialog confirmExpenseDialog;
     private Dialog importantExpenseDialog;
 
+    private DatePickerHelper datePickerHelper;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -60,6 +63,7 @@ public class AddExpenseActivity extends AppCompatActivity {
         // Configurar UI
         setupToolbar();
         setupCategoryRecyclerView();
+        initDateTimePickers();
 
         // Vincular ViewModel con el binding
         binding.setViewModel(viewModel);
@@ -68,6 +72,18 @@ public class AddExpenseActivity extends AppCompatActivity {
         setupListeners();
         setupObservers();
         applyAnimations();
+
+        // Cargar gasto si se pasa un ID (Modo Edición)
+        long expenseId = getIntent().getLongExtra("expense_id", -1);
+        if (expenseId != -1) {
+            viewModel.loadExpense(expenseId);
+            if (getSupportActionBar() != null) {
+                getSupportActionBar().setTitle(getString(R.string.edit_expense));
+            }
+            binding.btnSaveExpense.setText(getString(R.string.save_changes));
+        } else {
+            binding.btnSaveExpense.setText(getString(R.string.add_expense));
+        }
     }
 
     /**
@@ -77,7 +93,7 @@ public class AddExpenseActivity extends AppCompatActivity {
         setSupportActionBar(binding.toolbar);
         if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-            getSupportActionBar().setTitle("Añadir Gasto");
+            getSupportActionBar().setTitle(getString(R.string.add_expense));
         }
 
         binding.toolbar.setNavigationOnClickListener(v -> {
@@ -105,6 +121,58 @@ public class AddExpenseActivity extends AppCompatActivity {
         });
 
         binding.rvCategories.setAdapter(categoryAdapter);
+
+        // --- LÓGICA DEL INDICADOR DE SCROLL ---
+        binding.rvCategories.addOnScrollListener(new androidx.recyclerview.widget.RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrolled(@androidx.annotation.NonNull androidx.recyclerview.widget.RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
+
+                // CanScrollHorizontally(1) devuelve false si no se puede hacer más scroll a la derecha (fin)
+                if (recyclerView.canScrollHorizontally(1)) {
+                    binding.ivScrollIndicator.setVisibility(View.VISIBLE);
+                } else {
+                    binding.ivScrollIndicator.setVisibility(View.GONE);
+                }
+            }
+        });
+
+        // Comprobación inicial: esperar a que el adapter tenga datos para mostrar u ocultar la flecha
+        binding.rvCategories.post(() -> {
+            if (binding.rvCategories.canScrollHorizontally(1)) {
+                binding.ivScrollIndicator.setVisibility(View.VISIBLE);
+            }
+        });
+    }
+
+
+    private void initDateTimePickers() {
+        // Obtenemos el calendario actual del ViewModel
+        Calendar currentCal = viewModel.getSelectedDateTime().getValue();
+
+        datePickerHelper = new DatePickerHelper(this);
+
+        // Listener para FECHA
+        binding.etDate.setOnClickListener(v -> {
+            datePickerHelper.showDatePicker(binding.etDate, viewModel.getSelectedDateTime().getValue(), newCalendar -> {
+                // Al actualizar el ViewModel, LiveData notificará a los observadores
+                viewModel.setDateTime(newCalendar);
+            });
+        });
+
+        // Listener para HORA
+        binding.etTime.setOnClickListener(v -> {
+            datePickerHelper.showTimePicker(binding.etTime, viewModel.getSelectedDateTime().getValue(), newCalendar -> {
+                viewModel.setDateTime(newCalendar);
+            });
+        });
+
+
+        // Observamos cambios para actualizar la UI si fuera necesario
+        viewModel.getSelectedDateTime().observe(this, cal -> {
+            binding.etDate.setText(datePickerHelper.formatDate(cal));
+            binding.etTime.setText(datePickerHelper.formatTime(cal));
+        });
     }
 
     /**
@@ -210,25 +278,13 @@ public class AddExpenseActivity extends AppCompatActivity {
         );
 
         dialogBinding.setReminder(reminder);
+        dialogBinding.setLifecycleOwner(this);
         smartReminderDialog.setContentView(dialogBinding.getRoot());
 
         // Configurar ventana del diálogo
         Window window = smartReminderDialog.getWindow();
         if (window != null) {
             window.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-        }
-
-        // Mostrar sugerencias
-        List<String> suggestions = reminder.getSuggestions();
-        if (suggestions != null && !suggestions.isEmpty()) {
-            if (suggestions.size() >= 1) {
-                dialogBinding.layoutSuggestion1.setVisibility(View.VISIBLE);
-                dialogBinding.tvSuggestion1.setText(suggestions.get(0));
-            }
-            if (suggestions.size() >= 2) {
-                dialogBinding.layoutSuggestion2.setVisibility(View.VISIBLE);
-                dialogBinding.tvSuggestion2.setText(suggestions.get(1));
-            }
         }
 
         // Configurar botones
@@ -267,13 +323,8 @@ public class AddExpenseActivity extends AppCompatActivity {
         );
 
         // Configurar datos
-        String amount = viewModel.currentAmount.getValue();
-        ExpenseCategory category = viewModel.getSelectedCategory().getValue();
-        Integer percentage = viewModel.getBudgetPercentage().getValue();
-
-        dialogBinding.setAmount(amount);
-        dialogBinding.setCategory(category != null ? category.getName() : "");
-        dialogBinding.setPercentage(percentage != null ? percentage : 0);
+        dialogBinding.setViewModel(viewModel);
+        dialogBinding.setLifecycleOwner(this);
 
         confirmExpenseDialog.setContentView(dialogBinding.getRoot());
 
@@ -319,13 +370,8 @@ public class AddExpenseActivity extends AppCompatActivity {
         );
 
         // Configurar datos
-        String amount = viewModel.currentAmount.getValue();
-        ExpenseCategory category = viewModel.getSelectedCategory().getValue();
-        String impact = viewModel.getGoalImpact().getValue();
-
-        dialogBinding.setAmount(amount);
-        dialogBinding.setCategory(category != null ? category.getName() : "");
-        dialogBinding.setImpact(impact != null ? impact : "");
+        dialogBinding.setViewModel(viewModel);
+        dialogBinding.setLifecycleOwner(this);
 
         importantExpenseDialog.setContentView(dialogBinding.getRoot());
 
@@ -333,23 +379,6 @@ public class AddExpenseActivity extends AppCompatActivity {
         Window window = importantExpenseDialog.getWindow();
         if (window != null) {
             window.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-        }
-
-        // Mostrar alternativas
-        List<String> alternatives = viewModel.getAlternatives().getValue();
-        if (alternatives != null && !alternatives.isEmpty()) {
-            if (alternatives.size() >= 1) {
-                dialogBinding.layoutAlt1.setVisibility(View.VISIBLE);
-                dialogBinding.tvAlt1.setText(alternatives.get(0));
-            }
-            if (alternatives.size() >= 2) {
-                dialogBinding.layoutAlt2.setVisibility(View.VISIBLE);
-                dialogBinding.tvAlt2.setText(alternatives.get(1));
-            }
-            if (alternatives.size() >= 3) {
-                dialogBinding.layoutAlt3.setVisibility(View.VISIBLE);
-                dialogBinding.tvAlt3.setText(alternatives.get(2));
-            }
         }
 
         // Configurar botones
@@ -364,11 +393,6 @@ public class AddExpenseActivity extends AppCompatActivity {
             viewModel.resetDialogStates();
         });
 
-        dialogBinding.btnSearchAlternatives.setOnClickListener(v -> {
-            importantExpenseDialog.dismiss();
-            viewModel.resetDialogStates();
-            Toast.makeText(this, "Buscando alternativas...", Toast.LENGTH_SHORT).show();
-        });
 
         importantExpenseDialog.show();
     }

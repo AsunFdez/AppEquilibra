@@ -23,6 +23,12 @@ public interface ChallengeDao {
     @Delete
     void deleteChallenge(Challenge challenge);
 
+    @Query("DELETE FROM " + Constants.TABLE_CHALLENGES)
+    void deleteAll();
+
+    /**
+     * Obtiene todos los desafíos de un usuario
+     */
     @Query("SELECT * FROM "+ Constants.TABLE_CHALLENGES+" WHERE "+Constants.COLUMN_CHALLENGE_USER_ID+" = :userId")
     List<Challenge> getAllChallengesByUserId(long userId);
 

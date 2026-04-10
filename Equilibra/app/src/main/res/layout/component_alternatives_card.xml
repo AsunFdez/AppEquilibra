@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Componente reutilizable: para alternativas -->
+
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <data>
+        <import type="android.view.View"/>
+        <variable
+            name="title"
+            type="String" />
+        <variable
+            name="items"
+            type="java.util.List&lt;String&gt;" />
+    </data>
+<androidx.cardview.widget.CardView
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="20dp"
+    android:visibility="@{items != null &amp;&amp; !items.isEmpty() ? View.VISIBLE : View.GONE}"
+    app:cardCornerRadius="12dp"
+    app:cardElevation="2dp"
+    app:cardBackgroundColor="@android:color/white">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="16dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:layout_marginBottom="12dp">
+
+            <ImageView
+                android:layout_width="16dp"
+                android:layout_height="16dp"
+                android:src="@drawable/ic_info"
+                app:tint="@color/primary" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:text="@{title}"
+                android:textColor="@color/primary"
+                android:textSize="14sp"
+                android:textStyle="bold" />
+
+        </LinearLayout>
+
+        <!-- Alternativa 1 -->
+        <LinearLayout
+            android:id="@+id/layoutAlt1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginBottom="8dp"
+            android:visibility="@{items != null &amp;&amp; items.size() > 0 ? View.VISIBLE : View.GONE}">
+
+            <TextView
+                android:layout_width="8dp"
+                android:layout_height="8dp"
+                android:layout_marginTop="6dp"
+                android:layout_marginEnd="8dp"
+                android:background="@drawable/circle_bullet"
+                android:backgroundTint="@color/primary" />
+
+            <TextView
+                android:id="@+id/tvAlt1"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@{items != null &amp;&amp; items.size() > 0 ? items.get(0) : ``}"
+                android:textColor="@color/textPrimary"
+                android:textSize="13sp"
+                android:lineSpacingExtra="2dp" />
+
+        </LinearLayout>
+
+        <!-- Alternativa 2 -->
+        <LinearLayout
+            android:id="@+id/layoutAlt2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginBottom="8dp"
+            android:visibility="@{items != null &amp;&amp; items.size() > 1 ? View.VISIBLE : View.GONE}">
+
+            <TextView
+                android:layout_width="8dp"
+                android:layout_height="8dp"
+                android:layout_marginTop="6dp"
+                android:layout_marginEnd="8dp"
+                android:background="@drawable/circle_bullet"
+                android:backgroundTint="@color/primary" />
+
+            <TextView
+                android:id="@+id/tvAlt2"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@{items != null &amp;&amp; items.size() > 1 ? items.get(1) : ``}"
+                android:textColor="@color/textPrimary"
+                android:textSize="13sp"
+                android:lineSpacingExtra="2dp" />
+
+        </LinearLayout>
+
+        <!-- Alternativa 3 -->
+        <LinearLayout
+            android:id="@+id/layoutAlt3"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:visibility="@{items != null &amp;&amp; items.size() > 2 ? View.VISIBLE : View.GONE}">
+
+            <TextView
+                android:layout_width="8dp"
+                android:layout_height="8dp"
+                android:layout_marginTop="6dp"
+                android:layout_marginEnd="8dp"
+                android:background="@drawable/circle_bullet"
+                android:backgroundTint="@color/primary" />
+
+            <TextView
+                android:id="@+id/tvAlt3"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@{items != null &amp;&amp; items.size() > 2 ? items.get(2) : ``}"
+                android:textColor="@color/textPrimary"
+                android:textSize="13sp"
+                android:lineSpacingExtra="2dp" />
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+</androidx.cardview.widget.CardView>
+</layout>

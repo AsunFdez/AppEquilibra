@@ -330,22 +330,17 @@ public class AnimationHelper {
         }
     }
 
-    public static void animateProgressBar(final View progressBar, float progress) {
-        if (progressBar == null || progressBar.getParent() == null) {
+    public static void animateProgressBar(final ProgressBar progressBar, float progressPercentage) {
+        if (progressBar == null) {
             return;
         }
 
-        ViewGroup.LayoutParams params = progressBar.getLayoutParams();
-        final int targetWidth = (int) (((View) progressBar.getParent()).getWidth() * progress);
+        int targetProgress = (int) (progressPercentage * 100);
+        if (targetProgress > 100) targetProgress = 100;
 
-        ValueAnimator animator = ValueAnimator.ofInt(0, targetWidth);
+        ObjectAnimator animator = ObjectAnimator.ofInt(progressBar, "progress", 0, targetProgress);
         animator.setDuration(Constants.DURATION_PROGRESS);
         animator.setInterpolator(new AccelerateDecelerateInterpolator());
-        animator.addUpdateListener(animation -> {
-            ViewGroup.LayoutParams p = progressBar.getLayoutParams();
-            p.width = (int) animation.getAnimatedValue();
-            progressBar.setLayoutParams(p);
-        });
         animator.start();
     }
 
@@ -565,30 +560,22 @@ public class AnimationHelper {
         }
     }
 
-    public static void animateProgressBar(int weekProgress, int weekGoal, ProgressBar progressBar) {
-        float progressPercentage = ((float) weekProgress / weekGoal);
-
-        ViewGroup.LayoutParams params = progressBar.getLayoutParams();
-        final int targetWidth = (int) (progressBar.getParent() instanceof View
-                ? ((View) progressBar.getParent()).getWidth() * progressPercentage
-                : 0);
+    public static void animateProgressBar(int weekProgress, int weekGoal, final ProgressBar progressBar) {
+        if (progressBar == null) return;
 
         progressBar.post(new Runnable() {
             @Override
             public void run() {
-                ValueAnimator animator = ValueAnimator.ofInt(0, targetWidth);
-                animator.setDuration(1000);
-                animator.setStartDelay(300);
-                animator.setInterpolator(new AccelerateDecelerateInterpolator());
-                animator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-                    @Override
-                    public void onAnimationUpdate(ValueAnimator animation) {
-                        ViewGroup.LayoutParams params = progressBar.getLayoutParams();
-                        params.width = (int) animation.getAnimatedValue();
-                        progressBar.setLayoutParams(params);
-                    }
-                });
-                animator.start();
+                if (progressBar.getParent() == null) return;
+
+                int progress = weekGoal > 0 ? (int) ((float) weekProgress / weekGoal * 100) : 0;
+                if (progress > 100) progress = 100;
+
+                ObjectAnimator animation = ObjectAnimator.ofInt(progressBar, "progress", 0, progress);
+                animation.setDuration(1000);
+                animation.setStartDelay(300);
+                animation.setInterpolator(new AccelerateDecelerateInterpolator());
+                animation.start();
             }
         });
     }

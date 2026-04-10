@@ -20,15 +20,11 @@ public class UserProfile {
     private String mainConcernId;
     private String mainConcern;
     private String timeAvailable;
-    private String savingGoal;
-    private String savingAmount;
-    private String savingDate;
     private long createdAt;
     private long updatedAt;
 
     private String level;
     private double monthlyIncome;
-    private String savingsPlan;
 
     private int financialKnowledge;
     private int budgetExperience;
@@ -37,7 +33,13 @@ public class UserProfile {
     private String currentView = Constants.USER_LEVEL_BEGINNER;
     private int dayCount = 1;
     private int weekProgress = 0;
-    private int weekGoal = 5;
+    private int weekGoal = 7;
+
+    private int weekCount = 0;
+
+    private long lastResetTimestamp = System.currentTimeMillis();
+    private long lastConnectionTimestamp = System.currentTimeMillis();
+
 
     public UserProfile() {
         this.createdAt = System.currentTimeMillis();
@@ -116,30 +118,6 @@ public class UserProfile {
         timeAvailable = a_timeAvailable;
     }
 
-    public String getSavingGoal() {
-        return savingGoal;
-    }
-
-    public void setSavingGoal(String a_savingGoal) {
-        savingGoal = a_savingGoal;
-    }
-
-    public String getSavingAmount() {
-        return savingAmount;
-    }
-
-    public void setSavingAmount(String a_savingAmount) {
-        savingAmount = a_savingAmount;
-    }
-
-    public String getSavingDate() {
-        return savingDate;
-    }
-
-    public void setSavingDate(String a_savingDate) {
-        savingDate = a_savingDate;
-    }
-
     public long getCreatedAt() {
         return createdAt;
     }
@@ -170,14 +148,6 @@ public class UserProfile {
 
     public void setMonthlyIncome(double a_monthlyIncome) {
         monthlyIncome = a_monthlyIncome;
-    }
-
-    public String getSavingsPlan() {
-        return savingsPlan;
-    }
-
-    public void setSavingsPlan(String a_savingsPlan) {
-        savingsPlan = a_savingsPlan;
     }
 
     public int getFinancialKnowledge() {
@@ -236,6 +206,30 @@ public class UserProfile {
         this.weekGoal = weekGoal;
     }
 
+    public int getWeekCount() {
+        return weekCount;
+    }
+
+    public void setWeekCount(int weekCount) {
+        this.weekCount = weekCount;
+    }
+
+    public long getLastResetTimestamp() {
+        return lastResetTimestamp;
+    }
+
+    public void setLastResetTimestamp(long lastResetTimestamp) {
+        this.lastResetTimestamp = lastResetTimestamp;
+    }
+
+    public long getLastConnectionTimestamp() {
+        return lastConnectionTimestamp;
+    }
+
+    public void setLastConnectionTimestamp(long lastConnectionTimestamp) {
+        this.lastConnectionTimestamp = lastConnectionTimestamp;
+    }
+
     @Override
     public String toString() {
         return "UserProfile{" +
@@ -248,14 +242,10 @@ public class UserProfile {
                 ", mainConcernId='" + mainConcernId + '\'' +
                 ", mainConcern='" + mainConcern + '\'' +
                 ", timeAvailable='" + timeAvailable + '\'' +
-                ", savingGoal='" + savingGoal + '\'' +
-                ", savingAmount='" + savingAmount + '\'' +
-                ", savingDate='" + savingDate + '\'' +
                 ", createdAt=" + createdAt +
                 ", updatedAt=" + updatedAt +
                 ", level='" + level + '\'' +
                 ", monthlyIncome=" + monthlyIncome +
-                ", savingsPlan='" + savingsPlan + '\'' +
                 ", financialKnowledge=" + financialKnowledge +
                 ", budgetExperience=" + budgetExperience +
                 ", savingsHabit=" + savingsHabit +

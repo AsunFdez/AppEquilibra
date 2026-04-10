@@ -5,15 +5,23 @@ import android.content.Context;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
-import java.util.concurrent.Executors;
 
+import asunfdiez.com.equilibra.R;
+import asunfdiez.com.equilibra.database.AchievementDao;
+import asunfdiez.com.equilibra.database.AlternativeDao;
 import asunfdiez.com.equilibra.database.AppDatabase;
 import asunfdiez.com.equilibra.database.ExpenseCategoryDao;
 import asunfdiez.com.equilibra.database.ExpenseDao;
+import asunfdiez.com.equilibra.database.SavingGoalDao;
+import asunfdiez.com.equilibra.database.UserProfileDao;
+import asunfdiez.com.equilibra.models.Achievement;
+import asunfdiez.com.equilibra.models.Alternative;
 import asunfdiez.com.equilibra.models.CategoryAnalysis;
 import asunfdiez.com.equilibra.models.Expense;
 import asunfdiez.com.equilibra.models.ExpenseCategory;
+import asunfdiez.com.equilibra.models.SavingGoal;
 import asunfdiez.com.equilibra.models.SmartReminder;
+import asunfdiez.com.equilibra.models.UserProfile;
 import asunfdiez.com.equilibra.utils.Constants;
 
 /**
@@ -22,27 +30,65 @@ import asunfdiez.com.equilibra.utils.Constants;
  */
 public class ExpenseRepository {
 
-    private ExpenseCategoryDao expenseCategoryDao;
-    private ExpenseDao expenseDao;
-    private Context context;
+    private final ExpenseCategoryDao expenseCategoryDao;
+    private final ExpenseDao expenseDao;
+    private final AchievementDao achievementDao;
+
+    private final SavingGoalDao savingGoalDao;
+
+    private final AlternativeDao alternativeDao;
+
+    private final UserProfileDao userProfileDao;
+
+    private final Context context;
 
     public ExpenseRepository(Context context) {
         this.context = context;
         this.expenseCategoryDao = AppDatabase.getInstance(context).expenseCategoryDao();
         this.expenseDao = AppDatabase.getInstance(context).expenseDao();
+        this.achievementDao = AppDatabase.getInstance(context).achievementDao();
+        this.userProfileDao = AppDatabase.getInstance(context).userProfileDao();
+        this.savingGoalDao = AppDatabase.getInstance(context).savingGoalDao();
+        this.alternativeDao = AppDatabase.getInstance(context).alternativeDao();
     }
 
     /**
-     * Guarda un nuevo gasto en la base de datos (Room)
+     * Obtiene un gasto por su ID
+     */
+    public Expense getExpenseById(long id) {
+        return expenseDao.getExpenseById(id);
+    }
+
+    /**
+     * Guarda un nuevo gasto o actualiza uno existente
      */
     public void saveExpense(Expense expense) {
-        Executors.newSingleThreadExecutor().execute(() -> {
+        if (expense.getId() == 0) {
             expenseDao.insertExpense(expense);
-        });
+            // Incrementar el contador de la semana solo si es nuevo
+            userProfileDao.incrementWeekProgress();
+        } else {
+            expenseDao.updateExpenses(expense);
+        }
+
+        // comprobaciones de logros existentes
+        checkAchievements();
     }
 
     /**
-     * Obtiene todos los gastos del mes actual (Room)
+     * Elimina un gasto de la base de datos
+     */
+    public void deleteExpense(Expense expense) {
+        expenseDao.deleteExpense(expense);
+        
+        // Decrementar el contador de la semana si era un gasto (opcional, según lógica de negocio)
+        if (expense.isExpense()) {
+            userProfileDao.decrementWeekProgress();
+        }
+    }
+
+    /**
+     * Obtiene todos los gastos del mes actual
      */
     public List<Expense> getExpensesThisMonth() {
         Calendar calendar = Calendar.getInstance();
@@ -63,7 +109,7 @@ public class ExpenseRepository {
     }
 
     /**
-     * Obtiene el total de gastos del mes actual (Room)
+     * Obtiene el total de gastos del mes actual
      */
     public double getTotalExpensesThisMonth() {
         Calendar calendar = Calendar.getInstance();
@@ -85,7 +131,7 @@ public class ExpenseRepository {
     }
 
     /**
-     * Obtiene el total de ingresos del mes actual (Room)
+     * Obtiene el total de ingresos del mes actual
      */
     public double getTotalIncomeThisMonth() {
         long startTime = getStartOfMonth();
@@ -96,14 +142,14 @@ public class ExpenseRepository {
     }
 
     /**
-     * Obtiene la categoría con más gastos en el mes actual (Room)
+     * Obtiene la categoría con más gastos en el mes actual
      */
     public String getTopExpenseCategoryThisMonth() {
         return expenseDao.getTopExpenseCategoryInRange(getStartOfMonth(), getEndOfMonth());
     }
 
     /**
-     * Obtiene el total gastado en una categoría específica este mes (Room)
+     * Obtiene el total gastado en una categoría específica este mes
      */
     public double getCategoryExpensesThisMonth(String category) {
         Double total = expenseDao.getCategoryTotalInRange(category, getStartOfMonth(), getEndOfMonth());
@@ -126,6 +172,34 @@ public class ExpenseRepository {
      */
     public int getExpenseCount() {
         return expenseDao.getExpenseCount();
+    }
+
+    /**
+     * Comprueba si se han cumplido los retos (medallas)
+     * 1. Primer registro de gasto
+     * 2. Gastos durante 7 días seguidos
+     */
+    public void checkAchievements () {
+        int expenseCount = getExpenseCount();
+        UserProfile profile = userProfileDao.getUserProfileSync();
+        if (profile == null) return;
+        int dayCount = profile.getDayCount();
+        //registrar el primer gasto
+        if (expenseCount >= 1) {
+            Achievement achievement = achievementDao.getAchievementByTitle(context.getString(R.string.firs_step_title));
+            if (achievement != null && !achievement.isUnlocked()) {
+                achievement.setUnlocked(true);
+                achievementDao.updateAchievement(achievement);
+            }
+        }
+        //registrar gastos durante 7 dias seguidos
+        if (dayCount >= 7 && expenseCount >= 7) {
+            Achievement achievement = achievementDao.getAchievementByTitle(context.getString(R.string.constant_title));
+            if (achievement != null && !achievement.isUnlocked()) {
+                achievement.setUnlocked(true);
+                achievementDao.updateAchievement(achievement);
+            }
+        }
     }
 
     private long getStartOfMonth() {
@@ -188,7 +262,7 @@ public class ExpenseRepository {
     }
 
     /**
-     * Obtiene las categorías disponibles (Room)
+     * Obtiene las categorías disponibles
      */
     public List<ExpenseCategory> getCategories() {
         return expenseCategoryDao.getCategories();
@@ -221,14 +295,14 @@ public class ExpenseRepository {
             reminder.setCategory(category);
             reminder.setOccurrenceCount(weekCount + 1); // +1 porque aún no se ha guardado
             reminder.setTotalAmount(weekTotal + amount);
-            reminder.setTimeFrame("esta semana");
+            reminder.setTimeFrame(context.getString(R.string.this_week));
 
             // Generar sugerencias personalizadas
             List<String> suggestions = generateSuggestions(category, weekTotal + amount);
             reminder.setSuggestions(suggestions);
 
             // Mensaje del patrón
-            String patternMsg = String.format("Es tu %d° %s esta semana. Total: €%.2f. ¿Todo bien?",
+            String patternMsg = String.format(context.getString(R.string.expense_pattern),
                     weekCount + 1, category, weekTotal + amount);
             reminder.setPatternMessage(patternMsg);
 
@@ -266,8 +340,9 @@ public class ExpenseRepository {
 
     /**
      * Verifica si un gasto es "importante" (muy alto)
-     * @param amount Monto del gasto
-     * @return true si es un gasto importante (>20% del ingreso mensual)
+     * @param amount importe del gasto
+     * @return true si es un gasto importante (>20% del ingreso mensual
+     * o si no hay ingresos y el gasto es >100€)
      */
     public boolean isImportantExpense(double amount) {
         double monthlyIncome = getTotalIncomeThisMonth();
@@ -286,57 +361,72 @@ public class ExpenseRepository {
      * Por ejemplo: "Vacaciones se retrasa 2 semanas"
      */
     public String calculateGoalImpact(double amount) {
-        // TODO: Implementar lógica de objetivos cuando se cree GoalsActivity
-        // Por ahora, estimación simple
+        // Buscar el primer objetivo de ahorro activo
+        UserProfile profile = userProfileDao.getUserProfileSync();
+        if (profile == null) return "";
+        long userId = profile.getId();
+        SavingGoal targetGoal = savingGoalDao.getFirstSavingGoalActiveByUserId(userId);
 
-        double monthlySavings = getTotalIncomeThisMonth() - getTotalExpensesThisMonth();
+        double monthlyIncome = getTotalIncomeThisMonth();
+        double monthlyExpenses = getTotalExpensesThisMonth();
+        double monthlySavings = monthlyIncome - monthlyExpenses;
 
         if (monthlySavings <= 0) {
-            return "No podrás ahorrar este mes";
+            return context.getString(R.string.can_not_save);
         }
 
-        // Calcular cuántos días de ahorro equivale este gasto
-        double dailySavings = monthlySavings / 30;
+        double dailySavings = monthlySavings / 30.0;
         int daysDelay = (int) (amount / dailySavings);
 
+        if (targetGoal != null) {
+            // Impacto específico en el objetivo
+            String delayStr = formatDelay(daysDelay);
+            return String.format(context.getString(R.string.delay_target), targetGoal.getName(), delayStr);
+        }
+
+        // Impacto genérico si no hay objetivos
+        return String.format(context.getString(R.string.delay_from_saving), daysDelay, context.getString(R.string.days));
+    }
+
+    private String formatDelay(int daysDelay) {
         if (daysDelay < 7) {
-            return String.format("Se retrasa %d días tu ahorro", daysDelay);
+            return String.format("%d %s", daysDelay, context.getString(R.string.days));
         } else if (daysDelay < 30) {
             int weeks = daysDelay / 7;
-            return String.format("Se retrasa %d %s tu objetivo",
-                    weeks, weeks == 1 ? "semana" : "semanas");
+            return String.format("%d %s", weeks, weeks == 1 ? context.getString(R.string.week) : context.getString(R.string.weeks));
         } else {
             int months = daysDelay / 30;
-            return String.format("Se retrasa %d %s tu objetivo",
-                    months, months == 1 ? "mes" : "meses");
+            return String.format("%d %s", months, months == 1 ? context.getString(R.string.month) : context.getString(R.string.months));
         }
     }
 
     /**
      * Genera alternativas para un gasto grande
      */
-    public List<String> generateAlternatives(String category, double amount) {
-        List<String> alternatives = new ArrayList<>();
+    public List<String> generateAlternatives(String category, double amount, String description) {
+        List<String> suggestions = new ArrayList<>();
 
-        if ("Ropa".equalsIgnoreCase(category)) {
-            alternatives.add(String.format("Esperar a rebajas: ahorra del 50%% (€%.2f)", amount * 0.5));
-            alternatives.add(String.format("Buscar similar online: ahorro del 30%% (€%.2f)", amount * 0.3));
-            alternatives.add("Revisar armario primero");
-        } else if ("Ocio".equalsIgnoreCase(category)) {
-            alternatives.add("Buscar actividades gratuitas");
-            alternatives.add("Esperar ofertas o descuentos");
-            alternatives.add("Posponer para el próximo mes");
-        } else if ("Hogar".equalsIgnoreCase(category)) {
-            alternatives.add("Comparar precios en línea");
-            alternatives.add("Comprar de segunda mano");
-            alternatives.add("Buscar promociones");
-        } else {
-            alternatives.add(String.format("Buscar alternativas: ahorro estimado del 30%% (€%.2f)", amount * 0.3));
-            alternatives.add("Posponer compra 1 semana");
-            alternatives.add("Buscar opciones de segunda mano");
+        // 1. Buscar en la base de datos alternativas por categoría y descripción
+        List<Alternative> dbAlternatives = alternativeDao.getAlternativesByCategoryAndDescription(category, description);
+
+        if (dbAlternatives != null && !dbAlternatives.isEmpty()) {
+            for (Alternative alt : dbAlternatives) {
+                if (alt.getSavingsPercentage() > 0 && alt.getSavingsPercentage() < 1.0) {
+                    suggestions.add(String.format(context.getString(R.string.alternative_suggested),
+                            alt.getSuggestion(), alt.getSavingsPercentage() * 100, amount * alt.getSavingsPercentage()));
+                } else {
+                    suggestions.add(alt.getSuggestion());
+                }
+            }
         }
 
-        return alternatives;
+        // Si no hay suficientes, añadir genéricas (fallback)
+        if (suggestions.size() < 2) {
+            suggestions.add(context.getString(R.string.suggested_1));
+            suggestions.add(context.getString(R.string.suggested_2));
+        }
+
+        return suggestions;
     }
 
     /**
@@ -362,5 +452,14 @@ public class ExpenseRepository {
 
         // Mostrar confirmación si el gasto representa más del 10% del presupuesto semanal
         return percentage >= 10;
+    }
+
+    public List<Expense> getExpensesInRange(long startTime, long endTime) {
+        return expenseDao.getExpensesInRange(startTime, endTime);
+    }
+
+
+    public void deleteAll() {
+        expenseDao.deleteAll();
     }
 }

@@ -15,6 +15,7 @@ import java.util.concurrent.Executors;
 
 import asunfdiez.com.equilibra.R;
 import asunfdiez.com.equilibra.models.Achievement;
+import asunfdiez.com.equilibra.models.Alternative;
 import asunfdiez.com.equilibra.models.Budget;
 import asunfdiez.com.equilibra.models.Challenge;
 import asunfdiez.com.equilibra.models.DailyAnalysis;
@@ -26,8 +27,8 @@ import asunfdiez.com.equilibra.models.Streak;
 import asunfdiez.com.equilibra.models.UserProfile;
 import asunfdiez.com.equilibra.utils.Constants;
 
-@Database(entities = { Achievement.class, Budget.class, Challenge.class, DailyAnalysis.class, Expense.class, ExpenseCategory.class, InterventionLog.class, SavingGoal.class, Streak.class, UserProfile.class }, version = Constants.DATABASE_VERSION, exportSchema = false)
-@TypeConverters ({ Converters.class })
+@Database(entities = { Achievement.class, Budget.class, Challenge.class, DailyAnalysis.class, Expense.class, ExpenseCategory.class, InterventionLog.class, SavingGoal.class, Streak.class, UserProfile.class, Alternative.class }, version = Constants.DATABASE_VERSION, exportSchema = false)
+@TypeConverters({Converters.class})
 public abstract class AppDatabase extends RoomDatabase {
 
     private static volatile AppDatabase INSTANCE;
@@ -35,11 +36,27 @@ public abstract class AppDatabase extends RoomDatabase {
 
     public abstract UserProfileDao userProfileDao();
 
+    public abstract SavingGoalDao savingGoalDao();
+
     public abstract ExpenseDao expenseDao();
 
     public abstract ExpenseCategoryDao expenseCategoryDao();
 
     public abstract AchievementDao achievementDao();
+
+    public abstract AlternativeDao alternativeDao();
+
+    public abstract StreakDao streakDao();
+
+    public abstract ChallengeDao challengeDao();
+
+    public abstract BudgetDao budgetDao();
+
+    public abstract DailyAnalysisDao dailyAnalysisDao();
+
+    public abstract InterventionLogDao interventionLogDao();
+
+
 
     /**
      * Obtiene la instancia única de la base de datos
@@ -63,39 +80,58 @@ public abstract class AppDatabase extends RoomDatabase {
         return INSTANCE;
     }
 
-    private static RoomDatabase.Callback sRoomDatabaseCallback = new RoomDatabase.Callback() {
+    private final static RoomDatabase.Callback sRoomDatabaseCallback = new RoomDatabase.Callback() {
         @Override
         public void onCreate(@NonNull SupportSQLiteDatabase db) {
             super.onCreate(db);
 
-            // Usamos un Executor para no bloquear el hilo principal
-            Executors.newSingleThreadExecutor().execute(() -> {
-                insertInitialCategories();
-            });
-
-            Executors.newSingleThreadExecutor().execute(() -> {
-                insertInitialAchievements();
-            });
+            initialConfiguration();
 
         }
     };
 
+    public static void initialConfiguration() {
+        // Usamos un Executor para no bloquear el hilo principal
+        Executors.newSingleThreadExecutor().execute(AppDatabase::insertInitialCategories);
+
+        Executors.newSingleThreadExecutor().execute(AppDatabase::insertInitialAchievements);
+
+        Executors.newSingleThreadExecutor().execute(AppDatabase::insertInitialAlternatives);
+    }
+
     /**
-     * Inserta las categorias por defecto en la base de datos
+     * Borrar la base de datos
+     */
+
+    private static void deleteDatabase() {
+        if (INSTANCE != null) {
+            INSTANCE.clearAllTables();
+            INSTANCE.close();
+            INSTANCE = null;
+        }
+    }
+
+    /**
+     * Inserta las categorías por defecto en la base de datos
      */
     private static void insertInitialCategories() {
         ExpenseCategoryDao dao = INSTANCE.expenseCategoryDao();
         List<ExpenseCategory> categories = new ArrayList<>();
 
-        categories.add(new ExpenseCategory(mContext.getString(R.string.category_food), R.drawable.ic_cat_food, "ic_cat_food", "#2ECC71"));
-        categories.add(new ExpenseCategory(mContext.getString(R.string.category_transport), R.drawable.ic_cat_food, "ic_cat_transport", "#3498DB"));
+        categories.add(new ExpenseCategory(mContext.getString(R.string.category_food), R.drawable.ic_cat_utensils, "ic_cat_food", "#2ECC71"));
+        categories.add(new ExpenseCategory(mContext.getString(R.string.category_transport), R.drawable.ic_cat_car, "ic_cat_transport", "#3498DB"));
         categories.add(new ExpenseCategory(mContext.getString(R.string.category_home), R.drawable.ic_nav_home, "ic_nav_home", "#1ABC9C"));
         categories.add(new ExpenseCategory(mContext.getString(R.string.category_health), R.drawable.ic_cat_heart, "'ic_cat_heart", "#E74C3C"));
         categories.add(new ExpenseCategory(mContext.getString(R.string.category_leisure), R.drawable.ic_cat_gamepad_2, "ic_cat_gamepad_2", "#E67E22"));
+        categories.add(new ExpenseCategory(mContext.getString(R.string.category_subscriptions), R.drawable.ic_cat_suscriptions, "ic_cat_suscriptions", "#2ECC71"));
         categories.add(new ExpenseCategory(mContext.getString(R.string.category_education), R.drawable.ic_cat_graduation_cap, "ic_cat_graduation_cap", "#9B59B6"));
-        categories.add(new ExpenseCategory(mContext.getString(R.string.category_care), R.drawable.ic_cat_gift, "ic_cat_gift", "#F1C40F"));
-        categories.add(new ExpenseCategory(mContext.getString(R.string.category_clothes), R.drawable.ic_cat_shirt, "ic_cat_shirt", "#27AE60"));
-        categories.add(new ExpenseCategory(mContext.getString(R.string.category_others), R.drawable.ic_cat_package, "ic_cat_package", "#34495E"));
+        categories.add(new ExpenseCategory(mContext.getString(R.string.category_gifts), R.drawable.ic_cat_gifts, "ic_cat_gift", "#F1C40F"));
+        categories.add(new ExpenseCategory(mContext.getString(R.string.category_care), R.drawable.ic_cat_self_care, "ic_cat_self_care", "#F1C40F"));
+        categories.add(new ExpenseCategory(mContext.getString(R.string.category_clothes), R.drawable.ic_cat_shirt, "ic_cat_shirt", "#3498DB"));
+        categories.add(new ExpenseCategory(mContext.getString(R.string.category_shopping), R.drawable.ic_cat_shopping_cart, "ic_cat_shoping_cart", "#34495E"));
+        categories.add(new ExpenseCategory(mContext.getString(R.string.category_gym), R.drawable.ic_cat_gym, "ic_cat_gym", "#E74C3C"));
+        categories.add(new ExpenseCategory(mContext.getString(R.string.category_pets), R.drawable.ic_cat_pets, "ic_cat_pets", "#9B59B6"));
+        categories.add(new ExpenseCategory(mContext.getString(R.string.category_others), R.drawable.ic_cat_package, "ic_cat_package", "#1ABC9C"));
 
         dao.insertListOfCategories(categories);
     }
@@ -124,5 +160,36 @@ public abstract class AppDatabase extends RoomDatabase {
         achievements.add(new Achievement(mContext.getString(R.string.expert_title), mContext.getString(R.string.expert_description), 150, "ic_expert", false));
 
         dao.insertListOfAchievements(achievements);
+    }
+
+    /**
+     * Inserta las alternativas iniciales en la base de datos
+     */
+    private static void insertInitialAlternatives() {
+        AlternativeDao dao = INSTANCE.alternativeDao();
+        List<Alternative> alternatives = new ArrayList<>();
+
+        // Ropa
+        alternatives.add(new Alternative(mContext.getString(R.string.category_clothes), "", mContext.getString(R.string.alternative_clothes_1), 0.5));
+        alternatives.add(new Alternative(mContext.getString(R.string.category_clothes), "", mContext.getString(R.string.alternative_clothes_2), 0.3));
+        alternatives.add(new Alternative(mContext.getString(R.string.category_clothes), mContext.getString(R.string.description_clothes_1), mContext.getString(R.string.alternative_clothes_3), 0.4));
+
+        // Ocio
+        alternatives.add(new Alternative(mContext.getString(R.string.category_leisure), "", mContext.getString(R.string.alternative_leisure_1), 1.0));
+        alternatives.add(new Alternative(mContext.getString(R.string.category_leisure), mContext.getString(R.string.description_leisure_1), mContext.getString(R.string.alternative_leisure_2), 0.4));
+        alternatives.add(new Alternative(mContext.getString(R.string.category_leisure), mContext.getString(R.string.description_leisure_2), mContext.getString(R.string.alternative_leisure_3), 0.7));
+
+        // Comida
+        alternatives.add(new Alternative(mContext.getString(R.string.category_food), mContext.getString(R.string.description_food_1), mContext.getString(R.string.alternative_food_1), 0.9));
+        alternatives.add(new Alternative(mContext.getString(R.string.category_food), mContext.getString(R.string.description_food_1), mContext.getString(R.string.alternative_food_2), 0.7));
+        alternatives.add(new Alternative(mContext.getString(R.string.category_food), mContext.getString(R.string.description_food_2), mContext.getString(R.string.alternative_food_3),  0.3));
+
+        // Transporte
+        alternatives.add(new Alternative(mContext.getString(R.string.category_transport), "", mContext.getString(R.string.alternative_transport_1), 0.6));
+        alternatives.add(new Alternative(mContext.getString(R.string.category_transport), "", mContext.getString(R.string.alternative_transport_2), 0.6));
+        alternatives.add(new Alternative(mContext.getString(R.string.category_transport), "", mContext.getString(R.string.alternative_transport_4), 0.6));
+        alternatives.add(new Alternative(mContext.getString(R.string.category_transport), mContext.getString(R.string.description_transport_1), mContext.getString(R.string.alternative_transport_3), 0.8));
+
+        dao.insertListOfAlternatives(alternatives);
     }
 }

@@ -64,42 +64,64 @@
                     android:text="@{expense.category}"
                     android:textSize="14sp"
                     android:textColor="@color/text_secondary"
-                    android:layout_marginTop="4dp" />
+                    android:layout_marginTop="2dp" />
 
                 <TextView
-                    android:id="@+id/tvDate"
+                    android:id="@+id/tvTime"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@{expense.date}"
+                    android:text="@{expense.time}"
                     android:textSize="12sp"
-                    android:textColor="@color/text_secondary"
+                    android:textColor="@color/gray_400"
                     android:layout_marginTop="2dp" />
 
             </LinearLayout>
 
-            <!-- Monto -->
-            <TextView
-                android:id="@+id/tvAmount"
+            <!-- Contenedor Monto y Acciones -->
+            <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="$ 150.00"
-                android:textSize="18sp"
-                android:textColor="@color/accent_light"
-                android:textStyle="bold"
-                android:layout_marginStart="8dp" />
+                android:orientation="vertical"
+                android:gravity="end">
 
-            <!-- Botón Borrar -->
-            <ImageView
-                android:id="@+id/imgDelete"
-                android:layout_width="32dp"
-                android:layout_height="32dp"
-                android:padding="6dp"
-                android:src="@drawable/ic_uti_delete"
-                app:tint="@color/gray_400"
-                android:layout_marginStart="8dp"
-                android:background="?attr/selectableItemBackgroundBorderless"
-                android:clickable="true"
-                android:focusable="true" />
+                <TextView
+                    android:id="@+id/tvAmount"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="$ 150.00"
+                    android:textSize="18sp"
+                    android:textColor="@color/text_primary"
+                    android:textStyle="bold" />
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:layout_marginTop="8dp">
+
+                    <!-- Botón Editar -->
+                    <ImageView
+                        android:id="@+id/imgEdit"
+                        android:layout_width="28dp"
+                        android:layout_height="28dp"
+                        android:padding="4dp"
+                        android:src="@drawable/ic_edit"
+                        app:tint="@color/secondary"
+                        android:background="?attr/selectableItemBackgroundBorderless" />
+
+                    <!-- Botón Borrar -->
+                    <ImageView
+                        android:id="@+id/imgDelete"
+                        android:layout_width="28dp"
+                        android:layout_height="28dp"
+                        android:padding="4dp"
+                        android:src="@drawable/ic_uti_delete"
+                        app:tint="@color/error"
+                        android:layout_marginStart="8dp"
+                        android:background="?attr/selectableItemBackgroundBorderless" />
+                </LinearLayout>
+
+            </LinearLayout>
 
         </LinearLayout>
 

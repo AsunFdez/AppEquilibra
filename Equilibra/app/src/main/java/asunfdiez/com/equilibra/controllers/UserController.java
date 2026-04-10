@@ -4,9 +4,12 @@ import android.content.Context;
 
 import androidx.lifecycle.LiveData;
 
+import java.util.Calendar;
 import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicBoolean;
 
+import asunfdiez.com.equilibra.database.AppDatabase;
+import asunfdiez.com.equilibra.models.Advice;
 import asunfdiez.com.equilibra.models.UserProfile;
 import asunfdiez.com.equilibra.repositories.UserProfileRepository;
 import asunfdiez.com.equilibra.utils.SharedPrefsManager;
@@ -22,6 +25,7 @@ public class UserController {
     private final SharedPrefsManager prefsManager;
     private UserProfile user;
     private final WellbeingController wellbeingController;
+    Context context;
 
 
     /**
@@ -33,6 +37,7 @@ public class UserController {
         this.userRepository = new UserProfileRepository(context);
         this.prefsManager = SharedPrefsManager.getInstance(context);
         this.wellbeingController = new WellbeingController(context);
+        this.context = context;
     }
 
     /**
@@ -56,10 +61,11 @@ public class UserController {
     public void deleteCurrentUser() {
         Executors.newSingleThreadExecutor().execute(() -> {
             // Limpiar Room
-            userRepository.deleteAll();
+            AppDatabase.getInstance(context).clearAllTables();
             //  Limpiar SharedPreferences para que SplashActivity detecte que no hay onboarding
             prefsManager.resetOnboarding();
             prefsManager.clearAll();
+            AppDatabase.initialConfiguration();
         });
     }
     /*
@@ -85,6 +91,64 @@ public class UserController {
             }
         });
         return shouldShow.get();
+    }
+
+    public Advice getAdvice(UserProfile user) {
+
+        if (user.getWeekProgress() == 0) {
+            return Advice.getRegisterExpenseToday(context);
+        } else if (user.getName() == null || user.getName().isEmpty()) {
+            return Advice.getCompleteUserProfile(context);
+        }  else {
+            return Advice.getExpenseRegistered(context);
+        }
+    }
+
+    /**
+     *  Incrementa el contador de días de uso de la App
+     */
+    public void incrementDayCount() {
+        Executors.newSingleThreadExecutor().execute(() -> {
+        UserProfile profile = userRepository.getUserProfile().getValue();
+        if (profile != null) {
+            long lastConnection = profile.getLastConnectionTimestamp();
+            long diff = System.currentTimeMillis() - lastConnection;
+
+            int days = (int) (diff / (1000 * 60 * 60 * 24)) + 1;
+            if (days > 1) {
+                userRepository.incrementDayCount();
+            }
+            profile.setLastConnectionTimestamp(System.currentTimeMillis());
+            userRepository.updateProfile(profile);
+        }
+        });
+    }
+
+    /**
+    * Comprueba si es una nueva semana y reinicia el contador de progreso semanal
+    */
+    public void checkAndResetWeeklyProgress() {
+        Executors.newSingleThreadExecutor().execute(() -> {
+            UserProfile profile = userRepository.getUserProfile().getValue();
+            if (profile != null) {
+                long lastUpdate = profile.getLastResetTimestamp();
+                if (isNewWeek(lastUpdate)) {
+                    profile.setWeekCount(profile.getWeekCount() + 1);
+                    profile.setWeekProgress(0);
+                    profile.setLastResetTimestamp(System.currentTimeMillis());
+                    userRepository.updateProfile(profile);
+                }
+            }
+        });
+    }
+
+    private boolean isNewWeek(long lastTimestamp) {
+        Calendar lastSave = Calendar.getInstance();
+        lastSave.setTimeInMillis(lastTimestamp);
+
+        Calendar now = Calendar.getInstance();
+        return now.get(Calendar.WEEK_OF_YEAR) != lastSave.get(Calendar.WEEK_OF_YEAR)
+                || now.get(Calendar.YEAR) != lastSave.get(Calendar.YEAR);
     }
 
     /**

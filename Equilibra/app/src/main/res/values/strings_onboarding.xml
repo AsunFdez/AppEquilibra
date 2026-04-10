@@ -56,8 +56,8 @@
     <string name="plan_ready">¡Tu plan está listo!</string>
     <string name="emotional_state">Tu estado emocional</string>
     <string name="savings_goal">Meta de ahorro</string>
-    <string name="suggested_savings_monthly">Ahorro sugerido mensual</string>
-    <string name="goal_time">Alcanzarás tu meta en 6 meses</string>
+    <string name="suggested_savings_monthly">Ahorro mensual necesario</string>
+    <string name="goal_time">Alcanzarás tu meta en %1$d meses</string>
     <string name="first_mission_title">¡Primera Misión!</string>
     <string name="first_mission_subtitle">Estás listo para comenzar tu viaje financiero</string>
     <string name="btn_start">¡Comenzar mi viaje!</string>
@@ -67,6 +67,21 @@
     <string name="first_expense_today_example">Puede ser un café, el transporte o la comida</string>
     <string name="register_expense_motivate">Solo toma 30 segundos registrarlo</string>
     <string name="first_expense_gamification">Ganarás tu primer logro al completarlo</string>
+<!-- Estado Inicial -->
+    <string name="tip_title_welcome">¡Bienvenido a Equilibra!</string>
+    <string name="tip_desc_welcome">Tu camino hacia el bienestar financiero empieza aquí. Registra
+        tu primer gasto para empezar el análisis.
+    </string>
 
+<!-- Tras el primer registro -->
+    <string name="tip_title_expense_registered">¡Buen comienzo!</string>
+    <string name="tip_desc_expense_registered">Has dado el primer paso. Sigue registrando tus gastos diarios
+        para desbloquear el análisis avanzado.
+    </string>
+
+    <!-- Completa el pefil de usuario -->
+    <string name="tip_title_complete_user_profile">¡Completa tu perfil!</string>
+    <string name="tip_desc_complete_user_profile">Completa tus datos. Esto te ayudará a mejorar tu experiencia. Solo te llevará 1 minuto
+    </string>
 
 </resources>

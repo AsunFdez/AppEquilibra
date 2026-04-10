@@ -428,25 +428,24 @@ saveExpenseDirectly()
 
 - Lenguaje: Java
 - Arquitectura actual: principalmente Activities con lógica de UI y negocio mezclada
-- Persistencia: `SharedPreferences` a través de `SharedPrefsManager`
-- ViewBinding/DataBinding: DataBinding parcial en `MainActivity`, `OnboardingActivity` aún usa `findViewById`
-- MVVM: no implementado actualmente
-- Room/SQLite: no implementado actualmente
-- LifecycleObserver: no implementado actualmente
+- Persistencia: `SharedPreferences` a través de `SharedPrefsManager` y SQLite
+- ViewBinding/DataBinding: implementado
+- MVVM: implementado
+- Room/SQLite: implementado
+- LifecycleObserver: implementado
 
 ## Próximos objetivos
 
-1. Refactorizar a MVVM con `ViewModel` y repositorios.
-2. Usar ViewBinding en todas las Activities.
-3. Añadir Room para datos estructurados y DAOs.
-4. Usar `@NonNull` y `@Nullable`.
-5. Mantener `Activities` limpias y relegar la lógica de negocio a `ViewModels`/controladores.
+1. Usar `@NonNull` y `@Nullable`.
+2. Mantener `Activities` limpias y relegar la lógica de negocio a `ViewModels`/controladores.
+3. Utilizar respaldo de datos en la nube (Retrofit)
 
 ## Dependencias importantes
 
 - AndroidX AppCompat
 - Material Components
-- DataBinding (actualmente usada en `MainActivity`)
+- DataBinding 
+- Room
 
 
 

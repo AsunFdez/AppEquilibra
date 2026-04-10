@@ -13,6 +13,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
 import androidx.lifecycle.ViewModelProvider;
 
+import java.util.Calendar;
 import java.util.List;
 
 import asunfdiez.com.equilibra.R;
@@ -282,7 +283,7 @@ public class OnboardingActivity extends AppCompatActivity {
     private View createSavingGoalStep() {
         OnboardingStepSavingGoalBinding binding = OnboardingStepSavingGoalBinding.inflate(getLayoutInflater());
         binding.setLifecycleOwner(this);
-        binding.setUser(viewModel.getProfile());
+        binding.setViewModel(viewModel);
 
         setupSavingGoalForm(binding);
 
@@ -290,8 +291,9 @@ public class OnboardingActivity extends AppCompatActivity {
     }
 
     private void setupSavingGoalForm(OnboardingStepSavingGoalBinding binding) {
+        Calendar calendar = Calendar.getInstance();
         binding.dateInput.setOnClickListener(v ->
-                new DatePickerHelper(this).showDatePicker(binding.dateInput));
+                new DatePickerHelper(this).showDatePicker(binding.dateInput, calendar));
 
         SavingGoalValidator validator = new SavingGoalValidator(
                 binding.goalInput, binding.amountInput, binding.submitButton, handler);
@@ -327,6 +329,7 @@ public class OnboardingActivity extends AppCompatActivity {
         OnboardingStepSummaryBinding binding = OnboardingStepSummaryBinding.inflate(getLayoutInflater());
         binding.setLifecycleOwner(this);
         binding.setUser(viewModel.getProfile());
+        binding.setViewModel(viewModel);
 
         AnimationHelper.animateCheckIcon(binding.iconBackground);
 

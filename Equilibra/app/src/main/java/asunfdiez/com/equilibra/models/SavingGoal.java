@@ -23,9 +23,15 @@ public class SavingGoal {
     private long createdAt;
     private long updatedAt;
     private boolean completed;
+    private double monthlySavingAmount;
+    private int monthsRemaining;
 
     // Constructor vacío
     public SavingGoal() {
+        this.createdAt = System.currentTimeMillis();
+        this.updatedAt = System.currentTimeMillis();
+        this.currentAmount = 0;
+        this.completed = false;
     }
 
 
@@ -100,6 +106,22 @@ public class SavingGoal {
 
     public void setCompleted(boolean completed) {
         this.completed = completed;
+    }
+
+    public double getMonthlySavingAmount() {
+        return monthlySavingAmount;
+    }
+
+    public void setMonthlySavingAmount(double monthlySavingAmount) {
+        this.monthlySavingAmount = monthlySavingAmount;
+    }
+
+    public int getMonthsRemaining() {
+        return monthsRemaining;
+    }
+
+    public void setMonthsRemaining(int monthsRemaining) {
+        this.monthsRemaining = monthsRemaining;
     }
 
     /**

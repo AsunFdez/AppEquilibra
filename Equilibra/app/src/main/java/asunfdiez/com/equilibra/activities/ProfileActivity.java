@@ -174,10 +174,10 @@ public class ProfileActivity extends AppCompatActivity {
 
     private void showDeleteAccountDialog() {
         android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(this);
-        builder.setTitle(R.string.delete_account_title);
-        builder.setMessage(R.string.delete_account_message);
-        builder.setPositiveButton(R.string.delete, (dialog, which) -> viewModel.deleteAccount());
-        builder.setNegativeButton(R.string.cancel, null);
+        builder.setTitle(getString(R.string.delete_account_title));
+        builder.setMessage(getString(R.string.delete_account_message));
+        builder.setPositiveButton(getString(R.string.delete), (dialog, which) -> viewModel.deleteAccount());
+        builder.setNegativeButton(getString(R.string.cancel), null);
         builder.show();
     }
 

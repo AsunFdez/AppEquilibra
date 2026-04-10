@@ -11,6 +11,9 @@
         <variable
             name="user"
             type="asunfdiez.com.equilibra.models.UserProfile" />
+        <variable
+            name="advice"
+            type="asunfdiez.com.equilibra.models.Advice" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout

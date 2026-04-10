@@ -148,32 +148,6 @@ public final class SharedPrefsManager {
         saveUserProfile(profile);
     }
 
-    public double getMonthlyIncome() {
-        UserProfile profile = getUserProfile();
-        return profile.getMonthlyIncome();
-    }
-
-    /**
-     * Actualiza la meta de ahorro
-     */
-    public void updateSavingGoal(String goal, double amount, String date) {
-        UserProfile profile = getUserProfile();
-        profile.setSavingGoal(goal);
-        profile.setSavingAmount(String.valueOf(amount));
-        profile.setSavingDate(date);
-        saveUserProfile(profile);
-    }
-
-    public String getSavingsGoal() {
-        UserProfile profile = getUserProfile();
-        return profile.getSavingGoal();
-    }
-
-    public void setBudgetExperience(int level) {
-        UserProfile profile = getUserProfile();
-        profile.setBudgetExperience(level);
-        saveUserProfile(profile);
-    }
 
     public int getBudgetExperience() {
         UserProfile profile = getUserProfile();

@@ -24,6 +24,8 @@ public interface DailyAnalysisDao {
     @Delete
     void deleteDailyAnalysis(DailyAnalysis dailyAnalysis);
 
+    @Query("DELETE FROM " + Constants.TABLE_DAILY_ANALYSIS)
+    void deleteAll();
 
     @Query("SELECT * FROM "+ Constants.TABLE_DAILY_ANALYSIS + " WHERE "+Constants.COLUMN_DAILY_ANALYSIS_USER_ID +" = :userId")
     List<DailyAnalysis> getAllDailyAnalysisByUserId(long userId);

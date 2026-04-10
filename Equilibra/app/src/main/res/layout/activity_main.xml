@@ -11,6 +11,10 @@
         <variable
             name="user"
             type="asunfdiez.com.equilibra.models.UserProfile" />
+
+        <variable
+            name="advice"
+            type="asunfdiez.com.equilibra.models.Advice" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -68,8 +72,8 @@
                     app:cardBackgroundColor="@color/tip_card_bg"
                     app:cardIconCircle="@drawable/circle_primary"
                     app:cardIcon="@drawable/ic_fea_lightbulb"
-                    app:cardTitle="@string/today_advice"
-                    app:cardDescription="@string/advice_1"
+                    app:cardTitle='@{advice != null ? advice.title : @string/tip_title_welcome}'
+                    app:cardDescription='@{advice != null ? advice.description : @string/tip_desc_welcome}'
                     app:showArrow="false"
                     app:showRightIcon="false" />
 

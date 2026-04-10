@@ -84,6 +84,14 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        viewModel.getAdvice().observe(this, advice -> {
+            if (advice != null) {
+                binding.setVariable(asunfdiez.com.equilibra.BR.advice, advice);
+                // Esto forzará a la tipCard a actualizarse usando los BindingAdapters
+                binding.executePendingBindings();
+            }
+        });
+
         // Observar si se debe mostrar una intervención (Bienestar financiero)
         viewModel.getShouldShowIntervention().observe(this, shouldShow -> {
             if (shouldShow != null && shouldShow) {
@@ -93,6 +101,7 @@ public class MainActivity extends AppCompatActivity {
                 overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
             }
         });
+
     }
 
     private void handleUserProfileUpdate(UserProfile user) {
@@ -105,6 +114,7 @@ public class MainActivity extends AppCompatActivity {
         } else {
             // Si es la misma vista, solo actualizamos los datos vinculados
             binding.setVariable(asunfdiez.com.equilibra.BR.user, user);
+            binding.setVariable(asunfdiez.com.equilibra.BR.advice, viewModel.getAdvice().getValue());
             binding.executePendingBindings();
             
             // Actualizar elementos manuales o animaciones que dependen del progreso
@@ -125,6 +135,7 @@ public class MainActivity extends AppCompatActivity {
         binding = DataBindingUtil.setContentView(this, layoutId);
         binding.setLifecycleOwner(this);
         binding.setVariable(asunfdiez.com.equilibra.BR.user, user);
+        binding.setVariable(asunfdiez.com.equilibra.BR.advice, viewModel.getAdvice().getValue());
         binding.executePendingBindings();
 
         // Vincular vistas y listeners comunes
@@ -173,8 +184,6 @@ public class MainActivity extends AppCompatActivity {
 
     private void initBeginnerViews(ActivityMainBinding b, UserProfile user) {
         progressBar = b.progressCard.weeklyProgressBar;
-        b.progressCard.progressTitle.setText(getString(R.string.weekly_progress_title));
-        b.progressCard.progressText.setText(getString(R.string.week_progress, user.getWeekProgress(), user.getWeekGoal()));
     }
 
     private void updateBeginnerAnimations(UserProfile user) {

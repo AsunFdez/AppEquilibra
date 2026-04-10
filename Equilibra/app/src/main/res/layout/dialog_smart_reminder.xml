@@ -41,7 +41,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:layout_marginStart="12dp"
-                    android:text="Recordatorio Inteligente"
+                    android:text="@string/smart_reminder_title"
                     android:textColor="@android:color/white"
                     android:textSize="18sp"
                     android:textStyle="bold" />
@@ -67,88 +67,11 @@
                     android:layout_marginBottom="16dp"
                     android:textStyle="bold" />
 
-                <!-- Card con sugerencias -->
-                <androidx.cardview.widget.CardView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="20dp"
-                    app:cardCornerRadius="12dp"
-                    app:cardElevation="2dp"
-                    app:cardBackgroundColor="@android:color/white">
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="vertical"
-                        android:padding="16dp">
-
-                        <TextView
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:text="Sugerencias:"
-                            android:textColor="@color/primary"
-                            android:textSize="14sp"
-                            android:textStyle="bold"
-                            android:layout_marginBottom="12dp" />
-
-                        <!-- Sugerencia 1 -->
-                        <LinearLayout
-                            android:id="@+id/layoutSuggestion1"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:orientation="horizontal"
-                            android:layout_marginBottom="8dp"
-                            android:visibility="gone">
-
-                            <TextView
-                                android:layout_width="8dp"
-                                android:layout_height="8dp"
-                                android:layout_marginTop="6dp"
-                                android:layout_marginEnd="8dp"
-                                android:background="@drawable/circle_bullet"
-                                android:backgroundTint="@color/primary" />
-
-                            <TextView
-                                android:id="@+id/tvSuggestion1"
-                                android:layout_width="0dp"
-                                android:layout_height="wrap_content"
-                                android:layout_weight="1"
-                                android:textColor="@color/textPrimary"
-                                android:textSize="13sp"
-                                android:lineSpacingExtra="2dp" />
-
-                        </LinearLayout>
-
-                        <!-- Sugerencia 2 -->
-                        <LinearLayout
-                            android:id="@+id/layoutSuggestion2"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:orientation="horizontal"
-                            android:visibility="gone">
-
-                            <TextView
-                                android:layout_width="8dp"
-                                android:layout_height="8dp"
-                                android:layout_marginTop="6dp"
-                                android:layout_marginEnd="8dp"
-                                android:background="@drawable/circle_bullet"
-                                android:backgroundTint="@color/primary" />
-
-                            <TextView
-                                android:id="@+id/tvSuggestion2"
-                                android:layout_width="0dp"
-                                android:layout_height="wrap_content"
-                                android:layout_weight="1"
-                                android:textColor="@color/textPrimary"
-                                android:textSize="13sp"
-                                android:lineSpacingExtra="2dp" />
-
-                        </LinearLayout>
-
-                    </LinearLayout>
-
-                </androidx.cardview.widget.CardView>
+                <include
+                    layout="@layout/component_alternatives_card"
+                    android:id="@+id/suggestions"
+                    app:items="@{reminder.suggestions}"
+                    app:title='@{"Sugerencias:"}' />
 
                 <!-- Botones -->
                 <LinearLayout
@@ -157,29 +80,21 @@
                     android:orientation="horizontal"
                     android:gravity="end">
 
-                    <Button
+                    <com.google.android.material.button.MaterialButton
                         android:id="@+id/btnAdjust"
+                        style="@style/Widget.MaterialComponents.Button.TextButton"
                         android:layout_width="wrap_content"
                         android:layout_height="48dp"
-                        android:text="Ajustar"
-                        android:textColor="@color/textPrimary"
-                        android:textSize="14sp"
-                        android:paddingStart="24dp"
-                        android:paddingEnd="24dp"
-                        android:background="?attr/selectableItemBackground"
-                        style="@style/Widget.AppCompat.Button.Borderless" />
+                        android:text="@string/adjust"
+                        android:textColor="@color/textPrimary" />
 
-                    <Button
+                    <com.google.android.material.button.MaterialButton
                         android:id="@+id/btnConfirm"
+                        style="@style/Equilibra.Button.Primary"
                         android:layout_width="wrap_content"
                         android:layout_height="48dp"
                         android:layout_marginStart="8dp"
-                        android:text="Confirmar"
-                        android:textColor="@android:color/white"
-                        android:textSize="14sp"
-                        android:paddingStart="32dp"
-                        android:paddingEnd="32dp"
-                        android:background="@drawable/bg_button_primary" />
+                        android:text="@string/confirm" />
 
                 </LinearLayout>
 

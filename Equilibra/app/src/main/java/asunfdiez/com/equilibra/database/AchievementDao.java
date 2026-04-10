@@ -10,6 +10,7 @@ import androidx.room.Update;
 import java.util.List;
 
 import asunfdiez.com.equilibra.models.Achievement;
+import asunfdiez.com.equilibra.utils.Constants;
 
 @Dao
 public interface AchievementDao {
@@ -24,6 +25,13 @@ public interface AchievementDao {
     void updateAchievement(Achievement achievement);
     @Delete
     void deleteAchievement(Achievement achievement);
-    @Query("SELECT * FROM achievements")
+
+    @Query("DELETE FROM " + Constants.TABLE_ACHIEVEMENTS)
+    void deleteAll();
+
+    @Query("SELECT * FROM "+ Constants.TABLE_ACHIEVEMENTS)
     List<Achievement> getAllAchievements();
+
+    @Query("SELECT * FROM "+ Constants.TABLE_ACHIEVEMENTS+" WHERE "+Constants.COLUMN_ACHIEVEMENT_TITLE+" = :title")
+    Achievement getAchievementByTitle(String title);
 }

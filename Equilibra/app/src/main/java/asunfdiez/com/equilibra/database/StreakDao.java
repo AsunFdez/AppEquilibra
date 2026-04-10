@@ -25,6 +25,9 @@ public interface StreakDao {
     @Query("SELECT * FROM "+ Constants.TABLE_STREAK+ " WHERE userId = :userId")
     Streak getStreakByUserId(long userId);
 
+    @Query("DELETE FROM " + Constants.TABLE_STREAK)
+    void deleteAll();
+
 
 
 }

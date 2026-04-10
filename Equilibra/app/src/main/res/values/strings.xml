@@ -27,6 +27,8 @@
     <string name="next_goal_1">Completar tu primer presupuesto</string>
     <string name="my_expenses_tile">Mis Gastos</string>
     <string name="my_expenses_text">Ver, editar o eliminar</string>
+    <string name="total_amount_expenses">Total gastado</string>
+    <string name="registers_count">%1$d registros</string>
 
 
     <!-- Profile Activity -->
@@ -71,6 +73,8 @@
     <string name="cancel">Cancelar</string>
     <string name="delete">Eliminar</string>
     <string name="export">Exportar</string>
+    <string name="confirm">Confirmar</string>
+    <string name="adjust">Ajustar</string>
     <string name="feature_coming_soon">Función próximamente disponible</string>
     <string name="profile_edition">Editar perfil</string>
 

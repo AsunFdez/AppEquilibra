@@ -9,6 +9,10 @@
         <variable
             name="user"
             type="asunfdiez.com.equilibra.models.UserProfile" />
+
+        <variable
+            name="viewModel"
+            type="asunfdiez.com.equilibra.viewmodels.OnboardingViewModel" />
     </data>
 
     <ScrollView
@@ -89,7 +93,7 @@
                         android:layout_marginBottom="16dp"
                         android:orientation="vertical"
                         android:paddingBottom="16dp"
-                        android:visibility="@{user.savingGoal != null ? View.VISIBLE : View.GONE}">
+                        android:visibility="@{viewModel.savingGoal.name != null ? View.VISIBLE : View.GONE}">
 
                         <TextView
                             android:layout_width="match_parent"
@@ -103,7 +107,7 @@
                             android:id="@+id/goalText"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:text="@{user.savingGoal}"
+                            android:text="@{viewModel.savingGoal.name}"
                             android:textColor="@color/gray_800"
                             android:textSize="20sp"
                             android:textStyle="bold" />
@@ -123,7 +127,7 @@
                         android:layout_marginBottom="16dp"
                         android:orientation="vertical"
                         android:paddingBottom="16dp"
-                        android:visibility="@{user.savingAmount != null &amp;&amp; !user.savingAmount.empty ? View.VISIBLE : View.GONE}">
+                        android:visibility="@{viewModel.savingGoal.targetAmount > 0 ? View.VISIBLE : View.GONE}">
 
                         <TextView
                             android:layout_width="match_parent"
@@ -137,7 +141,7 @@
                             android:id="@+id/savingAmountText"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            app:formattedAmount="@{user.savingAmount}"
+                            app:formattedAmount="@{viewModel.savingGoal.targetAmount}"
                             android:textColor="@color/primary"
                             android:textSize="28sp"
                             android:textStyle="bold" />
@@ -157,7 +161,7 @@
                         android:layout_marginBottom="16dp"
                         android:orientation="vertical"
                         android:paddingBottom="16dp"
-                        android:visibility="@{user.savingAmount != null &amp;&amp; !user.savingAmount.empty ? View.VISIBLE : View.GONE}">
+                        android:visibility="@{viewModel.savingGoal.targetAmount > 0 ? View.VISIBLE : View.GONE}">
 
                         <TextView
                             android:layout_width="match_parent"
@@ -171,8 +175,7 @@
                             android:id="@+id/monthlySavingText"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            app:amount="@{user.savingAmount}"
-                            app:divisor="@{Constants.MONTHLY_DIVISION_FACTOR}"
+                            app:formattedAmount="@{viewModel.savingGoal.monthlySavingAmount}"
                             android:textColor="@color/secondary"
                             android:textSize="24sp"
                             android:textStyle="bold" />
@@ -181,7 +184,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="4dp"
-                            android:text="@string/goal_time"
+                            android:text="@{@string/goal_time(viewModel.savingGoal.monthsRemaining)}"
                             android:textColor="@color/gray_500"
                             android:textSize="12sp" />
 

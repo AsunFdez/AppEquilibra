@@ -44,6 +44,10 @@ public class ExpenseViewHolder extends RecyclerView.ViewHolder {
             if (listener != null) listener.onExpenseClick(expense);
         });
 
+        binding.imgEdit.setOnClickListener(v -> {
+            if (listener != null) listener.onExpenseClick(expense); // Reusar onExpenseClick para editar
+        });
+
         binding.imgDelete.setOnClickListener(v -> {
             if (listener != null) listener.onExpenseDelete(expense);
         });

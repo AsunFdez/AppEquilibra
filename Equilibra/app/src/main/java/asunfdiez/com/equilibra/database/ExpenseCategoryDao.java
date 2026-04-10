@@ -30,4 +30,7 @@ public interface ExpenseCategoryDao {
     @Query("SELECT * FROM " + Constants.TABLE_CATEGORIES )
     public List<ExpenseCategory> getCategories();
 
+    @Query("DELETE FROM " + Constants.TABLE_CATEGORIES)
+    void deleteAll();
+
 }

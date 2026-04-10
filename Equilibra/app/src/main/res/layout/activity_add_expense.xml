@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
+        <import type="asunfdiez.com.equilibra.utils.DateUtils" />
         <variable
             name="viewModel"
             type="asunfdiez.com.equilibra.viewmodels.AddExpenseViewModel" />
@@ -45,7 +46,7 @@
                     android:id="@+id/cardAmount"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="24dp"
+                    android:layout_marginBottom="16dp"
                     app:cardCornerRadius="16dp"
                     app:cardElevation="4dp"
                     android:background="@drawable/gradient_primary">
@@ -54,7 +55,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="vertical"
-                        android:padding="24dp"
+                        android:padding="18dp"
                         android:background="@drawable/gradient_primary">
 
                         <TextView
@@ -81,7 +82,7 @@
                                 android:inputType="numberDecimal"
                                 android:text="@={viewModel.currentAmount}"
                                 android:textColor="@android:color/white"
-                                android:textSize="48sp"
+                                android:textSize="32sp"
                                 android:textStyle="bold"
                                 android:fontFamily="sans-serif-medium"
                                 android:hint="0"
@@ -116,16 +117,34 @@
                     android:layout_marginBottom="16dp" />
 
                 <!-- Grid de categorías -->
-                <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/rvCategories"
+
+                <FrameLayout
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="24dp"
-                    android:orientation="horizontal"
-                    app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
-                    app:spanCount="2"
-                    app:categories="@{viewModel.categories}"
-                    tools:listitem="@layout/item_category" />
+                    android:layout_height="wrap_content">
+
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/rvCategories"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="16dp"
+                        android:layout_marginRight="24dp"
+                        android:orientation="horizontal"
+                        app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
+                        app:spanCount="2"
+                        app:categories="@{viewModel.categories}"
+                        tools:listitem="@layout/item_category" />
+
+                    <ImageView
+                        android:id="@+id/ivScrollIndicator"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="end|center_vertical"
+                        android:padding="4dp"
+                        android:src="@drawable/ic_nav_chevron_right"
+                        android:alpha="0.7"
+                        app:tint="@color/accent"
+                        android:visibility="visible" />
+                </FrameLayout>
 
                 <!-- Descripción (opcional) -->
                 <TextView
@@ -149,7 +168,57 @@
                     android:inputType="textCapSentences"
                     android:textColor="@color/textPrimary"
                     android:textColorHint="@color/textSecondary"
-                    android:layout_marginBottom="24dp" />
+                    android:layout_marginBottom="16dp" />
+
+                <!-- Fecha y hora (opcional) -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:baselineAligned="false"
+                    android:layout_marginBottom="24dp">
+
+                    <!-- CAMPO FECHA -->
+                    <com.google.android.material.textfield.TextInputLayout
+                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:layout_marginEnd="4dp"
+                        android:hint="@string/add_expense_date">
+
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/etDate"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:focusable="false"
+                            android:clickable="true"
+                            android:inputType="none"
+                            android:textSize="14sp"
+                            android:text="@{DateUtils.formatDate(viewModel.selectedDateTime)}"/>
+                    </com.google.android.material.textfield.TextInputLayout>
+
+                    <!-- CAMPO HORA -->
+                    <com.google.android.material.textfield.TextInputLayout
+                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:layout_marginStart="4dp"
+                        android:hint="@string/add_expense_hour">
+
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/etTime"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:focusable="false"
+                            android:clickable="true"
+                            android:inputType="none"
+                            android:textSize="14sp"
+                            android:text="@{DateUtils.formatTime(viewModel.selectedDateTime)}"/>
+                    </com.google.android.material.textfield.TextInputLayout>
+                </LinearLayout>
+
 
                 <!-- Botón Añadir Gasto -->
                 <com.google.android.material.button.MaterialButton

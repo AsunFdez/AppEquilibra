@@ -4,33 +4,22 @@ import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.widget.ImageView;
 import android.widget.TextView;
+
 import androidx.core.widget.ImageViewCompat;
 import androidx.databinding.BindingAdapter;
-import asunfdiez.com.equilibra.utils.Constants;
 
 public class BindingAdapters {
 
     @BindingAdapter("formattedAmount")
-    public static void setFormattedAmount(TextView textView, String amount) {
-        if (amount != null && !amount.isEmpty()) {
-            try {
-                double val = Double.parseDouble(amount);
-                textView.setText(String.format(java.util.Locale.getDefault(), Constants.CURRENCY_FORMAT, val));
-            } catch (NumberFormatException e) {
-                textView.setText(amount);
-            }
-        }
+    public static void setFormattedAmount(TextView textView, double amount) {
+        textView.setText(String.format(java.util.Locale.getDefault(), Constants.CURRENCY_FORMAT, amount));
     }
 
     @BindingAdapter({"amount", "divisor"})
-    public static void setDividedAmount(TextView textView, String amount, int divisor) {
-        if (amount != null && !amount.isEmpty() && divisor != 0) {
-            try {
-                double val = Double.parseDouble(amount) / divisor;
-                textView.setText(String.format(java.util.Locale.getDefault(), Constants.CURRENCY_FORMAT, val));
-            } catch (NumberFormatException e) {
-                textView.setText("");
-            }
+    public static void setDividedAmount(TextView textView, double amount, int divisor) {
+        if (divisor != 0) {
+            double val = amount / divisor;
+            textView.setText(String.format(java.util.Locale.getDefault(), Constants.CURRENCY_FORMAT, val));
         }
     }
     
@@ -61,5 +50,10 @@ public class BindingAdapters {
         if (adapter != null && categories != null) {
             adapter.updateCategories(categories);
         }
+    }
+
+    @BindingAdapter("progressValue")
+    public static void setProgressValue(android.widget.ProgressBar progressBar, int progress) {
+        progressBar.setProgress(progress);
     }
 }
