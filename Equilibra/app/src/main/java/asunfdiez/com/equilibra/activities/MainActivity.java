@@ -1,14 +1,10 @@
 package asunfdiez.com.equilibra.activities;
 
 import android.content.Intent;
-import android.graphics.Typeface;
 import android.os.Bundle;
 import android.os.Handler;
 import android.view.View;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.ProgressBar;
-import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
@@ -22,35 +18,20 @@ import asunfdiez.com.equilibra.controllers.WellbeingController;
 import asunfdiez.com.equilibra.databinding.ActivityAdvancedUserBinding;
 import asunfdiez.com.equilibra.databinding.ActivityIntermediateUserBinding;
 import asunfdiez.com.equilibra.databinding.ActivityMainBinding;
+import asunfdiez.com.equilibra.databinding.BottomNavigationBinding;
 import asunfdiez.com.equilibra.models.UserProfile;
 import asunfdiez.com.equilibra.utils.AnimationHelper;
+import asunfdiez.com.equilibra.utils.BottomNavigationHandler;
 import asunfdiez.com.equilibra.utils.Constants;
 import asunfdiez.com.equilibra.viewmodels.MainActivityViewModel;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements BottomNavigationHandler {
 
     private MainActivityViewModel viewModel;
     private WellbeingController wellbeingController;
     private ProgressBar progressBar;
 
-    // Bottom Navigation
-    private LinearLayout navHome;
-    private LinearLayout navAnalysis;
-    private LinearLayout navAchievements;
-    private LinearLayout navSettings;
-    private CardView fabAddExpense;
-
-    private ImageView navHomeIcon;
-    private ImageView navAnalysisIcon;
-    private ImageView navAchievementsIcon;
-    private ImageView navSettingsIcon;
-
-    private TextView navHomeText;
-    private TextView navAnalysisText;
-    private TextView navAchievementsText;
-    private TextView navSettingsText;
-
-    // Common Cards
+    // Content Cards
     private CardView viewAllExpensesCard;
 
     // View State
@@ -115,6 +96,7 @@ public class MainActivity extends AppCompatActivity {
             // Si es la misma vista, solo actualizamos los datos vinculados
             binding.setVariable(asunfdiez.com.equilibra.BR.user, user);
             binding.setVariable(asunfdiez.com.equilibra.BR.advice, viewModel.getAdvice().getValue());
+            updateBottomNavigationBinding("home");
             binding.executePendingBindings();
             
             // Actualizar elementos manuales o animaciones que dependen del progreso
@@ -136,6 +118,7 @@ public class MainActivity extends AppCompatActivity {
         binding.setLifecycleOwner(this);
         binding.setVariable(asunfdiez.com.equilibra.BR.user, user);
         binding.setVariable(asunfdiez.com.equilibra.BR.advice, viewModel.getAdvice().getValue());
+        updateBottomNavigationBinding("home");
         binding.executePendingBindings();
 
         // Vincular vistas y listeners comunes
@@ -156,30 +139,29 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    private void updateBottomNavigationBinding(String activeTab) {
+        try {
+            // Buscamos el binding de bottomNav de forma dinámica si es posible, 
+            // o simplemente accedemos si sabemos el ID en los layouts.
+            // En nuestros layouts el include tiene el id bottomNav
+            View bottomNavRoot = findViewById(R.id.bottomNav);
+            if (bottomNavRoot != null) {
+                BottomNavigationBinding navBinding = DataBindingUtil.getBinding(bottomNavRoot);
+                if (navBinding != null) {
+                    navBinding.setActiveTab(activeTab);
+                    navBinding.setHandler(this);
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
     private void initCommonViews() {
         View root = binding.getRoot();
 
         // Content Cards
         viewAllExpensesCard = root.findViewById(R.id.viewAllExpensesCard);
-
-        // Bottom Navigation
-        navHome = root.findViewById(R.id.navHome);
-        navAnalysis = root.findViewById(R.id.navAnalysis);
-        navAchievements = root.findViewById(R.id.navAchievements);
-        navSettings = root.findViewById(R.id.navSettings);
-        fabAddExpense = root.findViewById(R.id.fabAddExpense);
-
-        navHomeIcon = root.findViewById(R.id.navHomeIcon);
-        navAnalysisIcon = root.findViewById(R.id.navAnalysisIcon);
-        navAchievementsIcon = root.findViewById(R.id.navAchievementsIcon);
-        navSettingsIcon = root.findViewById(R.id.navSettingsIcon);
-
-        navHomeText = root.findViewById(R.id.navHomeText);
-        navAnalysisText = root.findViewById(R.id.navAnalysisText);
-        navAchievementsText = root.findViewById(R.id.navAchievementsText);
-        navSettingsText = root.findViewById(R.id.navSettingsText);
-        
-        updateBottomNavigation("home");
     }
 
     private void initBeginnerViews(ActivityMainBinding b, UserProfile user) {
@@ -202,33 +184,23 @@ public class MainActivity extends AppCompatActivity {
 
     private void setupCommonListeners() {
         // View All Expenses
-        viewAllExpensesCard.setOnClickListener(v -> navigateTo(ExpenseListActivity.class));
-
-        // Bottom Navigation
-        navHome.setOnClickListener(v -> {
-            NestedScrollView scrollView = findViewById(R.id.contentScroll);
-            if (scrollView != null) {
-                scrollView.smoothScrollTo(0, 0);
-            }
-        });
-
-        navAnalysis.setOnClickListener(v -> navigateTo(AnalysisActivity.class));
-
-        fabAddExpense.setOnClickListener(v -> {
-            AnimationHelper.animateFABPress(v);
-            handler.postDelayed(() -> navigateTo(AddExpenseActivity.class), Constants.FAB_ANIM_DURATION + 50);
-        });
-
-        navAchievements.setOnClickListener(v -> navigateTo(AchievementsActivity.class));
-        navSettings.setOnClickListener(v -> navigateTo(SettingsActivity.class));
+        if (viewAllExpensesCard != null) {
+            viewAllExpensesCard.setOnClickListener(v -> navigateTo(ExpenseListActivity.class));
+        }
 
         // Notification Button
-        findViewById(R.id.notificationButton).setOnClickListener(v -> {
-            // TODO: Show notifications
-        });
+        View notifBtn = findViewById(R.id.notificationButton);
+        if (notifBtn != null) {
+            notifBtn.setOnClickListener(v -> {
+                // TODO: Show notifications
+            });
+        }
 
         // Avatar Button
-        findViewById(R.id.avatarButton).setOnClickListener(v -> navigateTo(ProfileActivity.class));
+        View avatarBtn = findViewById(R.id.avatarButton);
+        if (avatarBtn != null) {
+            avatarBtn.setOnClickListener(v -> navigateTo(ProfileActivity.class));
+        }
     }
 
     private void setBeginnerListeners(ActivityMainBinding b) {
@@ -247,32 +219,33 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    private void resetNavItem(ImageView icon, TextView text) {
-        int gray = getResources().getColor(R.color.gray_400);
-        icon.setColorFilter(gray);
-        text.setTextColor(gray);
-        text.setTypeface(null, Typeface.NORMAL);
-    }
-
-    private void activateNavItem(ImageView icon, TextView text) {
-        int primary = getResources().getColor(R.color.primary);
-        icon.setColorFilter(primary);
-        text.setTextColor(primary);
-        text.setTypeface(null, Typeface.BOLD);
-    }
-
-    private void updateBottomNavigation(String activeTab) {
-        resetNavItem(navHomeIcon, navHomeText);
-        resetNavItem(navAnalysisIcon, navAnalysisText);
-        resetNavItem(navAchievementsIcon, navAchievementsText);
-        resetNavItem(navSettingsIcon, navSettingsText);
-
-        switch (activeTab) {
-            case "home":        activateNavItem(navHomeIcon, navHomeText); break;
-            case "analysis":    activateNavItem(navAnalysisIcon, navAnalysisText); break;
-            case "achievements":activateNavItem(navAchievementsIcon, navAchievementsText); break;
-            case "settings":    activateNavItem(navSettingsIcon, navSettingsText); break;
+    @Override
+    public void onHomeClick() {
+        NestedScrollView scrollView = findViewById(R.id.contentScroll);
+        if (scrollView != null) {
+            scrollView.smoothScrollTo(0, 0);
         }
+    }
+
+    @Override
+    public void onAnalysisClick() {
+        navigateTo(AnalysisActivity.class);
+    }
+
+    @Override
+    public void onAddExpenseClick(View v) {
+        AnimationHelper.animateFABPress(v);
+        handler.postDelayed(() -> navigateTo(AddExpenseActivity.class), Constants.FAB_ANIM_DURATION + 50);
+    }
+
+    @Override
+    public void onAchievementsClick() {
+        navigateTo(AchievementsActivity.class);
+    }
+
+    @Override
+    public void onSettingsClick() {
+        navigateTo(SettingsActivity.class);
     }
 
     private void navigateTo(Class<?> activityClass) {

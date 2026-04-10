@@ -92,7 +92,7 @@
                         android:id="@+id/tvTotalAmount"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text='@{"€" + viewModel.totalAmount}'
+                        android:text='@{viewModel.totalAmount+ "€"}'
                         android:textColor="@color/primary"
                         android:textSize="32sp"
                         android:textStyle="bold" />

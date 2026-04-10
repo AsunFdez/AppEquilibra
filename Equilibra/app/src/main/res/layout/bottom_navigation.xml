@@ -1,174 +1,203 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/bottomNavigation"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:background="@android:color/transparent"
-    android:clipChildren="false"
-    android:clipToPadding="false"
-    android:orientation="vertical">
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <!-- Contenedor con fondo blanco que empieza debajo del FAB -->
+    <data>
+        <variable
+            name="activeTab"
+            type="String" />
+        <variable
+            name="handler"
+            type="asunfdiez.com.equilibra.utils.BottomNavigationHandler" />
+    </data>
+
+
     <LinearLayout
+        android:id="@+id/bottomNavigation"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@android:color/white"
-        android:elevation="8dp"
+        android:background="@android:color/transparent"
         android:clipChildren="false"
         android:clipToPadding="false"
-        android:orientation="vertical"
-        android:paddingBottom="8dp">
+        android:orientation="vertical">
 
-        <!-- Top Border -->
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:background="@color/gray_200" />
-
-        <RelativeLayout
+        <!-- Contenedor con fondo blanco que empieza debajo del FAB -->
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:background="@android:color/white"
+            android:elevation="8dp"
             android:clipChildren="false"
             android:clipToPadding="false"
-            android:paddingStart="24dp"
-            android:paddingTop="8dp"
-            android:paddingEnd="24dp">
+            android:orientation="vertical"
+            android:paddingBottom="8dp">
 
-            <!-- Navigation Items -->
-            <LinearLayout
+            <!-- Top Border -->
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/gray_200" />
+
+            <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:gravity="center"
-                android:orientation="horizontal">
-                <!-- Home Button -->
+                android:clipChildren="false"
+                android:clipToPadding="false"
+                android:paddingStart="24dp"
+                android:paddingTop="8dp"
+                android:paddingEnd="24dp">
+
+                <!-- Navigation Items -->
                 <LinearLayout
-                    android:id="@+id/navHome"
-                    android:layout_width="0dp"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
                     android:gravity="center"
-                    android:orientation="vertical"
-                    android:paddingTop="8dp"
-                    android:paddingBottom="8dp">
-                    <ImageView
-                        android:id="@+id/navHomeIcon"
-                        android:layout_width="28dp"
-                        android:layout_height="28dp"
-                        android:src="@drawable/ic_nav_home"
-                        android:tint="@color/primary" />
-                    <TextView
-                        android:id="@+id/navHomeText"
-                        android:text="@string/nav_home_text"
-                        android:layout_width="wrap_content"
+                    android:orientation="horizontal">
+                    <!-- Home Button -->
+                    <LinearLayout
+                        android:id="@+id/navHome"
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:textColor="@color/primary"
-                        android:textSize="12sp"
-                        android:textStyle="bold" />
-                </LinearLayout>
-                <!-- Análisis Button -->
-                <LinearLayout
-                    android:id="@+id/navAnalysis"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:gravity="center"
-                    android:orientation="vertical"
-                    android:paddingTop="8dp"
-                    android:paddingBottom="8dp">
-                    <ImageView
-                        android:id="@+id/navAnalysisIcon"
-                        android:layout_width="28dp"
-                        android:layout_height="28dp"
-                        android:src="@drawable/ic_nav_trending_up"
-                        android:tint="@color/gray_400" />
-                    <TextView
-                        android:id="@+id/navAnalysisText"
-                        android:text="@string/nav_analysis_text"
-                        android:layout_width="wrap_content"
+                        android:layout_weight="1"
+                        android:gravity="center"
+                        android:onClick='@{() -> handler.onHomeClick()}'
+                        android:orientation="vertical"
+                        android:paddingTop="8dp"
+                        android:paddingBottom="8dp">
+
+                        <ImageView
+                            android:id="@+id/navHomeIcon"
+                            android:layout_width="28dp"
+                            android:layout_height="28dp"
+                            android:src="@drawable/ic_nav_home"
+                            app:tint='@{activeTab.equals("home") ? @color/primary : @color/gray_400}' />
+
+                        <TextView
+                            android:id="@+id/navHomeText"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/nav_home_text"
+                            android:textColor='@{activeTab.equals("home") ? @color/primary : @color/gray_400}'
+                            android:textSize="12sp"
+                            android:textStyle='@{activeTab.equals("home") ? "bold" : "normal"}' />
+                    </LinearLayout>
+                    <!-- Análisis Button -->
+                    <LinearLayout
+                        android:id="@+id/navAnalysis"
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:textColor="@color/gray_400"
-                        android:textSize="12sp" />
-                </LinearLayout>
+                        android:layout_weight="1"
+                        android:gravity="center"
+                        android:onClick='@{() -> handler.onAnalysisClick()}'
+                        android:orientation="vertical"
+                        android:paddingTop="8dp"
+                        android:paddingBottom="8dp">
 
-                <!-- Espacio central para el FAB -->
-                <View
-                    android:layout_width="0dp"
-                    android:layout_height="1dp"
-                    android:layout_weight="1" />
+                        <ImageView
+                            android:id="@+id/navAnalysisIcon"
+                            android:layout_width="28dp"
+                            android:layout_height="28dp"
+                            android:src="@drawable/ic_nav_trending_up"
+                            app:tint='@{activeTab.equals("analysis") ? @color/primary : @color/gray_400}' />
 
-                <!-- Achievements Button -->
-                <LinearLayout
-                    android:id="@+id/navAchievements"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:gravity="center"
-                    android:orientation="vertical"
-                    android:paddingTop="8dp"
-                    android:paddingBottom="8dp">
-                    <ImageView
-                        android:id="@+id/navAchievementsIcon"
-                        android:layout_width="28dp"
-                        android:layout_height="28dp"
-                        android:src="@drawable/ic_nav_trophy"
-                        android:tint="@color/gray_400" />
-                    <TextView
-                        android:id="@+id/navAchievementsText"
-                        android:text="@string/nav_achievements_text"
-                        android:layout_width="wrap_content"
+                        <TextView
+                            android:id="@+id/navAnalysisText"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/nav_analysis_text"
+                            android:textColor='@{activeTab.equals("analysis") ? @color/primary : @color/gray_400}'
+                            android:textSize="12sp"
+                            android:textStyle='@{activeTab.equals("analysis") ? "bold" : "normal"}' />
+                    </LinearLayout>
+
+                    <!-- Espacio central para el FAB -->
+                    <View
+                        android:layout_width="0dp"
+                        android:layout_height="1dp"
+                        android:layout_weight="1" />
+
+                    <!-- Achievements Button -->
+                    <LinearLayout
+                        android:id="@+id/navAchievements"
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:textColor="@color/gray_400"
-                        android:textSize="12sp" />
-                </LinearLayout>
+                        android:layout_weight="1"
+                        android:gravity="center"
+                        android:onClick='@{() -> handler.onAchievementsClick()}'
+                        android:orientation="vertical"
+                        android:paddingTop="8dp"
+                        android:paddingBottom="8dp">
 
-                <!-- Settings Button -->
-                <LinearLayout
-                    android:id="@+id/navSettings"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:gravity="center"
-                    android:orientation="vertical"
-                    android:paddingTop="8dp"
-                    android:paddingBottom="8dp">
-                    <ImageView
-                        android:id="@+id/navSettingsIcon"
-                        android:layout_width="28dp"
-                        android:layout_height="28dp"
-                        android:src="@drawable/ic_nav_settings"
-                        android:tint="@color/gray_400" />
-                    <TextView
-                        android:id="@+id/navSettingsText"
-                        android:text="@string/nav_settings_text"
-                        android:layout_width="wrap_content"
+                        <ImageView
+                            android:id="@+id/navAchievementsIcon"
+                            android:layout_width="28dp"
+                            android:layout_height="28dp"
+                            android:src="@drawable/ic_nav_trophy"
+                            app:tint='@{activeTab.equals("achievements") ? @color/primary : @color/gray_400}' />
+
+                        <TextView
+                            android:id="@+id/navAchievementsText"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/nav_achievements_text"
+                            android:textColor='@{activeTab.equals("achievements") ? @color/primary : @color/gray_400}'
+                            android:textSize="12sp"
+                            android:textStyle='@{activeTab.equals("achievements") ? "bold" : "normal"}' />
+                    </LinearLayout>
+
+                    <!-- Settings Button -->
+                    <LinearLayout
+                        android:id="@+id/navSettings"
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:textColor="@color/gray_400"
-                        android:textSize="12sp" />
+                        android:layout_weight="1"
+                        android:gravity="center"
+                        android:onClick='@{() -> handler.onSettingsClick()}'
+                        android:orientation="vertical"
+                        android:paddingTop="8dp"
+                        android:paddingBottom="8dp">
+
+                        <ImageView
+                            android:id="@+id/navSettingsIcon"
+                            android:layout_width="28dp"
+                            android:layout_height="28dp"
+                            android:src="@drawable/ic_nav_settings"
+                            app:tint='@{activeTab.equals("settings") ? @color/primary : @color/gray_400}' />
+
+                        <TextView
+                            android:id="@+id/navSettingsText"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/nav_settings_text"
+                            android:textColor='@{activeTab.equals("settings") ? @color/primary : @color/gray_400}'
+                            android:textSize="12sp"
+                            android:textStyle='@{activeTab.equals("settings") ? "bold" : "normal"}' />
+                    </LinearLayout>
                 </LinearLayout>
-            </LinearLayout>
 
-            <!-- FAB ((Floating Action Button)  para agregar gastos -->
-            <androidx.cardview.widget.CardView
-                android:id="@+id/fabAddExpense"
-                android:layout_width="64dp"
-                android:layout_height="64dp"
-                android:layout_centerHorizontal="true"
-                android:layout_marginTop="-38dp"
-                android:clickable="true"
-                android:focusable="true"
-                app:cardElevation="12dp"
-                app:cardBackgroundColor="@color/primary"
-                app:cardCornerRadius="32dp">
+                <!-- FAB ((Floating Action Button)  para agregar gastos -->
+                <androidx.cardview.widget.CardView
+                    android:id="@+id/fabAddExpense"
+                    android:layout_width="64dp"
+                    android:layout_height="64dp"
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginTop="-38dp"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:onClick='@{(v) -> handler.onAddExpenseClick(v)}'
+                    app:cardElevation="12dp"
+                    app:cardBackgroundColor="@color/primary"
+                    app:cardCornerRadius="32dp">
 
-                <ImageView
-                    android:layout_width="32dp"
-                    android:layout_height="32dp"
-                    android:layout_gravity="center"
-                    android:src="@drawable/ic_nav_plus"
-                    app:tint="@android:color/white" />
-            </androidx.cardview.widget.CardView>
+                    <ImageView
+                        android:layout_width="32dp"
+                        android:layout_height="32dp"
+                        android:layout_gravity="center"
+                        android:src="@drawable/ic_nav_plus"
+                        app:tint="@android:color/white" />
+                </androidx.cardview.widget.CardView>
 
-        </RelativeLayout>
+            </RelativeLayout>
+        </LinearLayout>
     </LinearLayout>
-</LinearLayout>
+</layout>

@@ -44,6 +44,11 @@ public class BindingAdapters {
         }
     }
 
+    @BindingAdapter("app:tint")
+    public static void setImageViewTint(ImageView imageView, int color) {
+        ImageViewCompat.setImageTintList(imageView, ColorStateList.valueOf(color));
+    }
+
     @BindingAdapter("categories")
     public static void setCategories(androidx.recyclerview.widget.RecyclerView recyclerView, java.util.List<asunfdiez.com.equilibra.models.ExpenseCategory> categories) {
         asunfdiez.com.equilibra.adapters.CategoryAdapter adapter = (asunfdiez.com.equilibra.adapters.CategoryAdapter) recyclerView.getAdapter();
