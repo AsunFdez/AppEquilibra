@@ -70,17 +70,17 @@ public class ProfileViewModel extends AndroidViewModel {
 
     }
     private boolean validateInput(String name, String email, String incomeStr) {
-        if (name.isEmpty()) {
+        if (name == null || name.isEmpty()) {
             errorMessage.setValue(getApplication().getString(R.string.error_name_required));
             return false;
         }
 
-        if (email.isEmpty() || !ValidationHelper.isValidEmail(email)) {
+        if (email == null || email.isEmpty() || !ValidationHelper.isValidEmail(email)) {
             errorMessage.setValue(getApplication().getString(R.string.error_invalid_email));
             return false;
         }
 
-        if (incomeStr.isEmpty()) {
+        if (incomeStr == null || incomeStr.isEmpty()) {
             errorMessage.setValue(getApplication().getString(R.string.error_income_required));
             return false;
         }

@@ -1,6 +1,7 @@
 package asunfdiez.com.equilibra.controllers;
 
 import android.content.Context;
+import android.util.Log;
 
 import androidx.lifecycle.LiveData;
 
@@ -55,6 +56,7 @@ public class UserController {
         Executors.newSingleThreadExecutor().execute(() -> {
             userRepository.updateProfile(user);
             android.util.Log.d("User Controller updateUser", user.toString());
+            setDummyData(user); //solo para probar funciones concretas
         });
     }
 
@@ -176,6 +178,14 @@ public class UserController {
     public UserProfile validateCredentials(String email, String password) {
         // TODO: Implementar validación real con base de datos
         return null;
+    }
+
+
+    public void setDummyData(UserProfile user) {
+        if (user != null && user.getName() != null && user.getName().equals("Dummy") ){
+            Log.d("User Controller setDummyData", "Setting dummy data");
+            AppDatabase.dummyData();
+        }
     }
 
 

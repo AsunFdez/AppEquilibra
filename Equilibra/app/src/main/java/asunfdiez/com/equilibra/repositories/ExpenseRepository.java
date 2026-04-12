@@ -88,6 +88,13 @@ public class ExpenseRepository {
     }
 
     /**
+     * Obtiene los gastos en un rango de fechas
+     */
+    public List<Expense> getExpensesInRange(long startTime, long endTime) {
+        return expenseDao.getExpensesInRange(startTime, endTime);
+    }
+
+    /**
      * Obtiene todos los gastos del mes actual
      */
     public List<Expense> getExpensesThisMonth() {
@@ -454,8 +461,77 @@ public class ExpenseRepository {
         return percentage >= 10;
     }
 
-    public List<Expense> getExpensesInRange(long startTime, long endTime) {
-        return expenseDao.getExpensesInRange(startTime, endTime);
+    /**
+     * Obtiene el total de ingresos en un rango
+     */
+    public double getTotalIncomeInRange(long start, long end) {
+        Double total = expenseDao.getTotalInRange(Constants.TYPE_INCOME, start, end);
+        return total != null ? total : 0.0;
+    }
+
+    /**
+     * Obtiene el total de gastos en un rango
+     */
+    public double getTotalExpensesInRange(long start, long end) {
+        Double total = expenseDao.getTotalInRange(Constants.TYPE_EXPENSE, start, end);
+        return total != null ? total : 0.0;
+    }
+
+    /**
+     * Obtiene el análisis por categoría (Top N) en un rango
+     */
+    public List<CategoryAnalysis> getTopCategoriesAnalysis(long start, long end, int limit) {
+        return expenseDao.getTopCategoryAnalysisInRange(Constants.TYPE_EXPENSE, start, end, limit);
+    }
+
+    /**
+     * Obtiene los gastos agrupados por día para la semana actual
+     */
+    public double[] getWeeklyExpenses() {
+        double[] weeklyData = new double[7];
+        Calendar cal = Calendar.getInstance();
+        cal.setFirstDayOfWeek(Calendar.MONDAY);
+        cal.set(Calendar.DAY_OF_WEEK, Calendar.MONDAY);
+        cal.set(Calendar.HOUR_OF_DAY, 0);
+        cal.set(Calendar.MINUTE, 0);
+        cal.set(Calendar.SECOND, 0);
+        cal.set(Calendar.MILLISECOND, 0);
+
+        for (int i = 0; i < 7; i++) {
+            long start = cal.getTimeInMillis();
+            cal.add(Calendar.DAY_OF_MONTH, 1);
+            long end = cal.getTimeInMillis() - 1;
+            
+            Double total = expenseDao.getTotalInRange(Constants.TYPE_EXPENSE, start, end);
+            weeklyData[i] = total != null ? total : 0.0;
+        }
+        return weeklyData;
+    }
+
+    /**
+     * Obtiene los gastos agrupados por mes para el año actual (hasta el mes actual)
+     */
+    public double[] getMonthlyExpenses() {
+        double[] monthlyData = new double[12];
+        Calendar cal = Calendar.getInstance();
+        int currentYear = cal.get(Calendar.YEAR);
+        
+        for (int i = 0; i < 12; i++) {
+            cal.set(currentYear, i, 1, 0, 0, 0);
+            cal.set(Calendar.MILLISECOND, 0);
+            long start = cal.getTimeInMillis();
+            
+            cal.set(Calendar.DAY_OF_MONTH, cal.getActualMaximum(Calendar.DAY_OF_MONTH));
+            cal.set(Calendar.HOUR_OF_DAY, 23);
+            cal.set(Calendar.MINUTE, 59);
+            cal.set(Calendar.SECOND, 59);
+            cal.set(Calendar.MILLISECOND, 999);
+            long end = cal.getTimeInMillis();
+
+            Double total = expenseDao.getTotalInRange(Constants.TYPE_EXPENSE, start, end);
+            monthlyData[i] = total != null ? total : 0.0;
+        }
+        return monthlyData;
     }
 
 

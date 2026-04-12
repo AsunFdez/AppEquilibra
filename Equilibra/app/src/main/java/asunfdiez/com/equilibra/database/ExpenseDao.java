@@ -57,10 +57,15 @@ public interface ExpenseDao {
             "COUNT(*) as count " +
             "FROM " + Constants.TABLE_EXPENSES +
             " WHERE " + Constants.COLUMN_EXPENSE_TYPE + " = :type AND " +
-            Constants.COLUMN_EXPENSE_TIMESTAMP + " >= :startTime " +
+            Constants.COLUMN_EXPENSE_TIMESTAMP + " BETWEEN :startTime AND :endTime " +
             "GROUP BY " + Constants.COLUMN_EXPENSE_CATEGORY +
-            " ORDER BY amount DESC")
-    List<CategoryAnalysis> getCategoryAnalysisSince(String type, long startTime);
+            " ORDER BY amount DESC LIMIT :limit")
+    List<CategoryAnalysis> getTopCategoryAnalysisInRange(String type, long startTime, long endTime, int limit);
+
+    @Query("SELECT SUM(" + Constants.COLUMN_EXPENSE_AMOUNT + ") FROM " + Constants.TABLE_EXPENSES +
+            " WHERE " + Constants.COLUMN_EXPENSE_TYPE + " = :type AND " +
+            Constants.COLUMN_EXPENSE_TIMESTAMP + " BETWEEN :startTime AND :endTime")
+    Double getTotalInRange(String type, long startTime, long endTime);
 
     @Query("SELECT SUM(" + Constants.COLUMN_EXPENSE_AMOUNT + ") FROM " + Constants.TABLE_EXPENSES +
             " WHERE " + Constants.COLUMN_EXPENSE_TYPE + " = :type AND " +
@@ -79,6 +84,16 @@ public interface ExpenseDao {
             " WHERE " + Constants.COLUMN_EXPENSE_CATEGORY + " = :category AND " +
             Constants.COLUMN_EXPENSE_TIMESTAMP + " BETWEEN :startTime AND :endTime")
     Double getCategoryTotalInRange(String category, long startTime, long endTime);
+
+    @Query("SELECT " + Constants.COLUMN_EXPENSE_CATEGORY + ", " +
+            "SUM(" + Constants.COLUMN_EXPENSE_AMOUNT + ") as amount, " +
+            "COUNT(*) as count " +
+            "FROM " + Constants.TABLE_EXPENSES +
+            " WHERE " + Constants.COLUMN_EXPENSE_TYPE + " = :type AND " +
+            Constants.COLUMN_EXPENSE_TIMESTAMP + " >= :startTime " +
+            "GROUP BY " + Constants.COLUMN_EXPENSE_CATEGORY +
+            " ORDER BY amount DESC")
+    List<CategoryAnalysis> getCategoryAnalysisSince(String type, long startTime);
 
     /**
      * Cuenta cuántas veces se ha gastado en una categoría desde un timestamp dado

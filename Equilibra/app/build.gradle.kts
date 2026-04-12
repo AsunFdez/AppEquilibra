@@ -57,6 +57,9 @@ dependencies {
     implementation(libs.lifecycle.common.java8)
     implementation(libs.lifecycle.runtime)
 
+    // MPAndroidChart
+    implementation("com.github.PhilJay:MPAndroidChart:v3.1.0")
+
     //Room para SQLite
     implementation("androidx.room:room-runtime:2.8.4")
     annotationProcessor("androidx.room:room-compiler:2.8.4")

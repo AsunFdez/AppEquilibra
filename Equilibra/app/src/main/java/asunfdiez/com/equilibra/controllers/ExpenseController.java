@@ -50,6 +50,26 @@ public class ExpenseController {
         return expenseRepository.getExpensesLastNDays(days);
     }
 
+    public double getTotalIncomeInRange(long start, long end) {
+        return expenseRepository.getTotalIncomeInRange(start, end);
+    }
+
+    public double getTotalExpensesInRange(long start, long end) {
+        return expenseRepository.getTotalExpensesInRange(start, end);
+    }
+
+    public List<CategoryAnalysis> getTopCategoriesAnalysis(long start, long end, int limit) {
+        return expenseRepository.getTopCategoriesAnalysis(start, end, limit);
+    }
+
+    public double[] getWeeklyExpenses() {
+        return expenseRepository.getWeeklyExpenses();
+    }
+
+    public double[] getMonthlyExpenses() {
+        return expenseRepository.getMonthlyExpenses();
+    }
+
     public boolean hasExpenses() {
         return expenseRepository.getExpenseCount() > 0;
     }

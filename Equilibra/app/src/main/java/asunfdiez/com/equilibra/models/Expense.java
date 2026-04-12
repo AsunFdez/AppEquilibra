@@ -1,8 +1,13 @@
 package asunfdiez.com.equilibra.models;
 
+import android.icu.text.SimpleDateFormat;
+import android.util.Log;
+
 import androidx.annotation.NonNull;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
+
+import java.text.ParseException;
 
 import asunfdiez.com.equilibra.utils.Constants;
 
@@ -28,6 +33,23 @@ public class Expense {
 
     // Constructor vacío requerido por Room si hay otros constructores
     public Expense() {}
+
+    public Expense(String type, double amount, String category, String description, String date)  {
+        this.type = type;
+        this.amount = amount;
+        this.category = category;
+        this.description = description;
+        this.date = date;
+        SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
+        java.util.Date parsedDate = null;
+        try {
+            parsedDate = dateFormat.parse(date);
+            this.timestamp = parsedDate.getTime();
+        } catch (ParseException e) {
+            Log.e("Expense", "Error al parsear la fecha: " + e.getMessage());
+        }
+
+    }
 
     public long getId() {
         return id;
