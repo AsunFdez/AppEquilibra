@@ -59,7 +59,7 @@ public class AnalysisActivity extends AppCompatActivity implements BottomNavigat
         setupBottomNavigation();
 
         setupUI();
-        observeViewModel();
+        setObservers();
     }
 
     private void setupUI() {
@@ -75,7 +75,7 @@ public class AnalysisActivity extends AppCompatActivity implements BottomNavigat
         setupBarChart();
     }
 
-    private void observeViewModel() {
+    private void setObservers() {
         viewModel.getIsWeekly().observe(this, isWeekly -> {
             updatePeriodLabels(isWeekly);
         });

@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+        <import type="android.view.View" />
+        <variable
+            name="achievement"
+            type="asunfdiez.com.equilibra.models.Achievement" />
+    </data>
+
+    <com.google.android.material.card.MaterialCardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="8dp"
+        app:cardCornerRadius="24dp"
+        app:cardElevation="2dp"
+        app:strokeWidth="0dp"
+        android:alpha="@{achievement.unlocked ? 1.0f : 0.6f}">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:orientation="vertical"
+                android:padding="20dp"
+                android:background="@{achievement.unlocked ? @android:color/white : @color/achievement_locked_bg}">
+
+                <!-- Icono Circular -->
+                <FrameLayout
+                    android:id="@+id/iconBackground"
+                    android:layout_width="70dp"
+                    android:layout_height="70dp"
+                    android:background="@drawable/bg_circle_green_light"
+                    app:customBackgroundTint="@{achievement.categoryColor}">
+
+                    <ImageView
+                        android:id="@+id/ivAchievementIcon"
+                        android:layout_width="32dp"
+                        android:layout_height="32dp"
+                        android:layout_gravity="center"
+                        app:imageResource="@{achievement.iconRes}"
+                        app:tint="@android:color/white"
+                        />
+                </FrameLayout>
+
+                <TextView
+                    android:id="@+id/tvAchievementTitle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    android:text="@{achievement.title}"
+                    android:textColor="@color/text_primary"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    android:textAlignment="center"
+                    tools:text="Primera vez" />
+
+                <TextView
+                    android:id="@+id/tvAchievementDescription"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:text="@{achievement.description}"
+                    android:textColor="@color/text_secondary"
+                    android:textSize="12sp"
+                    android:textAlignment="center"
+                    android:lineSpacingExtra="2dp"
+                    tools:text="Primer gasto\nregistrado" />
+
+                <TextView
+                    android:id="@+id/tvUnlockedDate"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
+                    android:textSize="10sp"
+                    android:textColor="@color/text_secondary"
+                    android:visibility="gone"
+                    tools:visibility="visible"
+                    tools:text="Desbloqueado el 20 May 2024"/>
+
+                <!-- Badge de Estado -->
+                <com.google.android.material.chip.Chip
+                    android:layout_width="wrap_content"
+                    android:layout_height="32dp"
+                    android:layout_marginTop="16dp"
+                    android:clickable="false"
+                    android:text="@{achievement.unlocked ? @string/status_unlocked : @string/status_locked}"
+                    android:textColor="@{achievement.unlocked ? @color/success : @color/text_secondary}"
+                    app:chipBackgroundColor="@{achievement.unlocked ? @color/primary_lighter : @color/gray_500}"
+                    app:chipIcon="@{achievement.unlocked ? @drawable/ic_check_small : @drawable/ic_achievement_locked}"
+                    app:chipIconSize="14dp"
+                    app:chipIconTint="@{achievement.unlocked ? @color/text_primary : @color/text_secondary}"
+                    app:shapeAppearanceOverlay="@style/ShapeAppearance.MaterialComponents.SmallComponent"
+                    tools:text="Desbloqueado" />
+
+                <TextView
+                    android:id="@+id/tvPoints"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
+                    android:text="@{String.valueOf(achievement.points)}"
+                    android:textColor="@color/primary"
+                    android:textStyle="bold"
+                    android:visibility="gone"/>
+
+            </LinearLayout>
+
+            <!-- Locked Overlay -->
+            <View
+                android:id="@+id/lockedOverlay"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="#22000000"
+                android:visibility="@{achievement.unlocked ? View.GONE : View.VISIBLE}"/>
+
+            <TextView
+                android:id="@+id/tvNewBadge"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:layout_margin="12dp"
+                android:background="@color/accent"
+                android:paddingHorizontal="8dp"
+                android:paddingVertical="4dp"
+                android:text="NUEVO"
+                android:textColor="@android:color/white"
+                android:textSize="10sp"
+                android:textStyle="bold"
+                android:visibility="gone"/>
+
+        </RelativeLayout>
+    </com.google.android.material.card.MaterialCardView>
+</layout>

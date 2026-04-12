@@ -121,10 +121,7 @@ public class OnboardingViewModel extends AndroidViewModel {
 
             // Notificar al LiveData para que la UI se entere
             savingGoal.setValue(currentGoal);
-
-            Executors.newSingleThreadExecutor().execute(() -> {
-                repository.saveSavingGoal(currentGoal);
-            });
+            repository.saveSavingGoal(currentGoal, null);
         }
         android.util.Log.d("OnboardingViewModel", "Saving goal set: " + goal + " Months: " + currentGoal.getMonthsRemaining());
     }

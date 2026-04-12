@@ -17,8 +17,8 @@
     <color name="gray_100">#F3F4F6</color>
 
     <!-- Background Colors -->
-    <color name="background_primary">#F5F5F5</color>
-    <color name="background_secondary">#FFFFFF</color>
+    <color name="background_primary">#F3F7ED</color>
+    <color name="background_secondary">#E6EFF5</color>
     <color name="background_card">#FFFFFF</color>
     <color name="background_light">#F9FAFB</color>
     <color name="tip_card_bg">#D5F4E6</color>
@@ -62,6 +62,7 @@
     <color name="text_primary">#1E2939</color>
     <color name="text_secondary">#4A5565</color>
     <color name="border_gray">#E5E7EB</color>
+    <color name="text_hint">#BDBDBD</color>
 
 
     <!-- Estados -->
@@ -100,6 +101,7 @@
     <!-- Backgrounds -->
     <color name="background">#F5F6FA</color>
     <color name="backgroundCard">#FFFFFF</color>
+    <color name="achievement_locked_bg">#F0F2F5</color>
 
     <!-- Textos (alias para compatibilidad) -->
     <color name="textPrimary">#2C3E50</color>

@@ -21,6 +21,10 @@ public class AnalysisViewModel extends AndroidViewModel {
     private final MutableLiveData<AnalysisState> analysisState = new MutableLiveData<>();
     private final MutableLiveData<Boolean> isWeekly = new MutableLiveData<>(true);
 
+    private final MutableLiveData<Boolean> pieChartData = new MutableLiveData<>(false);
+    private final MutableLiveData<Boolean> barChartData = new MutableLiveData<>(false);
+
+
     public AnalysisViewModel(@NonNull Application application) {
         super(application);
         // Nota: En un futuro, el Controller debería ser reemplazado por un Repository según agents.md
@@ -35,6 +39,15 @@ public class AnalysisViewModel extends AndroidViewModel {
     public LiveData<Boolean> getIsWeekly() {
         return isWeekly;
     }
+
+    public LiveData<Boolean> getPieChartData() {
+        return pieChartData;
+    }
+
+    public LiveData<Boolean> getBarChartData() {
+        return barChartData;
+    }
+
 
     public void setPeriod(boolean weekly) {
         if (this.isWeekly.getValue() != null && this.isWeekly.getValue() != weekly) {
@@ -65,7 +78,10 @@ public class AnalysisViewModel extends AndroidViewModel {
             double savings = Math.max(0, totalIncome - totalExpenses);
 
             List<CategoryAnalysis> pieEntries = expenseController.getTopCategoriesAnalysis(start, end, 5);
+            pieChartData.postValue(!pieEntries.isEmpty());
+
             double[] barValues = weekly ? expenseController.getWeeklyExpenses() : expenseController.getMonthlyExpenses();
+            barChartData.postValue(barValues.length != 0);
 
             analysisState.postValue(new AnalysisState(totalExpenses, totalIncome, savings, pieEntries, barValues));
         });

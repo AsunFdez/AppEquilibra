@@ -73,21 +73,13 @@
             </LinearLayout>
 
             <!-- Arrow -->
-            <TextView
-                android:id="@+id/cardArrow"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="→"
-                android:textColor="@color/accent"
-                android:textSize="24sp"
-                android:visibility="gone" />
 
             <ImageView
                 android:id="@+id/cardRightIcon"
                 android:layout_width="24dp"
                 android:layout_height="24dp"
-                android:src="@drawable/ic_nav_plus"
-                app:tint="@color/gray_400"
+                android:src="@drawable/ic_nav_chevron_right"
+                app:tint="@color/text_hint"
                 android:visibility="gone" />
 
         </LinearLayout>

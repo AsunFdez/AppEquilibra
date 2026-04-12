@@ -45,11 +45,16 @@ public class MainActivityViewModel extends AndroidViewModel {
         // Obtenemos el flujo de datos (No el valor estático)
         userProfile = userController.getCurrentUser();
 
-        userController.checkAndResetWeeklyProgress();
-        userController.incrementDayCount();
-
-        // IMPORTANTE: Observamos el LiveData de forma segura
-        userProfile.observeForever(profileObserver);
+        // Usamos un observador temporal para las tareas de inicio que requieren el perfil
+        userProfile.observeForever(new Observer<UserProfile>() {
+            @Override
+            public void onChanged(UserProfile profile) {
+                if (profile != null) {
+                    userController.checkAndResetWeeklyProgress();
+                    userController.incrementDayCount();
+                }
+            }
+        });
     }
 
     // Getters públicos (Solo lectura)

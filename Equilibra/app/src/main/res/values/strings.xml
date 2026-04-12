@@ -3,6 +3,10 @@
     <string name="app_name">Equilibra</string>
     <string name="leyenda">Finanzas con Bienestar</string>
 
+    <string name="splash_loading_profile">Cargando perfil de usuario…</string>
+    <string name="splash_waiting_user">Esperando perfil de usuario...</string>
+    <string name="splash_user_loaded">Bienvenido de nuevo.</string>
+
     <string name="money_bag_emoji">💰</string>
     <string name="stars_emoji">✨</string>
     <string name="goal_emoji">🎯</string>
@@ -97,6 +101,7 @@
     <string name="insight_title">Insight financiero</string>
     <string name="alert_title">Alerta importante</string>
     <string name="wellbeing_recover_balance_message">Enfoquémonos en recuperar el equilibrio 🌱</string>
+    <string name="balance">Balance disponible</string>
 
 
 </resources>

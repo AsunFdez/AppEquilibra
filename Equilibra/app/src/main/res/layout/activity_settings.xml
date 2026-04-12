@@ -1,10 +1,206 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<!--
+    Layout para SettingsActivity (MVVM + Data Binding)
+    Pantalla principal de configuración
+-->
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/main"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context=".activities.SettingsActivity">
+    xmlns:tools="http://schemas.android.com/tools">
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+    <data>
+        <variable
+            name="viewModel"
+            type="asunfdiez.com.equilibra.viewmodels.SettingsViewModel" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/background_light"
+        android:clipChildren="false">
+
+        <!-- App Bar -->
+        <com.google.android.material.appbar.AppBarLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/primary">
+
+            <androidx.appcompat.widget.Toolbar
+                android:id="@+id/toolbar"
+                android:layout_width="match_parent"
+                android:layout_height="?attr/actionBarSize"
+                app:title="@string/settings_title"
+                app:titleTextColor="@android:color/white"
+                app:navigationIcon="@drawable/ic_arrow_back" />
+
+        </com.google.android.material.appbar.AppBarLayout>
+
+        <!-- Scrollable Content -->
+        <androidx.core.widget.NestedScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginTop="16dp"
+            android:id="@+id/contentScroll">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="16dp">
+
+                <!-- Sección: Cuenta -->
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/section_account"
+                    android:textStyle="bold"
+                    android:textSize="14sp"
+                    android:textColor="@color/primary"
+                    android:layout_marginBottom="8dp"
+                    android:layout_marginTop="8dp" />
+
+                <!-- Card: Perfil -->
+                <asunfdiez.com.equilibra.views.FeatureCard
+                    android:id="@+id/cardProfile"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="8dp"
+                    android:clickable="true"
+                    android:focusable="true"
+                    app:cardBackgroundColor="@color/primary_lightest"
+                    app:cardIconCircle="@drawable/circle_background_white"
+                    app:cardIcon="@drawable/ic_person"
+                    app:cardIconTint="@color/primary"
+                    app:cardTitle="@string/profile_settings"
+                    app:cardDescription="@string/profile_settings_desc"
+                    app:showRightIcon="true" />
+
+                <!-- Card: Presupuesto -->
+                <asunfdiez.com.equilibra.views.FeatureCard
+                    android:id="@+id/cardBudget"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="8dp"
+                    android:clickable="true"
+                    android:focusable="true"
+                    app:cardBackgroundColor="@color/primary_lightest"
+                    app:cardIconCircle="@drawable/circle_background_white"
+                    app:cardIcon="@drawable/ic_wallet"
+                    app:cardIconTint="@color/primary"
+                    app:cardTitle="@string/budget_settings"
+                    app:cardDescription="@string/budget_settings_desc"
+                    app:showRightIcon="true" />
+
+                <!-- Sección: Preferencias -->
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/section_preferences"
+                    android:textStyle="bold"
+                    android:textSize="14sp"
+                    android:textColor="@color/primary"
+                    android:layout_marginBottom="8dp"
+                    android:layout_marginTop="16dp" />
+
+                <!-- Card: Notificaciones -->
+                <asunfdiez.com.equilibra.views.FeatureCard
+                    android:id="@+id/cardNotifications"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="8dp"
+                    android:clickable="true"
+                    android:focusable="true"
+                    app:cardBackgroundColor="@color/background_secondary"
+                    app:cardIconCircle="@drawable/circle_background_white"
+                    app:cardIcon="@drawable/ic_notifications"
+                    app:cardIconTint="@color/secondary"
+                    app:cardTitle="@string/notification_settings"
+                    app:cardDescription="@string/notification_settings_desc"
+                    app:showRightIcon="true" />
+
+                <!-- Card: Apariencia -->
+                <asunfdiez.com.equilibra.views.FeatureCard
+                    android:id="@+id/cardAppearance"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="8dp"
+                    android:clickable="true"
+                    android:focusable="true"
+                    app:cardBackgroundColor="@color/background_secondary"
+                    app:cardIconCircle="@drawable/circle_background_white"
+                    app:cardIcon="@drawable/ic_palette"
+                    app:cardIconTint="@color/secondary"
+                    app:cardTitle="@string/appearance_settings"
+                    app:cardDescription="@string/appearance_settings_desc"
+                    app:showRightIcon="true" />
+
+
+                <!-- Sección: Información -->
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/section_info"
+                    android:textStyle="bold"
+                    android:textSize="14sp"
+                    android:textColor="@color/primary"
+                    android:layout_marginBottom="8dp"
+                    android:layout_marginTop="16dp" />
+
+                <!-- Card: Acerca de -->
+                <asunfdiez.com.equilibra.views.FeatureCard
+                    android:id="@+id/cardAbout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="8dp"
+                    android:clickable="true"
+                    android:focusable="true"
+                    app:cardBackgroundColor="@color/background_accent_light"
+                    app:cardIconCircle="@drawable/circle_background_white"
+                    app:cardIcon="@drawable/ic_info"
+                    app:cardIconTint="@color/accent"
+                    app:cardTitle="@string/about"
+                    app:cardDescription="@string/about_desc"
+                    app:showRightIcon="true" />
+
+                <!-- Sección: Zona Peligrosa -->
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/profile_danger_zone"
+                    android:textSize="14sp"
+                    android:textColor="@color/accent"
+                    android:layout_marginBottom="8dp"
+                    android:layout_marginTop="16dp" />
+
+                <!-- Botón: Limpiar datos -->
+                <com.google.android.material.button.MaterialButton
+                    style="@style/Equilibra.Button.Accent"
+                    android:id="@+id/btnClearData"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/clear_data"
+                    android:layout_marginBottom="8dp" />
+
+                <!-- Botón: Reset App -->
+                <com.google.android.material.button.MaterialButton
+                    style="@style/Equilibra.Button.Accent"
+                    android:id="@+id/btnResetApp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/reset_app"
+                    android:layout_marginBottom="120dp" />
+
+            </LinearLayout>
+
+        </androidx.core.widget.NestedScrollView>
+        <!-- Bottom Navigation -->
+        <include
+            android:id="@+id/bottomNav"
+            layout="@layout/bottom_navigation"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintBottom_toBottomOf="parent" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</layout>

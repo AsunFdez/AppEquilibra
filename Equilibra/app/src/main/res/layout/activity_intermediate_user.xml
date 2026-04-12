@@ -85,8 +85,7 @@
                     app:cardIconCircle="@drawable/circle_accent"
                     app:cardTitle="@string/my_expenses_tile"
                     app:cardDescription="@string/my_expenses_text"
-                    app:showArrow="true"
-                    app:showRightIcon="false" />
+                    app:showRightIcon="true" />
 
 
             </LinearLayout>

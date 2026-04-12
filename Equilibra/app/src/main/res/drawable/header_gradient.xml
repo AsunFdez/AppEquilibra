@@ -1,8 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!-- Gradiente para el header de Achievements -->
 <shape xmlns:android="http://schemas.android.com/apk/res/android">
     <gradient
-        android:type="linear"
-        android:angle="90"
-        android:startColor="@color/primary"
-        android:endColor="#27AE60" />
+        android:angle="135"
+        android:startColor="#2ECC71"
+        android:centerColor="#27AE60"
+        android:endColor="#229954"
+        android:type="linear" />
 </shape>

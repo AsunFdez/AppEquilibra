@@ -60,7 +60,7 @@ public class ProfileViewModel extends AndroidViewModel {
         if (!isValid ) return;
 
         try {
-            userController.updateUser(user);
+            userController.updateUser(user, null);
             // Notificar éxito al hilo principal
             successMessage.postValue(getApplication().getString(R.string.profile_updated_success));
             editMode.postValue(false);
@@ -103,19 +103,19 @@ public class ProfileViewModel extends AndroidViewModel {
         UserProfile user = userProfile.getValue();
         if (user != null && !user.getCurrentView().equals(newView)) {
             user.setCurrentView(newView);
-            userController.updateUser(user);
+            userController.updateUser(user, null);
         }
     }
 
     public void deleteAccount() {
         try {
-            userController.deleteCurrentUser();
-            accountDeleted.postValue(true);
-            editMode.postValue(false);
+            userController.deleteCurrentUser(() -> {
+                accountDeleted.postValue(true);
+                editMode.postValue(false);
+            });
         } catch (Exception e) {
             errorMessage.postValue(getApplication().getString(R.string.error_deleting_account));
         }
-
     }
 
     public void handleBackPress(Runnable onFinish) {

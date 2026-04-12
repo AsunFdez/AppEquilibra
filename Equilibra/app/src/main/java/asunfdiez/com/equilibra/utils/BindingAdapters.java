@@ -2,6 +2,7 @@ package asunfdiez.com.equilibra.utils;
 
 import android.content.res.ColorStateList;
 import android.graphics.Color;
+import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -44,7 +45,14 @@ public class BindingAdapters {
         }
     }
 
-    @BindingAdapter("app:tint")
+    @BindingAdapter("customBackgroundTint")
+    public static void setCustomBackgroundTint(View view, int color) {
+        if (color != 0) {
+            view.setBackgroundTintList(ColorStateList.valueOf(color));
+        }
+    }
+
+    @BindingAdapter("tint")
     public static void setImageViewTint(ImageView imageView, int color) {
         ImageViewCompat.setImageTintList(imageView, ColorStateList.valueOf(color));
     }

@@ -12,9 +12,20 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Equilibra">
         <activity
+            android:name=".activities.AboutActivity"
+            android:exported="false" />
+        <activity
+            android:name=".activities.AppearanceSettingsActivity"
+            android:exported="false" />
+        <activity
+            android:name=".activities.NotificationSettingsActivity"
+            android:exported="false" />
+        <activity
+            android:name=".activities.BudgetSettingsActivity"
+            android:exported="false" />
+        <activity
             android:name=".activities.AnalysisActivity"
-            android:exported="false"
-            />
+            android:exported="false" />
         <activity
             android:name=".activities.SoftInterventionActivity"
             android:exported="false" />

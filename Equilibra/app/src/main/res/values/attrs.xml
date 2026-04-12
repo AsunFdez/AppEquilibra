@@ -9,7 +9,6 @@
         <attr name="cardTitle" format="string" />
         <attr name="cardDescription" format="string" />
 
-        <attr name="showArrow" format="boolean" />
         <attr name="showRightIcon" format="boolean" />
         <attr name="cardRightIcon" format="reference" />
 

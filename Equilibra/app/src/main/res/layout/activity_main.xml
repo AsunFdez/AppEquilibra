@@ -74,7 +74,6 @@
                     app:cardIcon="@drawable/ic_fea_lightbulb"
                     app:cardTitle='@{advice != null ? advice.title : @string/tip_title_welcome}'
                     app:cardDescription='@{advice != null ? advice.description : @string/tip_desc_welcome}'
-                    app:showArrow="false"
                     app:showRightIcon="false" />
 
                 <!-- Quick Action Card -->
@@ -101,7 +100,6 @@
                     app:cardIconTint="@color/secondary"
                     app:cardTitle="@string/next_goal_title"
                     app:cardDescription="@string/next_goal_1"
-                    app:showArrow="false"
                     app:showRightIcon="false" />
 
                 <!-- Ver Todos los Gastos Card -->
@@ -118,8 +116,7 @@
                     app:cardIconCircle="@drawable/circle_accent"
                     app:cardTitle="@string/my_expenses_tile"
                     app:cardDescription="@string/my_expenses_text"
-                    app:showArrow="true"
-                    app:showRightIcon="false" />
+                    app:showRightIcon="true" />
 
 
             </LinearLayout>

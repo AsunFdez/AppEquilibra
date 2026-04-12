@@ -73,7 +73,6 @@ public abstract class AppDatabase extends RoomDatabase {
                     INSTANCE = Room.databaseBuilder(context.getApplicationContext(),
                                     AppDatabase.class, Constants.DATABASE_NAME)
                             .addCallback(sRoomDatabaseCallback)
-                            .fallbackToDestructiveMigration()
                             .build();
                 }
             }
@@ -85,9 +84,7 @@ public abstract class AppDatabase extends RoomDatabase {
         @Override
         public void onCreate(@NonNull SupportSQLiteDatabase db) {
             super.onCreate(db);
-
             initialConfiguration();
-
         }
     };
 
@@ -115,7 +112,7 @@ public abstract class AppDatabase extends RoomDatabase {
     /**
      * Inserta las categorías por defecto en la base de datos
      */
-    private static void insertInitialCategories() {
+    public static void insertInitialCategories() {
         ExpenseCategoryDao dao = INSTANCE.expenseCategoryDao();
         List<ExpenseCategory> categories = new ArrayList<>();
 
@@ -140,25 +137,145 @@ public abstract class AppDatabase extends RoomDatabase {
     /**
      * Inserta los logros iniciales en la base de datos
      */
-    private static void insertInitialAchievements() {
+    public static void insertInitialAchievements() {
         List<Achievement> achievements = new ArrayList<>();
         AchievementDao dao = INSTANCE.achievementDao();
 
-        // Logros de inicio
-        achievements.add(new Achievement(mContext.getString(R.string.firs_step_title), mContext.getString(R.string.first_step_description), 10, "ic_first_step", false));
-        achievements.add(new Achievement(mContext.getString(R.string.constant_title), mContext.getString(R.string.constant_description), 20, "ic_constant", false));
-        achievements.add(new Achievement(mContext.getString(R.string.saver_title), mContext.getString(R.string.saver_description), 50, "ic_saver", false));
-        achievements.add(new Achievement(mContext.getString(R.string.disciplined_title), mContext.getString(R.string.disciplined_description), 75, "ic_disciplined", false));
-        achievements.add(new Achievement(mContext.getString(R.string.master_title), mContext.getString(R.string.master_description), 100, "ic_master", false));
+        // Logros de registro de gasto
+        achievements.add(new Achievement(
+                mContext.getString(R.string.first_step_title),
+                mContext.getString(R.string.first_step_description),
+                10, Constants.ACHIEVEMENT_FIRST_EXPENSE,
+                false,
+                R.color.primary,
+                R.drawable.ic_achievement_first_step));
+        achievements.add(new Achievement(
+                mContext.getString(R.string.beginner_title),
+                mContext.getString(R.string.beginner_description),
+                10,
+                Constants.ACHIEVEMENT_10_EXPENSES,
+                false,
+                R.color.secondary,
+                R.drawable.ic_achievement_beginner));
+        achievements.add(new Achievement(
+                mContext.getString(R.string.constant_title),
+                mContext.getString(R.string.constant_description),
+                20, Constants.ACHIEVEMENT_50_EXPENSES,
+                false,
+                R.color.accent,
+                R.drawable.ic_achievement_consistent));
+        achievements.add(new Achievement(
+                mContext.getString(R.string.centurion_title),
+                mContext.getString(R.string.centurion_description),
+                50, Constants.ACHIEVEMENT_100_EXPENSES,
+                false,
+                R.color.primary,
+                R.drawable.ic_achievement_centurion));
+        achievements.add(new Achievement(
+                mContext.getString(R.string.legend_description),
+                mContext.getString(R.string.legend_description),
+                50,
+                Constants.ACHIEVEMENT_500_EXPENSES,
+                false,
+                R.color.accent,
+                R.drawable.ic_achievement_legend));
+
+        //Logros por días seguidos
+        achievements.add(new Achievement(
+                mContext.getString(R.string.one_week_title),
+                mContext.getString(R.string.one_week_description),
+                30,
+                Constants.ACHIEVEMENT_WEEK_STREAK,
+                false,
+                R.color.primary,
+                R.drawable.ic_achievement_week));
+
+        achievements.add(new Achievement(
+                mContext.getString(R.string.one_week_title),
+                mContext.getString(R.string.one_week_description),
+                100,
+                Constants.ACHIEVEMENT_MONTH_STREAK,
+                false,
+                R.color.secondary,
+                R.drawable.ic_achievement_month));
+
+        achievements.add(new Achievement(
+                mContext.getString(R.string.hundred_days_title),
+                mContext.getString(R.string.hundred_days_description),
+                300,
+                Constants.ACHIEVEMENT_100_DAYS_STREAK,
+                false,
+                R.color.accent,
+                R.drawable.ic_achievement_unstoppable));
+
+        // Presupuesto
+        achievements.add(new Achievement(
+                mContext.getString(R.string.under_budget_week_title),
+                mContext.getString(R.string.under_budget_week_description),
+                40,
+                Constants.ACHIEVEMENT_UNDER_BUDGET_WEEK,
+                false,
+                R.color.primary,
+                R.drawable.ic_achievement_saver_beginner));
+
+        achievements.add(new Achievement(
+                mContext.getString(R.string.under_budget_month_title),
+                mContext.getString(R.string.under_budget_week_description),
+                150,
+                Constants.ACHIEVEMENT_UNDER_BUDGET_MONTH,
+                false,
+                R.color.secondary,
+                R.drawable.ic_achievement_saver_advanced));
 
         // Logros de categorías
-        achievements.add(new Achievement(mContext.getString(R.string.gourmet_title), mContext.getString(R.string.gourmet_description), 30, "ic_food", false));
-        achievements.add(new Achievement(mContext.getString(R.string.transport_title), mContext.getString(R.string.transport_description), 30, "ic_transport", false));
-        achievements.add(new Achievement(mContext.getString(R.string.fun_title), mContext.getString(R.string.fun_description), 30, "ic_fun", false));
+        achievements.add(new Achievement(
+                mContext.getString(R.string.category_explorer_title),
+                mContext.getString(R.string.category_explorer_description),
+                25,
+                Constants.ACHIEVEMENT_CATEGORY_EXPLORER,
+                false,
+                R.color.primary,
+                R.drawable.ic_achievement_explorer));
 
-        // Logros especiales
-        achievements.add(new Achievement(mContext.getString(R.string.goal_title), mContext.getString(R.string.goal_description), 100, "ic_goal", false));
-        achievements.add(new Achievement(mContext.getString(R.string.expert_title), mContext.getString(R.string.expert_description), 150, "ic_expert", false));
+        achievements.add(new Achievement(
+                mContext.getString(R.string.category_master_title),
+                mContext.getString(R.string.category_master_description),
+                75,
+                Constants.ACHIEVEMENT_CATEGORY_MASTER,
+                false,
+                R.color.secondary,
+                R.drawable.ic_achievement_star));
+
+        // Ahorro
+        achievements.add(new Achievement(
+                mContext.getString(R.string.saver_50_title),
+                mContext.getString(R.string.saver_50_description),
+                50,
+                Constants.ACHIEVEMENT_SAVER_50,
+                false,
+                R.color.primary,
+                R.drawable.ic_achievement_saver_beginner
+        ));
+
+        achievements.add(new Achievement(
+                mContext.getString(R.string.saver_100_title),
+                mContext.getString(R.string.saver_100_description),
+                100,
+                Constants.ACHIEVEMENT_SAVER_100,
+                false,
+                R.color.secondary,
+                R.drawable.ic_achievement_saver_advanced
+        ));
+
+        achievements.add(new Achievement(
+                mContext.getString(R.string.saver_500_title),
+                mContext.getString(R.string.saver_500_description),
+                250,
+                Constants.ACHIEVEMENT_SAVER_500,
+                false,
+                R.color.accent,
+                R.drawable.ic_achievement_saver_master
+        ));
 
         dao.insertListOfAchievements(achievements);
     }
@@ -166,7 +283,7 @@ public abstract class AppDatabase extends RoomDatabase {
     /**
      * Inserta las alternativas iniciales en la base de datos
      */
-    private static void insertInitialAlternatives() {
+    public static void insertInitialAlternatives() {
         AlternativeDao dao = INSTANCE.alternativeDao();
         List<Alternative> alternatives = new ArrayList<>();
 
@@ -193,7 +310,6 @@ public abstract class AppDatabase extends RoomDatabase {
 
         dao.insertListOfAlternatives(alternatives);
     }
-
 
     public static void dummyData() {
         ExpenseDao dao = INSTANCE.expenseDao();

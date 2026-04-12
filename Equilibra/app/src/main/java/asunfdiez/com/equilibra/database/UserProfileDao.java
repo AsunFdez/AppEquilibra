@@ -16,6 +16,8 @@ public interface UserProfileDao {
 
     @Query("SELECT * FROM "+Constants.TABLE_USER_PROFILE+" LIMIT 1")
     LiveData<UserProfile> getUserProfile();
+    @Query("SELECT "+Constants.COLUMN_USER_NAME+" FROM "+Constants.TABLE_USER_PROFILE+" LIMIT 1")
+    LiveData<String>getUserName();
 
     @Query("SELECT * FROM "+Constants.TABLE_USER_PROFILE+" LIMIT 1")
     UserProfile getUserProfileSync();
@@ -32,4 +34,10 @@ public interface UserProfileDao {
     @Query("UPDATE "+Constants.TABLE_USER_PROFILE+" SET "+Constants.COLUMN_USER_DAY_COUNT+" = "+Constants.COLUMN_USER_DAY_COUNT+" + 1")
     void incrementDayCount();
 
+    @Query("SELECT "+Constants.COLUMN_USER_WEEK_PROGRESS+" FROM "+Constants.TABLE_USER_PROFILE+" LIMIT 1")
+    int getWeeksUnderBudget();
+
+
+    @Query("SELECT "+Constants.COLUMN_USER_MONTHLY_INCOME+" FROM "+Constants.TABLE_USER_PROFILE+" LIMIT 1")
+    double getUserMonthlyIncome();
 }

@@ -1,8 +1,11 @@
 package asunfdiez.com.equilibra.controllers;
 
 import android.content.Context;
+import android.os.Handler;
+import android.os.Looper;
 import android.util.Log;
 
+import androidx.annotation.Nullable;
 import androidx.lifecycle.LiveData;
 
 import java.util.Calendar;
@@ -50,35 +53,41 @@ public class UserController {
         return userRepository.getUserProfile();
     }
 
-    public void updateUser(UserProfile user) {
+    public void updateUser(UserProfile user, @Nullable Runnable onComplete) {
         if (user == null) return;
-        // Las operaciones de escritura en Room deben ser asíncronas
-        Executors.newSingleThreadExecutor().execute(() -> {
-            userRepository.updateProfile(user);
-            android.util.Log.d("User Controller updateUser", user.toString());
+        userRepository.updateProfile(user, () -> {
+            android.util.Log.d("UserController", "Perfil guardado: " + user.toString());
             setDummyData(user); //solo para probar funciones concretas
+
+            if (onComplete != null) {
+                onComplete.run();
+            }
         });
+
     }
 
-    public void deleteCurrentUser() {
+    public void deleteCurrentUser(Runnable onComplete) {
         Executors.newSingleThreadExecutor().execute(() -> {
-            // Limpiar Room
-            AppDatabase.getInstance(context).clearAllTables();
-            //  Limpiar SharedPreferences para que SplashActivity detecte que no hay onboarding
-            prefsManager.resetOnboarding();
-            prefsManager.clearAll();
-            AppDatabase.initialConfiguration();
+            AppDatabase database = AppDatabase.getInstance(context);
+            database.clearAllTables();
+            prefsManager.resetAll();
+            // Recrear datos estáticos (categorías, logros, alternativas) de forma síncrona en este hilo de fondo
+            AppDatabase.insertInitialCategories();
+            AppDatabase.insertInitialAchievements();
+            AppDatabase.insertInitialAlternatives();
+
+            if (onComplete != null) {
+                new Handler(Looper.getMainLooper()).post(onComplete);
+            }
         });
     }
     /*
     * Actualiza la vista actual del usuario
     */
     public void setCurrentView(String view) {
-        if (user == null) {
-            return;
-        }
+        if (user == null) return;
         user.setCurrentView(view);
-        userRepository.updateProfile(user);
+        userRepository.updateProfile(user, null);
     }
 
     public boolean checkWellbeing() {
@@ -118,10 +127,10 @@ public class UserController {
 
             int days = (int) (diff / (1000 * 60 * 60 * 24)) + 1;
             if (days > 1) {
-                userRepository.incrementDayCount();
+                userRepository.incrementDayCount(null);
             }
             profile.setLastConnectionTimestamp(System.currentTimeMillis());
-            userRepository.updateProfile(profile);
+            userRepository.updateProfile(profile, null);
         }
         });
     }
@@ -138,7 +147,7 @@ public class UserController {
                     profile.setWeekCount(profile.getWeekCount() + 1);
                     profile.setWeekProgress(0);
                     profile.setLastResetTimestamp(System.currentTimeMillis());
-                    userRepository.updateProfile(profile);
+                    userRepository.updateProfile(profile, null);
                 }
             }
         });

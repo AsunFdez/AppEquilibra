@@ -4,13 +4,17 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
+import android.util.Log;
 import android.view.View;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.ViewModelProvider;
 
+import asunfdiez.com.equilibra.R;
 import asunfdiez.com.equilibra.databinding.ActivitySplashBinding;
 import asunfdiez.com.equilibra.utils.AnimationHelper;
 import asunfdiez.com.equilibra.utils.SharedPrefsManager;
+import asunfdiez.com.equilibra.viewmodels.SplashViewModel;
 
 /*
 * SplashActivity con implementación nativa de animaciones
@@ -22,6 +26,9 @@ public class SplashActivity extends AppCompatActivity {
     private final Handler handler = new Handler(Looper.getMainLooper());
     private SharedPrefsManager prefsManager;
     ActivitySplashBinding binding;
+    private SplashViewModel viewModel;
+    private boolean animationsFinished = false;
+    private boolean userLoaded = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,17 +37,49 @@ public class SplashActivity extends AppCompatActivity {
         setContentView(binding.getRoot());
 
         prefsManager = SharedPrefsManager.getInstance(this);
-
+        viewModel = new ViewModelProvider(this).get(SplashViewModel.class);
         // Hide system UI for full screen
         getWindow().getDecorView().setSystemUiVisibility(
                 View.SYSTEM_UI_FLAG_LAYOUT_STABLE
                         | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
                         | View.SYSTEM_UI_FLAG_FULLSCREEN
         );
-
+        setupObservers();
         startAnimations();
     }
 
+    private void setupObservers() {
+        viewModel.getUserProfile().observe(this, userProfile -> {
+            if (userProfile != null) {
+                userLoaded = true;
+                binding.splashStatus.setText(getString(R.string.splash_user_loaded));
+                checkNavigationReady();
+                Log.d("SplashActivity", "User profile loaded: " + userProfile.toString());
+            } else {
+                Log.w("SplashActivity", "User profile observer emitted null");
+            }
+        });
+    }
+
+    private void checkNavigationReady() {
+        if (!animationsFinished) return;
+
+        boolean onboardingComplete = prefsManager.isOnboardingComplete();
+
+        if (!onboardingComplete) {
+            navigateTo(OnboardingActivity.class);
+            return;
+        }
+
+        if (userLoaded) {
+            navigateTo(MainActivity.class);
+            return;
+        }
+
+        // Sigue esperando el perfil si el onboarding ya está completo
+        binding.splashStatus.setText(R.string.splash_waiting_user);
+        Log.e("SplashActivity", "User profile not loaded yet");
+    }
 
     private void startAnimations() {
         // Background fade in
@@ -64,16 +103,19 @@ public class SplashActivity extends AppCompatActivity {
         AnimationHelper.animateTitle(binding.appTitle, 500, 800);
         AnimationHelper.animateTitle(binding.appSubtitle, 500, 1200);
 
-        navigateAfterDelay(2500);
+        // Al final del delay de animaciones, marcamos como listo
+        handler.postDelayed(() -> {
+            animationsFinished = true;
+            checkNavigationReady();
+        }, 2500); // 2.5 segundos de duración mínima del splash
+
     }
 
-    private void navigateAfterDelay(int delay) {
-        handler.postDelayed(() -> {
-            Intent intent = determineNextScreen();
-            startActivity(intent);
-            AnimationHelper.transitionFade(this);
-            finish();
-        }, delay);
+    private void navigateTo(Class<?> destination) {
+        Intent intent = new Intent(this, destination);
+        startActivity(intent);
+        AnimationHelper.transitionFade(this);
+        finish();
     }
 
     /**

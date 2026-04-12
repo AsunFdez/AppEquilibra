@@ -11,6 +11,8 @@
     <string name="weekly">Semanal</string>
     <string name="monthly">Mensual</string>
     <string name="expenses_by_category">Gastos por categoría</string>
+    <string name="weekly_tendency">Tendencia Semanal</string>
+    <string name="no_data_available">No hay datos disponibles. Registre gastos" </string>
 
 
 

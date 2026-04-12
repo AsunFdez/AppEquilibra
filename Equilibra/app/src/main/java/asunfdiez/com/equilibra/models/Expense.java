@@ -5,6 +5,7 @@ import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.room.Entity;
+import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
 
 import java.text.ParseException;
@@ -34,6 +35,7 @@ public class Expense {
     // Constructor vacío requerido por Room si hay otros constructores
     public Expense() {}
 
+    @Ignore
     public Expense(String type, double amount, String category, String description, String date)  {
         this.type = type;
         this.amount = amount;

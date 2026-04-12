@@ -32,5 +32,11 @@
         <item name="cornerSize">16dp</item>
     </style>
 
+    <style name="CustomChipStyle" parent="Widget.MaterialComponents.Chip.Filter">
+        <item name="chipBackgroundColor">@color/chip_background_selector</item>
+        <item name="android:textColor">@color/chip_text_selector</item>
+        <item name="rippleColor">@color/accent</item>
+    </style>
+
 
 </resources>

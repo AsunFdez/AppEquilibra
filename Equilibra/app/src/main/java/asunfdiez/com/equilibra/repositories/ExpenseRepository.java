@@ -4,7 +4,9 @@ import android.content.Context;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import asunfdiez.com.equilibra.R;
 import asunfdiez.com.equilibra.database.AchievementDao;
@@ -193,7 +195,7 @@ public class ExpenseRepository {
         int dayCount = profile.getDayCount();
         //registrar el primer gasto
         if (expenseCount >= 1) {
-            Achievement achievement = achievementDao.getAchievementByTitle(context.getString(R.string.firs_step_title));
+            Achievement achievement = achievementDao.getAchievementByTitle(context.getString(R.string.first_step_title));
             if (achievement != null && !achievement.isUnlocked()) {
                 achievement.setUnlocked(true);
                 achievementDao.updateAchievement(achievement);
@@ -537,5 +539,73 @@ public class ExpenseRepository {
 
     public void deleteAll() {
         expenseDao.deleteAll();
+    }
+
+    public int getTotalExpenseCount() {
+        return expenseDao.getTotalExpenseCount();
+    }
+
+
+    /**
+     * Calcula cuántas semanas el gasto fue inferior al presupuesto semanal
+     */
+    public int getWeeksUnderBudget() {
+        double monthlyBudget = userProfileDao.getUserMonthlyIncome();
+        double weeklyBudgetLimit = monthlyBudget / 4.0;
+
+        List<Expense> allExpenses = expenseDao.getAllExpenses();
+
+        // Agrupar gastos por Año y Semana
+        Map<String, Double> weeklyTotals = new HashMap<>();
+        Calendar cal = Calendar.getInstance();
+
+        for (Expense e : allExpenses) {
+            cal.setTimeInMillis(e.getTimestamp());
+            String key = cal.get(Calendar.YEAR) + "-" + cal.get(Calendar.WEEK_OF_YEAR);
+            weeklyTotals.put(key, weeklyTotals.getOrDefault(key, 0.0) + e.getAmount());
+        }
+
+        int weeksUnder = 0;
+        for (Double total : weeklyTotals.values()) {
+            if (total < weeklyBudgetLimit) {
+                weeksUnder++;
+            }
+        }
+        return weeksUnder;
+    }
+
+    /**
+     * Calcula el ahorro total acumulado basado en el presupuesto mensual
+     */
+    public double getTotalSavedAmount() {
+        double monthlyBudget = userProfileDao.getUserMonthlyIncome();
+        List<Expense> allExpenses = expenseDao.getAllExpenses();
+
+        // Agrupar por Año y Mes
+        Map<String, Double> monthlyTotals = new HashMap<>();
+        Calendar cal = Calendar.getInstance();
+
+        for (Expense e : allExpenses) {
+            cal.setTimeInMillis(e.getTimestamp());
+            String key = cal.get(Calendar.YEAR) + "-" + cal.get(Calendar.MONTH);
+            monthlyTotals.put(key, monthlyTotals.getOrDefault(key, 0.0) + e.getAmount());
+        }
+
+        double totalSaved = 0;
+        for (Double totalSpent : monthlyTotals.values()) {
+            double saved = monthlyBudget - totalSpent;
+            if (saved > 0) {
+                totalSaved += saved;
+            }
+        }
+        return totalSaved;
+    }
+
+    public double getTotalExpenseAmount() {
+        return expenseDao.getTotalExpenseAmount();
+    }
+
+    public int getUniqueCategoriesCount() {
+        return expenseDao.getUniqueCategoriesCount();
     }
 }

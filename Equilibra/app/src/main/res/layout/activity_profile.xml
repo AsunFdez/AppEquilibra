@@ -139,17 +139,21 @@
                         android:layout_height="wrap_content"
                         android:layout_marginBottom="12dp"
                         app:boxBackgroundColor="@android:color/white"
-                        app:boxStrokeColor="@color/primary"
-                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+                        style="@style/InputField">
 
                         <com.google.android.material.textfield.TextInputEditText
                             android:id="@+id/etName"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:text="@={user.name}"
+                            android:textColor="@color/text_primary"
                             android:hint="@string/profile_name"
                             android:inputType="textPersonName"
-                            android:enabled="@{viewModel.editMode}"/>
+                            android:focusable="@{viewModel.editMode}"
+                            android:focusableInTouchMode="@{viewModel.editMode}"
+                            android:clickable="@{viewModel.editMode}"
+                            android:cursorVisible="@{viewModel.editMode}"
+                            style="@style/InputField.EditText"/>
 
                     </com.google.android.material.textfield.TextInputLayout>
 
@@ -158,17 +162,21 @@
                         android:layout_height="wrap_content"
                         android:layout_marginBottom="12dp"
                         app:boxBackgroundColor="@android:color/white"
-                        app:boxStrokeColor="@color/primary"
-                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+                        style="@style/InputField">
 
                         <com.google.android.material.textfield.TextInputEditText
                             android:id="@+id/etEmail"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:text="@={user.email}"
+                            android:textColor="@color/text_primary"
                             android:hint="@string/profile_email"
                             android:inputType="textEmailAddress"
-                            android:enabled="@{viewModel.editMode}" />
+                            android:focusable="@{viewModel.editMode}"
+                            android:focusableInTouchMode="@{viewModel.editMode}"
+                            android:clickable="@{viewModel.editMode}"
+                            android:cursorVisible="@{viewModel.editMode}"
+                            style="@style/InputField.EditText"/>
 
                     </com.google.android.material.textfield.TextInputLayout>
 
@@ -178,16 +186,21 @@
                         android:layout_marginBottom="12dp"
                         app:boxBackgroundColor="@android:color/white"
                         app:boxStrokeColor="@color/primary"
-                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+                        style="@style/InputField">
 
                         <com.google.android.material.textfield.TextInputEditText
                             android:id="@+id/etPhone"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:text="@={user.phone}"
+                            android:textColor="@color/text_primary"
                             android:hint="@string/profile_phone"
                             android:inputType="phone"
-                            android:enabled="@{viewModel.editMode}" />
+                            android:focusable="@{viewModel.editMode}"
+                            android:focusableInTouchMode="@{viewModel.editMode}"
+                            android:clickable="@{viewModel.editMode}"
+                            android:cursorVisible="@{viewModel.editMode}"
+                            style="@style/InputField.EditText"/>
 
                     </com.google.android.material.textfield.TextInputLayout>
 
@@ -198,16 +211,21 @@
                         app:boxBackgroundColor="@android:color/white"
                         app:boxStrokeColor="@color/primary"
                         app:suffixText="€"
-                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+                        style="@style/InputField">
 
                         <com.google.android.material.textfield.TextInputEditText
                             android:id="@+id/etMonthlyIncome"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             app:etMonthlyIncome ="@={user.monthlyIncome}"
+                            android:textColor="@color/text_primary"
                             android:hint="@string/profile_monthly_income"
                             android:inputType="numberDecimal"
-                            android:enabled="@{viewModel.editMode}" />
+                            android:focusable="@{viewModel.editMode}"
+                            android:focusableInTouchMode="@{viewModel.editMode}"
+                            android:clickable="@{viewModel.editMode}"
+                            android:cursorVisible="@{viewModel.editMode}"
+                            style="@style/InputField.EditText"/>
 
                     </com.google.android.material.textfield.TextInputLayout>
 

@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- ========== SETTINGS ACTIVITY ========== -->
+    <string name="settings_title">Configuración</string>
+    <string name="settings_subtitle">Personaliza tu experiencia</string>
+    <string name="guest_user">Usuario Invitado</string>
+
+    <!-- Secciones -->
+    <string name="section_account">Cuenta</string>
+    <string name="section_preferences">Preferencias</string>
+    <string name="section_info">Información</string>
+    <string name="section_danger_zone">Zona Peligrosa</string>
+    <string name="section_links">Enlaces</string>
+    <string name="section_contact">Contacto</string>
+
+    <!-- Opciones de menú -->
+    <string name="profile_settings">Perfil</string>
+    <string name="profile_settings_desc">Edita tu nombre, email y foto</string>
+    <string name="budget_settings">Presupuestos</string>
+    <string name="budget_settings_desc">Configura tus límites de gasto</string>
+    <string name="notification_settings">Notificaciones</string>
+    <string name="notification_settings_desc">Gestiona alertas y recordatorios</string>
+    <string name="appearance_settings">Apariencia</string>
+    <string name="appearance_settings_desc">Tema, idioma y personalización</string>
+    <string name="about">Acerca de</string>
+    <string name="about_desc">Versión, licencias y soporte</string>
+
+    <!-- Acciones peligrosas -->
+    <string name="clear_data">Limpiar Datos</string>
+    <string name="clear_data_title">¿Limpiar todos los datos?</string>
+    <string name="clear_data_message">Se eliminarán todas las configuraciones, pero se mantendrán los gastos y logros.</string>
+    <string name="data_cleared">Datos limpiados correctamente</string>
+
+    <string name="reset_app">Resetear App</string>
+    <string name="reset_app_title">¿Resetear la aplicación?</string>
+    <string name="reset_app_message">Se eliminarán TODOS los datos incluyendo gastos, logros y configuración. Esta acción NO se puede deshacer.</string>
+    <string name="app_reset">Aplicación reseteada. Reiniciando…</string>
+
+    <string name="clear">Limpiar</string>
+    <string name="reset">Resetear</string>
+
+    <!-- ========== PROFILE SETTINGS ========== -->
+    <string name="personal_info">Información Personal</string>
+    <string name="name">Nombre</string>
+    <string name="email">Email</string>
+    <string name="user_photo">Foto de usuario</string>
+    <string name="user_icon">Icono de usuario</string>
+    <string name="change_photo">Cambiar Foto</string>
+    <string name="take_photo">Tomar Foto</string>
+    <string name="choose_from_gallery">Elegir de Galería</string>
+    <string name="remove_photo">Eliminar Foto</string>
+    <string name="camera_not_available">Cámara no disponible</string>
+    <string name="error_loading_image">Error al cargar imagen</string>
+    <string name="profile_info_message">Tu información se guarda de forma local y privada en tu dispositivo</string>
+
+    <!-- ========== BUDGET SETTINGS ========== -->
+    <string name="budget_enabled">Presupuesto Activo</string>
+    <string name="budget_enabled_desc">Activar control de presupuesto</string>
+    <string name="budget_amounts">Límites de Presupuesto</string>
+    <string name="monthly_budget">Presupuesto Mensual</string>
+    <string name="weekly_budget">Presupuesto Semanal</string>
+    <string name="daily_budget">Presupuesto Diario</string>
+    <string name="currency">Moneda</string>
+    <string name="budget_auto_calc_info">El semanal y diario se calculan automáticamente desde el mensual</string>
+    <string name="invalid_monthly_budget">Presupuesto mensual no válido</string>
+    <string name="save">Guardar</string>
+    <string name="saving">Guardando…</string>
+
+    <!-- ========== NOTIFICATION SETTINGS ========== -->
+    <string name="notifications_general">Notificaciones Generales</string>
+    <string name="notifications_general_desc">Activar todas las notificaciones</string>
+    <string name="specific_notifications">Notificaciones Específicas</string>
+    <string name="budget_notifications">Alertas de Presupuesto</string>
+    <string name="budget_notifications_desc">Notificar cuando superes tu presupuesto</string>
+    <string name="achievement_notifications">Notificaciones de Logros</string>
+    <string name="achievement_notifications_desc">Notificar cuando consigas un logro</string>
+    <string name="quick_actions">Acciones Rápidas</string>
+    <string name="enable_all">Activar Todas</string>
+    <string name="disable_all">Desactivar Todas</string>
+
+    <!-- ========== APPEARANCE SETTINGS ========== -->
+    <string name="dark_mode">Modo Oscuro</string>
+    <string name="dark_mode_desc">Tema oscuro para reducir fatiga visual</string>
+    <string name="theme">Tema</string>
+    <string name="theme_light">Tema Claro</string>
+    <string name="theme_dark">Tema Oscuro</string>
+    <string name="theme_auto">Automático (Sistema)</string>
+    <string name="language">Idioma</string>
+    <string name="language_change_info">El idioma se aplicará al reiniciar la app</string>
+    <string name="appearance_tip">Personaliza la apariencia de Equilibra según tus preferencias</string>
+
+    <!-- ========== ABOUT ACTIVITY ========== -->
+    <string name="app_logo">Logo de la aplicación</string>
+    <string name="app_description">Equilibra: Finanzas con Bienestar. Gestiona tus gastos de forma consciente y saludable.</string>
+    <string name="version_format">Versión %1$s (%2$d)</string>
+    <string name="version_unknown">Versión desconocida</string>
+
+    <string name="privacy_policy">Política de Privacidad</string>
+    <string name="terms_conditions">Términos y Condiciones</string>
+    <string name="open_source_licenses">Licencias Open Source</string>
+    <string name="licenses_content">Esta aplicación utiliza las siguientes bibliotecas de código abierto:\n\n• Android Jetpack\n• Material Design Components\n• Room Database\n• LiveData &amp; ViewModel\n\nTodas bajo licencia Apache 2.0</string>
+
+    <string name="support">Soporte</string>
+    <string name="support_email_subject">Soporte Equilibra</string>
+    <string name="send_email">Enviar Email</string>
+    <string name="github">GitHub</string>
+
+    <string name="share_app">Compartir</string>
+    <string name="share_app_message">¡Prueba Equilibra! Una app para gestionar tus finanzas con bienestar: https://equilibra.app</string>
+    <string name="rate_app">Valorar</string>
+
+    <string name="copyright">© 2026 Equilibra Team. Todos los derechos reservados.</string>
+
+
+</resources>

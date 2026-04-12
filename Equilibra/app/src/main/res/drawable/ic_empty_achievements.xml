@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Icono para empty state de achievements -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="120dp"
+    android:height="120dp"
+    android:viewportWidth="120"
+    android:viewportHeight="120">
+
+    <!-- Trofeo vacío -->
+    <path
+        android:fillColor="#BDBDBD"
+        android:pathData="M30,10C27.25,10 25,12.25 25,15v7.5c0,10.25 6.15,19.05 15,22.9V50c0,11.05 8.95,20 20,20s20,-8.95 20,-20v-4.6c8.85,-3.85 15,-12.65 15,-22.9V15c0,-2.75 -2.25,-5 -5,-5h-15v7.5h12.5c-0.85,7.15 -6.65,12.5 -13.75,12.5H60c-8.25,0 -15,-6.75 -15,-15V10H30zM60,80c-9.65,0 -18.4,-3.9 -24.75,-10.25l-5.3,5.3C37.05,82.15 48.4,87.5 60,87.5s22.95,-5.35 30.05,-12.45l-5.3,-5.3C78.4,76.1 69.65,80 60,80zM45,95v5h30v-5H45zM40,105v5h40v-5H40z"/>
+
+    <!-- Círculo de fondo -->
+    <path
+        android:fillColor="#F5F5F5"
+        android:pathData="M60,5C29.1,5 4,30.1 4,61s25.1,56 56,56s56,-25.1 56,-56S90.9,5 60,5zM60,110c-27,0 -49,-22 -49,-49s22,-49 49,-49s49,22 49,49S87,110 60,110z"
+        android:fillAlpha="0.3"/>
+
+</vector>

@@ -11,8 +11,16 @@ public final class Constants {
 
 
     //---- SHARED PREFERENCES KEYS
-
     public static final String PREFS_NAME = "EquilibraPrefs";
+    public static final String PREF_MONTHLY_BUDGET = "monthly_budget";
+    public static final String PREF_WEEKLY_BUDGET = "weekly_budget";
+    public static final String PREF_CURRENCY = "currency";
+    public static final String PREF_NOTIFICATIONS_ENABLED = "notifications_enabled";
+    public static final String PREF_BUDGET_NOTIFICATIONS = "budget_notifications";
+    public static final String PREF_ACHIEVEMENT_NOTIFICATIONS = "achievement_notifications";
+    public static final String PREF_VIEW = "beginner";
+    public static final String PREF_LANGUAGE = "language";
+    public static final String PREF_DARK_MODE = "dark_mode";
 
     // Onboarding
     public static final String KEY_ONBOARDING_COMPLETE = "onboardingComplete";
@@ -88,12 +96,16 @@ public final class Constants {
     // DATABASE CONSTANTS
     // ========================================
     public static final String DATABASE_NAME = "equilibra.db";
-    public static final int DATABASE_VERSION = 1;
+    public static final int DATABASE_VERSION = 2;
 
     //Tabla UserProfile
     public static final String TABLE_USER_PROFILE = "user_profile";
     public static final String COLUMN_USER_WEEK_PROGRESS = "weekProgress";
     public static final String COLUMN_USER_DAY_COUNT = "dayCount";
+    public static final String COLUMN_USER_MONTHLY_INCOME = "monthlyIncome";
+    public static final String COLUMN_USER_NAME = "name";
+
+
 
 
     // Tabla Expenses
@@ -220,6 +232,33 @@ public final class Constants {
     // Umbrales para intervenciones
     public static final double HIGH_EXPENSE_THRESHOLD = 0.8; // 80% del ingreso
     public static final int CONSECUTIVE_HIGH_DAYS = 3; // 3 días seguidos con gastos altos
+
+
+    // ========== ACHIEVEMENT KEYS ==========
+    // Conteo de gastos
+    public static final String ACHIEVEMENT_FIRST_EXPENSE = "first_expense";
+    public static final String ACHIEVEMENT_10_EXPENSES = "10_expenses";
+    public static final String ACHIEVEMENT_50_EXPENSES = "50_expenses";
+    public static final String ACHIEVEMENT_100_EXPENSES = "100_expenses";
+    public static final String ACHIEVEMENT_500_EXPENSES = "500_expenses";
+
+    // Rachas
+    public static final String ACHIEVEMENT_WEEK_STREAK = "week_streak";
+    public static final String ACHIEVEMENT_MONTH_STREAK = "month_streak";
+    public static final String ACHIEVEMENT_100_DAYS_STREAK = "100_days_streak";
+
+    // Presupuesto
+    public static final String ACHIEVEMENT_UNDER_BUDGET_WEEK = "under_budget_week";
+    public static final String ACHIEVEMENT_UNDER_BUDGET_MONTH = "under_budget_month";
+
+    // Categorías
+    public static final String ACHIEVEMENT_CATEGORY_EXPLORER = "category_explorer";
+    public static final String ACHIEVEMENT_CATEGORY_MASTER = "category_master";
+
+    // Ahorro
+    public static final String ACHIEVEMENT_SAVER_50 = "saver_50";
+    public static final String ACHIEVEMENT_SAVER_100 = "saver_100";
+    public static final String ACHIEVEMENT_SAVER_500 = "saver_500";
 
 
 }

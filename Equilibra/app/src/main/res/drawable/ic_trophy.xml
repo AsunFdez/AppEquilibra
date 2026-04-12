@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Icono de trofeo para puntos -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="24dp"
+    android:height="24dp"
+    android:viewportWidth="24"
+    android:viewportHeight="24">
+
+    <path
+        android:fillColor="@android:color/black"
+        android:pathData="M6,2C5.45,2 5,2.45 5,3v1.5c0,2.05 1.23,3.81 3,4.58V10c0,2.21 1.79,4 4,4s4,-1.79 4,-4V9.08c1.77,-0.77 3,-2.53 3,-4.58V3c0,-0.55 -0.45,-1 -1,-1h-3v1.5h2.5c-0.17,1.43 -1.33,2.5 -2.75,2.5H12c-1.65,0 -3,-1.35 -3,-3V2H6zM12,16c-1.93,0 -3.68,-0.78 -4.95,-2.05l-1.06,1.06C7.41,16.43 9.58,17.5 12,17.5s4.59,-1.07 6.01,-2.49l-1.06,-1.06C15.68,15.22 13.93,16 12,16zM9,19v1h6v-1H9zM8,21v1h8v-1H8z"/>
+
+</vector>

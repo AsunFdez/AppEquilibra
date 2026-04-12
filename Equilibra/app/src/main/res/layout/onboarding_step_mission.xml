@@ -29,15 +29,15 @@
 
                 <View
                     android:id="@+id/iconBackground"
-                    android:layout_width="128dp"
-                    android:layout_height="128dp"
+                    android:layout_width="96dp"
+                    android:layout_height="96dp"
                     android:layout_gravity="center"
                     android:background="@drawable/circle_gradient_accent" />
 
                 <ImageView
                     android:id="@+id/zapIcon"
-                    android:layout_width="72dp"
-                    android:layout_height="72dp"
+                    android:layout_width="64dp"
+                    android:layout_height="64dp"
                     android:layout_gravity="center"
                     android:src="@drawable/ic_onb_zap"
                     android:tint="@android:color/white" />
@@ -58,7 +58,7 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="32dp"
+                android:layout_marginBottom="24dp"
                 android:gravity="center"
                 android:text="@string/first_mission_subtitle"
                 android:textColor="@color/gray_600"
@@ -68,7 +68,7 @@
             <androidx.cardview.widget.CardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="32dp"
+                android:layout_marginBottom="12dp"
                 app:cardBackgroundColor="#FFF5EE"
                 app:cardCornerRadius="24dp"
                 app:cardElevation="0dp">
@@ -77,7 +77,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
-                    android:padding="32dp">
+                    android:padding="24dp">
 
                     <!-- Mission Icon -->
                     <FrameLayout

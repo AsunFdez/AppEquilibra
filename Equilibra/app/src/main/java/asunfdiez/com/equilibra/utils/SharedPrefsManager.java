@@ -3,9 +3,8 @@ package asunfdiez.com.equilibra.utils;
 import android.content.Context;
 import android.content.SharedPreferences;
 
-import com.google.gson.Gson;
-
-import asunfdiez.com.equilibra.models.UserProfile;
+import androidx.lifecycle.LiveData;
+import androidx.lifecycle.MutableLiveData;
 
 /**
  * Gestor centralizado de SharedPreferences
@@ -15,13 +14,39 @@ public final class SharedPrefsManager {
 
     private static SharedPrefsManager instance;
     private final SharedPreferences sharedPreferences;
-    private final Gson gson;
-    private long currentUserId;
+
+    private final SharedPreferences.Editor editor;
+
+    private final MutableLiveData<Boolean> onboardingCompleted = new MutableLiveData<>();
+
+    private final MutableLiveData<Boolean> notificationsEnabled = new MutableLiveData<>();
+    private final MutableLiveData<Boolean> budgetNotifications = new MutableLiveData<>();
+    private final MutableLiveData<Boolean> achievementNotifications = new MutableLiveData<>();
+    private final MutableLiveData<String> theme = new MutableLiveData<>();
+    private final MutableLiveData<String> language = new MutableLiveData<>();
+    private final MutableLiveData<Boolean> darkMode = new MutableLiveData<>();
 
     private SharedPrefsManager(Context context) {
-        this.sharedPreferences = context.getApplicationContext()
-                .getSharedPreferences(Constants.PREFS_NAME, Context.MODE_PRIVATE);
-        this.gson = new Gson();
+        this.sharedPreferences = context.getSharedPreferences(Constants.PREFS_NAME, Context.MODE_PRIVATE);
+        this.editor = sharedPreferences.edit();
+        loadInitialValues();
+    }
+
+    /**
+     * Carga los valores iniciales en LiveData
+     */
+    private void loadInitialValues() {
+        onboardingCompleted.postValue(sharedPreferences.getBoolean(
+                Constants.KEY_ONBOARDING_COMPLETE, false));
+        notificationsEnabled.postValue(sharedPreferences.getBoolean(
+                Constants.PREF_NOTIFICATIONS_ENABLED, true));
+        budgetNotifications.postValue(sharedPreferences.getBoolean(
+                Constants.PREF_BUDGET_NOTIFICATIONS, true));
+        achievementNotifications.postValue(sharedPreferences.getBoolean(
+                Constants.PREF_ACHIEVEMENT_NOTIFICATIONS, true));
+        theme.postValue(sharedPreferences.getString(Constants.PREF_VIEW, "beginner"));
+        language.postValue(sharedPreferences.getString(Constants.PREF_LANGUAGE, "es"));
+        darkMode.postValue(sharedPreferences.getBoolean(Constants.PREF_DARK_MODE, false));
     }
 
     /**
@@ -34,12 +59,6 @@ public final class SharedPrefsManager {
         return instance;
     }
 
-    public long getCurrentUserId() {
-        return currentUserId;
-    }
-    public void setCurrentUserId(long userId) {
-        currentUserId = userId;
-    }
 
 
     // ==================== ONBOARDING ====================
@@ -47,10 +66,19 @@ public final class SharedPrefsManager {
      * Verifica si el onboarding está completo
      */
     public boolean isOnboardingComplete() {
+        if (!sharedPreferences.contains(Constants.KEY_ONBOARDING_COMPLETE)) {
+            return false;
+        }
         return sharedPreferences.getBoolean(Constants.KEY_ONBOARDING_COMPLETE, false);
+
     }
 
+
+
     public long getOnboardingCompletedAt() {
+        if (!sharedPreferences.contains(Constants.KEY_ONBOARDING_COMPLETED_AT)) {
+            return 0L;
+        }
         return sharedPreferences.getLong(Constants.KEY_ONBOARDING_COMPLETED_AT, 0L);
     }
 
@@ -58,111 +86,13 @@ public final class SharedPrefsManager {
      * Marca el onboarding como completo
      */
     public void setOnboardingComplete(boolean complete) {
-        sharedPreferences.edit()
-                .putBoolean(Constants.KEY_ONBOARDING_COMPLETE, complete)
-                .apply();
+        editor.putBoolean(Constants.KEY_ONBOARDING_COMPLETE, complete).apply();
+        // Sincronizamos el LiveData para que la UI reaccione
+        onboardingCompleted.setValue(complete);
     }
 
     public void setOnboardingCompletedAt(long timestamp) {
-        sharedPreferences.edit()
-                .putLong(Constants.KEY_ONBOARDING_COMPLETED_AT, timestamp)
-                .apply();
-    }
-
-    // ==================== PERFIL DE USUARIO ====================
-
-    /**
-     * Guarda el perfil del usuario
-     */
-    public void saveUserProfile(UserProfile profile) {
-        profile.setUpdatedAt(System.currentTimeMillis());
-        String json = gson.toJson(profile);
-        sharedPreferences.edit().putString(Constants.KEY_USER_PROFILE, json).apply();
-        System.out.println("Perfil de usuario guardado: " + json);
-    }
-
-    /**
-     * Obtiene el perfil del usuario
-     */
-
-
-
-    public UserProfile getUserProfile() {
-        String json = sharedPreferences.getString(Constants.KEY_USER_PROFILE, null);
-        if (json != null) {
-            return gson.fromJson(json, UserProfile.class);
-        }
-        return new UserProfile(); // Perfil vacío si no existe
-    }
-
-    public long gettUserId() {
-        UserProfile profile = getUserProfile();
-        return profile.getId();
-    }
-
-    public void setUserName(String name) {
-        UserProfile profile = getUserProfile();
-        profile.setName(name);
-        saveUserProfile(profile);
-    }
-
-    public String getUserName() {
-        UserProfile profile = getUserProfile();
-        return profile.getName();
-    }
-
-    public void setUserEmail(String email) {
-        UserProfile profile = getUserProfile();
-        profile.setEmail(email);
-        saveUserProfile(profile);
-    }
-
-    public String getUserEmail() {
-        UserProfile profile = getUserProfile();
-        return profile.getEmail();
-    }
-
-    public void setIdNameEmailIncomeUserData(long id, String name, String email, double income) {
-        UserProfile profile = getUserProfile();
-        profile.setId(id);
-        profile.setName(name);
-        profile.setEmail(email);
-        profile.setMonthlyIncome(income);
-        saveUserProfile(profile);
-    }
-
-    public void setUserLevel(String level) {
-        UserProfile profile = getUserProfile();
-        profile.setLevel(level);
-        saveUserProfile(profile);
-    }
-
-    public String getUserLevel() {
-        UserProfile profile = getUserProfile();
-        return profile.getLevel();
-    }
-
-    public void setMonthlyIncome(double income) {
-        UserProfile profile = getUserProfile();
-        profile.setMonthlyIncome(income);
-        saveUserProfile(profile);
-    }
-
-
-    public int getBudgetExperience() {
-        UserProfile profile = getUserProfile();
-        return profile.getBudgetExperience();
-    }
-
-    public void setSavingsHabit(int level) {
-        UserProfile profile = getUserProfile();
-        profile.setSavingsHabit(level);
-        saveUserProfile(profile);
-    }
-
-    public int getSavingsHabit() {
-        UserProfile profile = getUserProfile();
-        return profile.getSavingsHabit();
+        editor.putLong(Constants.KEY_ONBOARDING_COMPLETED_AT, timestamp).apply();
     }
 
     // ==================== INTERVENCIONES ====================
@@ -196,63 +126,8 @@ public final class SharedPrefsManager {
         return calendar.getTimeInMillis();
     }
 
-    // ==================== LOGROS ====================
-
-    /**
-     * Verifica si un logro está desbloqueado
-     */
-    public boolean isAchievementUnlocked(String achievementKey) {
-        return sharedPreferences.getBoolean(Constants.KEY_ACHIEVEMENTS + achievementKey, false);
-    }
-
-    /**
-     * Desbloquea un logro
-     */
-    public void unlockAchievement(String achievementKey) {
-        sharedPreferences.edit().putBoolean(Constants.KEY_ACHIEVEMENTS + achievementKey, true).apply();
-    }
-
-    /**
-     * Resetea todos los logros (para testing)
-     */
-    public void resetAchievements() {
-        SharedPreferences.Editor editor = sharedPreferences.edit();
-        for (String key : sharedPreferences.getAll().keySet()) {
-            if (key.startsWith(Constants.KEY_ACHIEVEMENTS)) {
-                editor.remove(key);
-            }
-        }
-        editor.apply();
-    }
-
-    /**
-     * Calcula el nivel del usuario basado en sus respuestas
-     *
-     * @return USER_LEVEL_BEGINNER, USER_LEVEL_INTERMEDIATE o USER_LEVEL_ADVANCED
-     */
-    public String calculateUserLevel() {
-        UserProfile profile = getUserProfile();
-        int totalScore = profile.getFinancialKnowledge() + profile.getBudgetExperience() + profile.getSavingsHabit();
-
-        if (totalScore <= 7) {
-            return Constants.USER_LEVEL_BEGINNER;
-        } else if (totalScore <= 11) {
-            return Constants.USER_LEVEL_INTERMEDIATE;
-        } else {
-            return Constants.USER_LEVEL_ADVANCED;
-        }
-    }
 
     //--- CONFIGURACIÓN
-    public void setNotificationsEnabled(boolean enabled) {
-        sharedPreferences.edit()
-                .putBoolean(Constants.KEY_NOTIFICATIONS_ENABLED, enabled)
-                .apply();
-    }
-
-    public boolean areNotificationsEnabled() {
-        return sharedPreferences.getBoolean(Constants.KEY_NOTIFICATIONS_ENABLED, true);
-    }
 
     public void setCurrencySymbol(String symbol) {
         sharedPreferences.edit()
@@ -274,15 +149,6 @@ public final class SharedPrefsManager {
         return sharedPreferences.getString(Constants.KEY_THEME_MODE, "light");
     }
 
-    public void setLanguage(String language) {
-        sharedPreferences.edit()
-                .putString(Constants.KEY_LANGUAGE, language)
-                .apply();
-    }
-
-    public String getLanguage() {
-        return sharedPreferences.getString(Constants.KEY_LANGUAGE, "es");
-    }
 
     //--- GAMIFICACIÓN
     public void setTotalXP(int xp) {
@@ -328,14 +194,6 @@ public final class SharedPrefsManager {
     //--- UTILIDADES
 
     /**
-     * Limpia todos los datos de SharedPreferences
-     * Útil para testing o reset de la aplicación
-     */
-    public void clearAll() {
-        sharedPreferences.edit().clear().apply();
-    }
-
-    /**
      * Limpia solo los datos de onboarding
      * Permite al usuario volver a hacer el onboarding
      */
@@ -352,4 +210,102 @@ public final class SharedPrefsManager {
     public SharedPreferences getSharedPreferences() {
         return sharedPreferences;
     }
+
+
+    public LiveData<Boolean> getOnboardingCompleted() {
+        return onboardingCompleted;
+    }
+
+    public LiveData<Boolean> getNotificationsEnabled() {
+        return notificationsEnabled;
+    }
+
+    public LiveData<Boolean> getBudgetNotifications() {
+        return budgetNotifications;
+    }
+
+    public LiveData<Boolean> getAchievementNotifications() {
+        return achievementNotifications;
+    }
+
+    public LiveData<String> getTheme() {
+        return theme;
+    }
+
+    public LiveData<String> getLanguage() {
+        return language;
+    }
+
+    public LiveData<Boolean> getDarkMode() {
+        return darkMode;
+    }
+
+    public void setNotificationsEnabled(boolean enabled) {
+        editor.putBoolean(Constants.PREF_NOTIFICATIONS_ENABLED, enabled).apply();
+        notificationsEnabled.setValue(enabled);
+    }
+
+    public void setBudgetNotifications(boolean enabled) {
+        editor.putBoolean(Constants.PREF_BUDGET_NOTIFICATIONS, enabled).apply();
+        budgetNotifications.setValue(enabled);
+    }
+
+    public void setAchievementNotifications(boolean enabled) {
+        editor.putBoolean(Constants.PREF_ACHIEVEMENT_NOTIFICATIONS, enabled).apply();
+        achievementNotifications.setValue(enabled);
+    }
+
+    public void setTheme(String themeValue) {
+        editor.putString(Constants.PREF_VIEW, themeValue).apply();
+        theme.setValue(themeValue);
+    }
+
+    public void setLanguage(String lang) {
+        editor.putString(Constants.PREF_LANGUAGE, lang).apply();
+        language.setValue(lang);
+    }
+
+    public void setDarkMode(boolean enabled) {
+        editor.putBoolean(Constants.PREF_DARK_MODE, enabled).apply();
+        darkMode.setValue(enabled);
+    }
+
+    // ========== MÉTODOS AUXILIARES ==========
+
+    /**
+     * Limpia todas las preferencias (excepto onboarding)
+     */
+    public void clearAll() {
+        boolean onboarding = sharedPreferences.getBoolean(
+                Constants.KEY_ONBOARDING_COMPLETE, false);
+
+        editor.clear().apply();
+
+        // Restaurar onboarding
+        editor.putBoolean(Constants.KEY_ONBOARDING_COMPLETE, onboarding).apply();
+
+        // Recargar valores
+        loadInitialValues();
+    }
+
+    /**
+     * Reset completo (incluye onboarding)
+     */
+    public void resetAll() {
+        sharedPreferences.edit().clear().commit(); // commit() para que sea inmediato en este caso
+        loadInitialValues();
+    }
+
+    /**
+     * Exporta todas las preferencias como String
+     */
+    public String exportPreferences() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("Notifications: ").append(notificationsEnabled.getValue()).append("\n");
+        sb.append("Theme: ").append(theme.getValue()).append("\n");
+        sb.append("Language: ").append(language.getValue()).append("\n");
+        return sb.toString();
+    }
+
+
 }

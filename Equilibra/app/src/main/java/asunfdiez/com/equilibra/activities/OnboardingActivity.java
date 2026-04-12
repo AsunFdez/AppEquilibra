@@ -80,7 +80,17 @@ public class OnboardingActivity extends AppCompatActivity {
     }
 
     private void setupObservers() {
-        viewModel.getCurrentStep().observe(this, this::showStep);
+
+        viewModel.getCurrentStep().observe(this, step -> {
+            if (step != null) {
+                showStep(step);
+            }
+        });
+
+        // Forzar el primer paso si es necesario
+        if (viewModel.getCurrentStep().getValue() != null) {
+            showStep(viewModel.getCurrentStep().getValue());
+        }
     }
 
     private void hideSystemUI() {
@@ -356,18 +366,19 @@ public class OnboardingActivity extends AppCompatActivity {
         return binding.getRoot();
     }
 
+
     private void completeOnboarding() {
-        sharedPrefsManager.setOnboardingComplete(true);
-        sharedPrefsManager.setOnboardingCompletedAt(System.currentTimeMillis());
-        // Obtenemos el perfil construido durante los pasos
+        sharedPrefsManager.setOnboardingComplete(false);
         UserProfile profile = viewModel.getProfile();
         android.util.Log.d("OnboardingActivity_completeOnboarding Profile", profile.toString());
-        // Actualizamos el perfil en la base de datos
-        UserController userController = new UserController(getApplicationContext());
-        userController.updateUser(profile);
-        navigateToMainActivity();
-    }
 
+        UserController userController = new UserController(getApplicationContext());
+        userController.updateUser(profile, () -> {
+            sharedPrefsManager.setOnboardingComplete(true);
+            sharedPrefsManager.setOnboardingCompletedAt(System.currentTimeMillis());
+            navigateToMainActivity();
+        });
+    }
     private void navigateToMainActivity() {
         Intent intent = new Intent(this, MainActivity.class);
         startActivity(intent);

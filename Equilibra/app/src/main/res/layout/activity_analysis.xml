@@ -3,14 +3,17 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <data>
-        <variable            name="activeTab"
-            type="String" />
+        <import type="android.view.View" />
+        <variable name="activeTab" type="String" />
+        <variable
+            name="viewModel"
+            type="asunfdiez.com.equilibra.viewmodels.AnalysisViewModel" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/background"
+        android:background="@color/background_light"
         android:clipChildren="false">
 
         <androidx.core.widget.NestedScrollView
@@ -124,11 +127,23 @@
                             android:textSize="18sp"
                             android:textStyle="bold" />
 
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/no_data_available"
+                            android:textColor="@color/text_secondary"
+                            android:layout_marginTop="16dp"
+                            android:textStyle="bold"
+                            android:visibility="@{viewModel.pieChartData ? View.GONE : View.VISIBLE}" />
+
+
                         <com.github.mikephil.charting.charts.PieChart
                             android:id="@+id/pieChart"
                             android:layout_width="match_parent"
                             android:layout_height="300dp"
-                            android:layout_marginTop="16dp" />
+                            android:layout_marginTop="16dp"
+                            android:visibility="@{viewModel.pieChartData ? View.VISIBLE : View.GONE}"/>
                     </LinearLayout>
                 </androidx.cardview.widget.CardView>
 
@@ -149,17 +164,27 @@
                             android:id="@+id/tvTrendTitle"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Tendencia Semanal"
+                            android:text="@string/weekly_tendency"
                             android:textColor="@color/text_primary"
                             android:textSize="18sp"
                             android:textStyle="bold" />
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/no_data_available"
+                            android:textColor="@color/text_secondary"
+                            android:layout_marginTop="16dp"
+                            android:textSize="14sp"
+                            android:textStyle="bold"
+                            android:visibility="@{viewModel.barChartData ? View.GONE : View.VISIBLE}" />
 
                         <com.github.mikephil.charting.charts.BarChart
                             android:id="@+id/barChart"
                             android:layout_width="match_parent"
                             android:layout_height="250dp"
                             android:layout_marginTop="16dp"
-                            android:layout_marginBottom="32dp" />
+                            android:layout_marginBottom="32dp"
+                            android:visibility="@{viewModel.barChartData ? View.VISIBLE : View.GONE}"/>
                     </LinearLayout>
                 </androidx.cardview.widget.CardView>
 

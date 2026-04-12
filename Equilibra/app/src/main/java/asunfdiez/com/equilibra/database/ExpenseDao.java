@@ -110,4 +110,20 @@ public interface ExpenseDao {
             " WHERE " + Constants.COLUMN_EXPENSE_CATEGORY + " = :category AND " +
             Constants.COLUMN_EXPENSE_TIMESTAMP + " >= :sinceTimestamp")
     Double getTotalSpentInCategorySince(String category, long sinceTimestamp);
+
+    @Query("SELECT COUNT(*) FROM " + Constants.TABLE_EXPENSES )
+    int getTotalExpenseCount();
+
+
+    @Query("SELECT SUM(" + Constants.COLUMN_EXPENSE_AMOUNT + ") FROM " + Constants.TABLE_EXPENSES )
+    double getTotalExpenseAmount();
+
+    @Query("SELECT COUNT(DISTINCT " + Constants.COLUMN_EXPENSE_CATEGORY + ") FROM " + Constants.TABLE_EXPENSES)
+    int getUniqueCategoriesCount();
+
+    @Query("SELECT CAST(" + Constants.COLUMN_EXPENSE_TIMESTAMP + " / 86400000 AS INTEGER) as day " +
+            "FROM " + Constants.TABLE_EXPENSES + " GROUP BY day ORDER BY day DESC")
+    List<Long> getUniqueDaysWithExpenses();
+
+
 }
