@@ -42,7 +42,11 @@ public class FeatureCard extends CardView {
             String title = a.getString(R.styleable.FeatureCard_cardTitle);
             String desc = a.getString(R.styleable.FeatureCard_cardDescription);
             if (title != null) binding.cardTitle.setText(title);
-            if (desc != null) binding.cardDescription.setText(desc);
+            if (desc != null) {
+                binding.cardDescription.setText(desc);
+            } else {
+                binding.cardDescription.setVisibility(View.GONE);
+            }
 
             // Icono Principal y su TINTE (Color)
             int iconRes = a.getResourceId(R.styleable.FeatureCard_cardIcon, R.drawable.ic_nav_home);
@@ -56,12 +60,25 @@ public class FeatureCard extends CardView {
 
             // Elementos opcionales
             boolean showRightIcon = a.getBoolean(R.styleable.FeatureCard_showRightIcon, false);
-            int iconRightRes = a.getResourceId(R.styleable.FeatureCard_cardRightIcon, R.drawable.ic_nav_chevron_right);
             if (showRightIcon) {
+                // Icono Principal y su TINTE (Color)
+                int iconRightRes = a.getResourceId(R.styleable.FeatureCard_cardRightIcon, R.drawable.ic_nav_chevron_right);
+                int tintIconRightColor = a.getColor(R.styleable.FeatureCard_cardRightIconTint, defaultWhite);
                 binding.cardRightIcon.setVisibility(View.VISIBLE);
                 binding.cardRightIcon.setImageResource(iconRightRes);
+                ImageViewCompat.setImageTintList(binding.cardRightIcon, ColorStateList.valueOf(tintIconRightColor));
             } else {
                 binding.cardRightIcon.setVisibility(View.GONE);
+            }
+
+            // Switch opcional
+            boolean showSwitch = a.getBoolean(R.styleable.FeatureCard_showSwitch, false);
+            if (showSwitch) {
+                binding.cardSwitch.setVisibility(View.VISIBLE);
+                boolean switchChecked = a.getBoolean(R.styleable.FeatureCard_switchChecked, false);
+                binding.cardSwitch.setChecked(switchChecked);
+            } else {
+                binding.cardSwitch.setVisibility(View.GONE);
             }
 
             // Estética
@@ -83,6 +100,21 @@ public class FeatureCard extends CardView {
     public static void setCardDescription(FeatureCard view, String description) {
         if (view.binding != null && view.binding.cardDescription != null) {
             view.binding.cardDescription.setText(description);
+        }
+    }
+
+    @BindingAdapter("switchChecked")
+    public static void setSwitchChecked(FeatureCard view, boolean isChecked) {
+        if (view.binding != null && view.binding.cardSwitch != null) {
+            if (view.binding.cardSwitch.isChecked() != isChecked) {
+                view.binding.cardSwitch.setChecked(isChecked);
+            }
+        }
+    }
+
+    public void setOnCheckedChangeListener(android.widget.CompoundButton.OnCheckedChangeListener listener) {
+        if (binding != null && binding.cardSwitch != null) {
+            binding.cardSwitch.setOnCheckedChangeListener(listener);
         }
     }
 }

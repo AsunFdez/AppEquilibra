@@ -66,19 +66,15 @@ public class SplashActivity extends AppCompatActivity {
 
         boolean onboardingComplete = prefsManager.isOnboardingComplete();
 
-        if (!onboardingComplete) {
+        // Si el onboarding está marcado como completo pero no hay perfil cargado,
+        // tratamos al usuario como nuevo para evitar el bloqueo.
+        if (!onboardingComplete || !userLoaded) {
+            Log.d("SplashActivity", "Onboarding incomplete or user profile missing. Navigating to Onboarding.");
             navigateTo(OnboardingActivity.class);
             return;
         }
 
-        if (userLoaded) {
-            navigateTo(MainActivity.class);
-            return;
-        }
-
-        // Sigue esperando el perfil si el onboarding ya está completo
-        binding.splashStatus.setText(R.string.splash_waiting_user);
-        Log.e("SplashActivity", "User profile not loaded yet");
+        navigateTo(MainActivity.class);
     }
 
     private void startAnimations() {

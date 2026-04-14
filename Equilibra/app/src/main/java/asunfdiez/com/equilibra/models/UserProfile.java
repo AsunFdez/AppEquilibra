@@ -23,14 +23,12 @@ public class UserProfile {
     private long createdAt;
     private long updatedAt;
 
-    private String level;
     private double monthlyIncome;
 
     private int financialKnowledge;
     private int budgetExperience;
     private int savingsHabit;
 
-    private String currentView = Constants.USER_LEVEL_BEGINNER;
     private int dayCount = 1;
     private int weekProgress = 0;
     private int weekGoal = 7;
@@ -134,14 +132,6 @@ public class UserProfile {
         updatedAt = a_updatedAt;
     }
 
-    public String getLevel() {
-        return level;
-    }
-
-    public void setLevel(String a_level) {
-        level = a_level;
-    }
-
     public double getMonthlyIncome() {
         return monthlyIncome;
     }
@@ -172,14 +162,6 @@ public class UserProfile {
 
     public void setSavingsHabit(int a_savingsHabit) {
         savingsHabit = a_savingsHabit;
-    }
-
-    public String getCurrentView() {
-        return currentView;
-    }
-
-    public void setCurrentView(String currentView) {
-        this.currentView = currentView;
     }
 
     public int getDayCount() {
@@ -244,12 +226,10 @@ public class UserProfile {
                 ", timeAvailable='" + timeAvailable + '\'' +
                 ", createdAt=" + createdAt +
                 ", updatedAt=" + updatedAt +
-                ", level='" + level + '\'' +
                 ", monthlyIncome=" + monthlyIncome +
                 ", financialKnowledge=" + financialKnowledge +
                 ", budgetExperience=" + budgetExperience +
                 ", savingsHabit=" + savingsHabit +
-                ", currentView='" + currentView + '\'' +
                 ", dayCount=" + dayCount +
                 ", weekProgress=" + weekProgress +
                 ", weekGoal=" + weekGoal +

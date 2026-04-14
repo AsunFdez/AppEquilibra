@@ -240,58 +240,6 @@
                         android:visibility="@{viewModel.editMode ? View.VISIBLE : View.GONE}" />
 
 
-                    <!-- View Selector -->
-                    <FrameLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="end"
-                        android:background="@color/background_accent_light"
-                        android:visibility="@{viewModel.editMode ? View.GONE : View.VISIBLE}">
-
-                        <LinearLayout
-                            android:id="@+id/viewSelectorButton"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_gravity="end"
-                            android:background="@drawable/selector_background"
-                            android:clickable="true"
-                            android:focusable="true"
-                            android:gravity="center_vertical"
-                            android:orientation="horizontal"
-                            android:paddingStart="16dp"
-                            android:paddingTop="16dp"
-                            android:paddingEnd="16dp"
-                            android:paddingBottom="16dp">
-
-                            <TextView
-                                android:id="@+id/changeViewText"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="@string/view_selector_text"
-                                android:textColor="@color/white"
-                                android:textSize="14sp"
-                                android:textStyle="bold" />
-
-                            <TextView
-                                android:id="@+id/viewSelectorText"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_marginStart="8dp"
-                                app:viewModeText="@{user.currentView}"
-                                android:textColor="@color/white"
-                                android:textSize="14sp"
-                                android:textStyle="bold" />
-
-                            <ImageView
-                                android:id="@+id/viewSelectorArrow"
-                                android:layout_width="16dp"
-                                android:layout_height="16dp"
-                                android:layout_marginStart="8dp"
-                                android:src="@drawable/ic_nav_chevron_down"
-                                app:tint="@color/white" />
-                        </LinearLayout>
-                    </FrameLayout>
-
                     <!-- Sección de seguridad -->
                     <TextView
                         android:layout_width="wrap_content"

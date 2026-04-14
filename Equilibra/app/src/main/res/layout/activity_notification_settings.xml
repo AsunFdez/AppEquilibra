@@ -1,10 +1,118 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<!--
+    Layout para NotificationSettingsActivity (MVVM + Data Binding)
+    Configuración de notificaciones
+    @author Equilibra Team
+    @since 04/04/2026
+-->
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/main"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context=".activities.NotificationSettingsActivity">
+    xmlns:tools="http://schemas.android.com/tools">
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+    <data>
+        <variable
+            name="viewModel"
+            type="asunfdiez.com.equilibra.viewmodels.NotificationSettingsViewModel" />
+    </data>
+
+    <androidx.coordinatorlayout.widget.CoordinatorLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/background_light"
+        tools:context=".activities.NotificationSettingsActivity">
+
+        <!-- App Bar -->
+        <com.google.android.material.appbar.AppBarLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/accent">
+
+            <androidx.appcompat.widget.Toolbar
+                android:id="@+id/toolbar"
+                android:layout_width="match_parent"
+                android:layout_height="?attr/actionBarSize"
+                app:title="@string/notification_settings"
+                app:titleTextColor="@android:color/white"
+                app:navigationIcon="@drawable/ic_arrow_back" />
+
+        </com.google.android.material.appbar.AppBarLayout>
+
+        <!-- Contenido principal -->
+        <androidx.core.widget.NestedScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="16dp">
+
+                <!-- Card de notificaciones generales -->
+                <asunfdiez.com.equilibra.views.FeatureCard
+                    android:id="@+id/cardNotifications"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="8dp"
+                    android:layout_marginTop="16dp"
+                    app:cardBackgroundColor="@color/background_card"
+                    app:cardTitle="@string/notifications_general"
+                    app:cardDescription="@string/notifications_general_desc"
+                    app:cardIconCircle="@drawable/circle_accent_light"
+                    app:cardIcon="@drawable/ic_notifications"
+                    app:cardIconTint="@color/accent"
+                    app:showSwitch="true"
+                    app:switchChecked="@{viewModel.notificationsEnabled}" />
+
+                <!-- Título: Notificaciones específicas -->
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/specific_notifications"
+                    android:textStyle="bold"
+                    android:textSize="14sp"
+                    android:textColor="@color/accent"
+                    android:layout_marginBottom="8dp"
+                    android:layout_marginTop="16dp" />
+
+                <!-- Card: Notificaciones de presupuesto -->
+                <asunfdiez.com.equilibra.views.FeatureCard
+                    android:id="@+id/cardBudget"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="8dp"
+                    android:layout_marginTop="16dp"
+                    app:cardBackgroundColor="@color/primary_lighter"
+                    app:cardTitle="@string/budget_notifications"
+                    app:cardDescription="@string/budget_notifications_desc"
+                    app:cardIconCircle="@drawable/circle_background_primary_light"
+                    app:cardIcon="@drawable/ic_wallet"
+                    app:cardIconTint="@color/primary"
+                    app:showSwitch="true"
+                    app:switchChecked="@{viewModel.budgetNotifications}" />
+
+                <!-- Card: Notificaciones de logros -->
+                <asunfdiez.com.equilibra.views.FeatureCard
+                    android:id="@+id/cardAchievement"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="8dp"
+                    android:layout_marginTop="16dp"
+                    app:cardBackgroundColor="@color/secondary_lighter"
+                    app:cardTitle="@string/achievement_notifications"
+                    app:cardDescription="@string/achievement_notifications_desc"
+                    app:cardIconCircle="@drawable/circle_secondary_light"
+                    app:cardIcon="@drawable/ic_trophy"
+                    app:cardIconTint="@color/secondary"
+                    app:showSwitch="true"
+                    app:switchChecked="@{viewModel.achievementNotifications}" />
+
+
+            </LinearLayout>
+
+        </androidx.core.widget.NestedScrollView>
+
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>
+
+</layout>

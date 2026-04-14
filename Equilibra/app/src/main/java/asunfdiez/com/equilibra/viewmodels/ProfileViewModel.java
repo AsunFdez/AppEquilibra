@@ -99,14 +99,6 @@ public class ProfileViewModel extends AndroidViewModel {
         return true;
     }
 
-    public void changeView(String newView) {
-        UserProfile user = userProfile.getValue();
-        if (user != null && !user.getCurrentView().equals(newView)) {
-            user.setCurrentView(newView);
-            userController.updateUser(user, null);
-        }
-    }
-
     public void deleteAccount() {
         try {
             userController.deleteCurrentUser(() -> {

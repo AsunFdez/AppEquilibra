@@ -1,16 +1,32 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <attr name="cardTitle" format="string" />
+    <attr name="cardIcon" format="reference" />
+    <attr name="cardIconTint" format="color" />
+
     <declare-styleable name="FeatureCard">
         <attr name="cardBackgroundColor" format="color" />
-        <attr name="cardIcon" format="reference" />
+        <attr name="cardIcon" />
         <attr name="cardIconCircle" format="reference" />
-        <attr name="cardIconTint" format="color" />
+        <attr name="cardIconTint" />
 
-        <attr name="cardTitle" format="string" />
+        <attr name="cardTitle" />
         <attr name="cardDescription" format="string" />
 
         <attr name="showRightIcon" format="boolean" />
         <attr name="cardRightIcon" format="reference" />
+        <attr name="cardRightIconTint" format="color" />
 
+        <attr name="showSwitch" format="boolean" />
+        <attr name="switchChecked" format="boolean" />
+
+    </declare-styleable>
+
+    <declare-styleable name="SelectorView">
+        <attr name="cardTitle" />
+        <attr name="cardIcon" />
+        <attr name="cardIconTint" />
+        <attr name="selectorLabel" format="string" />
+        <attr name="selectorValue" format="string" />
     </declare-styleable>
 </resources>

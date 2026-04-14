@@ -23,6 +23,7 @@
     <color name="background_light">#F9FAFB</color>
     <color name="tip_card_bg">#D5F4E6</color>
     <color name="background_accent_light">#FFF5EE</color>
+    <color name="info_background">#E3F2FD</color>
 
 
     <!-- Status Bar -->

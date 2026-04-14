@@ -130,17 +130,24 @@ public class AddExpenseActivity extends AppCompatActivity {
 
                 // CanScrollHorizontally(1) devuelve false si no se puede hacer más scroll a la derecha (fin)
                 if (recyclerView.canScrollHorizontally(1)) {
-                    binding.ivScrollIndicator.setVisibility(View.VISIBLE);
+                    binding.ivScrollIndicatorRight.setVisibility(View.VISIBLE);
                 } else {
-                    binding.ivScrollIndicator.setVisibility(View.GONE);
+                    binding.ivScrollIndicatorRight.setVisibility(View.GONE);
                 }
+
+                if (recyclerView.canScrollHorizontally(-1)) {
+                    binding.ivScrollIndicatorLeft.setVisibility(View.VISIBLE);
+                } else {
+                    binding.ivScrollIndicatorLeft.setVisibility(View.GONE);
+                }
+
             }
         });
 
         // Comprobación inicial: esperar a que el adapter tenga datos para mostrar u ocultar la flecha
         binding.rvCategories.post(() -> {
             if (binding.rvCategories.canScrollHorizontally(1)) {
-                binding.ivScrollIndicator.setVisibility(View.VISIBLE);
+                binding.ivScrollIndicatorRight.setVisibility(View.VISIBLE);
             }
         });
     }
@@ -179,6 +186,18 @@ public class AddExpenseActivity extends AppCompatActivity {
      * Configura los listeners de los botones y campos de texto
      */
     private void setupListeners() {
+
+        binding.ivScrollIndicatorLeft.setOnClickListener(v -> {
+            if (binding.rvCategories.canScrollHorizontally(-1)) {
+                binding.rvCategories.smoothScrollBy(-binding.rvCategories.getWidth(), 0);
+            }
+        });
+
+        binding.ivScrollIndicatorRight.setOnClickListener(v -> {
+            if (binding.rvCategories.canScrollHorizontally(1)) {
+                binding.rvCategories.smoothScrollBy(binding.rvCategories.getWidth(), 0);
+            }
+        });
         // Botón guardar
         binding.btnSaveExpense.setOnClickListener(v -> {
             AnimationHelper.applyScaleAnimation(v);

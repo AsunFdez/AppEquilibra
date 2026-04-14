@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <data>
+        <variable
+            name="text"
+            type="String" />
+        <variable
+            name="selected"
+            type="boolean" />
+    </data>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:background="@color/secondary_lighter"
+        android:clickable="true"
+        android:focusable="true">
+
+        <TextView
+            android:id="@+id/optionText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="?android:attr/selectableItemBackground"
+            android:paddingStart="20dp"
+            android:paddingTop="12dp"
+            android:paddingEnd="20dp"
+            android:paddingBottom="12dp"
+            android:text="@{text}"
+            android:textColor='@{selected ? @color/primary : @color/gray_700}'
+            android:textStyle='@{selected ? "bold" : "normal"}'
+            android:textSize="14sp"
+            android:clickable="false"
+            android:focusable="false"
+            android:duplicateParentState="true" />
+
+        <View
+            android:id="@+id/divider"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginStart="20dp"
+            android:layout_marginEnd="20dp"
+            android:background="@color/gray_200" />
+
+    </LinearLayout>
+</layout>

@@ -370,6 +370,10 @@ public class OnboardingActivity extends AppCompatActivity {
     private void completeOnboarding() {
         sharedPrefsManager.setOnboardingComplete(false);
         UserProfile profile = viewModel.getProfile();
+
+        // Establecer el modo de vista por defecto en SharedPrefs
+        sharedPrefsManager.setViewMode(Constants.USER_LEVEL_BEGINNER);
+        android.util.Log.d("OnboardingActivity", "Default view mode set to: " + Constants.USER_LEVEL_BEGINNER);
         android.util.Log.d("OnboardingActivity_completeOnboarding Profile", profile.toString());
 
         UserController userController = new UserController(getApplicationContext());

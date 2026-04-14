@@ -18,7 +18,8 @@ public final class Constants {
     public static final String PREF_NOTIFICATIONS_ENABLED = "notifications_enabled";
     public static final String PREF_BUDGET_NOTIFICATIONS = "budget_notifications";
     public static final String PREF_ACHIEVEMENT_NOTIFICATIONS = "achievement_notifications";
-    public static final String PREF_VIEW = "beginner";
+    public static final String PREF_VIEW = "view";
+    public static final String PREF_THEME = "theme";
     public static final String PREF_LANGUAGE = "language";
     public static final String PREF_DARK_MODE = "dark_mode";
 
@@ -96,7 +97,7 @@ public final class Constants {
     // DATABASE CONSTANTS
     // ========================================
     public static final String DATABASE_NAME = "equilibra.db";
-    public static final int DATABASE_VERSION = 2;
+    public static final int DATABASE_VERSION = 4;
 
     //Tabla UserProfile
     public static final String TABLE_USER_PROFILE = "user_profile";
@@ -104,8 +105,6 @@ public final class Constants {
     public static final String COLUMN_USER_DAY_COUNT = "dayCount";
     public static final String COLUMN_USER_MONTHLY_INCOME = "monthlyIncome";
     public static final String COLUMN_USER_NAME = "name";
-
-
 
 
     // Tabla Expenses

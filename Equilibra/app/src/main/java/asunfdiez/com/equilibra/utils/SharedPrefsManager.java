@@ -22,6 +22,7 @@ public final class SharedPrefsManager {
     private final MutableLiveData<Boolean> notificationsEnabled = new MutableLiveData<>();
     private final MutableLiveData<Boolean> budgetNotifications = new MutableLiveData<>();
     private final MutableLiveData<Boolean> achievementNotifications = new MutableLiveData<>();
+    private final MutableLiveData<String> viewMode = new MutableLiveData<>();
     private final MutableLiveData<String> theme = new MutableLiveData<>();
     private final MutableLiveData<String> language = new MutableLiveData<>();
     private final MutableLiveData<Boolean> darkMode = new MutableLiveData<>();
@@ -44,7 +45,9 @@ public final class SharedPrefsManager {
                 Constants.PREF_BUDGET_NOTIFICATIONS, true));
         achievementNotifications.postValue(sharedPreferences.getBoolean(
                 Constants.PREF_ACHIEVEMENT_NOTIFICATIONS, true));
-        theme.postValue(sharedPreferences.getString(Constants.PREF_VIEW, "beginner"));
+
+        viewMode.postValue(sharedPreferences.getString(Constants.PREF_VIEW, "beginner"));
+        theme.postValue(sharedPreferences.getString(Constants.PREF_THEME, "dark"));
         language.postValue(sharedPreferences.getString(Constants.PREF_LANGUAGE, "es"));
         darkMode.postValue(sharedPreferences.getBoolean(Constants.PREF_DARK_MODE, false));
     }
@@ -228,6 +231,10 @@ public final class SharedPrefsManager {
         return achievementNotifications;
     }
 
+    public LiveData<String> getViewMode() {
+        return viewMode;
+    }
+
     public LiveData<String> getTheme() {
         return theme;
     }
@@ -255,8 +262,13 @@ public final class SharedPrefsManager {
         achievementNotifications.setValue(enabled);
     }
 
+    public void setViewMode(String viewModeValue) {
+        editor.putString(Constants.PREF_VIEW, viewModeValue).apply();
+        viewMode.setValue(viewModeValue);
+    }
+
     public void setTheme(String themeValue) {
-        editor.putString(Constants.PREF_VIEW, themeValue).apply();
+        editor.putString(Constants.PREF_THEME, themeValue).apply();
         theme.setValue(themeValue);
     }
 
@@ -301,6 +313,9 @@ public final class SharedPrefsManager {
      */
     public String exportPreferences() {
         StringBuilder sb = new StringBuilder();
+        sb.append("Onboarding: ").append(onboardingCompleted.getValue()).append("\n");
+        sb.append("Budget Notifications: ").append(budgetNotifications.getValue()).append("\n");
+        sb.append("View mode: ").append(viewMode.getValue()).append("\n");
         sb.append("Notifications: ").append(notificationsEnabled.getValue()).append("\n");
         sb.append("Theme: ").append(theme.getValue()).append("\n");
         sb.append("Language: ").append(language.getValue()).append("\n");

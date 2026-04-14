@@ -13,10 +13,12 @@ import androidx.lifecycle.Transformations;
 import asunfdiez.com.equilibra.controllers.UserController;
 import asunfdiez.com.equilibra.models.Advice;
 import asunfdiez.com.equilibra.models.UserProfile;
+import asunfdiez.com.equilibra.utils.SharedPrefsManager;
 
 public class MainActivityViewModel extends AndroidViewModel {
 
     private final UserController userController;
+    private final SharedPrefsManager prefsManager;
 
     // LiveData principal de Room
     private final LiveData<UserProfile> userProfile;
@@ -27,14 +29,6 @@ public class MainActivityViewModel extends AndroidViewModel {
 
     private final MutableLiveData<Advice> _advice = new MutableLiveData<>();
 
-    // Observer persistente para reaccionar a cambios en el perfil
-    private final Observer<UserProfile> profileObserver = profile -> {
-        if (profile != null) {
-            if (!profile.getCurrentView().equals(_currentView.getValue())) {
-                _currentView.setValue(profile.getCurrentView());
-            }
-        }
-    };
 
     public MainActivityViewModel(@NonNull Application application) {
         super(application);
@@ -45,7 +39,9 @@ public class MainActivityViewModel extends AndroidViewModel {
         // Obtenemos el flujo de datos (No el valor estático)
         userProfile = userController.getCurrentUser();
 
-        // Usamos un observador temporal para las tareas de inicio que requieren el perfil
+        prefsManager = SharedPrefsManager.getInstance(application);
+
+        // Usamos un observador para las tareas de inicio que requieren el perfil
         userProfile.observeForever(new Observer<UserProfile>() {
             @Override
             public void onChanged(UserProfile profile) {
@@ -55,6 +51,7 @@ public class MainActivityViewModel extends AndroidViewModel {
                 }
             }
         });
+
     }
 
     // Getters públicos (Solo lectura)
@@ -69,7 +66,9 @@ public class MainActivityViewModel extends AndroidViewModel {
             return userController.getAdvice(user);
         });
     }
-
+    public void checkPreferenceView() {
+        _currentView.postValue(prefsManager.getViewMode().getValue());
+    }
 
     public void checkWellbeing() {
         _shouldShowIntervention.postValue(userController.checkWellbeing());
@@ -90,11 +89,10 @@ public class MainActivityViewModel extends AndroidViewModel {
     @Override
     protected void onCleared() {
         super.onCleared();
-        // Limpieza obligatoria al usar observeForever para evitar memory leaks
-        userProfile.removeObserver(profileObserver);
     }
 
     public void refreshData() {
+        checkPreferenceView();
         checkWellbeing();
         checkAdvice();
     }

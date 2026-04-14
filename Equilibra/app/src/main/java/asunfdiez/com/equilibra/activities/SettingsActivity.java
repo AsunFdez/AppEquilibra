@@ -55,11 +55,14 @@ public class SettingsActivity extends AppCompatActivity implements BottomNavigat
         setupListeners();
         setupObservers();
         setupBottomNavigation();
+        initAnimations();
+        binding.executePendingBindings();
 
+    }
 
-        // Animación de entrada
-        binding.getRoot().startAnimation(
-                AnimationUtils.loadAnimation(this, R.anim.fade_in));
+    private void initAnimations() {
+        View[] cards ={binding.cardProfile, binding.cardBudget, binding.cardNotifications, binding.cardAppearance, binding.cardAbout};
+        AnimationHelper.animateCardsEntrance(cards);
     }
 
     /**

@@ -2,9 +2,6 @@ package asunfdiez.com.equilibra.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.PopupWindow;
 import android.widget.Toast;
 
 import androidx.activity.OnBackPressedCallback;
@@ -13,9 +10,7 @@ import androidx.lifecycle.ViewModelProvider;
 
 import asunfdiez.com.equilibra.R;
 import asunfdiez.com.equilibra.databinding.ActivityProfileBinding;
-import asunfdiez.com.equilibra.databinding.ViewSelectorPopupBinding;
 import asunfdiez.com.equilibra.utils.AnimationHelper;
-import asunfdiez.com.equilibra.utils.Constants;
 import asunfdiez.com.equilibra.viewmodels.ProfileViewModel;
 
 /**
@@ -26,7 +21,6 @@ public class ProfileActivity extends AppCompatActivity {
 
     private ProfileViewModel viewModel;
     private ActivityProfileBinding binding;
-    private PopupWindow viewSelectorPopup;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -97,8 +91,6 @@ public class ProfileActivity extends AppCompatActivity {
     }
 
     private void setupListeners() {
-        binding.viewSelectorButton.setOnClickListener(v -> showViewSelectorPopup());
-
         binding.ivProfileImage.setOnClickListener(v -> {
             AnimationHelper.scaleUp(v);
             changeProfileImage();
@@ -120,42 +112,6 @@ public class ProfileActivity extends AppCompatActivity {
             AnimationHelper.scaleUp(v);
             showDeleteAccountDialog();
         });
-    }
-
-    private void showViewSelectorPopup() {
-
-        ViewSelectorPopupBinding selectorBinding = ViewSelectorPopupBinding.inflate(getLayoutInflater());
-        selectorBinding.setUser(viewModel.getUserProfile().getValue());
-
-        View popupView = selectorBinding.getRoot();
-
-        viewSelectorPopup = new PopupWindow(
-                popupView,
-                ViewGroup.LayoutParams.WRAP_CONTENT,
-                ViewGroup.LayoutParams.WRAP_CONTENT,
-                true
-        );
-
-        selectorBinding.viewOption1.setOnClickListener(v -> selectViewMode(Constants.USER_LEVEL_BEGINNER));
-        selectorBinding.viewOption2.setOnClickListener(v -> selectViewMode(Constants.USER_LEVEL_INTERMEDIATE));
-        selectorBinding.viewOption3.setOnClickListener(v -> selectViewMode(Constants.USER_LEVEL_ADVANCED));
-
-        binding.viewSelectorArrow.animate().rotation(180f).setDuration(200).start();
-        viewSelectorPopup.setOnDismissListener(() ->
-                binding.viewSelectorArrow.animate().rotation(0f).setDuration(200).start()
-        );
-
-        viewSelectorPopup.setOnDismissListener(() ->
-                binding.viewSelectorArrow.animate().rotation(0f).setDuration(200).start()
-        );
-
-        viewSelectorPopup.showAsDropDown(binding.viewSelectorButton, 0, 10);
-
-    }
-
-    private void selectViewMode(String mode) {
-        viewModel.changeView(mode);
-        viewSelectorPopup.dismiss();
     }
 
     private void showMessage(String message) {

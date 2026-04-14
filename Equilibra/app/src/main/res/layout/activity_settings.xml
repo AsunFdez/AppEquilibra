@@ -21,9 +21,14 @@
 
         <!-- App Bar -->
         <com.google.android.material.appbar.AppBarLayout
+            android:id="@+id/appBarLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/primary">
+            android:background="@color/primary"
+            android:layout_marginBottom="16dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
 
             <androidx.appcompat.widget.Toolbar
                 android:id="@+id/toolbar"
@@ -31,7 +36,8 @@
                 android:layout_height="?attr/actionBarSize"
                 app:title="@string/settings_title"
                 app:titleTextColor="@android:color/white"
-                app:navigationIcon="@drawable/ic_arrow_back" />
+                app:navigationIcon="@drawable/ic_arrow_back"
+                />
 
         </com.google.android.material.appbar.AppBarLayout>
 
@@ -39,8 +45,13 @@
         <androidx.core.widget.NestedScrollView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_marginTop="16dp"
-            android:id="@+id/contentScroll">
+            android:layout_marginTop="48dp"
+            android:layout_marginBottom="100dp"
+            android:id="@+id/contentScroll"
+            app:layout_constraintBottom_toTopOf="@id/bottomNav"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/appBarLayout">
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -73,6 +84,7 @@
                     app:cardIconTint="@color/primary"
                     app:cardTitle="@string/profile_settings"
                     app:cardDescription="@string/profile_settings_desc"
+                    app:cardRightIconTint="@color/primary"
                     app:showRightIcon="true" />
 
                 <!-- Card: Presupuesto -->
@@ -89,6 +101,7 @@
                     app:cardIconTint="@color/primary"
                     app:cardTitle="@string/budget_settings"
                     app:cardDescription="@string/budget_settings_desc"
+                    app:cardRightIconTint="@color/primary"
                     app:showRightIcon="true" />
 
                 <!-- Sección: Preferencias -->
@@ -116,6 +129,7 @@
                     app:cardIconTint="@color/secondary"
                     app:cardTitle="@string/notification_settings"
                     app:cardDescription="@string/notification_settings_desc"
+                    app:cardRightIconTint="@color/secondary"
                     app:showRightIcon="true" />
 
                 <!-- Card: Apariencia -->
@@ -132,6 +146,7 @@
                     app:cardIconTint="@color/secondary"
                     app:cardTitle="@string/appearance_settings"
                     app:cardDescription="@string/appearance_settings_desc"
+                    app:cardRightIconTint="@color/secondary"
                     app:showRightIcon="true" />
 
 
@@ -160,6 +175,7 @@
                     app:cardIconTint="@color/accent"
                     app:cardTitle="@string/about"
                     app:cardDescription="@string/about_desc"
+                    app:cardRightIconTint="@color/accent"
                     app:showRightIcon="true" />
 
                 <!-- Sección: Zona Peligrosa -->
@@ -187,8 +203,7 @@
                     android:id="@+id/btnResetApp"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="@string/reset_app"
-                    android:layout_marginBottom="120dp" />
+                    android:text="@string/reset_app" />
 
             </LinearLayout>
 

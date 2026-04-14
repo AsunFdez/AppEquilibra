@@ -81,14 +81,6 @@ public class UserController {
             }
         });
     }
-    /*
-    * Actualiza la vista actual del usuario
-    */
-    public void setCurrentView(String view) {
-        if (user == null) return;
-        user.setCurrentView(view);
-        userRepository.updateProfile(user, null);
-    }
 
     public boolean checkWellbeing() {
         AtomicBoolean shouldShow = new AtomicBoolean(false);

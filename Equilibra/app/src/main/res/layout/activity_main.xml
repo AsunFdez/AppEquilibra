@@ -116,6 +116,7 @@
                     app:cardIconCircle="@drawable/circle_accent"
                     app:cardTitle="@string/my_expenses_tile"
                     app:cardDescription="@string/my_expenses_text"
+                    app:cardRightIconTint="@color/accent"
                     app:showRightIcon="true" />
 
 

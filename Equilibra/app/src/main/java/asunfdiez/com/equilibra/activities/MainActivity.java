@@ -48,9 +48,9 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationH
         
         // Inicializar ViewModel
         viewModel = new ViewModelProvider(this).get(MainActivityViewModel.class);
-        
         initializeComponents();
         setupObservers();
+        viewModel.refreshData();
     }
 
     private void initializeComponents() {
@@ -73,6 +73,16 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationH
             }
         });
 
+        // Observar el tipo de vista desde SharedPreferences (vía ViewModel)
+        viewModel.getCurrentView().observe(this, viewType -> {
+            if (viewType != null) {
+                if (binding == null || !viewType.equals(currentViewType)) {
+                    currentViewType = viewType;
+                    loadLayout(viewType, viewModel.getUserProfile().getValue());
+                }
+            }
+        });
+
         // Observar si se debe mostrar una intervención (Bienestar financiero)
         viewModel.getShouldShowIntervention().observe(this, shouldShow -> {
             if (shouldShow != null && shouldShow) {
@@ -86,19 +96,13 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationH
     }
 
     private void handleUserProfileUpdate(UserProfile user) {
-        String viewType = user.getCurrentView();
-        
-        // Si el tipo de vista ha cambiado o es la primera vez, cargamos el layout
-        if (binding == null || !viewType.equals(currentViewType)) {
-            currentViewType = viewType;
-            loadLayout(viewType, user);
-        } else {
-            // Si es la misma vista, solo actualizamos los datos vinculados
+        // Solo actualizamos los datos vinculados si la vista ya está cargada
+        if (binding != null) {
             binding.setVariable(asunfdiez.com.equilibra.BR.user, user);
             binding.setVariable(asunfdiez.com.equilibra.BR.advice, viewModel.getAdvice().getValue());
             updateBottomNavigationBinding("home");
             binding.executePendingBindings();
-            
+
             // Actualizar elementos manuales o animaciones que dependen del progreso
             if (binding instanceof ActivityMainBinding) {
                 updateBeginnerAnimations(user);
@@ -169,7 +173,7 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationH
     }
 
     private void updateBeginnerAnimations(UserProfile user) {
-        if (progressBar != null) {
+        if (progressBar != null && user != null) {
             AnimationHelper.animateProgressBar(user.getWeekProgress(), user.getWeekGoal(), progressBar);
         }
     }
@@ -214,7 +218,7 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationH
         View[] cards = {b.progressCard.getRoot(), b.tipCard, b.quickActionCard.getRoot(), b.nextGoalCard, b.viewAllExpensesCard};
         AnimationHelper.animateCardsEntrance(cards);
 
-        if (progressBar != null) {
+        if (progressBar != null && user != null) {
             AnimationHelper.animateProgressBar(user.getWeekProgress(), user.getWeekGoal(), progressBar);
         }
     }

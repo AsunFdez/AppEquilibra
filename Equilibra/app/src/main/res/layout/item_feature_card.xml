@@ -60,7 +60,8 @@
                         tools:text="@string/my_expenses_tile"
                         android:textColor="@color/gray_800"
                         android:textSize="14sp"
-                        android:textStyle="bold" />
+                        android:textStyle="bold"
+                        android:layout_gravity="center_vertical"/>
 
                     <TextView
                         android:id="@+id/cardDescription"
@@ -68,18 +69,25 @@
                         android:layout_height="wrap_content"
                         tools:text="@string/my_expenses_text"
                         android:textColor="@color/gray_600"
-                        android:textSize="12sp" />
+                        android:textSize="12sp"
+                        android:layout_gravity="center_vertical" />
                 </LinearLayout>
             </LinearLayout>
 
             <!-- Arrow -->
-
             <ImageView
                 android:id="@+id/cardRightIcon"
                 android:layout_width="24dp"
                 android:layout_height="24dp"
                 android:src="@drawable/ic_nav_chevron_right"
                 app:tint="@color/text_hint"
+                android:visibility="gone" />
+
+            <!-- Switch -->
+            <com.google.android.material.switchmaterial.SwitchMaterial
+                android:id="@+id/cardSwitch"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:visibility="gone" />
 
         </LinearLayout>
