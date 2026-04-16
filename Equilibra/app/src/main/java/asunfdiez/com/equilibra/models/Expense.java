@@ -23,7 +23,7 @@ public class Expense {
     private long id;
     private String type; // "expense" o "income"
     private double amount;
-    private String category;
+    private long category;
     private String description;
     private String date;
     private String time;
@@ -36,7 +36,7 @@ public class Expense {
     public Expense() {}
 
     @Ignore
-    public Expense(String type, double amount, String category, String description, String date)  {
+    public Expense(String type, double amount, int category, String description, String date)  {
         this.type = type;
         this.amount = amount;
         this.category = category;
@@ -77,11 +77,11 @@ public class Expense {
         this.amount = amount;
     }
 
-    public String getCategory() {
+    public long getCategory() {
         return category;
     }
 
-    public void setCategory(String category) {
+    public void setCategory(long category) {
         this.category = category;
     }
 

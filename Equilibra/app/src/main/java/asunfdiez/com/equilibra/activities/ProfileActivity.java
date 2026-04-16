@@ -150,7 +150,7 @@ public class ProfileActivity extends AppCompatActivity {
             public void handleOnBackPressed() {
                 viewModel.handleBackPress(() -> {
                     finish();
-                    overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
+                    overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
                 });
             }
         });

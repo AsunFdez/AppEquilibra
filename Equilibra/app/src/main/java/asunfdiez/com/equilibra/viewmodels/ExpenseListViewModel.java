@@ -17,17 +17,19 @@ import java.util.Map;
 import java.util.concurrent.Executors;
 
 import asunfdiez.com.equilibra.models.Expense;
+import asunfdiez.com.equilibra.models.ExpenseWithCategory;
 import asunfdiez.com.equilibra.repositories.ExpenseRepository;
 
 public class ExpenseListViewModel extends AndroidViewModel {
 
     private final ExpenseRepository repository;
-    private final MutableLiveData<List<Expense>> expenses = new MutableLiveData<>(new ArrayList<>());
+    private final MutableLiveData<List<ExpenseWithCategory>> expenses = new MutableLiveData<>(new ArrayList<>());
     private final MutableLiveData<String> totalAmount = new MutableLiveData<>("0.00");
     private final MutableLiveData<Integer> totalRecords = new MutableLiveData<>(0);
     private final MutableLiveData<Map<Integer, Boolean>> daysWithExpenses = new MutableLiveData<>(new HashMap<>());
     private final MutableLiveData<String> currentMonthYear = new MutableLiveData<>("");
     private final Calendar currentMonthCalendar = Calendar.getInstance();
+    private final MutableLiveData<Long> selectedDateTimestamp = new MutableLiveData<>(null);
 
     public ExpenseListViewModel(@NonNull Application application) {
         super(application);
@@ -35,6 +37,8 @@ public class ExpenseListViewModel extends AndroidViewModel {
         updateMonthYear();
         loadData();
     }
+
+
 
     public void loadData() {
         Executors.newSingleThreadExecutor().execute(() -> {
@@ -53,29 +57,74 @@ public class ExpenseListViewModel extends AndroidViewModel {
             calendar.set(Calendar.MILLISECOND, 999);
             long endTime = calendar.getTimeInMillis();
 
-            List<Expense> expenseList = repository.getExpensesInRange(startTime, endTime);
+            List<ExpenseWithCategory> expenseList = repository.getExpensesWithCategoryInRange(startTime, endTime);
             
-            // Calcular total solo para gastos (o balance si prefieres)
+            // Filtrar por fecha seleccionada si existe
+            Long selectedTs = selectedDateTimestamp.getValue();
+            List<ExpenseWithCategory> filteredList = new ArrayList<>();
+            if (selectedTs != null) {
+                Calendar selectedCal = Calendar.getInstance();
+                selectedCal.setTimeInMillis(selectedTs);
+                int day = selectedCal.get(Calendar.DAY_OF_MONTH);
+                int month = selectedCal.get(Calendar.MONTH);
+                int year = selectedCal.get(Calendar.YEAR);
+                
+                for (ExpenseWithCategory e : expenseList) {
+                    Calendar eCal = Calendar.getInstance();
+                    eCal.setTimeInMillis(e.getExpense().getTimestamp());
+                    if (eCal.get(Calendar.DAY_OF_MONTH) == day && 
+                        eCal.get(Calendar.MONTH) == month && 
+                        eCal.get(Calendar.YEAR) == year) {
+                        filteredList.add(e);
+                    }
+                }
+            } else {
+                filteredList.addAll(expenseList);
+            }
+
+            // Calcular total solo para gastos
             double total = 0;
-            for (Expense e : expenseList) {
-                if (e.isExpense()) {
-                    total += e.getAmount();
+            for (ExpenseWithCategory e : filteredList) {
+                if (e.getExpense().isExpense()) {
+                    total += e.getExpense().getAmount();
                 }
             }
             
-            expenses.postValue(expenseList);
+            expenses.postValue(filteredList);
             totalAmount.postValue(String.format("%.2f", total));
-            totalRecords.postValue(expenseList.size());
+            totalRecords.postValue(filteredList.size());
             
-            // Procesar días con gastos para el calendario
+            // Procesar días con gastos para el calendario (siempre sobre la lista completa del mes)
             Map<Integer, Boolean> daysMap = new HashMap<>();
             Calendar cal = Calendar.getInstance();
-            for (Expense e : expenseList) {
-                cal.setTimeInMillis(e.getTimestamp());
+            for (ExpenseWithCategory e : expenseList) {
+                cal.setTimeInMillis(e.getExpense().getTimestamp());
                 daysMap.put(cal.get(Calendar.DAY_OF_MONTH), true);
             }
             daysWithExpenses.postValue(daysMap);
         });
+    }
+
+    public void onDateSelected(int day) {
+        Calendar selected = (Calendar) currentMonthCalendar.clone();
+        selected.set(Calendar.DAY_OF_MONTH, day);
+        selected.set(Calendar.HOUR_OF_DAY, 0);
+        selected.set(Calendar.MINUTE, 0);
+        selected.set(Calendar.SECOND, 0);
+        selected.set(Calendar.MILLISECOND, 0);
+        
+        long newTs = selected.getTimeInMillis();
+        if (selectedDateTimestamp.getValue() != null && selectedDateTimestamp.getValue() == newTs) {
+            // Deseleccionar si es el mismo día
+            selectedDateTimestamp.setValue(null);
+        } else {
+            selectedDateTimestamp.setValue(newTs);
+        }
+        loadData();
+    }
+
+    public LiveData<Long> getSelectedDateTimestamp() {
+        return selectedDateTimestamp;
     }
 
     public void nextMonth() {
@@ -104,7 +153,7 @@ public class ExpenseListViewModel extends AndroidViewModel {
         return currentMonthCalendar;
     }
 
-    public LiveData<List<Expense>> getExpenses() {
+    public LiveData<List<ExpenseWithCategory>> getExpenses() {
         return expenses;
     }
 

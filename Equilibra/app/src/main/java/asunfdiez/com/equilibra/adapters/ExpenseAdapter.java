@@ -14,7 +14,7 @@ import java.util.Locale;
 
 import asunfdiez.com.equilibra.controllers.ExpenseViewHolder;
 import asunfdiez.com.equilibra.databinding.ItemExpenseBinding;
-import asunfdiez.com.equilibra.models.Expense;
+import asunfdiez.com.equilibra.models.ExpenseWithCategory;
 
 /**
  * ExpenseAdapter - Adapter para RecyclerView de gastos
@@ -23,13 +23,14 @@ import asunfdiez.com.equilibra.models.Expense;
 public class ExpenseAdapter extends RecyclerView.Adapter<ExpenseViewHolder> {
 
     private final Context context;
-    private List<Expense> expenses;
+    private List<ExpenseWithCategory> expenses;
     private final OnExpenseClickListener listener;
     private final NumberFormat currencyFormat;
 
     public interface OnExpenseClickListener {
-        void onExpenseClick(Expense expense);
-        void onExpenseDelete(Expense expense);
+        void onExpenseClick(ExpenseWithCategory expense);
+        void onExpenseDelete(ExpenseWithCategory expense);
+        void onExpenseEdit(ExpenseWithCategory expense);
     }
 
     public ExpenseAdapter(Context context, OnExpenseClickListener listener) {
@@ -49,8 +50,8 @@ public class ExpenseAdapter extends RecyclerView.Adapter<ExpenseViewHolder> {
 
     @Override
     public void onBindViewHolder(@NonNull ExpenseViewHolder holder, int position) {
-        Expense expense = expenses.get(position);
-        holder.bind(expense, listener, currencyFormat, context);
+        ExpenseWithCategory expense = expenses.get(position);
+        holder.bind(expense, listener);
     }
 
     @Override
@@ -61,27 +62,10 @@ public class ExpenseAdapter extends RecyclerView.Adapter<ExpenseViewHolder> {
     /**
      * Actualiza la lista de gastos
      */
-    public void setExpenses(List<Expense> expenses) {
+    public void setExpenses(List<ExpenseWithCategory> expenses) {
         this.expenses = expenses;
         notifyDataSetChanged();
     }
 
-    /**
-     * Añade un gasto a la lista
-     */
-    public void addExpense(Expense expense) {
-        this.expenses.add(0, expense); // Añadir al principio
-        notifyItemInserted(0);
-    }
-
-    /**
-     * Elimina un gasto de la lista
-     */
-    public void removeExpense(int position) {
-        if (position >= 0 && position < expenses.size()) {
-            this.expenses.remove(position);
-            notifyItemRemoved(position);
-        }
-    }
 
 }

@@ -31,6 +31,7 @@
     <string name="saving_expense_error">Error al procesar el gasto</string>
 
 
+    <string name="detail_expense_title">Detalles del gasto</string>
     <string name="confirm_expense_title">Confirma tu gasto</string>
     <string name="confirm_expense_description">Revisa antes de continuar</string>
 

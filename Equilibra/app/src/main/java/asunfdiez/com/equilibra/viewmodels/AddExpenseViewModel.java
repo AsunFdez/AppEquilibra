@@ -29,10 +29,10 @@ import asunfdiez.com.equilibra.repositories.ExpenseRepository;
 public class AddExpenseViewModel extends AndroidViewModel {
 
     private final Context context;
-    private ExpenseRepository repository;
+    private final ExpenseRepository repository;
 
     // LiveData para el monto actual
-    public MutableLiveData<String> currentAmount = new MutableLiveData<>("");
+    private MutableLiveData<String> currentAmount = new MutableLiveData<>("");
 
     // LiveData para la categoría seleccionada
     private MutableLiveData<ExpenseCategory> selectedCategory = new MutableLiveData<>();
@@ -48,7 +48,7 @@ public class AddExpenseViewModel extends AndroidViewModel {
 
     private long currentExpenseId = 0;
 
-    private final MutableLiveData<Calendar> selectedDateTime = new MutableLiveData<>(Calendar.getInstance(TimeZone.getDefault(), Locale.getDefault()));
+    public final MutableLiveData<Calendar> selectedDateTime = new MutableLiveData<>(Calendar.getInstance(TimeZone.getDefault(), Locale.getDefault()));
 
     public LiveData<Calendar> getSelectedDateTime() {
         return selectedDateTime;
@@ -102,7 +102,7 @@ public class AddExpenseViewModel extends AndroidViewModel {
                     List<ExpenseCategory> categoryList = categories.getValue();
                     if (categoryList != null) {
                         for (ExpenseCategory cat : categoryList) {
-                            if (cat.getName().equalsIgnoreCase(expense.getCategory())) {
+                            if (cat.getId() == expense.getCategory()) {
                                 cat.setSelected(true);
                                 selectedCategory.setValue(cat);
                                 break;
@@ -221,7 +221,7 @@ public class AddExpenseViewModel extends AndroidViewModel {
                     // 1. Verificar si es un gasto importante (muy alto)
                     if (repository.isImportantExpense(amountValue)) {
                         String impact = repository.calculateGoalImpact(amountValue);
-                        List<String> alts = repository.generateAlternatives(category.getName(), amountValue, description.getValue());
+                        List<String> alts = repository.generateAlternatives(category.getId(), amountValue, description.getValue());
                         
                         goalImpact.postValue(impact);
                         alternatives.postValue(alts);
@@ -230,7 +230,7 @@ public class AddExpenseViewModel extends AndroidViewModel {
                     }
 
                     // 2. Verificar patrones de gastos repetitivos (Smart Reminder)
-                    SmartReminder reminder = repository.detectExpensePattern(category.getName(), amountValue);
+                    SmartReminder reminder = repository.detectExpensePattern(category.getId(), amountValue);
                     if (reminder != null) {
                         showSmartReminder.postValue(reminder);
                         return;
@@ -278,7 +278,7 @@ public class AddExpenseViewModel extends AndroidViewModel {
             expense.setId(currentExpenseId);
             expense.setType("expense");
             expense.setAmount(amountValue);
-            expense.setCategory(category.getName());
+            expense.setCategory( category.getId() );
             expense.setDescription(desc != null ? desc : "");
 
             SimpleDateFormat sdfDate = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
@@ -347,7 +347,7 @@ public class AddExpenseViewModel extends AndroidViewModel {
         return categories;
     }
 
-    public LiveData<String> getDescription() {
+    public MutableLiveData<String> getDescription() {
         return description;
     }
 

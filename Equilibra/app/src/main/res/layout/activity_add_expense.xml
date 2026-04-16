@@ -173,6 +173,7 @@
                     android:padding="16dp"
                     android:textSize="14sp"
                     android:maxLines="2"
+                    android:text="@={viewModel.description}"
                     android:inputType="textCapSentences"
                     android:textColor="@color/textPrimary"
                     android:textColorHint="@color/textSecondary"

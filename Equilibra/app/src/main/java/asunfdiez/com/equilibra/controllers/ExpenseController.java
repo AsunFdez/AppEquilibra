@@ -62,12 +62,12 @@ public class ExpenseController {
         return expenseRepository.getTopCategoriesAnalysis(start, end, limit);
     }
 
-    public double[] getWeeklyExpenses() {
-        return expenseRepository.getWeeklyExpenses();
+    public double[] getWeeklyExpenses(long start) {
+        return expenseRepository.getWeeklyExpenses(start);
     }
 
-    public double[] getMonthlyExpenses() {
-        return expenseRepository.getMonthlyExpenses();
+    public double[] getMonthlyExpenses(long start) {
+        return expenseRepository.getMonthlyExpenses(start);
     }
 
     public boolean hasExpenses() {

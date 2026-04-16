@@ -90,6 +90,7 @@
     <color name="secondaryDark">#2980B9</color>
 
     <!-- Acento con alpha -->
+    <color name="accent_alpha">#33E67E22</color>
     <color name="accentLight">#FFFBF3</color>
 
     <!-- Error con alpha -->

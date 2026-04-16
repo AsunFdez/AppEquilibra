@@ -28,7 +28,13 @@ public interface ExpenseCategoryDao {
     void deleteExpenseCategory(ExpenseCategory category);
 
     @Query("SELECT * FROM " + Constants.TABLE_CATEGORIES )
-    public List<ExpenseCategory> getCategories();
+    List<ExpenseCategory> getCategories();
+
+    @Query("SELECT * FROM " + Constants.TABLE_CATEGORIES + " WHERE " + Constants.COLUMN_CATEGORY_ID + " = :id")
+    ExpenseCategory getCategoryById(long id);
+
+    @Query("SELECT " + Constants.COLUMN_CATEGORY_NAME + " FROM " + Constants.TABLE_CATEGORIES + " WHERE " + Constants.COLUMN_CATEGORY_ID + " = :id")
+    String getCategoryNameById(long id);
 
     @Query("DELETE FROM " + Constants.TABLE_CATEGORIES)
     void deleteAll();

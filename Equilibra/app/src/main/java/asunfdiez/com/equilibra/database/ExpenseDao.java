@@ -11,6 +11,7 @@ import java.util.List;
 
 import asunfdiez.com.equilibra.models.CategoryAnalysis;
 import asunfdiez.com.equilibra.models.Expense;
+import asunfdiez.com.equilibra.models.ExpenseWithCategory;
 import asunfdiez.com.equilibra.utils.Constants;
 
 @Dao
@@ -52,13 +53,14 @@ public interface ExpenseDao {
             Constants.COLUMN_EXPENSE_TIMESTAMP + " BETWEEN :startTime AND :endTime")
     Double getTotalForTypeInRange(String type, long startTime, long endTime);
 
-    @Query("SELECT " + Constants.COLUMN_EXPENSE_CATEGORY + ", " +
-            "SUM(" + Constants.COLUMN_EXPENSE_AMOUNT + ") as amount, " +
+    @Query("SELECT c." + Constants.COLUMN_CATEGORY_NAME + " as category, " +
+            "SUM(e." + Constants.COLUMN_EXPENSE_AMOUNT + ") as amount, " +
             "COUNT(*) as count " +
-            "FROM " + Constants.TABLE_EXPENSES +
-            " WHERE " + Constants.COLUMN_EXPENSE_TYPE + " = :type AND " +
-            Constants.COLUMN_EXPENSE_TIMESTAMP + " BETWEEN :startTime AND :endTime " +
-            "GROUP BY " + Constants.COLUMN_EXPENSE_CATEGORY +
+            "FROM " + Constants.TABLE_EXPENSES + " e " +
+            "LEFT JOIN " + Constants.TABLE_CATEGORIES + " c ON e." + Constants.COLUMN_EXPENSE_CATEGORY + " = c.id " +
+            "WHERE e." + Constants.COLUMN_EXPENSE_TYPE + " = :type AND " +
+            "e." + Constants.COLUMN_EXPENSE_TIMESTAMP + " BETWEEN :startTime AND :endTime " +
+            "GROUP BY e." + Constants.COLUMN_EXPENSE_CATEGORY +
             " ORDER BY amount DESC LIMIT :limit")
     List<CategoryAnalysis> getTopCategoryAnalysisInRange(String type, long startTime, long endTime, int limit);
 
@@ -78,20 +80,21 @@ public interface ExpenseDao {
     @Query("SELECT " + Constants.COLUMN_EXPENSE_CATEGORY + " FROM " + Constants.TABLE_EXPENSES +
             " WHERE " + Constants.COLUMN_EXPENSE_TIMESTAMP + " BETWEEN :startTime AND :endTime " +
             "GROUP BY " + Constants.COLUMN_EXPENSE_CATEGORY + " ORDER BY SUM(" + Constants.COLUMN_EXPENSE_AMOUNT + ") DESC LIMIT 1")
-    String getTopExpenseCategoryInRange(long startTime, long endTime);
+    long getTopExpenseCategoryInRange(long startTime, long endTime);
 
     @Query("SELECT SUM(" + Constants.COLUMN_EXPENSE_AMOUNT + ") FROM " + Constants.TABLE_EXPENSES +
             " WHERE " + Constants.COLUMN_EXPENSE_CATEGORY + " = :category AND " +
             Constants.COLUMN_EXPENSE_TIMESTAMP + " BETWEEN :startTime AND :endTime")
-    Double getCategoryTotalInRange(String category, long startTime, long endTime);
+    Double getCategoryTotalInRange(long category, long startTime, long endTime);
 
-    @Query("SELECT " + Constants.COLUMN_EXPENSE_CATEGORY + ", " +
-            "SUM(" + Constants.COLUMN_EXPENSE_AMOUNT + ") as amount, " +
+    @Query("SELECT c." + Constants.COLUMN_CATEGORY_NAME + " as category, " +
+            "SUM(e." + Constants.COLUMN_EXPENSE_AMOUNT + ") as amount, " +
             "COUNT(*) as count " +
-            "FROM " + Constants.TABLE_EXPENSES +
-            " WHERE " + Constants.COLUMN_EXPENSE_TYPE + " = :type AND " +
-            Constants.COLUMN_EXPENSE_TIMESTAMP + " >= :startTime " +
-            "GROUP BY " + Constants.COLUMN_EXPENSE_CATEGORY +
+            "FROM " + Constants.TABLE_EXPENSES + " e " +
+            "LEFT JOIN " + Constants.TABLE_CATEGORIES + " c ON e." + Constants.COLUMN_EXPENSE_CATEGORY + " = c.id " +
+            "WHERE e." + Constants.COLUMN_EXPENSE_TYPE + " = :type AND " +
+            "e." + Constants.COLUMN_EXPENSE_TIMESTAMP + " >= :startTime " +
+            "GROUP BY e." + Constants.COLUMN_EXPENSE_CATEGORY +
             " ORDER BY amount DESC")
     List<CategoryAnalysis> getCategoryAnalysisSince(String type, long startTime);
 
@@ -101,7 +104,7 @@ public interface ExpenseDao {
     @Query("SELECT COUNT(*) FROM " + Constants.TABLE_EXPENSES +
             " WHERE " + Constants.COLUMN_EXPENSE_CATEGORY + " = :category AND " +
             Constants.COLUMN_EXPENSE_TIMESTAMP + " >= :sinceTimestamp")
-    int countCategoryExpensesSince(String category, long sinceTimestamp);
+    int countCategoryExpensesSince(long category, long sinceTimestamp);
 
     /**
      * Obtiene el total gastado en una categoría desde un timestamp dado
@@ -109,7 +112,7 @@ public interface ExpenseDao {
     @Query("SELECT SUM(" + Constants.COLUMN_EXPENSE_AMOUNT + ") FROM " + Constants.TABLE_EXPENSES +
             " WHERE " + Constants.COLUMN_EXPENSE_CATEGORY + " = :category AND " +
             Constants.COLUMN_EXPENSE_TIMESTAMP + " >= :sinceTimestamp")
-    Double getTotalSpentInCategorySince(String category, long sinceTimestamp);
+    Double getTotalSpentInCategorySince(long category, long sinceTimestamp);
 
     @Query("SELECT COUNT(*) FROM " + Constants.TABLE_EXPENSES )
     int getTotalExpenseCount();
@@ -125,5 +128,10 @@ public interface ExpenseDao {
             "FROM " + Constants.TABLE_EXPENSES + " GROUP BY day ORDER BY day DESC")
     List<Long> getUniqueDaysWithExpenses();
 
-
+    @Query("SELECT e.*, c.name as categoryName, c.iconResId as categoryIconResId, c.color as categoryColor " +
+            "FROM " + Constants.TABLE_EXPENSES + " e " +
+            "LEFT JOIN " + Constants.TABLE_CATEGORIES + " c ON e." + Constants.COLUMN_EXPENSE_CATEGORY + " = c.id " +
+            "WHERE e." + Constants.COLUMN_EXPENSE_TIMESTAMP + " BETWEEN :startTime AND :endTime " +
+            "ORDER BY e." + Constants.COLUMN_EXPENSE_TIMESTAMP + " DESC")
+    List<ExpenseWithCategory> getExpensesWithCategoryInRange(long startTime, long endTime);
 }

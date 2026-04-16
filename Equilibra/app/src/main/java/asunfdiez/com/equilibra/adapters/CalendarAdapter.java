@@ -15,19 +15,41 @@ import asunfdiez.com.equilibra.databinding.ItemCalendarDayBinding;
 
 public class CalendarAdapter extends RecyclerView.Adapter<CalendarAdapter.ViewHolder> {
 
+    public interface OnDateClickListener {
+        void onDateClick(int day);
+    }
+
     private List<Integer> days = new ArrayList<>();
     private Map<Integer, Boolean> daysWithExpenses;
     private int selectedDay = -1;
+    private OnDateClickListener listener;
+
+    public CalendarAdapter(OnDateClickListener listener) {
+        this.listener = listener;
+    }
+
+    public void setSelectedDay(int day) {
+        this.selectedDay = day;
+        notifyDataSetChanged();
+    }
 
     public void setCalendar(Calendar calendar) {
         days.clear();
         // Obtener el primer día de la semana para el desplazamiento
         Calendar temp = (Calendar) calendar.clone();
         temp.set(Calendar.DAY_OF_MONTH, 1);
-        int firstDayOfWeek = temp.get(Calendar.DAY_OF_WEEK) - 1; // 0 para Domingo, 1 para Lunes...
+        
+        // temp.get(Calendar.DAY_OF_WEEK) devuelve 1 para Domingo, 2 para Lunes...
+        // Si queremos que empiece en Lunes:
+        // Lunes(2) -> shift 0
+        // Martes(3) -> shift 1
+        // ...
+        // Domingo(1) -> shift 6
+        int firstDayOfWeek = temp.get(Calendar.DAY_OF_WEEK);
+        int shift = (firstDayOfWeek + 5) % 7; 
         
         // Rellenar días vacíos al inicio
-        for (int i = 0; i < firstDayOfWeek; i++) {
+        for (int i = 0; i < shift; i++) {
             days.add(0); // 0 representa día vacío
         }
 
@@ -85,10 +107,9 @@ public class CalendarAdapter extends RecyclerView.Adapter<CalendarAdapter.ViewHo
             
             binding.getRoot().setOnClickListener(v -> {
                 if (day == 0) return;
-                int previousSelected = selectedDay;
-                selectedDay = day;
-                // Re-bind affected items
-                notifyDataSetChanged(); // Simple para este grid pequeño
+                if (listener != null) {
+                    listener.onDateClick(day);
+                }
             });
             
             binding.executePendingBindings();

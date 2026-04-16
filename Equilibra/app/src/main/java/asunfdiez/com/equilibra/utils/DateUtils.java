@@ -1,7 +1,5 @@
 package asunfdiez.com.equilibra.utils;
 
-import androidx.lifecycle.LiveData;
-
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Locale;
@@ -9,8 +7,8 @@ import java.util.TimeZone;
 
 public class DateUtils {
 
-    public static String formatDate(LiveData<Calendar> calendarLiveData) {
-        Calendar calendar = calendarLiveData.getValue();
+
+    public static String formatDate(Calendar calendar) {
         if (calendar == null) return "";
 
         // Forzamos el uso de la zona horaria local y el locale del sistema
@@ -20,8 +18,13 @@ public class DateUtils {
         return sdf.format(calendar.getTime());
     }
 
-    public static String formatTime(LiveData<Calendar> calendarLiveData) {
-        Calendar calendar = calendarLiveData.getValue();
+    public static String formatDate(long timestamp) {
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTimeInMillis(timestamp);
+        return formatDate(calendar);
+    }
+
+    public static String formatTime(Calendar calendar) {
         if (calendar == null) return "";
 
         // Forzamos el uso de la zona horaria local
@@ -29,5 +32,11 @@ public class DateUtils {
         sdf.setTimeZone(TimeZone.getDefault());
 
         return sdf.format(calendar.getTime());
+    }
+
+    public static String formatTime(long timestamp) {
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTimeInMillis(timestamp);
+        return formatTime(calendar);
     }
 }

@@ -2,8 +2,6 @@ package asunfdiez.com.equilibra.activities;
 
 import android.app.Dialog;
 import android.content.Intent;
-import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.view.View;
@@ -20,7 +18,8 @@ import asunfdiez.com.equilibra.adapters.ExpenseAdapter;
 import asunfdiez.com.equilibra.databinding.ActivityExpenseListBinding;
 import asunfdiez.com.equilibra.databinding.BottomNavigationBinding;
 import asunfdiez.com.equilibra.databinding.DialogDeleteConfirmationBinding;
-import asunfdiez.com.equilibra.models.Expense;
+import asunfdiez.com.equilibra.databinding.DialogDetailExpenseBinding;
+import asunfdiez.com.equilibra.models.ExpenseWithCategory;
 import asunfdiez.com.equilibra.utils.AnimationHelper;
 import asunfdiez.com.equilibra.utils.BottomNavigationHandler;
 import asunfdiez.com.equilibra.utils.Constants;
@@ -48,6 +47,13 @@ public class ExpenseListActivity extends AppCompatActivity implements ExpenseAda
         setupRecyclerViews();
         setupListeners();
         setupObservers();
+        animateViews();
+    }
+
+
+    public void animateViews(){
+        View[] cards = {binding.cardTotalAmount, binding.cardCalendar, binding.rvExpenses};
+        AnimationHelper.animateCardsEntrance(cards);
     }
 
     private void setupRecyclerViews() {
@@ -56,8 +62,8 @@ public class ExpenseListActivity extends AppCompatActivity implements ExpenseAda
         binding.rvExpenses.setLayoutManager(new LinearLayoutManager(this));
         binding.rvExpenses.setAdapter(expenseAdapter);
 
-        // RecyclerView de Calendario
-        calendarAdapter = new CalendarAdapter();
+        // RecyclerView de Calendario con listener
+        calendarAdapter = new CalendarAdapter(day -> viewModel.onDateSelected(day));
         calendarAdapter.setCalendar(viewModel.getCurrentMonthCalendar());
         binding.rvCalendar.setAdapter(calendarAdapter);
     }
@@ -75,8 +81,6 @@ public class ExpenseListActivity extends AppCompatActivity implements ExpenseAda
             calendarAdapter.setCalendar(viewModel.getCurrentMonthCalendar());
         });
 
-
-
     }
 
     private void setupObservers() {
@@ -87,21 +91,20 @@ public class ExpenseListActivity extends AppCompatActivity implements ExpenseAda
         viewModel.getDaysWithExpenses().observe(this, daysMap -> {
             calendarAdapter.setDaysWithExpenses(daysMap);
         });
+
+        viewModel.getSelectedDateTimestamp().observe(this, timestamp -> {
+            if (timestamp == null) {
+                calendarAdapter.setSelectedDay(-1);
+            } else {
+                java.util.Calendar cal = java.util.Calendar.getInstance();
+                cal.setTimeInMillis(timestamp);
+                calendarAdapter.setSelectedDay(cal.get(java.util.Calendar.DAY_OF_MONTH));
+            }
+        });
     }
 
-    @Override
-    protected void onResume() {
-        super.onResume();
-        viewModel.loadData();
-    }
 
-    @Override
-    public void onExpenseClick(Expense expense) {
-        // Abrir AddExpenseActivity en modo edición
-        Intent intent = new Intent(this, AddExpenseActivity.class);
-        intent.putExtra("expense_id", expense.getId());
-        startActivity(intent);
-    }
+
 
     private void setupBottomNavigation() {
 
@@ -143,7 +146,7 @@ public class ExpenseListActivity extends AppCompatActivity implements ExpenseAda
     private void navigateTo(Class<?> activityClass) {
         Intent intent = new Intent(this, activityClass);
         startActivity(intent);
-        overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
+        overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
         finish();
     }
 
@@ -152,8 +155,34 @@ public class ExpenseListActivity extends AppCompatActivity implements ExpenseAda
         super.onDestroy();
         handler.removeCallbacksAndMessages(null);
     }
+
+
     @Override
-    public void onExpenseDelete(Expense expense) {
+    public void onExpenseClick(ExpenseWithCategory expense) {
+        Dialog dialog = new Dialog(this);
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog.setCancelable(true);
+
+        DialogDetailExpenseBinding dialogBinding = DialogDetailExpenseBinding.inflate(getLayoutInflater());
+        dialog.setContentView(dialogBinding.getRoot());
+
+        dialogBinding.btnConfirmExpense.setOnClickListener(v -> dialog.dismiss());
+        dialogBinding.setViewModel(viewModel);
+        dialogBinding.setExpense(expense);
+        dialog.show();
+    }
+
+
+    @Override
+    public void onExpenseEdit(ExpenseWithCategory expense) {
+        // Abrir AddExpenseActivity en modo edición
+        Intent intent = new Intent(this, AddExpenseActivity.class);
+        intent.putExtra("expense_id", expense.getExpense().getId());
+        startActivity(intent);
+    }
+
+    @Override
+    public void onExpenseDelete(ExpenseWithCategory expense) {
         Dialog dialog = new Dialog(this);
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         dialog.setCancelable(true);
@@ -161,16 +190,20 @@ public class ExpenseListActivity extends AppCompatActivity implements ExpenseAda
         DialogDeleteConfirmationBinding dialogBinding = DialogDeleteConfirmationBinding.inflate(getLayoutInflater());
         dialog.setContentView(dialogBinding.getRoot());
 
-        if (dialog.getWindow() != null) {
-            dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-        }
-
         dialogBinding.btnCancel.setOnClickListener(v -> dialog.dismiss());
         dialogBinding.btnDelete.setOnClickListener(v -> {
-            viewModel.deleteExpense(expense);
+            viewModel.deleteExpense(expense.getExpense());
             dialog.dismiss();
         });
 
         dialog.show();
     }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        viewModel.loadData();
+        animateViews();
+    }
+
 }

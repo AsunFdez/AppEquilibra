@@ -2,6 +2,7 @@
 package asunfdiez.com.equilibra.viewmodels;
 
 import android.app.Application;
+
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
@@ -23,7 +24,6 @@ public class AnalysisViewModel extends AndroidViewModel {
 
     private final MutableLiveData<Boolean> pieChartData = new MutableLiveData<>(false);
     private final MutableLiveData<Boolean> barChartData = new MutableLiveData<>(false);
-
 
     public AnalysisViewModel(@NonNull Application application) {
         super(application);
@@ -66,11 +66,38 @@ public class AnalysisViewModel extends AndroidViewModel {
             boolean weekly = isWeeklyVal != null && isWeeklyVal;
 
             if (weekly) {
-                cal.set(Calendar.DAY_OF_WEEK, cal.getFirstDayOfWeek());
+                // Mover al inicio de la semana el lunes a las 00:00:00
+                cal.setFirstDayOfWeek(Calendar.MONDAY);
+                cal.set(Calendar.DAY_OF_WEEK, Calendar.MONDAY);
+                cal.set(Calendar.HOUR_OF_DAY, 0);
+                cal.set(Calendar.MINUTE, 0);
+                cal.set(Calendar.SECOND, 0);
+                cal.set(Calendar.MILLISECOND, 0);
                 start = cal.getTimeInMillis();
+
+                // Mover al final de la semana el domingo a las 23:59:59
+                cal.set(Calendar.DAY_OF_WEEK, Calendar.SUNDAY);
+                cal.set(Calendar.HOUR_OF_DAY, 23);
+                cal.set(Calendar.MINUTE, 59);
+                cal.set(Calendar.SECOND, 59);
+                cal.set(Calendar.MILLISECOND, 999);
+                end = cal.getTimeInMillis();
             } else {
+                // Mover al inicio del mes a las 00:00:00
                 cal.set(Calendar.DAY_OF_MONTH, 1);
+                cal.set(Calendar.HOUR_OF_DAY, 0);
+                cal.set(Calendar.MINUTE, 0);
+                cal.set(Calendar.SECOND, 0);
+                cal.set(Calendar.MILLISECOND, 0);
                 start = cal.getTimeInMillis();
+
+                // Mover al final del mes a las 23:59:59
+                cal.set(Calendar.DAY_OF_MONTH, cal.getActualMaximum(Calendar.DAY_OF_MONTH));
+                cal.set(Calendar.HOUR_OF_DAY, 23);
+                cal.set(Calendar.MINUTE, 59);
+                cal.set(Calendar.SECOND, 59);
+                cal.set(Calendar.MILLISECOND, 999);
+                end = cal.getTimeInMillis();
             }
 
             double totalExpenses = expenseController.getTotalExpensesInRange(start, end);
@@ -80,10 +107,26 @@ public class AnalysisViewModel extends AndroidViewModel {
             List<CategoryAnalysis> pieEntries = expenseController.getTopCategoriesAnalysis(start, end, 5);
             pieChartData.postValue(!pieEntries.isEmpty());
 
-            double[] barValues = weekly ? expenseController.getWeeklyExpenses() : expenseController.getMonthlyExpenses();
-            barChartData.postValue(barValues.length != 0);
+            double[] barValues = weekly ? expenseController.getWeeklyExpenses(start) : expenseController.getMonthlyExpenses(start);
+            
+            // Verificar si hay datos significativos (mayores a cero)
+            boolean hasBarData = false;
+            if (barValues != null) {
+                for (double val : barValues) {
+                    if (val > 0) {
+                        hasBarData = true;
+                        break;
+                    }
+                }
+            }
+
+            barChartData.postValue(hasBarData);
 
             analysisState.postValue(new AnalysisState(totalExpenses, totalIncome, savings, pieEntries, barValues));
+
         });
     }
+
+
 }
+

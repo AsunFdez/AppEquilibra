@@ -6,7 +6,7 @@
     <data>
         <variable
             name="expense"
-            type="asunfdiez.com.equilibra.models.Expense" />
+            type="asunfdiez.com.equilibra.models.ExpenseWithCategory" />
     </data>
 
     <androidx.cardview.widget.CardView
@@ -34,9 +34,9 @@
                 android:id="@+id/imgIcon"
                 android:layout_width="48dp"
                 android:layout_height="48dp"
-                android:src="@drawable/ic_cat_shopping_cart"
-                android:background="@drawable/bg_circle_green_light"
-                android:padding="12dp" />
+                android:padding="12dp"
+                app:imageResource="@{expense.categoryIconResId}"
+                app:imageTint="@{expense.categoryColor}" />
 
             <!-- Información del gasto -->
             <LinearLayout
@@ -77,7 +77,7 @@
 
             </LinearLayout>
 
-            <!-- Contenedor Monto y Acciones -->
+            <!-- Contenedor Importe y Acciones -->
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -88,7 +88,7 @@
                     android:id="@+id/tvAmount"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="$ 150.00"
+                    app:formattedAmount="@{expense.amount}"
                     android:textSize="18sp"
                     android:textColor="@color/text_primary"
                     android:textStyle="bold" />
@@ -115,7 +115,7 @@
                         android:layout_width="28dp"
                         android:layout_height="28dp"
                         android:padding="4dp"
-                        android:src="@drawable/ic_uti_delete"
+                        android:src="@drawable/ic_delete"
                         app:tint="@color/error"
                         android:layout_marginStart="8dp"
                         android:background="?attr/selectableItemBackgroundBorderless" />

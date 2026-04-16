@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+        <import type="asunfdiez.com.equilibra.utils.DateUtils" />
+        <variable
+            name="viewModel"
+            type="asunfdiez.com.equilibra.viewmodels.ExpenseListViewModel" />
+        <variable
+            name="expense"
+            type="asunfdiez.com.equilibra.models.ExpenseWithCategory" />
+    </data>
+
+    <androidx.cardview.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="24dp"
+        app:cardCornerRadius="16dp"
+        app:cardElevation="8dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:background="@color/secondary_lighter">
+
+            <!-- Header con icono -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:padding="20dp"
+                android:background="@color/secondary">
+
+                <ImageView
+                    android:layout_width="32dp"
+                    android:layout_height="32dp"
+                    app:imageResource="@{expense.categoryIconResId}"
+                    app:tint="@android:color/white" />
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:layout_marginStart="12dp"
+                    android:text="@{expense.category}"
+                    android:textColor="@android:color/white"
+                    android:textSize="18sp"
+                    android:textStyle="bold" />
+
+            </LinearLayout>
+
+            <!-- Contenido -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="20dp">
+
+                <!-- Importe  -->
+                <TextView
+                    android:id="@+id/tvAmountLarge"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:formattedAmount="@{expense.amount}"
+                    android:textColor="@color/secondary"
+                    android:textSize="42sp"
+                    android:textStyle="bold"
+                    android:gravity="center"
+                    android:layout_marginBottom="8dp" />
+
+                <!-- Descripción -->
+                <TextView
+                    android:id="@+id/tvCategoryName"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@{expense.description}"
+                    android:textSize="16sp"
+                    android:textColor="@color/secondary"
+                    android:gravity="center"
+                    android:layout_marginBottom="20dp" />
+
+                <!-- Fecha y hora -->
+                <TextView
+                    android:id="@+id/tvdate"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@{DateUtils.formatDate(expense.expense.timestamp)}"
+                    android:textSize="14sp"
+                    android:textColor="@color/secondary"
+                    android:gravity="center" />
+
+                <TextView
+                    android:id="@+id/tvTime"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@{DateUtils.formatTime(expense.expense.timestamp)}"
+                    android:textSize="14sp"
+                    android:textColor="@color/secondary"
+                    android:gravity="center" />
+
+
+                <!-- Botones -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center">
+
+                    <com.google.android.material.button.MaterialButton
+                        style="@style/Equilibra.Button.Primary"
+                        android:id="@+id/btnConfirmExpense"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="8dp"
+                        android:text="@string/ok" />
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+    </androidx.cardview.widget.CardView>
+
+</layout>

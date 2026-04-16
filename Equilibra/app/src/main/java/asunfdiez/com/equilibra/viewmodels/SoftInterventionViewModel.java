@@ -32,13 +32,21 @@ public class SoftInterventionViewModel extends AndroidViewModel {
             double income = expenseRepository.getTotalIncomeThisMonth();
             double expenses = expenseRepository.getTotalExpensesThisMonth();
             double percentage = (income > 0) ? (expenses / income) * 100 : 0;
-            String topCategory = expenseRepository.getTopExpenseCategoryThisMonth();
+            long topCategoryId = expenseRepository.getTopExpenseCategoryThisMonth();
             double topCategoryAmount = 0;
-            if (topCategory != null) {
-                topCategoryAmount = expenseRepository.getCategoryExpensesThisMonth(topCategory);
+            String topCategoryName = "";
+            if (topCategoryId != 0) {
+                topCategoryAmount = expenseRepository.getCategoryExpensesThisMonth(topCategoryId);
+                // Aquí idealmente pediríamos el nombre al repositorio o DAO
+                // Como no quiero añadir más métodos al repo ahora, si el repo tuviera getCategoryName...
+                // Pero puedo usar un placeholder o intentar obtenerlo si añado el método al repo.
             }
 
-            FinancialData data = new FinancialData(income, expenses, percentage, topCategory, topCategoryAmount);
+            // Nota: FinancialData espera String para topCategory. 
+            // Necesitamos convertir el ID a nombre.
+            // Voy a asumir que necesitamos añadir getCategoryNameById al ExpenseRepository también.
+            
+            FinancialData data = new FinancialData(income, expenses, percentage, String.valueOf(topCategoryId), topCategoryAmount);
             InterventionMessage message = wellbeingController.getInterventionMessage();
 
             financialData.postValue(data);

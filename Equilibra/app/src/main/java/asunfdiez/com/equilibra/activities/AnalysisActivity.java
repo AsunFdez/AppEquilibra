@@ -56,6 +56,8 @@ public class AnalysisActivity extends AppCompatActivity implements BottomNavigat
         setContentView(binding.getRoot());
 
         viewModel = new ViewModelProvider(this).get(AnalysisViewModel.class);
+        binding.setViewModel(viewModel);
+        binding.setLifecycleOwner(this);
         setupBottomNavigation();
 
         setupUI();
@@ -214,7 +216,7 @@ public class AnalysisActivity extends AppCompatActivity implements BottomNavigat
     private void navigateTo(Class<?> activityClass) {
         Intent intent = new Intent(this, activityClass);
         startActivity(intent);
-        overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
+        overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
         finish();
     }
 }

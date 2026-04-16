@@ -66,7 +66,7 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationH
         });
 
         viewModel.getAdvice().observe(this, advice -> {
-            if (advice != null) {
+            if (advice != null && binding != null) {
                 binding.setVariable(asunfdiez.com.equilibra.BR.advice, advice);
                 // Esto forzará a la tipCard a actualizarse usando los BindingAdapters
                 binding.executePendingBindings();
@@ -255,7 +255,7 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationH
     private void navigateTo(Class<?> activityClass) {
         Intent intent = new Intent(this, activityClass);
         startActivity(intent);
-        overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
+        overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
     }
 
     @Override

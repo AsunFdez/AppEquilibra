@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 import asunfdiez.com.equilibra.R;
@@ -97,6 +98,13 @@ public class ExpenseRepository {
     }
 
     /**
+     * Obtiene los gastos con su información de categoría en un rango de fechas
+     */
+    public List<asunfdiez.com.equilibra.models.ExpenseWithCategory> getExpensesWithCategoryInRange(long startTime, long endTime) {
+        return expenseDao.getExpensesWithCategoryInRange(startTime, endTime);
+    }
+
+    /**
      * Obtiene todos los gastos del mes actual
      */
     public List<Expense> getExpensesThisMonth() {
@@ -153,14 +161,14 @@ public class ExpenseRepository {
     /**
      * Obtiene la categoría con más gastos en el mes actual
      */
-    public String getTopExpenseCategoryThisMonth() {
+    public long getTopExpenseCategoryThisMonth() {
         return expenseDao.getTopExpenseCategoryInRange(getStartOfMonth(), getEndOfMonth());
     }
 
     /**
      * Obtiene el total gastado en una categoría específica este mes
      */
-    public double getCategoryExpensesThisMonth(String category) {
+    public double getCategoryExpensesThisMonth(long category) {
         Double total = expenseDao.getCategoryTotalInRange(category, getStartOfMonth(), getEndOfMonth());
         return total != null ? total : 0.0;
     }
@@ -280,10 +288,10 @@ public class ExpenseRepository {
     /**
      * Detecta patrones de gastos repetitivos (Smart Reminder)
      * @param category Categoría del gasto
-     * @param amount Monto del gasto
+     * @param amount importe del gasto
      * @return SmartReminder si hay patrón, null si no
      */
-    public SmartReminder detectExpensePattern(String category, double amount) {
+    public SmartReminder detectExpensePattern(long categoryId, double amount) {
         // Verificar cuántas veces se ha gastado en esta categoría esta semana
         Calendar calendar = Calendar.getInstance();
         calendar.set(Calendar.DAY_OF_WEEK, calendar.getFirstDayOfWeek());
@@ -293,26 +301,29 @@ public class ExpenseRepository {
         calendar.set(Calendar.MILLISECOND, 0);
         long startOfWeek = calendar.getTimeInMillis();
 
-        int weekCount = expenseDao.countCategoryExpensesSince(category, startOfWeek);
+        int weekCount = expenseDao.countCategoryExpensesSince(categoryId, startOfWeek);
 
         // Si es la 3ra vez o más, generar recordatorio
         if (weekCount >= 3) {
-            Double weekTotalObj = expenseDao.getTotalSpentInCategorySince(category, startOfWeek);
+            Double weekTotalObj = expenseDao.getCategoryTotalInRange(categoryId, startOfWeek, System.currentTimeMillis());
             double weekTotal = weekTotalObj != null ? weekTotalObj : 0.0;
 
+            String categoryName = expenseCategoryDao.getCategoryNameById(categoryId);
+            if (categoryName == null) categoryName = String.valueOf(categoryId);
+
             SmartReminder reminder = new SmartReminder();
-            reminder.setCategory(category);
+            reminder.setCategory(categoryName);
             reminder.setOccurrenceCount(weekCount + 1); // +1 porque aún no se ha guardado
             reminder.setTotalAmount(weekTotal + amount);
             reminder.setTimeFrame(context.getString(R.string.this_week));
 
             // Generar sugerencias personalizadas
-            List<String> suggestions = generateSuggestions(category, weekTotal + amount);
+            List<String> suggestions = generateSuggestions(categoryName, weekTotal + amount);
             reminder.setSuggestions(suggestions);
 
             // Mensaje del patrón
             String patternMsg = String.format(context.getString(R.string.expense_pattern),
-                    weekCount + 1, category, weekTotal + amount);
+                    weekCount + 1, categoryName, weekTotal + amount);
             reminder.setPatternMessage(patternMsg);
 
             return reminder;
@@ -410,13 +421,22 @@ public class ExpenseRepository {
     }
 
     /**
+     * Obtiene el nombre de una categoría por su ID
+     */
+    public String getCategoryNameById(long id) {
+        return expenseCategoryDao.getCategoryNameById(id);
+    }
+
+    /**
      * Genera alternativas para un gasto grande
      */
-    public List<String> generateAlternatives(String category, double amount, String description) {
+    public List<String> generateAlternatives(long categoryId, double amount, String description) {
         List<String> suggestions = new ArrayList<>();
+        String categoryName = getCategoryNameById(categoryId);
+        if (categoryName == null) categoryName = "";
 
         // 1. Buscar en la base de datos alternativas por categoría y descripción
-        List<Alternative> dbAlternatives = alternativeDao.getAlternativesByCategoryAndDescription(category, description);
+        List<Alternative> dbAlternatives = alternativeDao.getAlternativesByCategoryAndDescription(categoryName, description);
 
         if (dbAlternatives != null && !dbAlternatives.isEmpty()) {
             for (Alternative alt : dbAlternatives) {
@@ -488,34 +508,37 @@ public class ExpenseRepository {
 
     /**
      * Obtiene los gastos agrupados por día para la semana actual
+     * @param dayToStart Fecha de inicio de la semana
      */
-    public double[] getWeeklyExpenses() {
+    public double[] getWeeklyExpenses(long dayToStart) {
         double[] weeklyData = new double[7];
-        Calendar cal = Calendar.getInstance();
-        cal.setFirstDayOfWeek(Calendar.MONDAY);
-        cal.set(Calendar.DAY_OF_WEEK, Calendar.MONDAY);
-        cal.set(Calendar.HOUR_OF_DAY, 0);
-        cal.set(Calendar.MINUTE, 0);
-        cal.set(Calendar.SECOND, 0);
-        cal.set(Calendar.MILLISECOND, 0);
+
+        Calendar cal = Calendar.getInstance(Locale.getDefault());
+        cal.setTimeInMillis(dayToStart);
 
         for (int i = 0; i < 7; i++) {
-            long start = cal.getTimeInMillis();
-            cal.add(Calendar.DAY_OF_MONTH, 1);
-            long end = cal.getTimeInMillis() - 1;
-            
+            Calendar dayStart = (Calendar) cal.clone();
+            long start = dayStart.getTimeInMillis();
+
+            dayStart.add(Calendar.DAY_OF_MONTH, 1);
+            long end = dayStart.getTimeInMillis() - 1;
+
             Double total = expenseDao.getTotalInRange(Constants.TYPE_EXPENSE, start, end);
             weeklyData[i] = total != null ? total : 0.0;
+
+            cal.add(Calendar.DAY_OF_MONTH, 1);
         }
+
         return weeklyData;
     }
-
     /**
      * Obtiene los gastos agrupados por mes para el año actual (hasta el mes actual)
+     * @param dayToStart Fecha de inicio del año
      */
-    public double[] getMonthlyExpenses() {
+    public double[] getMonthlyExpenses(long dayToStart) {
         double[] monthlyData = new double[12];
         Calendar cal = Calendar.getInstance();
+        cal.setTimeInMillis(dayToStart);
         int currentYear = cal.get(Calendar.YEAR);
         
         for (int i = 0; i < 12; i++) {
