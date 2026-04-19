@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    strings_advice.xml - Consejos financieros diarios
+    Cada consejo tiene formato title|description para fácil rotación
+-->
+<resources>
+
+    <!-- CONSEJOS MAIN (Consejos del día rotatorios) -->
+    
+    <string name="advice_0">Regla 50/30/20</string>
+    <string name="advice_0_desc">Divide tus ingresos en 50% necesidades, 30% caprichos y 20% ahorro. Es la forma más equilibrada de gestionar tu dinero.</string>
+
+    <string name="advice_1">Elimina gastos hormiga</string>
+    <string name="advice_1_desc">Esos cafés y snacks diarios son pequeños, pero suman mucho. Identifica y elimina hasta un 20% de tus gastos mensuales.</string>
+
+    <string name="advice_2">Automatiza tu ahorro</string>
+    <string name="advice_2_desc">Programa una transferencia automática al recibir tu salario. Lo que no ves, no lo gastas. Es el ahorro más efectivo.</string>
+
+    <string name="advice_3">Presupuesto mensual</string>
+    <string name="advice_3_desc">Dedica 30 minutos a analizar ingresos y gastos del mes. Te sorprenderá dónde se va realmente tu dinero.</string>
+
+    <string name="advice_4">Cocina en casa</string>
+    <string name="advice_4_desc">Preparar tu comida en casa ahorra hasta 70% frente a comer fuera. Además, comes más saludable.</string>
+
+    <string name="advice_5">Cancela deudas primero</string>
+    <string name="advice_5_desc">Pagar intereses es tirar dinero. Prioriza cancelar deudas antes de invertir o ahorrar extra.</string>
+
+    <string name="advice_6">Compara precios online</string>
+    <string name="advice_6_desc">Antes de comprar cualquier cosa, busca en 3 tiendas diferentes. Puedes ahorrar 15-30% sin esfuerzo.</string>
+
+    <string name="advice_7">Revisa tus suscripciones</string>
+    <string name="advice_7_desc">Seguro que pagas por servicios que no usas. Una revisión rápida puede ahorrar €50-100 al mes.</string>
+
+    <string name="advice_8">Fondo de emergencia</string>
+    <string name="advice_8_desc">Guarda 3-6 meses de gastos fijos en una cuenta separada. Te salvará en momentos difíciles.</string>
+
+    <string name="advice_9">Bombillas LED en casa</string>
+    <string name="advice_9_desc">Cambiar a LED reduce la factura de luz hasta 80%. El cambio más rápido y barato que puedes hacer.</string>
+
+    <string name="advice_10">Aprovecha luz natural</string>
+    <string name="advice_10_desc">Abre cortinas y ventanas durante el día. Menos luz artificial = menos consumo = menos dinero.</string>
+
+    <string name="advice_11">Apaga stand-by</string>
+    <string name="advice_11_desc">Los electrodomésticos en modo stand-by gastan más de lo que crees. Una regleta con interruptor es la solución.</string>
+
+    <string name="advice_12">Compra combustible los lunes</string>
+    <string name="advice_12_desc">Los precios de gasolina son más bajos al inicio de la semana. Es un pequeño truco que suma.</string>
+
+    <string name="advice_13">Compra segunda mano</string>
+    <string name="advice_13_desc">Ropa, muebles, tecnología... De segunda mano es mucho más barato y además ayudas al medio ambiente.</string>
+
+    <string name="advice_14">Pregúntate si lo necesitas</string>
+    <string name="advice_14_desc">Antes de cada compra: \"¿Realmente lo necesito?\" Si dudes, espera 3 días. El impulso pasará.</string>
+
+    <string name="advice_15">Los gastos pequeños son los peores</string>
+    <string name="advice_15_desc">Un gasto de €5 diarios = €150 al mes = €1800 al año. ¡Los pequeños gastos son los enemigos invisibles!</string>
+
+    <string name="advice_16">Abre cuenta de ahorro</string>
+    <string name="advice_16_desc">Una cuenta separada para ahorros te ayuda psicológicamente. Además, los bancos dan intereses si dejas el dinero allí.</string>
+
+    <string name="advice_17">Haz compra \"de prueba\"</string>
+    <string name="advice_17_desc">Compara el precio total de tu compra habitual en 3 supermercados. Uno será al menos 10% más barato.</string>
+
+    <string name="advice_18">Compra online para no impulsionar</string>
+    <string name="advice_18_desc">Ir al físico = acabas comprando cosas innecesarias. Online es más seguro y controlas mejor el gasto.</string>
+
+    <string name="advice_19">Aprovecha \"special prices\"</string>
+    <string name="advice_19_desc">Las rebajas permanentes son mejores que las rebajas por evento. Tómalas con calma sin riesgo de oportunidad.</string>
+
+    <string name="advice_20">Espera antes de gastar</string>
+    <string name="advice_20_desc">Gasto importante = espera 4 días. Gasto normal = espera 1 día. El tiempo mata los impulsos de compra.</string>
+
+    <string name="advice_21">Reto: día sin gastos</string>
+    <string name="advice_21_desc">Elige 1 día al mes sin gastar nada. Cocina con lo que tienes, socializa gratis. Es liberador.</string>
+
+    <string name="advice_22">Negocia tus deudas</string>
+    <string name="advice_22_desc">¿Tienes una deuda con interés alto? Llama al banco. A menudo bajan la tasa si pides gentilmente.</string>
+
+    <string name="advice_23">Compra genéricos</string>
+    <string name="advice_23_desc">La marca propia del supermercado es idéntica pero 30% más barata. Nadie lo sabrá.</string>
+
+    <string name="advice_24">Crea límites de gasto</string>
+    <string name="advice_24_desc">No todos gastan igual. Define tu límite diario/semanal en Equilibra y respétalo. La consistencia vence.</string>
+
+</resources>

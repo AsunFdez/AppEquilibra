@@ -424,6 +424,27 @@ saveExpenseDirectly()
   - Formatos de fecha
   - Request codes e intent extras
 
+#### AdviceManager.java ⭐ NUEVO
+- **Ubicación:** `/AdviceManager.java`
+- **Propósito:** Gestor de consejos financieros diarios rotatorios
+- **Características:**
+  - 25 consejos diferentes (recopilados y mejorados)
+  - **Un consejo diferente cada día** (basado en fecha)
+  - Nunca repite el consejo del día anterior
+  - Implementación determinística (mismo día = mismo consejo siempre)
+  - Método para obtener consejo aleatorio
+  - Método para verificar si hoy es diferente a ayer
+- **Métodos principales:**
+  - `getDailyAdvice(context)` - Consejo del día actual
+  - `getYesterdayAdvice(context)` - Consejo del día anterior
+  - `getAdviceByIndex(context, index)` - Consejo específico (0-24)
+  - `getRandomAdvice(context)` - Consejo aleatorio
+  - `isDifferentFromYesterday(context)` - Verifica si cambió
+- **Algoritmo de rotación:**
+  - Calcula número de día desde epoch (01/01/1970)
+  - Usa módulo 25 para obtener índice cíclico
+  - Garantiza que ciclo completo = 25 días (un mes)
+
 ## Estado actual frente a las recomendaciones de Android Studio
 
 - Lenguaje: Java
@@ -434,11 +455,85 @@ saveExpenseDirectly()
 - Room/SQLite: implementado
 - LifecycleObserver: implementado
 
+---
+
+## 🎯 SISTEMA DE CONSEJOS DIARIOS (FASE 1 ✅ COMPLETADA)
+
+### Descripción
+Sistema que muestra un consejo financiero diferente cada día. Los usuarios verán:
+- **Día 1:** Bienvenida especial
+- **Sin gastos registrados:** Mensaje para registrar hoy
+- **Con actividad:** Consejo rotatorio del día (1 diferente cada 25 días)
+
+### Archivos
+1. **`strings_advice.xml`** - 25 consejos mejorados
+2. **`AdviceManager.java`** - Lógica de rotación diaria
+3. **`AdviceViewModel.java`** - ViewModel centralizado (FASE 2)
+
+### Integración en UI
+Data Binding automático via `AdviceViewModel`:
+```xml
+<!-- En beginner_user.xml -->
+<asunfdiez.com.equilibra.views.FeatureCard
+    app:cardTitle='@{adviceViewModel.dailyAdvice.title}'
+    app:cardDescription='@{adviceViewModel.dailyAdvice.description}'/>
+```
+
+---
+
+## 🔧 ARQUITECTURA MEJORADA (FASE 2 ✅ COMPLETADA)
+
+### Cambios implementados
+
+**Separación de Responsabilidades:**
+- **AdviceViewModel** - Manejo centralizado de consejos
+- **MainViewModel** - Lógica financiera e intervención
+- **MainActivity** - Solo UI, sin lógica de negocio
+
+**Data Binding Reactivo:**
+```
+AdviceViewModel
+  ├─ getDailyAdvice() ← Transformations.map(userProfile)
+  ├─ getQuickAction() ← Transformations.map(userProfile)
+  └─ getUserProfile()
+
+MainActivity
+  ├─ Instancia AdviceViewModel
+  ├─ Vinculado al binding sin setVariable() manual
+  └─ UI actualiza automáticamente
+```
+
+**Beneficios:**
+- ✅ Código más limpio: Eliminados setVariable() manuales
+- ✅ MVVM mejorado: ViewModels con responsabilidades claras
+- ✅ Testeable: Lógica aislada y fácil de probar
+- ✅ Mantenible: Cambios en un ViewModel no afectan otros
+
+### Archivos modificados (FASE 2)
+- **AdviceViewModel.java** (NUEVO) - ViewModel especializado
+- **MainViewModel.java** - Refactorizado (removida lógica de consejos)
+- **MainActivity.java** - Simplificado (eliminados setVariable manuales)
+- **activity_main.xml** - Incluye adviceViewModel
+- **beginner_user.xml** - Usa adviceViewModel.dailyAdvice
+
+### Tests unitarios agregados
+- **AdviceManagerTest.java** - 11 tests de rotación diaria
+- **AdviceViewModelTest.java** - 7 tests de LiveData reactivos
+
+---
+
 ## Próximos objetivos
 
-1. Usar `@NonNull` y `@Nullable`.
-2. Mantener `Activities` limpias y relegar la lógica de negocio a `ViewModels`/controladores.
-3. Utilizar respaldo de datos en la nube (Retrofit)
+1. ✅ FASE 1: Consejos diarios
+2. ✅ FASE 2: Mejoras de arquitectura MVVM
+3. ⏳ **FASE 3:** Notificaciones diarias y Gamificación
+   - [ ] WorkManager para notificaciones (8:00 AM)
+   - [ ] Sistema de logros con desbloqueo automático
+   - [ ] Rachas (streak) de días
+   - [ ] Animaciones de desbloqueo
+4. ⏳ FASE 4: Análisis financiero avanzado
+5. ⏳ FASE 5: Funcionalidades especializadas
+6. ⏳ FASE 6: Publicación
 
 ## Dependencias importantes
 

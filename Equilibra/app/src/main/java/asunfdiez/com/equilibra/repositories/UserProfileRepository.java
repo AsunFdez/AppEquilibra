@@ -32,6 +32,10 @@ public class UserProfileRepository {
         return userProfileDao.getUserProfile();
     }
 
+    public UserProfile getUserProfileSync() {
+        return userProfileDao.getUserProfileSync();
+    }
+
     public LiveData<String> getUserName() {
         return userProfileDao.getUserName();
     }
@@ -67,6 +71,33 @@ public class UserProfileRepository {
     public void incrementDayCount (@Nullable Runnable onComplete) {
         executorService.execute(() -> {
             userProfileDao.incrementDayCount();
+            if (onComplete != null) {
+                mainHandler.post(onComplete);
+            }
+        });
+    }
+
+    public void updateLastConnection(long timestamp, @Nullable Runnable onComplete) {
+        executorService.execute(() -> {
+            userProfileDao.updateLastConnection(timestamp);
+            if (onComplete != null) {
+                mainHandler.post(onComplete);
+            }
+        });
+    }
+
+    public void resetWeeklyProgress(long timestamp, @Nullable Runnable onComplete) {
+        executorService.execute(() -> {
+            userProfileDao.resetWeeklyProgress(timestamp);
+            if (onComplete != null) {
+                mainHandler.post(onComplete);
+            }
+        });
+    }
+
+    public void updateWeekProgress(int progress, @Nullable Runnable onComplete) {
+        executorService.execute(() -> {
+            userProfileDao.updateWeekProgress(progress);
             if (onComplete != null) {
                 mainHandler.post(onComplete);
             }

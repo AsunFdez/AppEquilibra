@@ -23,6 +23,8 @@ android {
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
+            applicationIdSuffix = "1"
+            versionNameSuffix = "1.1.0"
         }
     }
 
@@ -43,7 +45,10 @@ dependencies {
     implementation(libs.constraintlayout)
     implementation(libs.activity)
     implementation(libs.recyclerview)
+    implementation(libs.ext.junit)
+    implementation(libs.work.runtime)
     testImplementation(libs.junit)
+    testImplementation(libs.arch.core.testing)
     androidTestImplementation(libs.ext.junit)
     androidTestImplementation(libs.espresso.core)
     implementation(libs.cardview)

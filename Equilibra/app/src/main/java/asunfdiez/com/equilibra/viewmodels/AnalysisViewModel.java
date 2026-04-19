@@ -104,7 +104,36 @@ public class AnalysisViewModel extends AndroidViewModel {
             double totalIncome = expenseController.getTotalIncomeInRange(start, end);
             double savings = Math.max(0, totalIncome - totalExpenses);
 
-            List<CategoryAnalysis> pieEntries = expenseController.getTopCategoriesAnalysis(start, end, 5);
+            // Obtener todos los análisis de categoría para agrupar el "Resto"
+            List<CategoryAnalysis> allEntries = expenseController.getTopCategoriesAnalysis(start, end, 100); // Suficientemente grande para traer todos
+            List<CategoryAnalysis> pieEntries;
+
+            if (allEntries.size() > 5) {
+                pieEntries = new java.util.ArrayList<>(allEntries.subList(0, 5));
+                double otherAmount = 0;
+                int otherCount = 0;
+                for (int i = 5; i < allEntries.size(); i++) {
+                    otherAmount += allEntries.get(i).getAmount();
+                    otherCount += allEntries.get(i).getCount();
+                }
+                CategoryAnalysis others = new CategoryAnalysis();
+                others.setCategory(getApplication().getString(asunfdiez.com.equilibra.R.string.rest_category));
+                others.setAmount(otherAmount);
+                others.setCount(otherCount);
+                pieEntries.add(others);
+            } else {
+                pieEntries = allEntries;
+            }
+
+            // Calcular porcentajes
+            for (CategoryAnalysis entry : pieEntries) {
+                if (totalExpenses > 0) {
+                    entry.setPercentage((entry.getAmount() / totalExpenses) * 100);
+                } else {
+                    entry.setPercentage(0);
+                }
+            }
+
             pieChartData.postValue(!pieEntries.isEmpty());
 
             double[] barValues = weekly ? expenseController.getWeeklyExpenses(start) : expenseController.getMonthlyExpenses(start);

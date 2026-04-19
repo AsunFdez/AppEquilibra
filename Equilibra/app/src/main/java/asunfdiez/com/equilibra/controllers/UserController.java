@@ -15,7 +15,9 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import asunfdiez.com.equilibra.database.AppDatabase;
 import asunfdiez.com.equilibra.models.Advice;
 import asunfdiez.com.equilibra.models.UserProfile;
+import asunfdiez.com.equilibra.repositories.ExpenseRepository;
 import asunfdiez.com.equilibra.repositories.UserProfileRepository;
+import asunfdiez.com.equilibra.utils.AdviceManager;
 import asunfdiez.com.equilibra.utils.SharedPrefsManager;
 
 /**
@@ -26,6 +28,7 @@ import asunfdiez.com.equilibra.utils.SharedPrefsManager;
 public class UserController {
 
     private final UserProfileRepository userRepository;
+    private final ExpenseRepository expenseRepository;
     private final SharedPrefsManager prefsManager;
     private UserProfile user;
     private final WellbeingController wellbeingController;
@@ -39,6 +42,7 @@ public class UserController {
      */
     public UserController(Context context) {
         this.userRepository = new UserProfileRepository(context);
+        this.expenseRepository = new ExpenseRepository(context);
         this.prefsManager = SharedPrefsManager.getInstance(context);
         this.wellbeingController = new WellbeingController(context);
         this.context = context;
@@ -96,51 +100,105 @@ public class UserController {
         return shouldShow.get();
     }
 
+    /**
+     * Obtiene el consejo apropiado según el estado del usuario
+     *
+     * Lógica:
+     * 1. Día 1 y sin gastos registrados → Mensaje de bienvenida
+     * 2. Sin gastos registrados en la semana → Mensaje para registrar hoy
+     * 3. Con progreso semanal → Consejo del día rotatorio (1 diferente cada día)
+     *
+     * @param user Perfil del usuario
+     * @return Advice adaptado al estado del usuario
+     */
     public Advice getAdvice(UserProfile user) {
-
-        if (user.getWeekProgress() == 0) {
+        // Caso 1: Primer día sin gastos → Bienvenida especial
+        if (user.getDayCount() == 1 && user.getWeekProgress() == 0) {
+            return Advice.getWelcome(context);
+        }
+        // Caso 2: Sin gastos registrados esta semana → Animar a registrar
+        else if (user.getWeekProgress() == 0) {
             return Advice.getRegisterExpenseToday(context);
-        } else if (user.getName() == null || user.getName().isEmpty()) {
+        }
+        // Caso 3: Usuario con actividad → Consejo del día rotatorio
+        else {
+            return AdviceManager.getDailyAdvice(context);
+        }
+    }
+
+    public Advice getQuickAction(UserProfile user) {
+        if (user.getName() == null || user.getName().isEmpty()) {
             return Advice.getCompleteUserProfile(context);
-        }  else {
-            return Advice.getExpenseRegistered(context);
+        } else if (user.getMonthlyIncome() == 0) {
+            return Advice.getCompleteBudget(context);
+        } else {
+            return Advice.getQuickAction(context);
         }
     }
 
     /**
-     *  Incrementa el contador de días de uso de la App
+     * Realiza todas las tareas de mantenimiento de una sola vez para minimizar refrescos de UI
      */
-    public void incrementDayCount() {
+    public void performMaintenance() {
         Executors.newSingleThreadExecutor().execute(() -> {
-        UserProfile profile = userRepository.getUserProfile().getValue();
-        if (profile != null) {
-            long lastConnection = profile.getLastConnectionTimestamp();
-            long diff = System.currentTimeMillis() - lastConnection;
+            UserProfile profile = userRepository.getUserProfileSync();
+            if (profile == null) return;
 
-            int days = (int) (diff / (1000 * 60 * 60 * 24)) + 1;
-            if (days > 1) {
-                userRepository.incrementDayCount(null);
+            long now = System.currentTimeMillis();
+            boolean changed = false;
+            boolean weekReset = false;
+            boolean dayIncremented = false;
+
+            // 1. Comprobar reinicio semanal
+            if (isNewWeek(profile.getLastResetTimestamp())) {
+                profile.setWeekProgress(0);
+                profile.setLastResetTimestamp(now);
+                profile.setWeekCount(profile.getWeekCount() + 1);
+                Log.d("UserController", "Mantenimiento: Progreso semanal reiniciado");
+                changed = true;
+                weekReset = true;
+            } else {
+                // 2. Sincronizar progreso si no ha habido reinicio
+                int actualCount = expenseRepository.getExpensesThisWeekCount();
+                if (profile.getWeekProgress() != actualCount) {
+                    profile.setWeekProgress(actualCount);
+                    Log.d("UserController", "Mantenimiento: Progreso sincronizado a " + actualCount);
+                    changed = true;
+                }
             }
-            profile.setLastConnectionTimestamp(System.currentTimeMillis());
-            userRepository.updateProfile(profile, null);
-        }
+
+            // 3. Comprobar contador de días
+            if (isNewDay(profile.getLastConnectionTimestamp())) {
+                profile.setDayCount(profile.getDayCount() + 1);
+                profile.setLastConnectionTimestamp(now);
+                Log.d("UserController", "Mantenimiento: Día incrementado");
+                changed = true;
+                dayIncremented = true;
+            } else {
+                // Actualizar última conexión de todos modos para que isNewDay funcione mañana
+                profile.setLastConnectionTimestamp(now);
+            }
+
+            if (changed) {
+                profile.setUpdatedAt(now);
+                userRepository.updateProfile(profile, null);
+            } else {
+                Log.d("UserController", "Mantenimiento: Sin cambios necesarios");
+            }
         });
     }
 
     /**
-    * Comprueba si es una nueva semana y reinicia el contador de progreso semanal
-    */
-    public void checkAndResetWeeklyProgress() {
+     * Sincroniza el contador weekProgress con los gastos reales
+     * Solo se usa cuando sabemos que algo ha cambiado (ej. después de borrar un gasto)
+     */
+    public void syncWeekProgress() {
         Executors.newSingleThreadExecutor().execute(() -> {
-            UserProfile profile = userRepository.getUserProfile().getValue();
-            if (profile != null) {
-                long lastUpdate = profile.getLastResetTimestamp();
-                if (isNewWeek(lastUpdate)) {
-                    profile.setWeekCount(profile.getWeekCount() + 1);
-                    profile.setWeekProgress(0);
-                    profile.setLastResetTimestamp(System.currentTimeMillis());
-                    userRepository.updateProfile(profile, null);
-                }
+            int actualCount = expenseRepository.getExpensesThisWeekCount();
+            UserProfile profile = userRepository.getUserProfileSync();
+            if (profile != null && profile.getWeekProgress() != actualCount) {
+                userRepository.updateWeekProgress(actualCount, null);
+                Log.d("UserController", "Sincronizado progreso semanal: " + actualCount);
             }
         });
     }
@@ -151,6 +209,15 @@ public class UserController {
 
         Calendar now = Calendar.getInstance();
         return now.get(Calendar.WEEK_OF_YEAR) != lastSave.get(Calendar.WEEK_OF_YEAR)
+                || now.get(Calendar.YEAR) != lastSave.get(Calendar.YEAR);
+    }
+
+    private boolean isNewDay(long lastTimestamp) {
+        Calendar lastSave = Calendar.getInstance();
+        lastSave.setTimeInMillis(lastTimestamp);
+
+        Calendar now = Calendar.getInstance();
+        return now.get(Calendar.DAY_OF_YEAR) != lastSave.get(Calendar.DAY_OF_YEAR)
                 || now.get(Calendar.YEAR) != lastSave.get(Calendar.YEAR);
     }
 

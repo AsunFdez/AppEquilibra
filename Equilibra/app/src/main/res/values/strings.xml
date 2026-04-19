@@ -14,6 +14,8 @@
 
 
     <string name="hello_user">¡Hola %1$s!</string>
+    <string name="user_tenure_advanced">+3 meses</string>
+    <string name="user_tenure_intermediate">1-3 meses</string>
     <string name="day_count">Día %1$d</string>
     <string name="week_progress">%1$d/%2$d gastos registrados</string>
 
@@ -22,10 +24,12 @@
     <string name="nav_achievements_text">Logros</string>
     <string name="nav_settings_text">Ajustes</string>
     <string name="weekly_progress_title">Tu progreso esta semana:</string>
-    <string name="recorded_expenses">4/5 gastos registrados</string>
+
+    <!-- Advices -->
     <string name="today_advice">Consejo de hoy:</string>
-    <string name="advice_1">\"Registra gastos pequeños también. ¡Suman!\"</string>
+    <string name="advice">\"Registra gastos pequeños también. ¡Suman!\"</string>
     <string name="quick_action_title">Acción rápida:</string>
+    <string name="quick_action_desc">Lee uno de nuestros consejos para ayudarte a mejorar tu finanzas</string>
     <string name="register_last_expense">[+ Registrar último gasto]</string>
     <string name="next_goal_title">Próximo objetivo:</string>
     <string name="next_goal_1">Completar tu primer presupuesto</string>
@@ -33,7 +37,8 @@
     <string name="my_expenses_text">Ver, editar o eliminar</string>
     <string name="total_amount_expenses">Total gastado</string>
     <string name="registers_count">%1$d registros</string>
-
+    <string name="setup_budget">Configura tu presupuesto</string>
+    <string name="setup_budget_des">Establece tu importe mensual para el presupuesto y activa el control presupuestario para una mejor experiencia</string>
 
     <!-- Profile Activity -->
     <string name="userText">Usuario</string>
@@ -98,7 +103,27 @@
     <string name="insight_title">Insight financiero</string>
     <string name="alert_title">Alerta importante</string>
     <string name="wellbeing_recover_balance_message">Enfoquémonos en recuperar el equilibrio 🌱</string>
-    <string name="balance">Balance disponible</string>
+    <string name="financial_summary">Resumen Financiero</string>
+    <string name="used_percent">Usado</string>
+    <string name="goal_percent">Objetivo</string>
+    <string name="custom_insights">Insights Personalizados:</string>
+    <string name="active_streaks">Rachas activas:</string>
+    <string name="streak_days_recording">%1$d días registrando gastos</string>
+    <string name="streak_days_budget">%1$d días bajo presupuesto</string>
+    <string name="pattern_title">Patrón:</string>
+    <string name="pattern_desc">Gastas más los viernes (+40%%)</string>
+    <string name="suggestion_title">Sugerencia:</string>
+    <string name="suggestion_desc">Tu objetivo se puede acelerar 3 semanas.</string>
+    <string name="see_how">Ver cómo</string>
+
+    <string name="budget_month">Presupuesto %1$s</string>
+    <string name="days_left">%1$d días</string>
+    <string name="available_amount">%1$s disponibles</string>
+    <string name="used_amount_percent">%1$d%% usado</string>
+    <string name="alert_coffee">Alerta: Café +25%% vs sept.</string>
+    <string name="view_analysis">Ver análisis</string>
+    <string name="balance_comparison">+%1$s vs mes anterior</string>
+    <string name="balance">Balance</string>
 
 
 </resources>

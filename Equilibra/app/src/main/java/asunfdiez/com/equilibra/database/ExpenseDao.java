@@ -128,6 +128,11 @@ public interface ExpenseDao {
             "FROM " + Constants.TABLE_EXPENSES + " GROUP BY day ORDER BY day DESC")
     List<Long> getUniqueDaysWithExpenses();
 
+    @Query("SELECT COUNT(*) FROM " + Constants.TABLE_EXPENSES +
+            " WHERE " + Constants.COLUMN_EXPENSE_TYPE + " = '" + Constants.TYPE_EXPENSE + "'" +
+            " AND " + Constants.COLUMN_EXPENSE_TIMESTAMP + " >= :sinceTimestamp")
+    int countExpensesSince(long sinceTimestamp);
+
     @Query("SELECT e.*, c.name as categoryName, c.iconResId as categoryIconResId, c.color as categoryColor " +
             "FROM " + Constants.TABLE_EXPENSES + " e " +
             "LEFT JOIN " + Constants.TABLE_CATEGORIES + " c ON e." + Constants.COLUMN_EXPENSE_CATEGORY + " = c.id " +

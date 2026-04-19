@@ -69,4 +69,24 @@ public class BindingAdapters {
     public static void setProgressValue(android.widget.ProgressBar progressBar, int progress) {
         progressBar.setProgress(progress);
     }
+
+    @BindingAdapter("android:text")
+    public static void setDoubleToText(com.google.android.material.textfield.TextInputEditText view, double value) {
+        if (view.getText() != null && !view.getText().toString().isEmpty()) {
+            try {
+                double current = Double.parseDouble(view.getText().toString());
+                if (current == value) return;
+            } catch (NumberFormatException ignored) {}
+        }
+        view.setText(String.format(java.util.Locale.US, "%.2f", value));
+    }
+
+    @androidx.databinding.InverseBindingAdapter(attribute = "android:text")
+    public static double getTextToDouble(com.google.android.material.textfield.TextInputEditText view) {
+        try {
+            return Double.parseDouble(view.getText().toString());
+        } catch (NumberFormatException e) {
+            return 0.0;
+        }
+    }
 }

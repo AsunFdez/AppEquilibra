@@ -315,26 +315,6 @@ public class AchievementsViewModel extends AndroidViewModel {
         repository.resetAllAchievements();
     }
 
-    // ========== MÉTODOS DE UTILIDAD ==========
-
-    /**
-     * Obtiene el icono de un logro según su key
-     */
-    public int getAchievementIcon(String achievementKey) {
-        // TODO: Mapear keys a recursos drawable
-        // Por ahora retorna un icono genérico
-        return android.R.drawable.btn_star_big_on;
-    }
-
-    /**
-     * Obtiene el color de un logro según si está desbloqueado
-     */
-    public int getAchievementColor(boolean unlocked) {
-        // Verde si está desbloqueado, gris si está bloqueado
-        return unlocked ?
-                android.R.color.holo_green_light :
-                android.R.color.darker_gray;
-    }
 
     // ========== LIMPIEZA ==========
 

@@ -29,6 +29,7 @@ import java.util.List;
 import java.util.Locale;
 
 import asunfdiez.com.equilibra.R;
+import asunfdiez.com.equilibra.adapters.CategoryLegendAdapter;
 import asunfdiez.com.equilibra.databinding.ActivityAnalysisBinding;
 import asunfdiez.com.equilibra.databinding.BottomNavigationBinding;
 import asunfdiez.com.equilibra.models.CategoryAnalysis;
@@ -45,6 +46,7 @@ public class AnalysisActivity extends AppCompatActivity implements BottomNavigat
 
     private ActivityAnalysisBinding binding;
     private AnalysisViewModel viewModel;
+    private CategoryLegendAdapter legendAdapter;
     private final NumberFormat currencyFormat = NumberFormat.getCurrencyInstance(new Locale("es", "ES"));
 
     private final Handler handler = new Handler();
@@ -75,6 +77,7 @@ public class AnalysisActivity extends AppCompatActivity implements BottomNavigat
 
         setupPieChart();
         setupBarChart();
+        setupLegendRecyclerView();
     }
 
     private void setObservers() {
@@ -110,9 +113,15 @@ public class AnalysisActivity extends AppCompatActivity implements BottomNavigat
         binding.pieChart.setTransparentCircleRadius(0f);
         binding.pieChart.setUsePercentValues(true);
         binding.pieChart.getDescription().setEnabled(false);
+        binding.pieChart.getLegend().setEnabled(false); // Desactivar la leyenda por defecto
         binding.pieChart.setEntryLabelColor(Color.WHITE);
         binding.pieChart.setEntryLabelTextSize(14f);
         binding.pieChart.animateY(1400, Easing.EaseInOutQuad);
+    }
+
+    private void setupLegendRecyclerView() {
+        legendAdapter = new CategoryLegendAdapter();
+        binding.rvLegend.setAdapter(legendAdapter);
     }
 
     private void setupBarChart() {
@@ -145,16 +154,25 @@ public class AnalysisActivity extends AppCompatActivity implements BottomNavigat
         }
 
         PieDataSet dataSet = new PieDataSet(entries, "");
-        dataSet.setColors(new int[]{R.color.accent, R.color.secondary, R.color.primary, R.color.purple, R.color.secondary_light, R.color.accent_dark}, this);
+        int[] chartColors = new int[]{
+                getColor(R.color.accent),
+                getColor(R.color.secondary),
+                getColor(R.color.primary),
+                getColor(R.color.purple),
+                getColor(R.color.teal),
+                getColor(R.color.gray_400) // Color para "Resto"
+        };
+        dataSet.setColors(chartColors);
 
         PieData data = new PieData(dataSet);
         data.setValueFormatter(new PercentFormatter(binding.pieChart));
-        // Personalizar los valores (Tamaño y Color)
-        dataSet.setValueTextColor(Color.WHITE); // Color blanco
-        dataSet.setValueTextSize(14f);         // Tamaño 14sp
+        data.setDrawValues(false); // No mostrar valores dentro del gráfico para que se vea más limpio
 
         binding.pieChart.setData(data);
         binding.pieChart.invalidate();
+
+        // Actualizar la leyenda personalizada
+        legendAdapter.setItems(analysis, chartColors);
     }
 
     private void updateBarChartData(double[] values, boolean isWeekly) {

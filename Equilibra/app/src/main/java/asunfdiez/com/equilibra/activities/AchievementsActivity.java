@@ -12,7 +12,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.databinding.DataBindingUtil;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.GridLayoutManager;
-import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.snackbar.Snackbar;
@@ -87,8 +86,7 @@ public class AchievementsActivity extends AppCompatActivity implements Achieveme
      */
     private void setupRecyclerView() {
         adapter = new AchievementAdapter(this, this);
-
-        // 2. Configurar el Grid de 2 columnas
+        // Configurar el Grid de 2 columnas
         binding.rvAchievements.setLayoutManager(new GridLayoutManager(this, 2));
         binding.rvAchievements.setAdapter(adapter);
     }
@@ -198,7 +196,7 @@ public class AchievementsActivity extends AppCompatActivity implements Achieveme
                 .setTitle(achievement.getTitle())
                 .setMessage(message)
                 .setIcon(achievement.isUnlocked() ?
-                        R.drawable.ic_achievement_star :
+                        R.drawable.ic_achievement_unlocked :
                         R.drawable.ic_achievement_locked)
                 .setPositiveButton(R.string.ok, null)
                 .show();

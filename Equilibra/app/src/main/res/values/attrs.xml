@@ -3,9 +3,10 @@
     <attr name="cardTitle" format="string" />
     <attr name="cardIcon" format="reference" />
     <attr name="cardIconTint" format="color" />
+    <attr name="cardBackgroundColor" format="color" />
 
     <declare-styleable name="FeatureCard">
-        <attr name="cardBackgroundColor" format="color" />
+        <attr name="cardBackgroundColor"/>
         <attr name="cardIcon" />
         <attr name="cardIconCircle" format="reference" />
         <attr name="cardIconTint" />
@@ -23,6 +24,7 @@
     </declare-styleable>
 
     <declare-styleable name="SelectorView">
+        <attr name="cardBackgroundColor"/>
         <attr name="cardTitle" />
         <attr name="cardIcon" />
         <attr name="cardIconTint" />

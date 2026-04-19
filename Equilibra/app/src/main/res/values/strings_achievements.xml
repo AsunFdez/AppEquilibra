@@ -134,5 +134,13 @@
     <string name="achievement_saver_500_title">Maestro del Ahorro</string>
     <string name="achievement_saver_500_desc">Ahorra €500 en total</string>
 
+    <!-- Gamificación en pantalla principal -->
+    <string name="to_next_level"> para siguiente nivel</string>
+    <string name="recent_unlocked">Logros Recientes</string>
+    <string name="view_all_achievements">Ver todos →</string>
+    <plurals name="points_format">
+        <item quantity="one">%d pt</item>
+        <item quantity="other">%d pts</item>
+    </plurals>
 
 </resources>

@@ -4,9 +4,9 @@ import android.content.Context;
 import android.content.res.TypedArray;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
-import android.widget.LinearLayout;
 
 import androidx.annotation.Nullable;
+import androidx.cardview.widget.CardView;
 import androidx.databinding.BindingAdapter;
 
 import asunfdiez.com.equilibra.R;
@@ -15,22 +15,12 @@ import asunfdiez.com.equilibra.databinding.ViewSelectorBinding;
 /**
  * Componente personalizado que simula un selector/spinner con la estética de Equilibra.
  */
-public class SelectorView extends LinearLayout {
+public class SelectorView extends CardView {
 
     private ViewSelectorBinding binding;
 
-    public SelectorView(Context context) {
-        super(context);
-        init(context, null);
-    }
-
     public SelectorView(Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
-        init(context, attrs);
-    }
-
-    public SelectorView(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
-        super(context, attrs, defStyleAttr);
         init(context, attrs);
     }
 
@@ -38,7 +28,13 @@ public class SelectorView extends LinearLayout {
         binding = ViewSelectorBinding.inflate(LayoutInflater.from(context), this, true);
 
         if (attrs != null) {
-            TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.SelectorView);
+            TypedArray a;
+            a = context.obtainStyledAttributes(attrs, R.styleable.SelectorView);
+            // Color de fondo
+            int defaultWhite = androidx.core.content.ContextCompat.getColor(context, R.color.white);
+            int bgColor = a.getColor(R.styleable.SelectorView_cardBackgroundColor, defaultWhite);
+            setCardBackgroundColor(bgColor);
+
             String title = a.getString(R.styleable.SelectorView_cardTitle);
             int iconRes = a.getResourceId(R.styleable.SelectorView_cardIcon, -1);
             int iconTint = a.getColor(R.styleable.SelectorView_cardIconTint, -1);
@@ -60,8 +56,12 @@ public class SelectorView extends LinearLayout {
             if (label != null) binding.selectorLabel.setText(label);
             if (value != null) binding.selectorValue.setText(value);
 
+            // Estética
+            setRadius(getResources().getDimension(R.dimen.card_corner_radius));
+            setCardElevation(4);
             a.recycle();
         }
+
     }
 
     @Override

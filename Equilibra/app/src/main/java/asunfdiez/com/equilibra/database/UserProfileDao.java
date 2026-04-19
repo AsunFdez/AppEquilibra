@@ -34,6 +34,15 @@ public interface UserProfileDao {
     @Query("UPDATE "+Constants.TABLE_USER_PROFILE+" SET "+Constants.COLUMN_USER_DAY_COUNT+" = "+Constants.COLUMN_USER_DAY_COUNT+" + 1")
     void incrementDayCount();
 
+    @Query("UPDATE "+Constants.TABLE_USER_PROFILE+" SET lastConnectionTimestamp = :timestamp")
+    void updateLastConnection(long timestamp);
+
+    @Query("UPDATE "+Constants.TABLE_USER_PROFILE+" SET weekCount = weekCount + 1, "+Constants.COLUMN_USER_WEEK_PROGRESS+" = 0, lastResetTimestamp = :timestamp")
+    void resetWeeklyProgress(long timestamp);
+
+    @Query("UPDATE "+Constants.TABLE_USER_PROFILE+" SET "+Constants.COLUMN_USER_WEEK_PROGRESS+" = :progress")
+    void updateWeekProgress(int progress);
+
     @Query("SELECT "+Constants.COLUMN_USER_WEEK_PROGRESS+" FROM "+Constants.TABLE_USER_PROFILE+" LIMIT 1")
     int getWeeksUnderBudget();
 

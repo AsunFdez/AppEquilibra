@@ -19,6 +19,7 @@
     <string name="category_gym">Entrenamiento</string>
     <string name="category_pets">Mascotas</string>
     <string name="category_other">Otros</string>
+    <string name="rest_category">Resto</string>
 
     <!-- descripciones posibles para gasto -->
     <string name="description_food_1">Café</string>

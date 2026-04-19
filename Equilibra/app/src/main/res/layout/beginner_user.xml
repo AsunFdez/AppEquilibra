@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+        <import type="android.view.View" />
+        <variable
+            name="user"
+            type="asunfdiez.com.equilibra.models.UserProfile" />
+
+        <variable
+            name="adviceViewModel"
+            type="asunfdiez.com.equilibra.viewmodels.AdviceViewModel" />
+
+        <variable
+            name="gamificationViewModel"
+            type="asunfdiez.com.equilibra.viewmodels.GamificationViewModel" />
+
+        <!-- Nota: Variables 'advice' y 'quickAction' deprecated
+             Ahora se obtienen directamente de adviceViewModel.getDailyAdvice() y getQuickAction() -->
+
+    </data>
+    <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <!-- Progress Card -->
+                <include
+                    android:id="@+id/progressCard"
+                    layout="@layout/progress_card"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="12dp"
+                    app:user="@{user}" />
+
+                <!-- Daily Tip Card -->
+                <asunfdiez.com.equilibra.views.FeatureCard
+                    android:id="@+id/tipCard"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="24dp"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:foreground="?android:attr/selectableItemBackground"
+                    app:cardBackgroundColor="@color/tip_card_bg"
+                    app:cardIconCircle="@drawable/circle_primary"
+                    app:cardIcon="@drawable/ic_fea_lightbulb"
+                    app:cardTitle='@{adviceViewModel.dailyAdvice.title}'
+                    app:cardDescription='@{adviceViewModel.dailyAdvice.description}'
+                    app:showRightIcon="false"
+                    android:visibility="@{adviceViewModel.dailyAdvice != null ? View.VISIBLE : View.GONE}"/>
+
+                <!-- Quick Action Card -->
+                <asunfdiez.com.equilibra.views.FeatureCard
+                    android:id="@+id/quickActionCard"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="24dp"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:foreground="?android:attr/selectableItemBackground"
+                    app:cardBackgroundColor="@android:color/white"
+                    app:cardIconCircle="@drawable/circle_accent_light"
+                    app:cardIcon="@drawable/ic_fea_zap"
+                    app:cardIconTint="@color/accent"
+                    app:cardTitle='@{adviceViewModel.quickAction.title}'
+                    app:cardDescription='@{adviceViewModel.quickAction.description}'
+                    app:cardRightIconTint="@color/accent"
+                    app:showRightIcon="true" />
+
+                <!-- Next Goal Card -->
+                <asunfdiez.com.equilibra.views.FeatureCard
+                    android:id="@+id/nextGoalCard"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="24dp"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:foreground="?android:attr/selectableItemBackground"
+
+                    app:cardIconCircle="@drawable/circle_secondary_light"
+                    app:cardIcon="@drawable/ic_fea_flag"
+                    app:cardIconTint="@color/secondary"
+                    app:cardTitle="@string/next_goal_title"
+                    app:cardDescription="@string/next_goal_1"
+                    app:showRightIcon="false" />
+
+    </LinearLayout>
+</layout>

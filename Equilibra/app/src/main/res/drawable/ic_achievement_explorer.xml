@@ -1,16 +1,5 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!-- Icono: Explorador (5 categorías) - Brújula -->
-<vector xmlns:android="http://schemas.android.com/apk/res/android"
-    android:width="32dp"
-    android:height="32dp"
-    android:viewportWidth="24"
-    android:viewportHeight="24">
-
-    <path
-        android:fillColor="#3498DB"
-        android:pathData="M12,2C6.48,2 2,6.48 2,12s4.48,10 10,10 10,-4.48 10,-10S17.52,2 12,2zM12,20c-4.42,0 -8,-3.58 -8,-8s3.58,-8 8,-8 8,3.58 8,8 -3.58,8 -8,8zM10.5,16.5l1.5,-5.5 5.5,-1.5 -1.5,5.5 -5.5,1.5z"/>
-    <path
-        android:fillColor="#3498DB"
-        android:pathData="M12,12m-1.5,0a1.5,1.5 0,1 1,3 0a1.5,1.5 0,1 1,-3 0"/>
-
+<vector xmlns:android="http://schemas.android.com/apk/res/android" android:height="24dp"  android:viewportHeight="960" android:viewportWidth="960" android:width="24dp">
+      
+    <path android:fillColor="@android:color/white" android:pathData="M80,820L80,500L400,500L400,820L80,820ZM160,740L320,740L320,580L160,580L160,740ZM220,400L440,40L660,400L220,400ZM362,320L518,320L440,194L362,320ZM863,918L757,812Q736,826 711.5,833Q687,840 660,840Q585,840 532.5,787.5Q480,735 480,660Q480,585 532.5,532.5Q585,480 660,480Q735,480 787.5,532.5Q840,585 840,660Q840,686 833,710.5Q826,735 813,756L919,862L863,918ZM731,731Q760,702 760,660Q760,618 731,589Q702,560 660,560Q618,560 589,589Q560,618 560,660Q560,702 589,731Q618,760 660,760Q702,760 731,731ZM320,580L320,580L320,580L320,580ZM440,320L440,320L440,320Z"/>
+    
 </vector>

@@ -1,5 +1,6 @@
 package asunfdiez.com.equilibra.models;
 
+import androidx.annotation.Nullable;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 
@@ -234,5 +235,36 @@ public class UserProfile {
                 ", weekProgress=" + weekProgress +
                 ", weekGoal=" + weekGoal +
                 '}';
+    }
+
+    @Override
+    public boolean equals(@Nullable Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        UserProfile that = (UserProfile) o;
+        return id == that.id &&
+                Double.compare(that.monthlyIncome, monthlyIncome) == 0 &&
+                financialKnowledge == that.financialKnowledge &&
+                budgetExperience == that.budgetExperience &&
+                savingsHabit == that.savingsHabit &&
+                dayCount == that.dayCount &&
+                weekProgress == that.weekProgress &&
+                weekGoal == that.weekGoal &&
+                weekCount == that.weekCount &&
+                lastResetTimestamp == that.lastResetTimestamp &&
+                lastConnectionTimestamp == that.lastConnectionTimestamp &&
+                java.util.Objects.equals(name, that.name) &&
+                java.util.Objects.equals(email, that.email) &&
+                java.util.Objects.equals(phone, that.phone) &&
+                java.util.Objects.equals(passwordHash, that.passwordHash) &&
+                java.util.Objects.equals(emotionalState, that.emotionalState) &&
+                java.util.Objects.equals(mainConcernId, that.mainConcernId) &&
+                java.util.Objects.equals(mainConcern, that.mainConcern) &&
+                java.util.Objects.equals(timeAvailable, that.timeAvailable);
+    }
+
+    @Override
+    public int hashCode() {
+        return java.util.Objects.hash(id, name, email, phone, passwordHash, emotionalState, mainConcernId, mainConcern, timeAvailable, monthlyIncome, financialKnowledge, budgetExperience, savingsHabit, dayCount, weekProgress, weekGoal, weekCount, lastResetTimestamp, lastConnectionTimestamp);
     }
 }

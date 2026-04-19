@@ -160,14 +160,14 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                android:paddingBottom="24dp">
+                android:paddingBottom="50dp">
 
                 <!-- RecyclerView de Logros -->
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/rvAchievements"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginHorizontal="16dp"
+                    android:layout_marginHorizontal="12dp"
                     android:layout_marginTop="16dp"
                     android:clipToPadding="false"
                     android:visibility="@{viewModel.showEmptyState ? View.GONE : View.VISIBLE}"

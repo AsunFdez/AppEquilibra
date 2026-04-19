@@ -217,7 +217,7 @@ public abstract class AppDatabase extends RoomDatabase {
                 Constants.ACHIEVEMENT_UNDER_BUDGET_WEEK,
                 false,
                 R.color.primary,
-                R.drawable.ic_achievement_saver_beginner));
+                R.drawable.ic_achievement_budget_week));
 
         achievements.add(new Achievement(
                 mContext.getString(R.string.under_budget_month_title),
@@ -226,7 +226,7 @@ public abstract class AppDatabase extends RoomDatabase {
                 Constants.ACHIEVEMENT_UNDER_BUDGET_MONTH,
                 false,
                 R.color.secondary,
-                R.drawable.ic_achievement_saver_advanced));
+                R.drawable.ic_achievement_budget_month));
 
         // Logros de categorías
         achievements.add(new Achievement(
@@ -245,7 +245,7 @@ public abstract class AppDatabase extends RoomDatabase {
                 Constants.ACHIEVEMENT_CATEGORY_MASTER,
                 false,
                 R.color.secondary,
-                R.drawable.ic_achievement_star));
+                R.drawable.ic_ach_star));
 
         // Ahorro
         achievements.add(new Achievement(

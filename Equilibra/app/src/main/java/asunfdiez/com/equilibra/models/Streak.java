@@ -21,6 +21,9 @@ public class Streak {
     private long id;
     private long userId;
     private int consecutiveDays;
+
+    private String type;
+
     private String startDate; // Formato: yyyy-MM-dd
     private String lastActivityDate; // Formato: yyyy-MM-dd
     private int maxStreakRecord;
@@ -28,6 +31,9 @@ public class Streak {
 
     // Formateador de fechas
     private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+
+    public static final String TYPE_RECORDING = "recording";
+    public static final String TYPE_BUDGET = "budget";
 
     // Constructor vacío
     public Streak() {
@@ -58,6 +64,14 @@ public class Streak {
 
     public void setConsecutiveDays(int consecutiveDays) {
         this.consecutiveDays = consecutiveDays;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
     }
 
     public String getStartDate() {
@@ -145,9 +159,17 @@ public class Streak {
         return "Streak{" +
                 "id=" + id +
                 ", userId=" + userId +
+                ", type='" + type + '\'' +
+                ", startDate='" + startDate + '\'' +
+                ", lastActivityDate='" + lastActivityDate + '\'' +
                 ", consecutiveDays=" + consecutiveDays +
                 ", maxRecord=" + maxStreakRecord +
                 ", isActive=" + isActive +
                 '}';
+    }
+
+    public void reset() {
+        consecutiveDays = 0;
+        isActive = false;
     }
 }

@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    Layout mini para mostrar un logro desbloqueado en el preview de advanced_user
+    Versión compacta de item_achievement.xml
+-->
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+        <variable
+            name="achievement"
+            type="asunfdiez.com.equilibra.models.Achievement" />
+    </data>
+
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/cardAchievementMini"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="4dp"
+        app:cardCornerRadius="12dp"
+        app:cardElevation="2dp"
+        app:cardBackgroundColor="@color/cardview_light_background">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:orientation="vertical"
+            android:padding="12dp">
+
+            <!-- Icono Circular Mini -->
+            <FrameLayout
+                android:id="@+id/iconBackground"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:background="@drawable/circle_white">
+
+                <ImageView
+                    android:id="@+id/ivAchievementIcon"
+                    android:layout_width="28dp"
+                    android:layout_height="28dp"
+                    android:layout_gravity="center"
+                    app:imageResource="@{achievement.iconRes}"
+                    app:tint="@{achievement.categoryColor}"
+                    android:contentDescription="@string/achievement_icon" />
+
+            </FrameLayout>
+
+            <!-- Título Mini -->
+            <TextView
+                android:id="@+id/tvAchievementTitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:text="@{achievement.title}"
+                android:textColor="@color/text_primary"
+                android:textSize="12sp"
+                android:textStyle="bold"
+                android:textAlignment="center"
+                android:ellipsize="end"
+                android:maxLines="2"
+                tools:text="Primera vez" />
+
+            <!-- Puntos (Mini) -->
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center"
+                android:layout_marginTop="6dp">
+
+                <ImageView
+                    android:layout_width="12dp"
+                    android:layout_height="12dp"
+                    android:src="@drawable/ic_ach_star"
+                    app:tint="@color/accent"
+                    android:layout_marginEnd="2dp"
+                    android:contentDescription="@string/points_icon" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@{String.valueOf(achievement.points)}"
+                    android:textColor="@color/accent"
+                    android:textSize="11sp"
+                    android:textStyle="bold"
+                    tools:text="50" />
+            </LinearLayout>
+
+        </LinearLayout>
+    </com.google.android.material.card.MaterialCardView>
+</layout>

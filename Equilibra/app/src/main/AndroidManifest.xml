@@ -30,12 +30,6 @@
             android:name=".activities.SoftInterventionActivity"
             android:exported="false" />
         <activity
-            android:name=".activities.IntermediateUserActivity"
-            android:exported="false" />
-        <activity
-            android:name=".activities.AdvancedUserActivity"
-            android:exported="false" />
-        <activity
             android:name=".activities.SettingsActivity"
             android:exported="false" />
         <activity

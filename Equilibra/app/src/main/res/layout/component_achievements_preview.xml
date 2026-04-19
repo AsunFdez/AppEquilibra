@@ -1,0 +1,182 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    Layout preview de logros
+    Muestra los logros recientes desbloqueados y un resumen de puntos/nivel
+-->
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+        <import type="android.view.View" />
+        <variable
+            name="gamificationViewModel"
+            type="asunfdiez.com.equilibra.viewmodels.GamificationViewModel" />
+    </data>
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/achievementsPreviewCard"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="16dp"
+        app:cardCornerRadius="16dp"
+        app:cardElevation="4dp"
+        app:cardBackgroundColor="@android:color/white">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="20dp">
+
+            <!-- Header: Título y Badge -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:layout_marginBottom="16dp">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/achievements_title"
+                    android:textColor="@color/gray_800"
+                    android:textSize="16sp"
+                    android:textStyle="bold" />
+
+                <!-- Badge con nivel/puntos -->
+                <com.google.android.material.chip.Chip
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:clickable="false"
+                    android:text="@{gamificationViewModel.userLevel}"
+                    android:textColor="@color/accent"
+                    android:textSize="12sp"
+                    app:chipBackgroundColor="@color/primary_lighter"
+                    app:chipIcon="@drawable/ic_ach_star"
+                    app:chipIconSize="16dp"
+                    app:chipIconTint="@color/accent"
+                    tools:text="Experto" />
+            </LinearLayout>
+
+            <!-- Progreso de Puntos y Nivel -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:background="@drawable/bg_light_gradient"
+                android:padding="12dp"
+                android:layout_marginStart="-8dp"
+                android:layout_marginEnd="-8dp"
+                android:layout_marginTop="-4dp"
+                android:layout_marginBottom="16dp">
+
+                <!-- Puntos Totales -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:layout_marginBottom="12dp">
+
+                    <ImageView
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:src="@drawable/ic_ach_star"
+                        android:contentDescription="@string/points_icon"
+                        app:tint="@color/accent"
+                        android:layout_marginEnd="8dp" />
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="@string/total_points_label"
+                        android:textColor="@color/gray_700"
+                        android:textSize="13sp" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@{@plurals/points_format(gamificationViewModel.totalPoints ?? 0, gamificationViewModel.totalPoints ?? 0)}"
+                        android:textColor="@color/accent"
+                        android:textSize="14sp"
+                        android:textStyle="bold"
+                        tools:text="350 pts" />
+                </LinearLayout>
+
+                <!-- Progress Bar hacia siguiente nivel -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <ProgressBar
+                        android:id="@+id/levelProgressBar"
+                        style="?android:attr/progressBarStyleHorizontal"
+                        android:layout_width="match_parent"
+                        android:layout_height="6dp"
+                        android:indeterminate="false"
+                        android:max="100"
+                        android:progress="@{gamificationViewModel.levelProgress ?? 0}"
+                        android:progressDrawable="@drawable/progress_level"
+                        android:layout_marginBottom="4dp" />
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="end"
+                        android:text='@{String.valueOf(gamificationViewModel.levelProgress ?? 0) + "%" + @string/to_next_level}'
+                        android:textColor="@color/gray_600"
+                        android:textSize="11sp"
+                        tools:text="45% para siguiente nivel" />
+                </LinearLayout>
+            </LinearLayout>
+
+            <!-- Separador -->
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/divider"
+                android:layout_marginBottom="16dp" />
+
+            <!-- Logros Recientes (Grid pequeño 2x2) -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/recent_unlocked"
+                android:textColor="@color/gray_700"
+                android:textSize="13sp"
+                android:textStyle="bold"
+                android:layout_marginBottom="12dp" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rvRecentAchievements"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
+                app:spanCount="2"
+                android:layout_marginHorizontal="-4dp"
+                app:achievementsList="@{gamificationViewModel.recentUnlockedAchievements}"
+                tools:itemCount="4"
+                tools:listitem="@layout/item_achievement_mini" />
+
+            <!-- Ver Todos los Logros (Link) -->
+            <TextView
+                android:id="@+id/tvViewAllAchievements"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/view_all_achievements"
+                android:textColor="@color/accent"
+                android:textSize="13sp"
+                android:textStyle="bold"
+                android:layout_gravity="end"
+                android:layout_marginTop="12dp"
+                android:clickable="true"
+                android:focusable="true" />
+
+        </LinearLayout>
+    </androidx.cardview.widget.CardView>
+</layout>

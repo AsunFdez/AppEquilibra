@@ -12,21 +12,21 @@ import androidx.core.widget.ImageViewCompat;
 import androidx.databinding.BindingAdapter;
 
 import asunfdiez.com.equilibra.R;
-import asunfdiez.com.equilibra.databinding.ItemFeatureCardBinding;
+import asunfdiez.com.equilibra.databinding.FeatureCardBinding;
 
 /*
 * Componente reutilizable en los layout con atributos definidos en attrs.xml
 * */
 public class FeatureCard extends CardView {
 
-    private ItemFeatureCardBinding binding;
+    private FeatureCardBinding binding;
     public FeatureCard(Context context, AttributeSet attrs) {
         super(context, attrs);
         init(context, attrs);
     }
 
     private void init(Context context, AttributeSet attrs) {
-        binding = ItemFeatureCardBinding.inflate(LayoutInflater.from(context), this, true);
+        binding = FeatureCardBinding.inflate(LayoutInflater.from(context), this, true);
 
         if (attrs != null) {
 
@@ -42,8 +42,9 @@ public class FeatureCard extends CardView {
             String title = a.getString(R.styleable.FeatureCard_cardTitle);
             String desc = a.getString(R.styleable.FeatureCard_cardDescription);
             if (title != null) binding.cardTitle.setText(title);
-            if (desc != null) {
+            if (desc != null && !desc.isEmpty()) {
                 binding.cardDescription.setText(desc);
+                binding.cardDescription.setVisibility(View.VISIBLE);
             } else {
                 binding.cardDescription.setVisibility(View.GONE);
             }
@@ -83,7 +84,7 @@ public class FeatureCard extends CardView {
 
             // Estética
             setRadius(getResources().getDimension(R.dimen.card_corner_radius));
-            setCardElevation(4);
+            setCardElevation(10);
 
             a.recycle();
         }
@@ -99,7 +100,12 @@ public class FeatureCard extends CardView {
     @BindingAdapter("cardDescription")
     public static void setCardDescription(FeatureCard view, String description) {
         if (view.binding != null && view.binding.cardDescription != null) {
-            view.binding.cardDescription.setText(description);
+            if (description != null && !description.isEmpty()) {
+                view.binding.cardDescription.setText(description);
+                view.binding.cardDescription.setVisibility(View.VISIBLE);
+            } else {
+                view.binding.cardDescription.setVisibility(View.GONE);
+            }
         }
     }
 
@@ -116,5 +122,12 @@ public class FeatureCard extends CardView {
         if (binding != null && binding.cardSwitch != null) {
             binding.cardSwitch.setOnCheckedChangeListener(listener);
         }
+    }
+
+    public boolean isChecked() {
+        if (binding != null && binding.cardSwitch != null) {
+            return binding.cardSwitch.isChecked();
+        }
+        return false;
     }
 }

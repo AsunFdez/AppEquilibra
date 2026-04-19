@@ -16,14 +16,26 @@ public class Budget {
     @PrimaryKey(autoGenerate = true)
     @NonNull
     private long id;
-    private String category;
-    private double amount;
-    private String period;
-    private int month;
-    private int year;
 
+    private double monthlyBudget;      // Presupuesto mensual
+    private double weeklyBudget;       // Presupuesto semanal
+    private double dailyBudget;        // Presupuesto diario
+    private String currency;           // Moneda (EUR, USD, etc.)
+    private boolean enabled;           // Si el presupuesto está activo
+    private long createdAt;            // Timestamp de creación
+    private long updatedAt;            // Timestamp de última actualización
+
+    /**
+     * Constructor requerido por Room
+     */
     public Budget() {
+        this.currency = Constants.CURRENCY_EUR;
+        this.enabled = true;
+        this.createdAt = System.currentTimeMillis();
+        this.updatedAt = System.currentTimeMillis();
     }
+
+    // ========== GETTERS Y SETTERS ==========
 
     public long getId() {
         return id;
@@ -33,44 +45,110 @@ public class Budget {
         this.id = id;
     }
 
-
-    public String getCategory() {
-        return category;
+    public double getMonthlyBudget() {
+        return monthlyBudget;
     }
 
-    public void setCategory(String category) {
-        this.category = category;
+    public void setMonthlyBudget(double monthlyBudget) {
+        this.monthlyBudget = monthlyBudget;
+        this.updatedAt = System.currentTimeMillis();
     }
 
-    public double getAmount() {
-        return amount;
+    public double getWeeklyBudget() {
+        return weeklyBudget;
     }
 
-    public void setAmount(double amount) {
-        this.amount = amount;
+    public void setWeeklyBudget(double weeklyBudget) {
+        this.weeklyBudget = weeklyBudget;
+        this.updatedAt = System.currentTimeMillis();
     }
 
-    public String getPeriod() {
-        return period;
+    public double getDailyBudget() {
+        return dailyBudget;
     }
 
-    public void setPeriod(String period) {
-        this.period = period;
+    public void setDailyBudget(double dailyBudget) {
+        this.dailyBudget = dailyBudget;
+        this.updatedAt = System.currentTimeMillis();
     }
 
-    public int getMonth() {
-        return month;
+    public String getCurrency() {
+        return currency;
     }
 
-    public void setMonth(int month) {
-        this.month = month;
+    public void setCurrency(String currency) {
+        this.currency = currency;
+        this.updatedAt = System.currentTimeMillis();
     }
 
-    public int getYear() {
-        return year;
+    public boolean isEnabled() {
+        return enabled;
     }
 
-    public void setYear(int year) {
-        this.year = year;
+    public void setEnabled(boolean enabled) {
+        this.enabled = enabled;
+        this.updatedAt = System.currentTimeMillis();
+    }
+
+    public long getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(long createdAt) {
+        this.createdAt = createdAt;
+    }
+
+    public long getUpdatedAt() {
+        return updatedAt;
+    }
+
+    public void setUpdatedAt(long updatedAt) {
+        this.updatedAt = updatedAt;
+    }
+
+    // ========== MÉTODOS AUXILIARES ==========
+
+    /**
+     * Calcula el presupuesto semanal basado en el mensual
+     */
+    public void calculateWeeklyFromMonthly() {
+        this.weeklyBudget = monthlyBudget / 4.0;
+    }
+
+    /**
+     * Calcula el presupuesto diario basado en el mensual
+     */
+    public void calculateDailyFromMonthly() {
+        this.dailyBudget = monthlyBudget / 30.0;
+    }
+
+    /**
+     * Obtiene el símbolo de moneda
+     */
+    public String getCurrencySymbol() {
+        switch (currency) {
+            case Constants.CURRENCY_EUR:
+                return "€";
+            case Constants.CURRENCY_USD:
+                return "$";
+            case Constants.CURRENCY_GBP:
+                return "£";
+            default:
+                return currency;
+        }
+    }
+
+    @Override
+    public String toString() {
+        return "Budget{" +
+                "id=" + id +
+                ", monthlyBudget=" + monthlyBudget +
+                ", weeklyBudget=" + weeklyBudget +
+                ", dailyBudget=" + dailyBudget +
+                ", currency='" + currency + '\'' +
+                ", enabled=" + enabled +
+                ", createdAt=" + createdAt +
+                ", updatedAt=" + updatedAt +
+                '}';
     }
 }

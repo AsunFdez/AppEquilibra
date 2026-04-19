@@ -19,7 +19,7 @@ public class DailyAnalysis {
     @NonNull
     private long id;
     private long userId;
-    private String analysisDate; // Formato: yyyy-MM-dd
+    private String analysisDate;
     private double totalSpent;
     private double totalIncome;
     private double netBalance;

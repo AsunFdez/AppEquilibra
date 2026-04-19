@@ -43,6 +43,10 @@ public interface AchievementDao {
             " ORDER BY unlocked DESC, points DESC")
     LiveData<List<Achievement>> getAllAchievements();
 
+    @Query("SELECT * FROM " + Constants.TABLE_ACHIEVEMENTS +
+            " ORDER BY unlocked DESC, points DESC")
+    List<Achievement> getAllAchievementsSync();
+
     /**
      * Obtiene solo los logros desbloqueados
      */
@@ -97,6 +101,10 @@ public interface AchievementDao {
     @Query("SELECT COALESCE(SUM(points), 0) FROM " + Constants.TABLE_ACHIEVEMENTS +
             " WHERE unlocked = 1")
     LiveData<Integer> getTotalPoints();
+
+    @Query("SELECT COALESCE(SUM(points), 0) FROM " + Constants.TABLE_ACHIEVEMENTS +
+            " WHERE unlocked = 1")
+    int getTotalPointsSync();
 
     /**
      * Obtiene los puntos máximos posibles

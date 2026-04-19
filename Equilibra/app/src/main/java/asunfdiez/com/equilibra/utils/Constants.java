@@ -1,6 +1,7 @@
 package asunfdiez.com.equilibra.utils;
 
 public final class Constants {
+
     private Constants() {
         throw new AssertionError("No se pueden instanciar constantes");
     }
@@ -97,7 +98,7 @@ public final class Constants {
     // DATABASE CONSTANTS
     // ========================================
     public static final String DATABASE_NAME = "equilibra.db";
-    public static final int DATABASE_VERSION = 5;
+    public static final int DATABASE_VERSION = 8;
 
     //Tabla UserProfile
     public static final String TABLE_USER_PROFILE = "user_profile";
@@ -259,5 +260,18 @@ public final class Constants {
     public static final String ACHIEVEMENT_SAVER_100 = "saver_100";
     public static final String ACHIEVEMENT_SAVER_500 = "saver_500";
 
+    // ========== FORMATOS ==========
+    public static final String DATETIME_FORMAT = "dd/MM/yyyy HH:mm";
+    public static final String CURRENCY_SYMBOL = "€";
+
+    // ========== MONEDAS ==========
+    public static final String CURRENCY_EUR = "EUR";
+    public static final String CURRENCY_USD = "USD";
+    public static final String CURRENCY_GBP = "GBP";
+
+    // ========== VALORES POR DEFECTO ==========
+    public static final double DEFAULT_MONTHLY_BUDGET = 1000.0;
+    public static final double DEFAULT_WEEKLY_BUDGET = 250.0;
+    public static final double DEFAULT_DAILY_BUDGET = 33.33;
 
 }

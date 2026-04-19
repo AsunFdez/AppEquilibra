@@ -1,10 +1,270 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<!--
+    Layout para BudgetSettingsActivity
+    Configuración de presupuestos
+-->
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/main"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context=".activities.BudgetSettingsActivity">
+    xmlns:tools="http://schemas.android.com/tools">
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+    <data>
+        <import type="android.view.View" />
+        <variable
+            name="viewModel"
+            type="asunfdiez.com.equilibra.viewmodels.BudgetSettingsViewModel" />
+        <variable
+            name="budget"
+            type="asunfdiez.com.equilibra.models.Budget" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/background_light">
+
+        <!-- App Bar -->
+        <com.google.android.material.appbar.AppBarLayout
+            android:id="@+id/appBarLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/primary"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <androidx.appcompat.widget.Toolbar
+                android:id="@+id/toolbar"
+                android:layout_width="match_parent"
+                android:layout_height="?attr/actionBarSize"
+                app:title="@string/budget_settings"
+                app:titleTextColor="@android:color/white"
+                app:navigationIcon="@drawable/ic_arrow_back" />
+
+        </com.google.android.material.appbar.AppBarLayout>
+
+        <!-- Contenido principal -->
+        <androidx.core.widget.NestedScrollView
+            android:id="@+id/contentScroll"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:clipToPadding="false"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/appBarLayout">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="16dp">
+
+                <!-- Card de activación -->
+                <asunfdiez.com.equilibra.views.FeatureCard
+                    android:id="@+id/cardBudgetActivate"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="8dp"
+                    android:layout_marginTop="16dp"
+                    app:cardBackgroundColor="@color/primary_lightest"
+                    app:cardTitle="@string/budget_enabled"
+                    app:cardDescription="@string/budget_enabled_desc"
+                    app:cardIconCircle="@drawable/circle_white"
+                    app:cardIcon="@drawable/ic_wallet"
+                    app:cardIconTint="@color/primary"
+                    app:showSwitch="true"
+                    app:switchChecked="@{viewModel.budgetEnabled}" />
+
+                <!-- Card de presupuestos -->
+                <com.google.android.material.card.MaterialCardView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="16dp"
+                    app:cardBackgroundColor="@color/primary_lightest"
+                    app:cardElevation="2dp"
+                    app:cardCornerRadius="12dp">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:padding="16dp">
+
+                        <!-- Título -->
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/budget_amounts"
+                            android:textStyle="bold"
+                            android:textSize="16sp"
+                            android:textColor="@color/text_primary"
+                            android:layout_marginBottom="16dp" />
+
+                        <!-- Presupuesto Mensual -->
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal"
+                            android:gravity="center_vertical"
+                            android:layout_marginBottom="12dp">
+
+                            <com.google.android.material.textfield.TextInputLayout
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                app:startIconDrawable="@drawable/ic_calendar"
+                                app:startIconTint="@color/primary"
+                                app:hintTextColor="@color/primary"
+                                app:boxStrokeColor="@color/primary"
+                                style="@style/InputField">
+
+                                <com.google.android.material.textfield.TextInputEditText
+                                    android:id="@+id/etMonthlyBudget"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:hint="@string/monthly_budget"
+                                    android:inputType="numberDecimal"
+                                    android:digits="0123456789.,"
+                                    android:maxLines="1"
+                                    android:text="@{budget.monthlyBudget}"
+                                    style="@style/InputField.EditText"/>
+
+                            </com.google.android.material.textfield.TextInputLayout>
+
+                            <TextView
+                                android:id="@+id/tvCurrencySymbolMonthly"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="€"
+                                android:textSize="18sp"
+                                android:textStyle="bold"
+                                android:textColor="@color/primary"
+                                android:layout_marginStart="8dp" />
+
+                        </LinearLayout>
+
+                        <!-- Presupuesto Semanal -->
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal"
+                            android:gravity="center_vertical"
+                            android:layout_marginBottom="12dp">
+
+                            <com.google.android.material.textfield.TextInputLayout
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                app:startIconDrawable="@drawable/ic_calendar_week"
+                                app:startIconTint="@color/secondary"
+                                app:hintTextColor="@color/secondary"
+                                app:boxStrokeColor="@color/secondary"
+                                style="@style/InputField">
+
+                                <com.google.android.material.textfield.TextInputEditText
+                                    android:id="@+id/etWeeklyBudget"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:hint="@string/weekly_budget"
+                                    android:inputType="numberDecimal"
+                                    android:maxLines="1"
+                                    android:enabled="false"
+                                    tools:text="250.00"
+                                    style="@style/InputField.EditText"/>
+
+                            </com.google.android.material.textfield.TextInputLayout>
+
+                            <TextView
+                                android:id="@+id/tvCurrencySymbolWeekly"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="€"
+                                android:textSize="18sp"
+                                android:textStyle="bold"
+                                android:textColor="@color/secondary"
+                                android:layout_marginStart="8dp" />
+
+                        </LinearLayout>
+
+                        <!-- Presupuesto Diario -->
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal"
+                            android:gravity="center_vertical"
+                            android:layout_marginBottom="12dp">
+
+                            <com.google.android.material.textfield.TextInputLayout
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                app:startIconDrawable="@drawable/ic_today"
+                                app:startIconTint="@color/accent"
+                                app:hintTextColor="@color/accent"
+                                app:boxStrokeColor="@color/accent"
+                                style="@style/InputField">
+
+                                <com.google.android.material.textfield.TextInputEditText
+                                    android:id="@+id/etDailyBudget"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:hint="@string/daily_budget"
+                                    android:inputType="numberDecimal"
+                                    android:maxLines="1"
+                                    android:enabled="false"
+                                    tools:text="33.33"
+                                    style="@style/InputField.EditText"/>
+
+                            </com.google.android.material.textfield.TextInputLayout>
+
+                            <TextView
+                                android:id="@+id/tvCurrencySymbolDaily"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="€"
+                                android:textSize="18sp"
+                                android:textStyle="bold"
+                                android:textColor="@color/accent"
+                                android:layout_marginStart="8dp" />
+
+                        </LinearLayout>
+
+                        <!-- Info automático -->
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/budget_auto_calc_info"
+                            android:textSize="12sp"
+                            android:textColor="@color/text_hint"
+                            android:drawableStart="@drawable/ic_info_small"
+                            android:drawablePadding="6dp"
+                            android:drawableTint="@color/text_hint" />
+
+                    </LinearLayout>
+
+                </com.google.android.material.card.MaterialCardView>
+
+
+                <!-- Selector: Moneda -->
+                <asunfdiez.com.equilibra.views.SelectorView
+                    android:id="@+id/selectorCurrency"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="16dp"
+                    app:cardBackgroundColor="@color/primary_lightest"
+                    app:cardTitle="@string/currency"
+                    app:cardIcon="@drawable/ic_money"
+                    app:selectorLabel="@string/currency"
+                    app:selectorValue='@{viewModel.currency.equals("EUR") ? @string/euro_currency : (viewModel.currency.equals("USD") ? @string/dollar_currency : @string/pound_currency)}' />
+
+                <!-- Botón guardar -->
+                <com.google.android.material.button.MaterialButton
+                    style="@style/Equilibra.Button.Primary"
+                    android:id="@+id/btnSave"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp" />
+
+            </LinearLayout>
+
+        </androidx.core.widget.NestedScrollView>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</layout>

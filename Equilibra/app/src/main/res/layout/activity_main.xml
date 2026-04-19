@@ -8,13 +8,22 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <data>
+        <import type="android.view.View" />
         <variable
             name="user"
             type="asunfdiez.com.equilibra.models.UserProfile" />
 
         <variable
-            name="advice"
-            type="asunfdiez.com.equilibra.models.Advice" />
+            name="viewModel"
+            type="asunfdiez.com.equilibra.viewmodels.MainViewModel" />
+
+        <variable
+            name="adviceViewModel"
+            type="asunfdiez.com.equilibra.viewmodels.AdviceViewModel" />
+
+        <variable
+            name="gamificationViewModel"
+            type="asunfdiez.com.equilibra.viewmodels.GamificationViewModel" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -51,56 +60,27 @@
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
 
-                <!-- Progress Card -->
                 <include
-                    android:id="@+id/progressCard"
-                    layout="@layout/progress_card"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="12dp"
-                    app:user="@{user}" />
+                    android:id="@+id/beginnerUser"
+                    layout="@layout/beginner_user"
+                    android:visibility="gone"
+                    app:user="@{user}"
+                    app:adviceViewModel="@{adviceViewModel}"
+                    app:gamificationViewModel="@{gamificationViewModel}" />
 
-                <!-- Daily Tip Card -->
-                <asunfdiez.com.equilibra.views.FeatureCard
-                    android:id="@+id/tipCard"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="24dp"
-                    android:clickable="true"
-                    android:focusable="true"
-                    android:foreground="?android:attr/selectableItemBackground"
-                    app:cardBackgroundColor="@color/tip_card_bg"
-                    app:cardIconCircle="@drawable/circle_primary"
-                    app:cardIcon="@drawable/ic_fea_lightbulb"
-                    app:cardTitle='@{advice != null ? advice.title : @string/tip_title_welcome}'
-                    app:cardDescription='@{advice != null ? advice.description : @string/tip_desc_welcome}'
-                    app:showRightIcon="false" />
-
-                <!-- Quick Action Card -->
                 <include
-                    android:id="@+id/quickActionCard"
-                    layout="@layout/quick_action_card"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="12dp" />
+                    android:id="@+id/intermediateUser"
+                    layout="@layout/intermediate_user"
+                    android:visibility="gone"
+                    app:viewModel="@{viewModel}"
+                    app:gamificationViewModel="@{gamificationViewModel}" />
 
-
-                <!-- Next Goal Card -->
-                <asunfdiez.com.equilibra.views.FeatureCard
-                    android:id="@+id/nextGoalCard"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="24dp"
-                    android:clickable="true"
-                    android:focusable="true"
-                    android:foreground="?android:attr/selectableItemBackground"
-
-                    app:cardIconCircle="@drawable/circle_secondary_light"
-                    app:cardIcon="@drawable/ic_fea_flag"
-                    app:cardIconTint="@color/secondary"
-                    app:cardTitle="@string/next_goal_title"
-                    app:cardDescription="@string/next_goal_1"
-                    app:showRightIcon="false" />
+                <include
+                    android:id="@+id/advancedUser"
+                    layout="@layout/advanced_user"
+                    android:visibility="gone"
+                    app:viewModel="@{viewModel}"
+                    app:gamificationViewModel="@{gamificationViewModel}" />
 
                 <!-- Ver Todos los Gastos Card -->
                 <asunfdiez.com.equilibra.views.FeatureCard
@@ -119,8 +99,8 @@
                     app:cardRightIconTint="@color/accent"
                     app:showRightIcon="true" />
 
-
             </LinearLayout>
+
         </androidx.core.widget.NestedScrollView>
 
         <!-- Bottom Navigation -->

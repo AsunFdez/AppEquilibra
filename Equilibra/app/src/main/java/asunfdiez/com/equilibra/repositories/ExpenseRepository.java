@@ -282,7 +282,12 @@ public class ExpenseRepository {
      * Obtiene las categorías disponibles
      */
     public List<ExpenseCategory> getCategories() {
-        return expenseCategoryDao.getCategories();
+        List<ExpenseCategory> categories = expenseCategoryDao.getCategories();
+        if (categories.isEmpty()) {
+            AppDatabase.insertInitialCategories();
+            categories = expenseCategoryDao.getCategories();
+        }
+        return categories;
     }
 
     /**
@@ -566,6 +571,21 @@ public class ExpenseRepository {
 
     public int getTotalExpenseCount() {
         return expenseDao.getTotalExpenseCount();
+    }
+
+    /**
+     * Cuenta el número de gastos realizados en la semana actual (empezando el lunes)
+     */
+    public int getExpensesThisWeekCount() {
+        Calendar calendar = Calendar.getInstance();
+        calendar.set(Calendar.DAY_OF_WEEK, calendar.getFirstDayOfWeek());
+        calendar.set(Calendar.HOUR_OF_DAY, 0);
+        calendar.set(Calendar.MINUTE, 0);
+        calendar.set(Calendar.SECOND, 0);
+        calendar.set(Calendar.MILLISECOND, 0);
+        long startOfWeek = calendar.getTimeInMillis();
+
+        return expenseDao.countExpensesSince(startOfWeek);
     }
 
 

@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- Color de fondo cuando está activado (ON) -->
+    <item android:alpha="0.5" android:color="@color/primary_light" android:state_checked="true" />
+    <!-- Color de fondo cuando está desactivado (OFF) -->
+    <item android:alpha="0.3" android:color="@color/gray_600" />
+</selector>

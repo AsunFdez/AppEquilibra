@@ -112,6 +112,20 @@ public class AchievementRepository {
     }
 
     /**
+     * Obtiene todos los logros de forma síncrona
+     */
+    public List<Achievement> getAllAchievementsSync() {
+        return achievementDao.getAllAchievementsSync();
+    }
+
+    /**
+     * Obtiene los puntos totales de forma síncrona
+     */
+    public int getTotalPointsSync() {
+        return achievementDao.getTotalPointsSync();
+    }
+
+    /**
      * Obtiene los puntos máximos posibles
      */
     public LiveData<Integer> getMaxPossiblePoints() {

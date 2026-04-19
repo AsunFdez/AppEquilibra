@@ -151,4 +151,12 @@
         <item name="android:padding">4dp</item>
     </style>
 
+    <!-- Achievement Dialog Style -->
+    <style name="AchievementDialogStyle" parent="Theme.MaterialComponents.DayNight.Dialog.Alert">
+        <item name="android:windowBackground">@android:color/transparent</item>
+        <item name="android:windowIsFloating">true</item>
+        <item name="android:windowContentOverlay">@null</item>
+        <item name="android:backgroundDimEnabled">true</item>
+    </style>
+
 </resources>

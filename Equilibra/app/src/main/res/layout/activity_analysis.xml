@@ -16,180 +16,206 @@
         android:background="@color/background_light"
         android:clipChildren="false">
 
-        <androidx.core.widget.NestedScrollView
-            android:id="@+id/contentScroll"
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:clipToPadding="false"
-            android:paddingBottom="32dp">
-
-            <LinearLayout
+            android:background="@color/background_light"
+            app:layout_constraintTop_toTopOf="parent"
+            android:clipChildren="true">
+            <!-- Header con Selector -->
+            <RelativeLayout
+                android:id="@+id/headerSection"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical">
+                android:layout_height="100dp"
+                android:background="@drawable/header_gradient_secondary"
+                android:paddingHorizontal="20dp"
+                android:layout_marginBottom="24dp"
+                app:layout_constraintTop_toTopOf="parent">
 
-                <!-- Header con Selector -->
-                <RelativeLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="120dp"
-                    android:background="@drawable/header_gradient_secondary"
-                    android:paddingHorizontal="20dp"
-                    android:paddingTop="40dp">
+                <ImageButton
+                    android:id="@+id/btnBack"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:layout_centerVertical="true"
+                    android:background="@drawable/button_translucent"
+                    android:src="@drawable/ic_arrow_back"
+                    app:tint="@android:color/white" />
 
-                    <ImageButton
-                        android:id="@+id/btnBack"
-                        android:layout_width="40dp"
-                        android:layout_height="40dp"
-                        android:background="@drawable/button_translucent"
-                        android:src="@drawable/ic_arrow_back"
-                        app:tint="@android:color/white" />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_marginStart="16dp"
+                    android:layout_toEndOf="@id/btnBack"
+                    android:text="@string/analysis"
+                    android:textColor="@android:color/white"
+                    android:textSize="22sp"
+                    android:textStyle="bold" />
 
-                    <TextView
+                <com.google.android.material.button.MaterialButtonToggleGroup
+                    android:id="@+id/togglePeriod"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentEnd="true"
+                    android:layout_centerVertical="true"
+                    app:checkedButton="@+id/btnWeekly"
+                    app:singleSelection="true"
+                    app:selectionRequired="true"> <!-- Evita que se puedan desmarcar ambos -->
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/btnWeekly"
+                        style="@style/Widget.MaterialComponents.Button.OutlinedButton"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_centerVertical="true"
-                        android:layout_marginStart="16dp"
-                        android:layout_toEndOf="@id/btnBack"
-                        android:text="@string/analysis"
-                        android:textColor="@android:color/white"
-                        android:textSize="22sp"
-                        android:textStyle="bold" />
+                        android:text="@string/weekly"
+                        android:textAllCaps="false"
+                        app:backgroundTint="@color/toggle_background_color"
+                        android:textColor="@color/toggle_text_color"
+                        app:strokeColor="@android:color/white" />
 
-                    <com.google.android.material.button.MaterialButtonToggleGroup
-                        android:id="@+id/togglePeriod"
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/btnMonthly"
+                        style="@style/Widget.MaterialComponents.Button.OutlinedButton"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_alignParentEnd="true"
-                        android:layout_centerVertical="true"
-                        app:checkedButton="@+id/btnWeekly"
-                        app:singleSelection="true"
-                        app:selectionRequired="true"> <!-- Evita que se puedan desmarcar ambos -->
+                        android:text="@string/monthly"
+                        android:textAllCaps="false"
+                        app:backgroundTint="@color/toggle_background_color"
+                        android:textColor="@color/toggle_text_color"
+                        app:strokeColor="@android:color/white" />
+                </com.google.android.material.button.MaterialButtonToggleGroup>
+            </RelativeLayout>
 
-                        <com.google.android.material.button.MaterialButton
-                            android:id="@+id/btnWeekly"
-                            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="@string/weekly"
-                            android:textAllCaps="false"
-                            app:backgroundTint="@color/toggle_background_color"
-                            android:textColor="@color/toggle_text_color"
-                            app:strokeColor="@android:color/white" />
+            <androidx.core.widget.NestedScrollView
+                android:id="@+id/contentScroll"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:clipToPadding="false"
+                android:paddingBottom="100dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/headerSection">
 
-                        <com.google.android.material.button.MaterialButton
-                            android:id="@+id/btnMonthly"
-                            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="@string/monthly"
-                            android:textAllCaps="false"
-                            app:backgroundTint="@color/toggle_background_color"
-                            android:textColor="@color/toggle_text_color"
-                            app:strokeColor="@android:color/white" />
-                    </com.google.android.material.button.MaterialButtonToggleGroup>
-                </RelativeLayout>
-
-                <!-- Cards de Resumen Superior -->
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="-20dp"
-                    android:paddingHorizontal="16dp"
-                    android:orientation="horizontal">
+                    android:orientation="vertical">
 
-                    <include
-                        android:id="@+id/cardExpenses"
-                        layout="@layout/component_summary_card" />
+                    <!-- Cards de Resumen Superior -->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="20dp"
+                        android:paddingHorizontal="16dp"
+                        android:orientation="horizontal">
 
-                    <include
-                        android:id="@+id/cardSavings"
-                        layout="@layout/component_summary_card" />
+                        <include
+                            android:id="@+id/cardExpenses"
+                            layout="@layout/component_summary_card" />
+
+                        <include
+                            android:id="@+id/cardSavings"
+                            layout="@layout/component_summary_card" />
+                    </LinearLayout>
+
+                    <!-- Card de Gastos por Categoría (PieChart) -->
+                    <androidx.cardview.widget.CardView
+                        style="@style/Card.Elevated"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="16dp">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical"
+                            android:padding="16dp">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="@string/expenses_by_category"
+                                android:textColor="@color/text_primary"
+                                android:textSize="18sp"
+                                android:textStyle="bold" />
+
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="@string/no_data_available"
+                                android:textColor="@color/text_secondary"
+                                android:layout_marginTop="16dp"
+                                android:textStyle="bold"
+                                android:visibility="@{viewModel.pieChartData ? View.GONE : View.VISIBLE}" />
+
+
+                            <com.github.mikephil.charting.charts.PieChart
+                                android:id="@+id/pieChart"
+                                android:layout_width="match_parent"
+                                android:layout_height="300dp"
+                                android:layout_marginTop="16dp"
+                                android:visibility="@{viewModel.pieChartData ? View.VISIBLE : View.GONE}"/>
+
+                            <androidx.recyclerview.widget.RecyclerView
+                                android:id="@+id/rvLegend"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="16dp"
+                                app:spanCount="2"
+                                android:clipToPadding="false"
+                                android:nestedScrollingEnabled="false"
+                                android:visibility="@{viewModel.pieChartData ? View.VISIBLE : View.GONE}"
+                                app:layoutManager="androidx.recyclerview.widget.GridLayoutManager" />
+
+
+                        </LinearLayout>
+                    </androidx.cardview.widget.CardView>
+
+                    <!-- Card de Tendencia (BarChart) -->
+                    <androidx.cardview.widget.CardView
+                        style="@style/Card.Elevated"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="16dp">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical"
+                            android:padding="16dp">
+
+                            <TextView
+                                android:id="@+id/tvTrendTitle"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="@string/weekly_tendency"
+                                android:textColor="@color/text_primary"
+                                android:textSize="18sp"
+                                android:textStyle="bold" />
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="@string/no_data_available"
+                                android:textColor="@color/text_secondary"
+                                android:layout_marginTop="16dp"
+                                android:textSize="14sp"
+                                android:textStyle="bold"
+                                android:visibility="@{viewModel.barChartData ? View.GONE : View.VISIBLE}" />
+
+                            <com.github.mikephil.charting.charts.BarChart
+                                android:id="@+id/barChart"
+                                android:layout_width="match_parent"
+                                android:layout_height="250dp"
+                                android:layout_marginTop="16dp"
+                                android:layout_marginBottom="32dp"
+                                android:visibility="@{viewModel.barChartData ? View.VISIBLE : View.GONE}"/>
+                        </LinearLayout>
+                    </androidx.cardview.widget.CardView>
+
                 </LinearLayout>
+            </androidx.core.widget.NestedScrollView>
 
-                <!-- Card de Gastos por Categoría (PieChart) -->
-                <androidx.cardview.widget.CardView
-                    style="@style/Card.Elevated"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_margin="16dp">
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="vertical"
-                        android:padding="16dp">
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="@string/expenses_by_category"
-                            android:textColor="@color/text_primary"
-                            android:textSize="18sp"
-                            android:textStyle="bold" />
-
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="@string/no_data_available"
-                            android:textColor="@color/text_secondary"
-                            android:layout_marginTop="16dp"
-                            android:textStyle="bold"
-                            android:visibility="@{viewModel.pieChartData ? View.GONE : View.VISIBLE}" />
-
-
-                        <com.github.mikephil.charting.charts.PieChart
-                            android:id="@+id/pieChart"
-                            android:layout_width="match_parent"
-                            android:layout_height="300dp"
-                            android:layout_marginTop="16dp"
-                            android:visibility="@{viewModel.pieChartData ? View.VISIBLE : View.GONE}"/>
-                    </LinearLayout>
-                </androidx.cardview.widget.CardView>
-
-                <!-- Card de Tendencia (BarChart) -->
-                <androidx.cardview.widget.CardView
-                    style="@style/Card.Elevated"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_margin="16dp">
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="vertical"
-                        android:padding="16dp">
-
-                        <TextView
-                            android:id="@+id/tvTrendTitle"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="@string/weekly_tendency"
-                            android:textColor="@color/text_primary"
-                            android:textSize="18sp"
-                            android:textStyle="bold" />
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="@string/no_data_available"
-                            android:textColor="@color/text_secondary"
-                            android:layout_marginTop="16dp"
-                            android:textSize="14sp"
-                            android:textStyle="bold"
-                            android:visibility="@{viewModel.barChartData ? View.GONE : View.VISIBLE}" />
-
-                        <com.github.mikephil.charting.charts.BarChart
-                            android:id="@+id/barChart"
-                            android:layout_width="match_parent"
-                            android:layout_height="250dp"
-                            android:layout_marginTop="16dp"
-                            android:layout_marginBottom="32dp"
-                            android:visibility="@{viewModel.barChartData ? View.VISIBLE : View.GONE}"/>
-                    </LinearLayout>
-                </androidx.cardview.widget.CardView>
-
-            </LinearLayout>
-        </androidx.core.widget.NestedScrollView>
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
         <include
             android:id="@+id/bottomNav"

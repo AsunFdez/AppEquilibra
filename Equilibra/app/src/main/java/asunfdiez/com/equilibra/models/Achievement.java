@@ -2,6 +2,7 @@ package asunfdiez.com.equilibra.models;
 
 import androidx.annotation.NonNull;
 import androidx.room.Entity;
+import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
 
 import asunfdiez.com.equilibra.utils.Constants;
@@ -28,7 +29,12 @@ public class Achievement {
 
 
 
+    // Constructor vacío para Room y otros usos
+    public Achievement() {
+    }
+
     // Constructor completo
+    @Ignore
     public Achievement(String title, String description, int points,
                        String key, boolean unlocked, int categoryColor, int iconRes) {
         this.title = title;

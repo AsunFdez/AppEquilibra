@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Animación: Notification Slide In -->
+<!-- Propósito: Animar notificaciones que entran desde arriba -->
+<set xmlns:android="http://schemas.android.com/apk/res/android"
+    android:duration="400">
+
+    <!-- Deslizar desde arriba -->
+    <translate
+        android:fromYDelta="-100%p"
+        android:toYDelta="0%p"
+        android:interpolator="@android:interpolator/decelerate_quint" />
+
+    <!-- Fade in -->
+    <alpha
+        android:fromAlpha="0.0"
+        android:toAlpha="1.0" />
+
+</set>

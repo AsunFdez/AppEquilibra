@@ -5,12 +5,15 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.animation.AnimationUtils;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
+import android.os.Build;
+import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.databinding.DataBindingUtil;
 
-import com.github.mikephil.charting.BuildConfig;
 
 import asunfdiez.com.equilibra.R;
 import asunfdiez.com.equilibra.databinding.ActivityAboutBinding;
@@ -62,15 +65,27 @@ public class AboutActivity extends AppCompatActivity {
      * Configura la información de versión
      */
     private void setupVersionInfo() {
-        try {
-            String versionName = BuildConfig.VERSION_NAME;
-            int versionCode = BuildConfig.VERSION_CODE;
+        try{
+            PackageInfo pInfo = getPackageManager().getPackageInfo(getPackageName(), 0);
+            String versionName = pInfo.versionName;
+            long versionCode;
+            // A partir de API 28 se usa longVersionCode
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+                versionCode = pInfo.getLongVersionCode();
+            } else {
+                versionCode = pInfo.versionCode;
+            }
             binding.tvVersion.setText(
                     getString(R.string.version_format, versionName, versionCode));
-        } catch (Exception e) {
+
+            Log.d("AppVersion", "Nombre: " + versionName + ", Código: " + versionCode);
+
+        } catch (PackageManager.NameNotFoundException e) {
             binding.tvVersion.setText(R.string.version_unknown);
+            e.printStackTrace();
         }
     }
+
 
     /**
      * Configura los listeners
