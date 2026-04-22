@@ -145,6 +145,11 @@ public class Expense {
         return "expense".equals(type);
     }
 
+    public String getFormattedDateTime() {
+        if (this.time == null || this.date == null) return "";
+        return this.date + " - " + this.time;
+    }
+
     @Override
     public String toString() {
         return "Expense{" +

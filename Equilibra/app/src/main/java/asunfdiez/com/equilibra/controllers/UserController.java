@@ -9,6 +9,7 @@ import androidx.annotation.Nullable;
 import androidx.lifecycle.LiveData;
 
 import java.util.Calendar;
+import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicBoolean;
 
@@ -32,6 +33,8 @@ public class UserController {
     private final SharedPrefsManager prefsManager;
     private UserProfile user;
     private final WellbeingController wellbeingController;
+
+    private final ExecutorService executor = Executors.newSingleThreadExecutor();
     Context context;
 
 
@@ -71,7 +74,7 @@ public class UserController {
     }
 
     public void deleteCurrentUser(Runnable onComplete) {
-        Executors.newSingleThreadExecutor().execute(() -> {
+        executor.execute(() -> {
             AppDatabase database = AppDatabase.getInstance(context);
             database.clearAllTables();
             prefsManager.resetAll();
@@ -89,7 +92,7 @@ public class UserController {
     public boolean checkWellbeing() {
         AtomicBoolean shouldShow = new AtomicBoolean(false);
         // Usamos un Executor para sacar la consulta a la base de datos del hilo UI
-        Executors.newSingleThreadExecutor().execute(() -> {
+        executor.execute(() -> {
             try {
                 // Esta llamada se ejecuta en segundo plano
                 shouldShow.set(wellbeingController.shouldShowIntervention());
@@ -140,7 +143,7 @@ public class UserController {
      * Realiza todas las tareas de mantenimiento de una sola vez para minimizar refrescos de UI
      */
     public void performMaintenance() {
-        Executors.newSingleThreadExecutor().execute(() -> {
+        executor.execute(() -> {
             UserProfile profile = userRepository.getUserProfileSync();
             if (profile == null) return;
 
@@ -193,7 +196,7 @@ public class UserController {
      * Solo se usa cuando sabemos que algo ha cambiado (ej. después de borrar un gasto)
      */
     public void syncWeekProgress() {
-        Executors.newSingleThreadExecutor().execute(() -> {
+        executor.execute(() -> {
             int actualCount = expenseRepository.getExpensesThisWeekCount();
             UserProfile profile = userRepository.getUserProfileSync();
             if (profile != null && profile.getWeekProgress() != actualCount) {
@@ -253,6 +256,15 @@ public class UserController {
         if (user != null && user.getName() != null && user.getName().equals("Dummy") ){
             Log.d("User Controller setDummyData", "Setting dummy data");
             AppDatabase.dummyData();
+        }
+    }
+
+    /**
+     * Cierra el executor service
+     */
+    public void close() {
+        if (executor != null && !executor.isShutdown()) {
+            executor.shutdown();
         }
     }
 

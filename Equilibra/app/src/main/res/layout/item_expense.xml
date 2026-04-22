@@ -70,7 +70,7 @@
                     android:id="@+id/tvTime"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@{expense.time}"
+                    android:text="@{expense.getFormattedDateTime}"
                     android:textSize="12sp"
                     android:textColor="@color/gray_400"
                     android:layout_marginTop="2dp" />

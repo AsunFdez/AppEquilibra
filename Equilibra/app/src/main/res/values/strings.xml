@@ -71,9 +71,6 @@
     <string name="error_income_required">El ingreso mensual es obligatorio</string>
     <string name="error_income_invalid">El ingreso debe ser mayor a 0</string>
 
-
-
-
     <!-- Common -->
     <string name="ok">Aceptar</string>
     <string name="cancel">Cancelar</string>

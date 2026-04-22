@@ -58,6 +58,11 @@ public class ExpenseWithCategory {
         return expense != null ? expense.getTime() : "";
     }
 
+
+    public String getFormattedDateTime() {
+        return expense != null ? expense.getFormattedDateTime() : "";
+    }
+
     public double getAmount() {
         return expense != null ? expense.getAmount() : 0.0;
     }

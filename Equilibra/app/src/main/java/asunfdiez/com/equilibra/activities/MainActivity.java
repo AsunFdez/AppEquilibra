@@ -293,7 +293,9 @@ private void navigateTo(Class<?> activityClass) {
 protected void onResume() {
     super.onResume();
     // Refrescar datos a través del ViewModel (dispara checkWellbeing en 2º plano)
-    viewModel.refreshData();
+    if (viewModel != null) {
+        viewModel.refreshData();
+    }
 }
 
 @Override

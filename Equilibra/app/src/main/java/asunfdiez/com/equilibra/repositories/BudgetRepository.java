@@ -40,25 +40,23 @@ public class BudgetRepository {
         initializeDefaultBudgetIfNeeded();
     }
 
-    // ========== MÉTODOS DE ACCESO A DATOS ==========
-
     /**
      * Obtiene el presupuesto activo como LiveData
+     * @return Presupuesto activo
      */
     public LiveData<Budget> getActiveBudget() {
         return activeBudget;
     }
 
-
     /**
      * Inserta o actualiza un presupuesto
+     * @param budget Presupuesto a guardar
      */
     public void saveBudget(Budget budget) {
         executorService.execute(() -> {
             try {
                 // Desactivar todos los presupuestos anteriores
                 budgetDao.deactivateAll();
-
                 budget.setUpdatedAt(System.currentTimeMillis());
 
                 long id = budgetDao.insert(budget);
@@ -72,6 +70,7 @@ public class BudgetRepository {
 
     /**
      * Actualiza un presupuesto existente
+     * @param budget Presupuesto a actualizar
      */
     public void updateBudget(Budget budget) {
         executorService.execute(() -> {
@@ -91,6 +90,12 @@ public class BudgetRepository {
         });
     }
 
+    /**
+     * Comprueba si dos presupuestos son idénticos
+     * @param b1 Presupuesto 1
+     * @param b2 Presupuesto 2
+     * @return true si son idénticos, false en caso contrario
+     */
     private boolean isSameBudget(Budget b1, Budget b2) {
         return Math.abs(b1.getMonthlyBudget() - b2.getMonthlyBudget()) < 0.01 &&
                 Math.abs(b1.getWeeklyBudget() - b2.getWeeklyBudget()) < 0.01 &&
@@ -101,7 +106,9 @@ public class BudgetRepository {
 
 
     /**
-     * Actualiza la moneda
+     * Actualiza la moneda del presupuesto
+     * @param currency Nueva moneda
+     * @param budgetId ID del presupuesto a actualizar
      */
     public void updateCurrency(String currency, long budgetId) {
         executorService.execute(() -> {
@@ -120,6 +127,8 @@ public class BudgetRepository {
 
     /**
      * Habilita o deshabilita el presupuesto
+     * @param enabled true para habilitar, false para deshabilitar
+     * @param budgetId ID del presupuesto a actualizar
      */
     public void setBudgetEnabled(boolean enabled, long budgetId) {
         executorService.execute(() -> {
@@ -166,7 +175,6 @@ public class BudgetRepository {
         });
     }
 
-    // ========== INICIALIZACIÓN ==========
 
     /**
      * Inicializa un presupuesto por defecto si no existe ninguno

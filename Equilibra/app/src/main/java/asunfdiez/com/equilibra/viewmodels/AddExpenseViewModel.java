@@ -1,7 +1,8 @@
 package asunfdiez.com.equilibra.viewmodels;
 
 import android.app.Application;
-import android.content.Context;
+import android.os.Handler;
+import android.os.Looper;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
@@ -14,13 +15,14 @@ import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
 import java.util.TimeZone;
+import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 import asunfdiez.com.equilibra.R;
+import asunfdiez.com.equilibra.controllers.ExpenseController;
 import asunfdiez.com.equilibra.models.Expense;
 import asunfdiez.com.equilibra.models.ExpenseCategory;
 import asunfdiez.com.equilibra.models.SmartReminder;
-import asunfdiez.com.equilibra.repositories.ExpenseRepository;
 
 /**
  * AddExpenseViewModel - ViewModel para AddExpenseActivity
@@ -28,10 +30,9 @@ import asunfdiez.com.equilibra.repositories.ExpenseRepository;
  */
 public class AddExpenseViewModel extends AndroidViewModel {
 
-    private final Context context;
-    private final ExpenseRepository repository;
+    private final ExpenseController expenseController;
 
-    // LiveData para el monto actual
+    // LiveData para el importe actual
     private MutableLiveData<String> currentAmount = new MutableLiveData<>("");
 
     // LiveData para la categoría seleccionada
@@ -68,15 +69,14 @@ public class AddExpenseViewModel extends AndroidViewModel {
     private MutableLiveData<String> goalImpact = new MutableLiveData<>("");
     private MutableLiveData<List<String>> alternatives = new MutableLiveData<>();
 
+    private final ExecutorService executor = Executors.newSingleThreadExecutor();
+
     public AddExpenseViewModel(@NonNull Application application) {
         super(application);
-        repository = new ExpenseRepository(application);
+        expenseController = new ExpenseController(application);
         initializeCategories();
-        this.context = application.getApplicationContext();
-
         // Observar cambios para validar el formulario automáticamente
         currentAmount.observeForever(s -> validateForm());
-        // selectedCategory.observeForever(category -> validateForm()); // Eliminado para evitar validación prematura si se carga un gasto
     }
 
     /**
@@ -86,14 +86,14 @@ public class AddExpenseViewModel extends AndroidViewModel {
         if (expenseId <= 0) return;
         this.currentExpenseId = expenseId;
 
-        Executors.newSingleThreadExecutor().execute(() -> {
-            Expense expense = repository.getExpenseById(expenseId);
+        executor.execute(() -> {
+            Expense expense = expenseController.getExpenseById(expenseId);
             if (expense != null) {
                 // Actualizar datos en el hilo principal
-                new android.os.Handler(android.os.Looper.getMainLooper()).post(() -> {
+                new Handler(Looper.getMainLooper()).post(() -> {
                     currentAmount.setValue(String.valueOf(expense.getAmount()));
                     description.setValue(expense.getDescription());
-                    
+
                     Calendar cal = Calendar.getInstance();
                     cal.setTimeInMillis(expense.getTimestamp());
                     selectedDateTime.setValue(cal);
@@ -110,7 +110,7 @@ public class AddExpenseViewModel extends AndroidViewModel {
                         }
                         categories.setValue(categoryList);
                     }
-                    
+
                     validateForm();
                 });
             }
@@ -121,9 +121,9 @@ public class AddExpenseViewModel extends AndroidViewModel {
      * Inicializa las categorías desde la base de datos
      */
     private void initializeCategories() {
-        Executors.newSingleThreadExecutor().execute(() -> {
+        executor.execute(() -> {
             try {
-                List<ExpenseCategory> categoryList = repository.getCategories();
+                List<ExpenseCategory> categoryList = expenseController.getCategories();
                 categories.postValue(categoryList);
             } catch (Exception e) {
                 errorMessage.postValue("Error al cargar categorías");
@@ -173,25 +173,12 @@ public class AddExpenseViewModel extends AndroidViewModel {
                 double amountValue = Double.parseDouble(amountStr);
                 valid = amountValue > 0 && category != null;
             } catch (NumberFormatException e) {
-                valid = false;
+                Log.d("AddExpenseViewModel", "Error al validar el importe: " + e.getMessage());
             }
         }
 
         isFormValid.setValue(valid);
     }
-
-    /**
-     * Formatea el importe para mostrar con símbolo de euro
-     * (Usado principalmente para los diálogos de confirmación)
-     */
-    public String getFormattedAmount() {
-        String amount = currentAmount.getValue();
-        if (amount == null || amount.isEmpty() || amount.equals("0")) {
-            return "0€";
-        }
-        return amount + "€";
-    }
-
 
     /**
      * Guardala fecha introducida
@@ -208,7 +195,7 @@ public class AddExpenseViewModel extends AndroidViewModel {
         ExpenseCategory category = selectedCategory.getValue();
 
         if (amount == null || amount.isEmpty() || category == null) {
-            errorMessage.setValue(context.getString(R.string.complete_all_fields));
+            errorMessage.setValue(getApplication().getString(R.string.complete_all_fields));
             return;
         }
 
@@ -216,44 +203,44 @@ public class AddExpenseViewModel extends AndroidViewModel {
             double amountValue = Double.parseDouble(amount.replace(',', '.'));
 
             // Realizar comprobaciones en hilo secundario para evitar NetworkOnMainThread o DatabaseOnMainThread
-            Executors.newSingleThreadExecutor().execute(() -> {
+            executor.execute(() -> {
                 try {
-                    // 1. Verificar si es un gasto importante (muy alto)
-                    if (repository.isImportantExpense(amountValue)) {
-                        String impact = repository.calculateGoalImpact(amountValue);
-                        List<String> alts = repository.generateAlternatives(category.getId(), amountValue, description.getValue());
-                        
+                    // Verificar si es un gasto importante (muy alto)
+                    if (expenseController.isImportantExpense(amountValue)) {
+                        String impact = expenseController.calculateGoalImpact(amountValue);
+                        List<String> alts = expenseController.generateAlternatives(category.getId(), amountValue, description.getValue());
+
                         goalImpact.postValue(impact);
                         alternatives.postValue(alts);
                         showImportantExpense.postValue(true);
                         return;
                     }
 
-                    // 2. Verificar patrones de gastos repetitivos (Smart Reminder)
-                    SmartReminder reminder = repository.detectExpensePattern(category.getId(), amountValue);
+                    // Verificar patrones de gastos repetitivos (Smart Reminder)
+                    SmartReminder reminder = expenseController.detectExpensePattern(category.getId(), amountValue);
                     if (reminder != null) {
                         showSmartReminder.postValue(reminder);
                         return;
                     }
 
-                    // 3. Verificar si necesita confirmación
-                    if (repository.shouldShowConfirmation(amountValue)) {
-                        int percentage = repository.calculateBudgetPercentage(amountValue);
+                    // Verificar si necesita confirmación
+                    if (expenseController.shouldShowConfirmation(amountValue)) {
+                        int percentage = expenseController.calculateBudgetPercentage(amountValue);
                         budgetPercentage.postValue(percentage);
                         showConfirmExpense.postValue(true);
                         return;
                     }
 
-                    // 4. Si no hay alertas, guardar directamente
+                    // Si no hay alertas, guardar directamente
                     saveExpenseDirectly();
                 } catch (Exception e) {
                     Log.e("AddExpenseViewModel", "Error al guardar gasto: " + e.getMessage());
-                    errorMessage.postValue(context.getString(R.string.saving_expense_error));
+                    errorMessage.postValue(getApplication().getString(R.string.saving_expense_error));
                 }
             });
 
         } catch (NumberFormatException e) {
-            errorMessage.setValue(context.getString(R.string.invalid_input_number));
+            errorMessage.setValue(getApplication().getString(R.string.invalid_input_number));
         }
     }
 
@@ -267,7 +254,7 @@ public class AddExpenseViewModel extends AndroidViewModel {
         String desc = description.getValue();
 
         if (amount == null || category == null) {
-            errorMessage.setValue(context.getString(R.string.complete_all_fields));
+            errorMessage.setValue(getApplication().getString(R.string.complete_all_fields));
             return;
         }
 
@@ -283,50 +270,23 @@ public class AddExpenseViewModel extends AndroidViewModel {
 
             SimpleDateFormat sdfDate = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
             SimpleDateFormat sdfTime = new SimpleDateFormat("HH:mm", Locale.getDefault());
-            expense.setDate(sdfDate.format(calendar.getTime()));
-            expense.setTime(sdfTime.format(calendar.getTime()));
-            expense.setTimestamp(calendar.getTimeInMillis());
 
-            Executors.newSingleThreadExecutor().execute(() -> {
-                try {
-                    repository.saveExpense(expense);
-                    expenseSaved.postValue(true);
-                } catch (Exception e) {
-                    errorMessage.postValue("Error al guardar en base de datos: " + e.getMessage());
-                }
-            });
+            expense.setDate(sdfDate.format( (calendar != null) ? calendar.getTime() : null ));
+            expense.setTime(sdfTime.format( (calendar != null) ? calendar.getTime() : null ));
+            expense.setTimestamp( (calendar!=null) ? calendar.getTimeInMillis() : null );
+
+            expenseController.saveExpense(expense);
+            expenseSaved.postValue(true);
 
         } catch (NumberFormatException e) {
-            errorMessage.setValue(context.getString(R.string.invalid_input_number));
+            errorMessage.setValue(getApplication().getString(R.string.invalid_input_number));
         }
 
         checkAchievements();
     }
 
     private void checkAchievements () {
-        Executors.newSingleThreadExecutor().execute(() -> {
-            repository.checkAchievements();
-        });
-    }
-
-
-    /**
-     * Cancela guardar el gasto
-     */
-    public void cancelExpense() {
-        currentAmount.setValue("");
-        selectedCategory.setValue(null);
-        description.setValue("");
-
-        List<ExpenseCategory> categoryList = categories.getValue();
-        if (categoryList != null) {
-            for (ExpenseCategory cat : categoryList) {
-                cat.setSelected(false);
-            }
-            categories.setValue(categoryList);
-        }
-
-        validateForm();
+        executor.execute(expenseController::checkAchievements);
     }
 
     @Override
@@ -391,5 +351,9 @@ public class AddExpenseViewModel extends AndroidViewModel {
         showSmartReminder.setValue(null);
         showConfirmExpense.setValue(false);
         showImportantExpense.setValue(false);
+    }
+
+    public void consumeExpenseSavedEvent() {
+        expenseSaved.setValue(null);
     }
 }

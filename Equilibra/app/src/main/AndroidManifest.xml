@@ -14,6 +14,11 @@
         <activity
             android:name=".activities.AboutActivity"
             android:exported="false" />
+
+        <activity
+            android:name=".activities.AddExpenseActivity"
+            android:windowSoftInputMode="stateVisible|adjustResize">
+        </activity>
         <activity
             android:name=".activities.AppearanceSettingsActivity"
             android:exported="false" />
@@ -40,9 +45,6 @@
             android:exported="false" />
         <activity
             android:name=".activities.AchievementsActivity"
-            android:exported="false" />
-        <activity
-            android:name=".activities.AddExpenseActivity"
             android:exported="false" />
         <activity
             android:name=".activities.MainActivity"

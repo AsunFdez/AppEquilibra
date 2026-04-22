@@ -16,13 +16,13 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.concurrent.Executors;
 
+import asunfdiez.com.equilibra.controllers.ExpenseController;
 import asunfdiez.com.equilibra.models.Expense;
 import asunfdiez.com.equilibra.models.ExpenseWithCategory;
-import asunfdiez.com.equilibra.repositories.ExpenseRepository;
 
 public class ExpenseListViewModel extends AndroidViewModel {
 
-    private final ExpenseRepository repository;
+    private final ExpenseController controller;
     private final MutableLiveData<List<ExpenseWithCategory>> expenses = new MutableLiveData<>(new ArrayList<>());
     private final MutableLiveData<String> totalAmount = new MutableLiveData<>("0.00");
     private final MutableLiveData<Integer> totalRecords = new MutableLiveData<>(0);
@@ -33,7 +33,7 @@ public class ExpenseListViewModel extends AndroidViewModel {
 
     public ExpenseListViewModel(@NonNull Application application) {
         super(application);
-        repository = new ExpenseRepository(application);
+        controller = new ExpenseController(application);
         updateMonthYear();
         loadData();
     }
@@ -57,7 +57,7 @@ public class ExpenseListViewModel extends AndroidViewModel {
             calendar.set(Calendar.MILLISECOND, 999);
             long endTime = calendar.getTimeInMillis();
 
-            List<ExpenseWithCategory> expenseList = repository.getExpensesWithCategoryInRange(startTime, endTime);
+            List<ExpenseWithCategory> expenseList = controller.getExpensesWithCategoryInRange(startTime, endTime);
             
             // Filtrar por fecha seleccionada si existe
             Long selectedTs = selectedDateTimestamp.getValue();
@@ -171,7 +171,7 @@ public class ExpenseListViewModel extends AndroidViewModel {
 
     public void deleteExpense(Expense expense) {
         Executors.newSingleThreadExecutor().execute(() -> {
-            repository.deleteExpense(expense);
+            controller.deleteExpense(expense);
             loadData();
         });
     }

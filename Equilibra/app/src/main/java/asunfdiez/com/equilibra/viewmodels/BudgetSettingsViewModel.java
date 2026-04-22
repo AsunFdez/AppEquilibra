@@ -10,8 +10,8 @@ import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.Transformations;
 
 import asunfdiez.com.equilibra.R;
+import asunfdiez.com.equilibra.controllers.BudgetController;
 import asunfdiez.com.equilibra.models.Budget;
-import asunfdiez.com.equilibra.repositories.BudgetRepository;
 import asunfdiez.com.equilibra.utils.Constants;
 
 /**
@@ -20,8 +20,7 @@ import asunfdiez.com.equilibra.utils.Constants;
  */
 public class BudgetSettingsViewModel extends AndroidViewModel {
 
-
-    private final BudgetRepository budgetRepository;
+    private final BudgetController budgetController;
 
     // LiveData observables
     private final LiveData<Budget> budget;
@@ -46,8 +45,9 @@ public class BudgetSettingsViewModel extends AndroidViewModel {
     public BudgetSettingsViewModel(@NonNull Application application) {
         super(application);
 
-        this.budgetRepository = new BudgetRepository(application);
-        this.budget = budgetRepository.getActiveBudget();
+        this.budgetController = new BudgetController(application);
+
+        this.budget = budgetController.getActiveBudget();
 
         this.currencySymbol = Transformations.map(budget, b -> {
             if (b == null) return "€";
@@ -120,7 +120,7 @@ public class BudgetSettingsViewModel extends AndroidViewModel {
         }
 
         isSaving.setValue(true);
-        budgetRepository.updateCurrency(currency, budgetId);
+        budgetController.updateCurrency(currency, budgetId);
 
         new android.os.Handler().postDelayed(() -> {
             isSaving.setValue(false);
@@ -133,7 +133,7 @@ public class BudgetSettingsViewModel extends AndroidViewModel {
      */
     public void setBudgetEnabled(boolean enabled, long budgetId) {
         budgetEnabled.setValue(enabled);
-        budgetRepository.setBudgetEnabled(enabled, budgetId);
+        budgetController.setBudgetEnabled(enabled, budgetId);
         saveMessage.setValue(enabled ?
                 getApplication().getString(R.string.budget_enabled) : getApplication().getString(R.string.budget_disabled));
     }
@@ -165,7 +165,7 @@ public class BudgetSettingsViewModel extends AndroidViewModel {
 
         isSaving.setValue(true);
         isEditing = false; // Al guardar, permitimos que la DB refresque los valores si es necesario
-        budgetRepository.saveBudget(budget);
+        budgetController.saveBudget(budget);
 
         new android.os.Handler().postDelayed(() -> {
             isSaving.setValue(false);
@@ -213,6 +213,5 @@ public class BudgetSettingsViewModel extends AndroidViewModel {
     @Override
     protected void onCleared() {
         super.onCleared();
-        budgetRepository.close();
     }
 }

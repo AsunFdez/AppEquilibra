@@ -6,6 +6,7 @@ import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.view.View;
 import android.view.Window;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -84,6 +85,19 @@ public class AddExpenseActivity extends AppCompatActivity {
         } else {
             binding.btnSaveExpense.setText(getString(R.string.add_expense));
         }
+
+        // Solicitar el foco explícitamente para el importe
+        binding.etAmount.requestFocus();
+
+        // Mostrar el teclado de forma programática
+        // Usamos un pequeño post para asegurar que la vista esté lista
+        binding.etAmount.postDelayed(() -> {
+            InputMethodManager imm = (InputMethodManager) getSystemService(android.content.Context.INPUT_METHOD_SERVICE);
+            if (imm != null) {
+                imm.showSoftInput(binding.etAmount, InputMethodManager.SHOW_IMPLICIT);
+            }
+        }, 200);
+
     }
 
     /**
@@ -234,6 +248,8 @@ public class AddExpenseActivity extends AppCompatActivity {
         viewModel.getExpenseSaved().observe(this, saved -> {
             if (saved != null && saved) {
                 Toast.makeText(this, R.string.expense_saved_ok, Toast.LENGTH_SHORT).show();
+                // Limpiar el estado en el ViewModel para que no se dispare otra vez
+                viewModel.consumeExpenseSavedEvent();
                 finish();
                 overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
             }

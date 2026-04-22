@@ -58,7 +58,6 @@ public abstract class AppDatabase extends RoomDatabase {
     public abstract InterventionLogDao interventionLogDao();
 
 
-
     /**
      * Obtiene la instancia única de la base de datos
      */

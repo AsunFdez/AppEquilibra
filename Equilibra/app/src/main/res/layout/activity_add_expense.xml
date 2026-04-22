@@ -85,11 +85,14 @@
                                 android:textSize="32sp"
                                 android:textStyle="bold"
                                 android:fontFamily="sans-serif-medium"
-                                android:hint="0"
+                                android:focusedByDefault="true"
+                                android:hint="0.00"
                                 android:textColorHint="#80FFFFFF"
                                 android:minWidth="40dp"
                                 android:importantForAutofill="no"
-                                android:textCursorDrawable="@null" />
+                                android:textCursorDrawable="@null">
+                                <requestFocus />
+                            </EditText>
 
                             <TextView
                                 android:layout_width="wrap_content"

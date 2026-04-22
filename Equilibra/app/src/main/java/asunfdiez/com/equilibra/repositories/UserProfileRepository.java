@@ -110,5 +110,16 @@ public class UserProfileRepository {
     }
 
 
+    public void decrementWeekProgress() {
+        executorService.execute(userProfileDao::decrementWeekProgress);
+    }
+
+    public void incrementWeekProgress() {
+        executorService.execute(userProfileDao::incrementWeekProgress);
+    }
+
+    public double getUserMonthlyIncome() {
+        return userProfileDao.getUserMonthlyIncome();
+    }
 }
 

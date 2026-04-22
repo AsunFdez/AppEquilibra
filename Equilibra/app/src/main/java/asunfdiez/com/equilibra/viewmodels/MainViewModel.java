@@ -21,7 +21,6 @@ import asunfdiez.com.equilibra.utils.SharedPrefsManager;
 
 public class MainViewModel extends AndroidViewModel {
 
-
     private final UserProfileRepository userProfileRepository;
     private final BudgetRepository budgetRepository;
     private final ExpenseRepository expenseRepository;

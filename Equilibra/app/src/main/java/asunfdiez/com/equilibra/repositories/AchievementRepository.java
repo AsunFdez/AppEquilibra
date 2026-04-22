@@ -6,13 +6,17 @@ import android.util.Log;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
+import java.util.Calendar;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 import asunfdiez.com.equilibra.database.AchievementDao;
 import asunfdiez.com.equilibra.database.AppDatabase;
 import asunfdiez.com.equilibra.models.Achievement;
+import asunfdiez.com.equilibra.models.Expense;
 import asunfdiez.com.equilibra.models.UserProfile;
 import asunfdiez.com.equilibra.utils.Constants;
 
@@ -38,8 +42,9 @@ public class AchievementRepository {
     // MutableLiveData para notificar eventos
     private final MutableLiveData<Achievement> newlyUnlockedAchievement = new MutableLiveData<>();
 
-    private final UserProfileRepository userRepository;
+    private final UserProfileRepository userProfileRepository;
     private final ExpenseRepository expenseRepository;
+
 
     /**
      * Constructor del Repository
@@ -47,9 +52,8 @@ public class AchievementRepository {
     public AchievementRepository(Context context) {
         this.achievementDao = AppDatabase.getInstance(context).achievementDao();
         this.executorService = Executors.newSingleThreadExecutor();
-        this.userRepository = new UserProfileRepository(context);
+        this.userProfileRepository = new UserProfileRepository(context);
         this.expenseRepository = new ExpenseRepository(context);
-
         // Inicializar LiveData
         this.allAchievements = achievementDao.getAllAchievements();
         this.totalPoints = achievementDao.getTotalPoints();
@@ -198,7 +202,7 @@ public class AchievementRepository {
      * Logros por racha de días consecutivos
      */
     private void checkStreakAchievements() {
-        UserProfile profile = userRepository.getUserProfile().getValue();
+        UserProfile profile = userProfileRepository.getUserProfile().getValue();
         if (profile == null) return;
         int consecutiveDays = profile.getDayCount();
 
@@ -217,7 +221,7 @@ public class AchievementRepository {
      * Logros relacionados con presupuesto
      */
     private void checkBudgetAchievements() {
-        int weeksUnderBudget = userRepository.getWeeksUnderBudget();
+        int weeksUnderBudget = userProfileRepository.getWeeksUnderBudget();
 
         if (weeksUnderBudget >= 1) {
             unlockAchievementIfNotUnlocked(Constants.ACHIEVEMENT_UNDER_BUDGET_WEEK);
@@ -244,7 +248,7 @@ public class AchievementRepository {
      * Logros por ahorro
      */
     private void checkSavingsAchievements() {
-        double totalSaved = expenseRepository.getTotalSavedAmount();
+        double totalSaved = getTotalSavedAmount();
 
         if (totalSaved >= 50) {
             unlockAchievementIfNotUnlocked(Constants.ACHIEVEMENT_SAVER_50);
@@ -256,6 +260,36 @@ public class AchievementRepository {
             unlockAchievementIfNotUnlocked(Constants.ACHIEVEMENT_SAVER_500);
         }
     }
+
+    /**
+     * Calcula el ahorro total acumulado basado en el presupuesto mensual
+     * @return ahorro total
+     */
+    public double getTotalSavedAmount() {
+        //TODO implementar con Budget
+        double monthlyBudget = userProfileRepository.getUserMonthlyIncome();
+        List<Expense> allExpenses = expenseRepository.getAllExpenses();
+
+        // Agrupar por Año y Mes
+        Map<String, Double> monthlyTotals = new HashMap<>();
+        Calendar cal = Calendar.getInstance();
+
+        for (Expense e : allExpenses) {
+            cal.setTimeInMillis(e.getTimestamp());
+            String key = cal.get(Calendar.YEAR) + "-" + cal.get(Calendar.MONTH);
+            monthlyTotals.put(key, monthlyTotals.getOrDefault(key, 0.0) + e.getAmount());
+        }
+
+        double totalSaved = 0;
+        for (Double totalSpent : monthlyTotals.values()) {
+            double saved = monthlyBudget - totalSpent;
+            if (saved > 0) {
+                totalSaved += saved;
+            }
+        }
+        return totalSaved;
+    }
+
 
     /**
      * Desbloquea un logro si aún no está desbloqueado
@@ -305,5 +339,15 @@ public class AchievementRepository {
         if (executorService != null && !executorService.isShutdown()) {
             executorService.shutdown();
         }
+    }
+
+    public void updateAchievement(Achievement achievement) {
+        executorService.execute(() -> {
+            achievementDao.updateAchievement(achievement);
+        });
+    }
+
+    public Achievement getAchievementByTitle(String string) {
+        return achievementDao.getAchievementByTitle(string);
     }
 }

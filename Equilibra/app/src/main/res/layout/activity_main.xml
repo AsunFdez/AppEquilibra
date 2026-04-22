@@ -63,7 +63,7 @@
                 <include
                     android:id="@+id/beginnerUser"
                     layout="@layout/beginner_user"
-                    android:visibility="gone"
+                    android:visibility="@{viewModel.currentView.equals(&quot;beginner&quot;) ? View.VISIBLE : View.GONE}"
                     app:user="@{user}"
                     app:adviceViewModel="@{adviceViewModel}"
                     app:gamificationViewModel="@{gamificationViewModel}" />
@@ -71,14 +71,14 @@
                 <include
                     android:id="@+id/intermediateUser"
                     layout="@layout/intermediate_user"
-                    android:visibility="gone"
+                    android:visibility="@{viewModel.currentView.equals(&quot;intermediate&quot;) ? View.VISIBLE : View.GONE}"
                     app:viewModel="@{viewModel}"
                     app:gamificationViewModel="@{gamificationViewModel}" />
 
                 <include
                     android:id="@+id/advancedUser"
                     layout="@layout/advanced_user"
-                    android:visibility="gone"
+                    android:visibility="@{viewModel.currentView.equals(&quot;advanced&quot;) ? View.VISIBLE : View.GONE}"
                     app:viewModel="@{viewModel}"
                     app:gamificationViewModel="@{gamificationViewModel}" />
 
