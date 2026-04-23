@@ -9,7 +9,7 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MediatorLiveData;
 import androidx.lifecycle.MutableLiveData;
 
-import asunfdiez.com.equilibra.controllers.UserController;
+import asunfdiez.com.equilibra.controllers.UserProfileController;
 import asunfdiez.com.equilibra.models.Budget;
 import asunfdiez.com.equilibra.models.SavingGoal;
 import asunfdiez.com.equilibra.models.UserProfile;
@@ -26,7 +26,7 @@ public class MainViewModel extends AndroidViewModel {
     private final ExpenseRepository expenseRepository;
     private final SavingGoalRepository savingGoalRepository;
 
-    private final UserController userController;
+    private final UserProfileController userProfileController;
     private final SharedPrefsManager prefsManager;
 
     // LiveData principal de Room
@@ -55,10 +55,10 @@ public class MainViewModel extends AndroidViewModel {
         super(application);
 
         // Inicialización de controladores (Capa de Dominio)
-        userController = new UserController(application);
+        userProfileController = new UserProfileController(application);
 
         // Obtenemos el flujo de datos (No el valor estático)
-        userProfile = userController.getCurrentUser();
+        userProfile = userProfileController.getCurrentUser();
 
         prefsManager = SharedPrefsManager.getInstance(application);
 
@@ -73,7 +73,7 @@ public class MainViewModel extends AndroidViewModel {
     }
 
     private void performMaintenance() {
-        userController.performMaintenance();
+        userProfileController.performMaintenance();
     }
 
     // Getters públicos (Solo lectura)
@@ -89,8 +89,8 @@ public class MainViewModel extends AndroidViewModel {
     }
 
     public void checkWellbeing() {
-        if (_shouldShowIntervention.getValue() == null || _shouldShowIntervention.getValue() != userController.checkWellbeing() ) {
-            _shouldShowIntervention.postValue(userController.checkWellbeing());
+        if (_shouldShowIntervention.getValue() == null || _shouldShowIntervention.getValue() != userProfileController.checkWellbeing() ) {
+            _shouldShowIntervention.postValue(userProfileController.checkWellbeing());
         }
     }
 

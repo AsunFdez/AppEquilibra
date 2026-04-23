@@ -6,24 +6,17 @@ import android.util.Log;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
-import java.util.Calendar;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 import asunfdiez.com.equilibra.database.AchievementDao;
 import asunfdiez.com.equilibra.database.AppDatabase;
 import asunfdiez.com.equilibra.models.Achievement;
-import asunfdiez.com.equilibra.models.Expense;
-import asunfdiez.com.equilibra.models.UserProfile;
-import asunfdiez.com.equilibra.utils.Constants;
 
 /**
  * Repository para gestionar la lógica de Logros (Achievements)
- * Maneja la detección automática de logros y su persistencia
- * Patrón Repository: Separa la lógica de negocio de la fuente de datos
+ * Intermedia entre ViewModel y Room DAOs
  */
 public class AchievementRepository {
 
@@ -40,10 +33,7 @@ public class AchievementRepository {
     private final LiveData<Integer> maxPossiblePoints;
 
     // MutableLiveData para notificar eventos
-    private final MutableLiveData<Achievement> newlyUnlockedAchievement = new MutableLiveData<>();
-
-    private final UserProfileRepository userProfileRepository;
-    private final ExpenseRepository expenseRepository;
+    public final MutableLiveData<Achievement> newlyUnlockedAchievement = new MutableLiveData<>();
 
 
     /**
@@ -52,8 +42,6 @@ public class AchievementRepository {
     public AchievementRepository(Context context) {
         this.achievementDao = AppDatabase.getInstance(context).achievementDao();
         this.executorService = Executors.newSingleThreadExecutor();
-        this.userProfileRepository = new UserProfileRepository(context);
-        this.expenseRepository = new ExpenseRepository(context);
         // Inicializar LiveData
         this.allAchievements = achievementDao.getAllAchievements();
         this.totalPoints = achievementDao.getTotalPoints();
@@ -71,10 +59,57 @@ public class AchievementRepository {
 
     }
 
-    // ========== MÉTODOS DE ACCESO A DATOS ==========
+    /**
+     * Actualiza un logro en la base de datos
+     * @param achievement Logro a actualizar
+     */
+    public void updateAchievement(Achievement achievement) {
+        executorService.execute(() -> {
+            achievementDao.updateAchievement(achievement);
+        });
+    }
+
+    /**
+     * Obtiene un logro por su título
+     * @param string Título del logro
+     * @return Logro
+     */
+    public Achievement getAchievementByTitle(String string) {
+        return achievementDao.getAchievementByTitle(string);
+    }
+
+    /**
+     * Comprueba si un logro está desbloqueado por su clave
+     * @param achievementKey Clave del logro
+     * @return true si está desbloqueado, false en caso contrario
+     */
+    public boolean isAchievementUnlocked(String achievementKey) {
+        return achievementDao.isAchievementUnlocked(achievementKey);
+    }
+    /**
+     * Desbloquea un logro por su clave
+     * @param achievementKey Clave del logro
+     * @param timestamp Timestamp de desbloqueo
+     */
+
+    public void unlockAchievement(String achievementKey, long timestamp) {
+        executorService.execute(() -> {
+            achievementDao.unlockAchievement(achievementKey, timestamp);
+        });
+    }
+
+    /**
+     * Obtiene un logro por su clave
+     * @param achievementKey Clave del logro
+     * @return Logro
+     */
+    public Achievement getAchievementByKey(String achievementKey) {
+        return achievementDao.getAchievementByKey(achievementKey);
+    }
 
     /**
      * Obtiene todos los logros como LiveData
+     * @return LiveData de la lista de logros
      */
     public LiveData<List<Achievement>> getAllAchievements() {
         return allAchievements;
@@ -82,6 +117,7 @@ public class AchievementRepository {
 
     /**
      * Obtiene solo logros desbloqueados
+     * @return LiveData de la lista de logros desbloqueados
      */
     public LiveData<List<Achievement>> getUnlockedAchievements() {
         return achievementDao.getUnlockedAchievements();
@@ -89,6 +125,7 @@ public class AchievementRepository {
 
     /**
      * Obtiene solo logros bloqueados
+     * @return LiveData de la lista de logros bloqueados
      */
     public LiveData<List<Achievement>> getLockedAchievements() {
         return achievementDao.getLockedAchievements();
@@ -96,6 +133,7 @@ public class AchievementRepository {
 
     /**
      * Obtiene el total de puntos acumulados
+     * @return LiveData del total de puntos
      */
     public LiveData<Integer> getTotalPoints() {
         return totalPoints;
@@ -103,6 +141,7 @@ public class AchievementRepository {
 
     /**
      * Obtiene el conteo de logros desbloqueados
+     * @return LiveData del conteo de logros desbloqueados
      */
     public LiveData<Integer> getUnlockedCount() {
         return unlockedCount;
@@ -110,6 +149,7 @@ public class AchievementRepository {
 
     /**
      * Obtiene el total de logros
+     * @return LiveData del total de logros
      */
     public LiveData<Integer> getTotalAchievements() {
         return totalAchievements;
@@ -117,6 +157,7 @@ public class AchievementRepository {
 
     /**
      * Obtiene todos los logros de forma síncrona
+     * @return Lista de logros
      */
     public List<Achievement> getAllAchievementsSync() {
         return achievementDao.getAllAchievementsSync();
@@ -124,6 +165,7 @@ public class AchievementRepository {
 
     /**
      * Obtiene los puntos totales de forma síncrona
+     * @return Total de puntos
      */
     public int getTotalPointsSync() {
         return achievementDao.getTotalPointsSync();
@@ -131,6 +173,7 @@ public class AchievementRepository {
 
     /**
      * Obtiene los puntos máximos posibles
+     * @return LiveData de los puntos máximos posibles
      */
     public LiveData<Integer> getMaxPossiblePoints() {
         return maxPossiblePoints;
@@ -138,6 +181,7 @@ public class AchievementRepository {
 
     /**
      * LiveData para observar cuando se desbloquea un nuevo logro
+     * @return LiveData del logro desbloqueado
      */
     public LiveData<Achievement> getNewlyUnlockedAchievement() {
         return newlyUnlockedAchievement;
@@ -145,182 +189,10 @@ public class AchievementRepository {
 
     /**
      * Obtiene logros recientes
+     * @param limit Cantidad máxima de logros
      */
     public LiveData<List<Achievement>> getRecentUnlocked(int limit) {
         return achievementDao.getRecentUnlocked(limit);
-    }
-
-    // ========== MÉTODOS DE DETECCIÓN DE LOGROS ==========
-
-    /**
-     * Verifica y desbloquea logros basados en el comportamiento del usuario
-     * Se debe llamar después de eventos importantes (nuevo gasto, racha, etc.)
-     */
-    public void checkAndUnlockAchievements() {
-        executorService.execute(() -> {
-            try {
-
-                // Verificar cada tipo de logro
-                checkExpenseCountAchievements();
-                checkStreakAchievements();
-                checkBudgetAchievements();
-                checkCategoryAchievements();
-                checkSavingsAchievements();
-
-                Log.d(TAG, "Achievements checked successfully");
-
-            } catch (Exception e) {
-                Log.e(TAG, "Error checking achievements: " + e.getMessage(), e);
-            }
-        });
-    }
-
-
-    /**
-     * Logros por cantidad de gastos registrados
-     */
-    private void checkExpenseCountAchievements() {
-        int totalExpenses = expenseRepository.getTotalExpenseCount();
-        if (totalExpenses == 1) {
-            unlockAchievementIfNotUnlocked(Constants.ACHIEVEMENT_FIRST_EXPENSE);
-        }
-        if (totalExpenses >= 10) {
-            unlockAchievementIfNotUnlocked(Constants.ACHIEVEMENT_10_EXPENSES);
-        }
-        if (totalExpenses >= 50) {
-            unlockAchievementIfNotUnlocked(Constants.ACHIEVEMENT_50_EXPENSES);
-        }
-        if (totalExpenses >= 100) {
-            unlockAchievementIfNotUnlocked(Constants.ACHIEVEMENT_100_EXPENSES);
-        }
-        if (totalExpenses >= 500) {
-            unlockAchievementIfNotUnlocked(Constants.ACHIEVEMENT_500_EXPENSES);
-        }
-    }
-
-    /**
-     * Logros por racha de días consecutivos
-     */
-    private void checkStreakAchievements() {
-        UserProfile profile = userProfileRepository.getUserProfile().getValue();
-        if (profile == null) return;
-        int consecutiveDays = profile.getDayCount();
-
-        if (consecutiveDays >= 7) {
-            unlockAchievementIfNotUnlocked(Constants.ACHIEVEMENT_WEEK_STREAK);
-        }
-        if (consecutiveDays >= 30) {
-            unlockAchievementIfNotUnlocked(Constants.ACHIEVEMENT_MONTH_STREAK);
-        }
-        if (consecutiveDays >= 100) {
-            unlockAchievementIfNotUnlocked(Constants.ACHIEVEMENT_100_DAYS_STREAK);
-        }
-    }
-
-    /**
-     * Logros relacionados con presupuesto
-     */
-    private void checkBudgetAchievements() {
-        int weeksUnderBudget = userProfileRepository.getWeeksUnderBudget();
-
-        if (weeksUnderBudget >= 1) {
-            unlockAchievementIfNotUnlocked(Constants.ACHIEVEMENT_UNDER_BUDGET_WEEK);
-        }
-        if (weeksUnderBudget >= 4) {
-            unlockAchievementIfNotUnlocked(Constants.ACHIEVEMENT_UNDER_BUDGET_MONTH);
-        }
-    }
-
-    /**
-     * Logros por uso de categorías
-     */
-    private void checkCategoryAchievements() {
-        int categoriesUsed = expenseRepository.getUniqueCategoriesCount();
-        if (categoriesUsed >= 5) {
-            unlockAchievementIfNotUnlocked(Constants.ACHIEVEMENT_CATEGORY_EXPLORER);
-        }
-        if (categoriesUsed >= 10) {
-            unlockAchievementIfNotUnlocked(Constants.ACHIEVEMENT_CATEGORY_MASTER);
-        }
-    }
-
-    /**
-     * Logros por ahorro
-     */
-    private void checkSavingsAchievements() {
-        double totalSaved = getTotalSavedAmount();
-
-        if (totalSaved >= 50) {
-            unlockAchievementIfNotUnlocked(Constants.ACHIEVEMENT_SAVER_50);
-        }
-        if (totalSaved >= 100) {
-            unlockAchievementIfNotUnlocked(Constants.ACHIEVEMENT_SAVER_100);
-        }
-        if (totalSaved >= 500) {
-            unlockAchievementIfNotUnlocked(Constants.ACHIEVEMENT_SAVER_500);
-        }
-    }
-
-    /**
-     * Calcula el ahorro total acumulado basado en el presupuesto mensual
-     * @return ahorro total
-     */
-    public double getTotalSavedAmount() {
-        //TODO implementar con Budget
-        double monthlyBudget = userProfileRepository.getUserMonthlyIncome();
-        List<Expense> allExpenses = expenseRepository.getAllExpenses();
-
-        // Agrupar por Año y Mes
-        Map<String, Double> monthlyTotals = new HashMap<>();
-        Calendar cal = Calendar.getInstance();
-
-        for (Expense e : allExpenses) {
-            cal.setTimeInMillis(e.getTimestamp());
-            String key = cal.get(Calendar.YEAR) + "-" + cal.get(Calendar.MONTH);
-            monthlyTotals.put(key, monthlyTotals.getOrDefault(key, 0.0) + e.getAmount());
-        }
-
-        double totalSaved = 0;
-        for (Double totalSpent : monthlyTotals.values()) {
-            double saved = monthlyBudget - totalSpent;
-            if (saved > 0) {
-                totalSaved += saved;
-            }
-        }
-        return totalSaved;
-    }
-
-
-    /**
-     * Desbloquea un logro si aún no está desbloqueado
-     */
-    private void unlockAchievementIfNotUnlocked(String achievementKey) {
-        executorService.execute(() -> {
-            try {
-                boolean isUnlocked = achievementDao.isAchievementUnlocked(achievementKey);
-
-                if (!isUnlocked) {
-                    long timestamp = System.currentTimeMillis();
-                    achievementDao.unlockAchievement(achievementKey, timestamp);
-
-                    // Obtener el logro completo para notificar
-                    Achievement achievement = achievementDao.getAchievementByKey(achievementKey);
-                    if (achievement != null) {
-                        newlyUnlockedAchievement.postValue(achievement);
-                        Log.d(TAG, "Achievement unlocked: " + achievementKey);
-                    }
-                }
-            } catch (Exception e) {
-                Log.e(TAG, "Error unlocking achievement: " + achievementKey, e);
-            }
-        });
-    }
-
-    /**
-     * Desbloquea un logro manualmente (para testing)
-     */
-    public void unlockAchievement(String achievementKey) {
-        unlockAchievementIfNotUnlocked(achievementKey);
     }
 
     /**
@@ -341,13 +213,4 @@ public class AchievementRepository {
         }
     }
 
-    public void updateAchievement(Achievement achievement) {
-        executorService.execute(() -> {
-            achievementDao.updateAchievement(achievement);
-        });
-    }
-
-    public Achievement getAchievementByTitle(String string) {
-        return achievementDao.getAchievementByTitle(string);
-    }
 }

@@ -6,7 +6,7 @@ import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 
-import asunfdiez.com.equilibra.controllers.UserController;
+import asunfdiez.com.equilibra.controllers.UserProfileController;
 import asunfdiez.com.equilibra.repositories.UserProfileRepository;
 import asunfdiez.com.equilibra.utils.SharedPrefsManager;
 
@@ -27,7 +27,7 @@ public class SettingsViewModel extends AndroidViewModel {
     private final LiveData<Boolean> darkMode;
     private final LiveData<String> theme;
     private final LiveData<String> language;
-    private final UserController userController;
+    private final UserProfileController userProfileController;
 
 
     /**
@@ -46,7 +46,7 @@ public class SettingsViewModel extends AndroidViewModel {
         this.theme = prefsManager.getTheme();
         this.language = prefsManager.getLanguage();
 
-        this.userController = new UserController(application);
+        this.userProfileController = new UserProfileController(application);
     }
 
     // ========== GETTERS LIVEDATA ==========
@@ -82,12 +82,12 @@ public class SettingsViewModel extends AndroidViewModel {
 
     /**
      * Reset completo de la app
-     * El userController se encarga de limpiar datos de usuario
+     * El userProfileController se encarga de limpiar datos de usuario
      * de la base de datos
      */
     public void resetApp() {
         try {
-            userController.deleteCurrentUser(prefsManager::resetAll);
+            userProfileController.deleteCurrentUser(prefsManager::resetAll);
         } catch (Exception e) {
             e.printStackTrace();
         }

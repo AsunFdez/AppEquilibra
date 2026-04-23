@@ -17,7 +17,7 @@ import asunfdiez.com.equilibra.utils.Constants;
 import asunfdiez.com.equilibra.utils.DateUtils;
 
 /**
- * ExpenseRepository - Repositorio para gestionar datos de gastos
+ * ExpenseRepository - Repositorio para gestionar los gastos
  * Intermedia entre ViewModel y Room DAOs
  */
 public class ExpenseRepository {

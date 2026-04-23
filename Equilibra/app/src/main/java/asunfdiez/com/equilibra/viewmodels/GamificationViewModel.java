@@ -101,11 +101,11 @@ public class GamificationViewModel extends AndroidViewModel {
     private void loadAchievements() {
         new Thread(() -> {
             try {
-                List<Achievement> achievements = achievementController.getAllAchievements();
+                List<Achievement> achievements = achievementController.getAllAchievementsSync();
                 _allAchievements.postValue(achievements);
 
                 // Calcular puntos totales
-                int totalPoints = achievementController.getTotalPoints();
+                int totalPoints = achievementController.getTotalPointsSync();
                 _totalPoints.postValue(totalPoints);
 
                 // Obtener nivel

@@ -19,9 +19,11 @@ import asunfdiez.com.equilibra.R;
 import asunfdiez.com.equilibra.databinding.ActivityAboutBinding;
 
 /**
- * Activity "Acerca de" la app
- * Muestra información de la app, versión, créditos, etc.
- *
+ * Actividad "Acerca de" que muestra información detallada sobre la aplicación.
+ * 
+ * <p>Esta clase presenta la versión actual del software, enlaces a redes sociales (GitHub),
+ * opciones de soporte por correo electrónico, licencias de código abierto y opciones 
+ * para compartir o valorar la aplicación.</p>
  */
 public class AboutActivity extends AppCompatActivity {
 
@@ -29,7 +31,7 @@ public class AboutActivity extends AppCompatActivity {
     private static final String GITHUB_URL = "https://github.com/AsunFdez";
     private static final String SUPPORT_EMAIL = "support@equilibra.app";
 
-    // Data Binding
+    // Vinculación de Datos (Data Binding)
     private ActivityAboutBinding binding;
 
     @Override

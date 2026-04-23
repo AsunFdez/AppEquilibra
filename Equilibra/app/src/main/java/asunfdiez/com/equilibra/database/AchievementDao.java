@@ -14,9 +14,10 @@ import asunfdiez.com.equilibra.models.Achievement;
 import asunfdiez.com.equilibra.utils.Constants;
 
 /**
- * DAO para la tabla de Logros (Achievements)
- * Proporciona métodos para acceder y manipular logros en la base de datos
- *
+ * Interfaz de Objeto de Acceso a Datos (DAO) para la entidad {@link Achievement}.
+ * Proporciona los métodos necesarios para realizar operaciones de persistencia y consultas
+ * especializadas sobre la tabla de logros, permitiendo gestionar el progreso del usuario,
+ * el desbloqueo de hitos y el cálculo de estadísticas de puntuación.
  */
 @Dao
 public interface AchievementDao {

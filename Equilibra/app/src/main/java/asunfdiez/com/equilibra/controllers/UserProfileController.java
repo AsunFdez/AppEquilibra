@@ -8,17 +8,19 @@ import android.util.Log;
 import androidx.annotation.Nullable;
 import androidx.lifecycle.LiveData;
 
-import java.util.Calendar;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import asunfdiez.com.equilibra.database.AppDatabase;
 import asunfdiez.com.equilibra.models.Advice;
+import asunfdiez.com.equilibra.models.SavingGoal;
 import asunfdiez.com.equilibra.models.UserProfile;
 import asunfdiez.com.equilibra.repositories.ExpenseRepository;
+import asunfdiez.com.equilibra.repositories.SavingGoalRepository;
 import asunfdiez.com.equilibra.repositories.UserProfileRepository;
 import asunfdiez.com.equilibra.utils.AdviceManager;
+import asunfdiez.com.equilibra.utils.DateUtils;
 import asunfdiez.com.equilibra.utils.SharedPrefsManager;
 
 /**
@@ -26,9 +28,11 @@ import asunfdiez.com.equilibra.utils.SharedPrefsManager;
  * Maneja la lógica de negocio relacionada con usuarios
  *
  */
-public class UserController {
+public class UserProfileController {
 
+    private String TAG = "UserProfileController";
     private final UserProfileRepository userRepository;
+    private final SavingGoalRepository goalRepository;
     private final ExpenseRepository expenseRepository;
     private final SharedPrefsManager prefsManager;
     private UserProfile user;
@@ -40,11 +44,11 @@ public class UserController {
 
     /**
      * Constructor del controller
-     *
      * @param context Contexto de la aplicación
      */
-    public UserController(Context context) {
+    public UserProfileController(Context context) {
         this.userRepository = new UserProfileRepository(context);
+        this.goalRepository = new SavingGoalRepository(context);
         this.expenseRepository = new ExpenseRepository(context);
         this.prefsManager = SharedPrefsManager.getInstance(context);
         this.wellbeingController = new WellbeingController(context);
@@ -53,19 +57,22 @@ public class UserController {
 
     /**
      * Obtiene el usuario actual
-     *
-     * @return Usuario actual o null si no existe
+     *@return Usuario actual o null si no existe
      */
     public LiveData<UserProfile> getCurrentUser() {
         return userRepository.getUserProfile();
     }
 
+    /**
+     * Actualiza el usuario
+     * @param user usuario con datos a actualizar
+     * @param onComplete función que se ejecuta tras actualizar el usuario
+     */
     public void updateUser(UserProfile user, @Nullable Runnable onComplete) {
         if (user == null) return;
         userRepository.updateProfile(user, () -> {
-            android.util.Log.d("UserController", "Perfil guardado: " + user.toString());
+            Log.d(TAG, "Perfil guardado: " + user.toString());
             setDummyData(user); //solo para probar funciones concretas
-
             if (onComplete != null) {
                 onComplete.run();
             }
@@ -73,6 +80,10 @@ public class UserController {
 
     }
 
+    /**
+     * Borra el usuario actual
+     * @param onComplete función que se ejecuta tras borrar el usuario
+     */
     public void deleteCurrentUser(Runnable onComplete) {
         executor.execute(() -> {
             AppDatabase database = AppDatabase.getInstance(context);
@@ -82,22 +93,25 @@ public class UserController {
             AppDatabase.insertInitialCategories();
             AppDatabase.insertInitialAchievements();
             AppDatabase.insertInitialAlternatives();
-
+            Log.d(TAG, "Usuario borrado");
             if (onComplete != null) {
                 new Handler(Looper.getMainLooper()).post(onComplete);
             }
         });
     }
 
+    /**
+     * Comprueba el bienestar financiero del usuario
+     * @return true si necesita una intervención, false en caso contrario
+     */
+
     public boolean checkWellbeing() {
         AtomicBoolean shouldShow = new AtomicBoolean(false);
-        // Usamos un Executor para sacar la consulta a la base de datos del hilo UI
         executor.execute(() -> {
             try {
-                // Esta llamada se ejecuta en segundo plano
                 shouldShow.set(wellbeingController.shouldShowIntervention());
             } catch (Exception e) {
-                android.util.Log.e("ViewModel", "Error al comprobar bienestar", e);
+                Log.e(TAG, "Error al comprobar bienestar", e);
             }
         });
         return shouldShow.get();
@@ -105,7 +119,6 @@ public class UserController {
 
     /**
      * Obtiene el consejo apropiado según el estado del usuario
-     *
      * Lógica:
      * 1. Día 1 y sin gastos registrados → Mensaje de bienvenida
      * 2. Sin gastos registrados en la semana → Mensaje para registrar hoy
@@ -129,18 +142,33 @@ public class UserController {
         }
     }
 
+    /**
+     * Obtiene una acción rápida para el usuario
+     * @param user Perfil del usuario
+     * @return Advice con la acción
+     */
     public Advice getQuickAction(UserProfile user) {
+        // Caso 1: Usuario sin perfil → Completar perfil
         if (user.getName() == null || user.getName().isEmpty()) {
             return Advice.getCompleteUserProfile(context);
-        } else if (user.getMonthlyIncome() == 0) {
+        }
+        // Caso 2: Usuario sin ingreso mensual → Completar ingreso mensual
+        else if (user.getMonthlyIncome() == 0) {
             return Advice.getCompleteBudget(context);
-        } else {
+        }
+        else {
             return Advice.getQuickAction(context);
         }
     }
 
     /**
      * Realiza todas las tareas de mantenimiento de una sola vez para minimizar refrescos de UI
+     * 1. Comprobar reinicio semanal
+     * 2. Sincronizar progreso si no ha habido reinicio
+     * 3. Comprobar contador de días
+     * 4. Actualizar última conexión de todos modos para que isNewDay funcione mañana
+     * 5. Actualizar perfil en base de datos
+     *
      */
     public void performMaintenance() {
         executor.execute(() -> {
@@ -153,40 +181,41 @@ public class UserController {
             boolean dayIncremented = false;
 
             // 1. Comprobar reinicio semanal
-            if (isNewWeek(profile.getLastResetTimestamp())) {
+            if (DateUtils.isNewWeek(profile.getLastResetTimestamp())) {
                 profile.setWeekProgress(0);
                 profile.setLastResetTimestamp(now);
                 profile.setWeekCount(profile.getWeekCount() + 1);
-                Log.d("UserController", "Mantenimiento: Progreso semanal reiniciado");
+                Log.d(TAG, "Mantenimiento: Progreso semanal reiniciado");
                 changed = true;
                 weekReset = true;
-            } else {
-                // 2. Sincronizar progreso si no ha habido reinicio
+            }
+            // 2. Sincronizar progreso si no ha habido reinicio
+            else {
                 int actualCount = expenseRepository.getExpensesThisWeekCount();
                 if (profile.getWeekProgress() != actualCount) {
                     profile.setWeekProgress(actualCount);
-                    Log.d("UserController", "Mantenimiento: Progreso sincronizado a " + actualCount);
+                    Log.d(TAG, "Mantenimiento: Progreso sincronizado a " + actualCount);
                     changed = true;
                 }
             }
-
             // 3. Comprobar contador de días
-            if (isNewDay(profile.getLastConnectionTimestamp())) {
+            if (DateUtils.isNewDay(profile.getLastConnectionTimestamp())) {
                 profile.setDayCount(profile.getDayCount() + 1);
                 profile.setLastConnectionTimestamp(now);
-                Log.d("UserController", "Mantenimiento: Día incrementado");
+                Log.d(TAG, "Mantenimiento: Día incrementado");
                 changed = true;
                 dayIncremented = true;
-            } else {
-                // Actualizar última conexión de todos modos para que isNewDay funcione mañana
+            }
+            // Actualizar última conexión de todos modos para que isNewDay funcione mañana
+            else {
                 profile.setLastConnectionTimestamp(now);
             }
-
+            // 4. Actualizar perfil en base de datos
             if (changed) {
                 profile.setUpdatedAt(now);
                 userRepository.updateProfile(profile, null);
             } else {
-                Log.d("UserController", "Mantenimiento: Sin cambios necesarios");
+                Log.d(TAG, "Mantenimiento: Sin cambios necesarios");
             }
         });
     }
@@ -201,28 +230,11 @@ public class UserController {
             UserProfile profile = userRepository.getUserProfileSync();
             if (profile != null && profile.getWeekProgress() != actualCount) {
                 userRepository.updateWeekProgress(actualCount, null);
-                Log.d("UserController", "Sincronizado progreso semanal: " + actualCount);
+                Log.d("UserProfileController", "Sincronizado progreso semanal: " + actualCount);
             }
         });
     }
 
-    private boolean isNewWeek(long lastTimestamp) {
-        Calendar lastSave = Calendar.getInstance();
-        lastSave.setTimeInMillis(lastTimestamp);
-
-        Calendar now = Calendar.getInstance();
-        return now.get(Calendar.WEEK_OF_YEAR) != lastSave.get(Calendar.WEEK_OF_YEAR)
-                || now.get(Calendar.YEAR) != lastSave.get(Calendar.YEAR);
-    }
-
-    private boolean isNewDay(long lastTimestamp) {
-        Calendar lastSave = Calendar.getInstance();
-        lastSave.setTimeInMillis(lastTimestamp);
-
-        Calendar now = Calendar.getInstance();
-        return now.get(Calendar.DAY_OF_YEAR) != lastSave.get(Calendar.DAY_OF_YEAR)
-                || now.get(Calendar.YEAR) != lastSave.get(Calendar.YEAR);
-    }
 
     /**
      * Cambia la contraseña del usuario
@@ -251,12 +263,24 @@ public class UserController {
         return null;
     }
 
-
+    /**
+     * Crea datos dummy para pruebas solo si el nombre del usuario es Dummy
+     * @param user perfil de usuario
+     */
     public void setDummyData(UserProfile user) {
         if (user != null && user.getName() != null && user.getName().equals("Dummy") ){
             Log.d("User Controller setDummyData", "Setting dummy data");
             AppDatabase.dummyData();
         }
+    }
+
+    /**
+     * Guarda el objetivo de ahorro
+     * @param currentGoal Objetivo de ahorro
+     * @param onComplete función a ejecutar tras guardar el objetivo
+     */
+    public void saveSavingGoal(SavingGoal currentGoal, @Nullable Runnable onComplete) {
+        goalRepository.saveSavingGoal(currentGoal, onComplete);
     }
 
     /**
@@ -267,6 +291,4 @@ public class UserController {
             executor.shutdown();
         }
     }
-
-
 }

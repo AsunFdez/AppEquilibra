@@ -15,11 +15,11 @@ import java.util.Locale;
 import java.util.Stack;
 import java.util.concurrent.Executors;
 
+import asunfdiez.com.equilibra.controllers.UserProfileController;
 import asunfdiez.com.equilibra.database.AppDatabase;
 import asunfdiez.com.equilibra.models.EmotionalState;
 import asunfdiez.com.equilibra.models.SavingGoal;
 import asunfdiez.com.equilibra.models.UserProfile;
-import asunfdiez.com.equilibra.repositories.UserProfileRepository;
 import asunfdiez.com.equilibra.utils.Constants;
 
 public class OnboardingViewModel extends AndroidViewModel {
@@ -28,7 +28,8 @@ public class OnboardingViewModel extends AndroidViewModel {
     private final MutableLiveData<OnboardingStep> currentStep = new MutableLiveData<>(OnboardingStep.EMOTIONAL);
     private final Stack<OnboardingStep> stepHistory = new Stack<>();
     private final UserProfile profile = new UserProfile();
-    private final UserProfileRepository repository = new UserProfileRepository(getApplication());
+
+    private final UserProfileController controller;
     private final MutableLiveData<EmotionalState> selectedEmotion = new MutableLiveData<>();
     private final MutableLiveData<Integer> currentQuestionIndex = new MutableLiveData<>(0);
 
@@ -41,6 +42,8 @@ public class OnboardingViewModel extends AndroidViewModel {
         Executors.newSingleThreadExecutor().execute(() -> {
             AppDatabase.getInstance(application).getOpenHelper().getWritableDatabase();
         });
+
+        this.controller = new UserProfileController(getApplication());
     }
 
     public LiveData<OnboardingStep> getCurrentStep() { return currentStep; }
@@ -121,7 +124,7 @@ public class OnboardingViewModel extends AndroidViewModel {
 
             // Notificar al LiveData para que la UI se entere
             savingGoal.setValue(currentGoal);
-            repository.saveSavingGoal(currentGoal, null);
+            controller.saveSavingGoal(currentGoal, null);
         }
         android.util.Log.d("OnboardingViewModel", "Saving goal set: " + goal + " Months: " + currentGoal.getMonthsRemaining());
     }

@@ -18,7 +18,10 @@ public class ExpenseCategoryRepository {
         this.expenseCategoryDao = AppDatabase.getInstance(context).expenseCategoryDao();
     }
 
-
+    /**
+     * Obtiene las categorías
+     * @return lista de categorías
+     */
     public List<ExpenseCategory> getCategories() {
         List<ExpenseCategory> categories = expenseCategoryDao.getCategories();
         if (categories.isEmpty()) {
@@ -28,11 +31,18 @@ public class ExpenseCategoryRepository {
         return categories;
     }
 
-
+    /**
+     * Borra todas las categorías de la base de datos
+     */
     public void deleteAll() {
         expenseCategoryDao.deleteAll();
     }
 
+    /**
+     * Obtiene la categoría por su Id
+     * @param categoryId id de la categoría
+     * @return categoría obtenida
+     */
     public String getCategoryNameById(long categoryId) {
         return expenseCategoryDao.getCategoryNameById(categoryId);
     }

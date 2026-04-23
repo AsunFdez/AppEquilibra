@@ -8,12 +8,12 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
 import asunfdiez.com.equilibra.R;
-import asunfdiez.com.equilibra.controllers.UserController;
+import asunfdiez.com.equilibra.controllers.UserProfileController;
 import asunfdiez.com.equilibra.models.UserProfile;
 import asunfdiez.com.equilibra.utils.ValidationHelper;
 
 public class ProfileViewModel extends AndroidViewModel {
-    private final UserController userController;
+    private final UserProfileController userProfileController;
     private final LiveData<UserProfile> userProfile;
     private final MutableLiveData<Boolean> editMode = new MutableLiveData<>(false);
     private final MutableLiveData<String> errorMessage = new MutableLiveData<>();
@@ -22,8 +22,8 @@ public class ProfileViewModel extends AndroidViewModel {
 
     public ProfileViewModel(@NonNull Application application) {
         super(application);
-        this.userController = new UserController(application);
-        userProfile = userController.getCurrentUser();
+        this.userProfileController = new UserProfileController(application);
+        userProfile = userProfileController.getCurrentUser();
     }
 
     public LiveData<UserProfile> getUserProfile() {
@@ -60,7 +60,7 @@ public class ProfileViewModel extends AndroidViewModel {
         if (!isValid ) return;
 
         try {
-            userController.updateUser(user, null);
+            userProfileController.updateUser(user, null);
             // Notificar éxito al hilo principal
             successMessage.postValue(getApplication().getString(R.string.profile_updated_success));
             editMode.postValue(false);
@@ -101,7 +101,7 @@ public class ProfileViewModel extends AndroidViewModel {
 
     public void deleteAccount() {
         try {
-            userController.deleteCurrentUser(() -> {
+            userProfileController.deleteCurrentUser(() -> {
                 accountDeleted.postValue(true);
                 editMode.postValue(false);
             });

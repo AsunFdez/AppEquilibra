@@ -13,8 +13,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import asunfdiez.com.equilibra.R;
+import asunfdiez.com.equilibra.controllers.AchievementController;
 import asunfdiez.com.equilibra.models.Achievement;
-import asunfdiez.com.equilibra.repositories.AchievementRepository;
 
 /**
  * AchievementsViewModel - ViewModel para AchievementsActivity
@@ -22,8 +22,7 @@ import asunfdiez.com.equilibra.repositories.AchievementRepository;
  */
 public class AchievementsViewModel extends AndroidViewModel {
 
-    // Repository
-    private final AchievementRepository repository;
+    private final AchievementController controller;
 
     // LiveData observables desde el Repository
     private final LiveData<List<Achievement>> allAchievements;
@@ -70,18 +69,18 @@ public class AchievementsViewModel extends AndroidViewModel {
     public AchievementsViewModel(@NonNull Application application) {
         super(application);
 
-        // Inicializar repository
-        this.repository = new AchievementRepository(application);
+        // Inicializar controller
+        this.controller = new AchievementController(application);
 
-        // Obtener LiveData del repository
-        this.allAchievements = repository.getAllAchievements();
-        this.unlockedAchievements = repository.getUnlockedAchievements();
-        this.lockedAchievements = repository.getLockedAchievements();
-        this.totalPoints = repository.getTotalPoints();
-        this.unlockedCount = repository.getUnlockedCount();
-        this.totalAchievements = repository.getTotalAchievements();
-        this.maxPossiblePoints = repository.getMaxPossiblePoints();
-        this.newlyUnlockedAchievement = repository.getNewlyUnlockedAchievement();
+        // Obtener LiveData
+        this.allAchievements = controller.getAllAchievements();
+        this.unlockedAchievements = controller.getUnlockedAchievements();
+        this.lockedAchievements = controller.getLockedAchievements();
+        this.totalPoints = controller.getTotalPoints();
+        this.unlockedCount = controller.getUnlockedCount();
+        this.totalAchievements = controller.getTotalAchievements();
+        this.maxPossiblePoints = controller.getMaxPossiblePoints();
+        this.newlyUnlockedAchievement = controller.getNewlyUnlockedAchievement();
 
         // Configurar el filtrado de logros
         setupFilteredAchievements();
@@ -95,9 +94,6 @@ public class AchievementsViewModel extends AndroidViewModel {
         // Verificar logros al iniciar
         checkAchievements();
     }
-
-    // ========== CONFIGURACIÓN DE MEDIADORES ==========
-
     /**
      * Configura el LiveData filtrado según el tipo de filtro seleccionado
      */
@@ -107,7 +103,6 @@ public class AchievementsViewModel extends AndroidViewModel {
         filteredAchievements.addSource(unlockedAchievements, achievements -> updateFilteredAchievements());
         filteredAchievements.addSource(lockedAchievements, achievements -> updateFilteredAchievements());
     }
-
     /**
      * Actualiza los logros filtrados según el filtro actual
      */
@@ -294,7 +289,7 @@ public class AchievementsViewModel extends AndroidViewModel {
      */
     public void checkAchievements() {
         isLoading.setValue(true);
-        repository.checkAndUnlockAchievements();
+        controller.checkAndUnlockAchievements();
 
         // Simular delay para mostrar loading
         new android.os.Handler().postDelayed(() ->
@@ -305,14 +300,14 @@ public class AchievementsViewModel extends AndroidViewModel {
      * Desbloquea un logro manualmente (para testing)
      */
     public void unlockAchievement(String achievementKey) {
-        repository.unlockAchievement(achievementKey);
+        controller.unlockAchievement(achievementKey);
     }
 
     /**
      * Resetea todos los logros (para testing)
      */
     public void resetAllAchievements() {
-        repository.resetAllAchievements();
+        controller.resetAllAchievements();
     }
 
 
@@ -321,6 +316,5 @@ public class AchievementsViewModel extends AndroidViewModel {
     @Override
     protected void onCleared() {
         super.onCleared();
-        repository.close();
     }
 }

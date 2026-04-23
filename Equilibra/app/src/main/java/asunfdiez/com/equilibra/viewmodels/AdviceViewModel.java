@@ -7,7 +7,7 @@ import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.Transformations;
 
-import asunfdiez.com.equilibra.controllers.UserController;
+import asunfdiez.com.equilibra.controllers.UserProfileController;
 import asunfdiez.com.equilibra.models.Advice;
 import asunfdiez.com.equilibra.models.UserProfile;
 import asunfdiez.com.equilibra.repositories.UserProfileRepository;
@@ -29,7 +29,7 @@ import asunfdiez.com.equilibra.repositories.UserProfileRepository;
  */
 public class AdviceViewModel extends AndroidViewModel {
 
-    private final UserController userController;
+    private final UserProfileController userProfileController;
     private final UserProfileRepository userRepository;
     private final LiveData<UserProfile> userProfile;
 
@@ -52,22 +52,22 @@ public class AdviceViewModel extends AndroidViewModel {
     public AdviceViewModel(@NonNull Application application) {
         super(application);
 
-        this.userController = new UserController(application);
+        this.userProfileController = new UserProfileController(application);
         this.userRepository = new UserProfileRepository(application);
-        this.userProfile = userController.getCurrentUser();
+        this.userProfile = userProfileController.getCurrentUser();
 
         // Transformar el perfil de usuario → Consejo del día
         // Se ejecuta automáticamente cada vez que userProfile cambia
         this.dailyAdvice = Transformations.map(userProfile, user -> {
             if (user == null) return null;
-            return userController.getAdvice(user);
+            return userProfileController.getAdvice(user);
         });
 
         // Transformar el perfil de usuario → Acción rápida
         // Se ejecuta automáticamente cada vez que userProfile cambia
         this.quickAction = Transformations.map(userProfile, user -> {
             if (user == null) return null;
-            return userController.getQuickAction(user);
+            return userProfileController.getQuickAction(user);
         });
     }
 

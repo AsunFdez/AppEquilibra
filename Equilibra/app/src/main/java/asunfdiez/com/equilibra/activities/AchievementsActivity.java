@@ -27,19 +27,26 @@ import asunfdiez.com.equilibra.utils.Constants;
 import asunfdiez.com.equilibra.viewmodels.AchievementsViewModel;
 
 /**
- * AchievementsActivity - Pantalla de logros y gamificación
- * Muestra el progreso del usuario y los logros desbloqueados
+ * Actividad que gestiona los logros del usuario y el progreso de gamificación.
+ *
+ * <p>Esta clase muestra una cuadrícula de logros (bloqueados y desbloqueados), permite filtrar 
+ * por estado y proporciona feedback visual cuando se obtienen nuevos logros. Se integra 
+ * con {@link AchievementsViewModel} para la gestión de datos y utiliza Data Binding para las 
+ * actualizaciones de la interfaz de usuario.</p>
+ *
+ * @see AchievementAdapter
+ * @see AchievementsViewModel
  */
 
 public class AchievementsActivity extends AppCompatActivity implements AchievementAdapter.OnAchievementClickListener, BottomNavigationHandler {
 
-    // Data Binding
+    // Vinculación de Datos (Data Binding)
     private ActivityAchievementsBinding binding;
 
     // ViewModel
     private AchievementsViewModel viewModel;
 
-    // Adapter
+    // Adaptador (Adapter)
     private AchievementAdapter adapter;
 
     private final Handler handler = new Handler();
@@ -166,6 +173,9 @@ public class AchievementsActivity extends AppCompatActivity implements Achieveme
         });
     }
 
+    /**
+     * Configura la navegación inferior (Bottom Navigation)
+     */
     private void setupBottomNavigation() {
 
         if (binding.bottomNav != null) {

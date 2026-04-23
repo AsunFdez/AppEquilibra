@@ -7,6 +7,7 @@ import androidx.annotation.NonNull;
 import androidx.lifecycle.LiveData;
 
 import asunfdiez.com.equilibra.database.AppDatabase;
+import asunfdiez.com.equilibra.database.StreakDao;
 import asunfdiez.com.equilibra.models.Streak;
 
 /**
@@ -25,7 +26,7 @@ import asunfdiez.com.equilibra.models.Streak;
 public class StreakRepository {
 
     private final Context context;
-    private final asunfdiez.com.equilibra.database.StreakDao streakDAO;
+    private final StreakDao streakDAO;
 
     /**
      * Constructor

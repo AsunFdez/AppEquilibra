@@ -59,4 +59,23 @@ public class DateUtils {
         calendar.set(Calendar.MILLISECOND, 999);
         return calendar.getTimeInMillis();
     }
+
+    public static boolean isNewWeek(long lastTimestamp) {
+        Calendar lastSave = Calendar.getInstance();
+        lastSave.setTimeInMillis(lastTimestamp);
+
+        Calendar now = Calendar.getInstance();
+        return now.get(Calendar.WEEK_OF_YEAR) != lastSave.get(Calendar.WEEK_OF_YEAR)
+                || now.get(Calendar.YEAR) != lastSave.get(Calendar.YEAR);
+    }
+
+    public static boolean isNewDay(long lastTimestamp) {
+        Calendar lastSave = Calendar.getInstance();
+        lastSave.setTimeInMillis(lastTimestamp);
+
+        Calendar now = Calendar.getInstance();
+        return now.get(Calendar.DAY_OF_YEAR) != lastSave.get(Calendar.DAY_OF_YEAR)
+                || now.get(Calendar.YEAR) != lastSave.get(Calendar.YEAR);
+    }
+
 }

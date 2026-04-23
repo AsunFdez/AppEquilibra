@@ -18,7 +18,7 @@ import java.util.List;
 
 import asunfdiez.com.equilibra.R;
 import asunfdiez.com.equilibra.adapters.QuestionOptionAdapter;
-import asunfdiez.com.equilibra.controllers.UserController;
+import asunfdiez.com.equilibra.controllers.UserProfileController;
 import asunfdiez.com.equilibra.databinding.ActivityOnboardingBinding;
 import asunfdiez.com.equilibra.databinding.OnboardingStepEmotionalBinding;
 import asunfdiez.com.equilibra.databinding.OnboardingStepMissionBinding;
@@ -376,8 +376,8 @@ public class OnboardingActivity extends AppCompatActivity {
         android.util.Log.d("OnboardingActivity", "Default view mode set to: " + Constants.USER_LEVEL_BEGINNER);
         android.util.Log.d("OnboardingActivity_completeOnboarding Profile", profile.toString());
 
-        UserController userController = new UserController(getApplicationContext());
-        userController.updateUser(profile, () -> {
+        UserProfileController userProfileController = new UserProfileController(getApplicationContext());
+        userProfileController.updateUser(profile, () -> {
             sharedPrefsManager.setOnboardingComplete(true);
             sharedPrefsManager.setOnboardingCompletedAt(System.currentTimeMillis());
             navigateToMainActivity();

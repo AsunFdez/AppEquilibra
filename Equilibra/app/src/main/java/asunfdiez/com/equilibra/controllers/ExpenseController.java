@@ -1,6 +1,10 @@
 package asunfdiez.com.equilibra.controllers;
 
 import android.content.Context;
+import android.os.Handler;
+import android.os.Looper;
+
+import androidx.annotation.Nullable;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -42,6 +46,7 @@ public class ExpenseController {
     private final Context context;
 
     private final ExecutorService executor = Executors.newSingleThreadExecutor();
+    private final Handler mainHandler;
 
     public ExpenseController(Context context) {
         this.context = context;
@@ -51,6 +56,7 @@ public class ExpenseController {
         this.savingGoalRepository = new SavingGoalRepository(context);
         this.alternativeRepository = new AlternativeRepository(context);
         this.achievementRepository = new AchievementRepository(context);
+        this.mainHandler = new Handler(Looper.getMainLooper());
     }
 
     /**
@@ -78,13 +84,18 @@ public class ExpenseController {
 
     /**
      * Elimina un gasto de la base de datos
+     * @param expense gasto a borrar
+     * @param onComplete CallBack a ejecturar después del borrado
      */
-    public void deleteExpense(Expense expense) {
+    public void deleteExpense(Expense expense, @Nullable Runnable onComplete) {
         executor.execute(() -> {
             expenseRepository.deleteExpense(expense);
             // Decrementar el contador de la semana si era un gasto (opcional, según lógica de negocio)
             if (expense.isExpense()) {
                 userProfileRepository.decrementWeekProgress();
+            }
+            if (onComplete != null) {
+                mainHandler.post(onComplete);
             }
         });
     }
@@ -245,7 +256,7 @@ public class ExpenseController {
         UserProfile profile = userProfileRepository.getUserProfileSync();
         if (profile == null) return "";
         long userId = profile.getId();
-        SavingGoal targetGoal = savingGoalRepository.getFirstSavingGoalActiveByUserId(userId);
+        SavingGoal targetGoal = savingGoalRepository.getActiveSavingGoalSync(userId);
 
         double monthlyIncome = getTotalIncomeThisMonth();
         double monthlyExpenses = getTotalExpensesThisMonth();

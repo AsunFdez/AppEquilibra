@@ -11,21 +11,23 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 import asunfdiez.com.equilibra.database.AppDatabase;
-import asunfdiez.com.equilibra.database.SavingGoalDao;
 import asunfdiez.com.equilibra.database.UserProfileDao;
-import asunfdiez.com.equilibra.models.SavingGoal;
 import asunfdiez.com.equilibra.models.UserProfile;
 
+/**
+ * Repository para gestionar el perfil de usuario
+ * Intermedia entre ViewModel y Room DAOs
+ */
 public class UserProfileRepository {
     private final UserProfileDao userProfileDao;
-    private final SavingGoalDao savingGoalDao;
     private Context context;
-    private final ExecutorService executorService = Executors.newSingleThreadExecutor();
-    private final Handler mainHandler = new Handler(Looper.getMainLooper());
+    private final ExecutorService executorService;
+    private final Handler mainHandler;
     public UserProfileRepository(Context context) {
         this.context = context;
         this.userProfileDao = AppDatabase.getInstance(context).userProfileDao();
-        this.savingGoalDao = AppDatabase.getInstance(context).savingGoalDao();
+        this.executorService = Executors.newSingleThreadExecutor();
+        this.mainHandler = new Handler(Looper.getMainLooper());
     }
 
     public LiveData<UserProfile> getUserProfile() {
@@ -50,14 +52,7 @@ public class UserProfileRepository {
         });
     }
 
-    public void saveSavingGoal(SavingGoal savingGoal, @Nullable Runnable onComplete) {
-        executorService.execute(() -> {
-            savingGoalDao.insertOrUpdateSavingGoal(savingGoal);
-            if (onComplete != null) {
-                mainHandler.post(onComplete);
-            }
-        });
-    }
+
 
     public void deleteAll(@Nullable Runnable onComplete) {
         executorService.execute(() -> {
@@ -120,6 +115,15 @@ public class UserProfileRepository {
 
     public double getUserMonthlyIncome() {
         return userProfileDao.getUserMonthlyIncome();
+    }
+
+    /**
+     * Cierra el executor service
+     */
+    public void close() {
+        if (executorService != null && !executorService.isShutdown()) {
+            executorService.shutdown();
+        }
     }
 }
 

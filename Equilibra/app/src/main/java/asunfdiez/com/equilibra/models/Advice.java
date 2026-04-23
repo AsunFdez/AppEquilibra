@@ -1,10 +1,21 @@
 package asunfdiez.com.equilibra.models;
 
 import android.content.Context;
-
+import java.util.Objects;
 import asunfdiez.com.equilibra.R;
 
-public record Advice(String title, String description) {
+public class Advice {
+    private final String title;
+    private final String description;
+
+    public Advice(String title, String description) {
+        this.title = title;
+        this.description = description;
+    }
+
+    public String title() { return title; }
+    public String description() { return description; }
+
     public static Advice getRegisterExpenseToday(Context context) {
         return new Advice (context.getString(R.string.today_advice), context.getString(R.string.advice_1));
     }
@@ -16,9 +27,7 @@ public record Advice(String title, String description) {
         return new Advice (context.getString(R.string.tip_title_expense_registered), context.getString(R.string.tip_desc_expense_registered));
     }
 
-
     //--- para quick actions
-
     public static Advice getCompleteUserProfile (Context context) {
         return new Advice (context.getString(R.string.tip_title_complete_user_profile), context.getString(R.string.tip_desc_complete_user_profile));
     }
@@ -31,6 +40,17 @@ public record Advice(String title, String description) {
         return new Advice (context.getString(R.string.quick_action_title), context.getString(R.string.quick_action_desc));
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Advice advice = (Advice) o;
+        return Objects.equals(title, advice.title) &&
+                Objects.equals(description, advice.description);
+    }
 
-
+    @Override
+    public int hashCode() {
+        return Objects.hash(title, description);
+    }
 }
