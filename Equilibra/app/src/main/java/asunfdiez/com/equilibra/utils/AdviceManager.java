@@ -7,24 +7,17 @@ import asunfdiez.com.equilibra.R;
 import asunfdiez.com.equilibra.models.Advice;
 
 /**
- * AdviceManager - Gestor de consejos diarios
+ * Gestor responsable de la selección y rotación de consejos financieros diarios.
  * 
- * Propósito: Proporcionar consejos financieros rotatorios, uno diferente cada día.
- * 
- * Features:
- * - 25 consejos rotatorios
- * - Un consejo diferente cada día (basado en fecha)
- * - Nunca repite el consejo del día anterior
- * - Implementación determinística (mismo día = mismo consejo siempre)
- * 
- * Uso:
- *   Advice advice = AdviceManager.getDailyAdvice(context);
+ * <p>Proporciona una lógica determinística para asignar un consejo diferente a cada día 
+ * del mes, asegurando variedad en el contenido presentado al usuario sin necesidad 
+ * de almacenamiento complejo. Utiliza recursos de cadenas (strings) para facilitar 
+ * la localización.</p>
  */
 public class AdviceManager {
 
     /**
-     * Array de IDs de recursos para los títulos de consejos
-     * Mantener sincronizado con strings_advice.xml
+     * Identificadores de recursos para los títulos de los consejos.
      */
     private static final int[] ADVICE_TITLES = {
             R.string.advice_0,  R.string.advice_1,  R.string.advice_2,  R.string.advice_3,

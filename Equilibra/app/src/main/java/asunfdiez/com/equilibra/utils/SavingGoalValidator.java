@@ -9,9 +9,19 @@ import androidx.cardview.widget.CardView;
 
 import com.google.android.material.textfield.TextInputEditText;
 
+/**
+ * Clase especializada en la validación en tiempo real de los objetivos de ahorro.
+ * 
+ * <p>Víncula escuchadores de texto (TextWatchers) a los campos de entrada de metas 
+ * para habilitar o deshabilitar dinámicamente el botón de envío, asegurando que 
+ * el usuario ingrese datos válidos antes de continuar.</p>
+ */
 public class SavingGoalValidator {
+    // Campos de entrada para el nombre y el monto de la meta
     private final TextInputEditText goalInput;
     private final TextInputEditText amountInput;
+    
+    // Botón de confirmación que se habilita según la validez del input
     private final MaterialButton submitButton;
     private final Handler handler;
 

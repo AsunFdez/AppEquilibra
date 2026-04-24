@@ -12,10 +12,23 @@ import java.util.List;
 import asunfdiez.com.equilibra.R;
 import asunfdiez.com.equilibra.models.QuestionOption;
 
+/**
+ * Adaptador personalizado para gestionar la selección de opciones en los cuestionarios.
+ * 
+ * <p>Aunque no extiende de RecyclerView.Adapter, esta clase gestiona dinámicamente 
+ * la creación y visualización de tarjetas de opción en un contenedor lineal (LinearLayout), 
+ * manejando el estado de selección única y notificando a través de un escuchador.</p>
+ */
 public class QuestionOptionAdapter {
+    // Lista de opciones de respuesta a renderizar
     private final List<QuestionOption> options = new ArrayList<>();
+    
+    // Escuchador para la selección de una opción
     private OnOptionSelectedListener listener;
 
+    /**
+     * Interfaz para notificar la selección de una opción de respuesta.
+     */
     public interface OnOptionSelectedListener {
         void onOptionSelected(String id, String text);
     }

@@ -14,8 +14,18 @@ import androidx.databinding.InverseBindingListener;
 
 import asunfdiez.com.equilibra.R;
 
+/**
+ * Conjunto de adaptadores de vinculación (Binding Adapters) para la pantalla de perfil.
+ * 
+ * <p>Proporciona lógica personalizada para el Data Binding en elementos de la UI 
+ * del perfil, como la generación automática de iniciales para el avatar o la 
+ * gestión del estilo visual de los campos según su estado.</p>
+ */
 public class ProfileBindingAdapter {
 
+    /**
+     * Establece la inicial del nombre del usuario en el componente visual del avatar.
+     */
     @BindingAdapter("avatarInitial")
     public static void setAvatarInitial(TextView textView, String name) {
         if (name == null || name.isEmpty()) {

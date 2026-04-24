@@ -8,8 +8,11 @@ import androidx.room.PrimaryKey;
 import asunfdiez.com.equilibra.utils.Constants;
 
 /**
- * Achievement - Modelo de datos para logros gamificados
- * Representa un logro que el usuario puede desbloquear
+ * Modelo de datos que representa un logro dentro del sistema de gamificación.
+ * 
+ * <p>Define las propiedades de un logro, como su título, descripción, puntos otorgados 
+ * y su estado de desbloqueo. Esta clase es una entidad de Room vinculada a la tabla 
+ * de logros en la base de datos.</p>
  */
 @Entity(tableName = Constants.TABLE_ACHIEVEMENTS)
 public class Achievement {
@@ -17,15 +20,30 @@ public class Achievement {
     @PrimaryKey (autoGenerate = true)
     @NonNull
     private long id;
+    
+    // Título del logro
     private String title;
+    
+    // Descripción detallada de lo que representa o cómo se consigue
     private String description;
+    
+    // Puntos de experiencia (XP) que otorga
     private int points;
-    private String key; // Identificador único del logro
+    
+    // Identificador único para lógica interna
+    private String key; 
+    
+    // Indica si el usuario ya ha conseguido el logro
     private boolean unlocked;
-    private long unlockedAt;// Timestamp cuando se desbloqueó
+    
+    // Marca de tiempo de cuándo se consiguió
+    private long unlockedAt;
 
-    private int categoryColor; // color del icono
-    private int iconRes; // recurso del icono
+    // Color representativo de la categoría del logro
+    private int categoryColor; 
+    
+    // Recurso ID del icono asociado
+    private int iconRes;
 
 
 

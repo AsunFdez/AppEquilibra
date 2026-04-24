@@ -4,6 +4,12 @@ import android.content.Context;
 import java.util.Objects;
 import asunfdiez.com.equilibra.R;
 
+/**
+ * Clase que representa un consejo o sugerencia financiera para el usuario.
+ * 
+ * <p>Contiene un título y una descripción, y proporciona métodos estáticos de utilidad 
+ * para generar consejos comunes basados en el contexto de la aplicación y recursos de cadena.</p>
+ */
 public class Advice {
     private final String title;
     private final String description;

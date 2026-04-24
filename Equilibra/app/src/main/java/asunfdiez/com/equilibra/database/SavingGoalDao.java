@@ -10,12 +10,25 @@ import androidx.room.Update;
 import asunfdiez.com.equilibra.models.SavingGoal;
 import asunfdiez.com.equilibra.utils.Constants;
 
+/**
+ * DAO para la gestión de las metas y objetivos de ahorro.
+ * 
+ * <p>Define las operaciones para crear, actualizar y consultar las metas financieras 
+ * del usuario. Incluye lógica para recuperar la meta activa de un usuario específico 
+ * y realizar el seguimiento de su progreso acumulado.</p>
+ */
 @Dao
 public interface SavingGoalDao {
 
+    /**
+     * Inserta o actualiza una meta de ahorro.
+     */
     @Insert (onConflict = OnConflictStrategy.REPLACE)
     void insertOrUpdateSavingGoal(SavingGoal savingGoal);
 
+    /**
+     * Actualiza la información de una meta de ahorro existente.
+     */
     @Update
     void updateSavingGoal(SavingGoal savingGoal);
 

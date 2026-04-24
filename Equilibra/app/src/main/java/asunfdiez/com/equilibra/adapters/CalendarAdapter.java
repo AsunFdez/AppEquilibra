@@ -13,15 +13,32 @@ import java.util.Map;
 
 import asunfdiez.com.equilibra.databinding.ItemCalendarDayBinding;
 
+/**
+ * Adaptador para la visualización de un calendario mensual interactivo.
+ * 
+ * <p>Muestra los días del mes y resalta aquellos que contienen registros de gastos. 
+ * Permite la selección de días específicos para filtrar la lista de transacciones, 
+ * gestionando el estado visual del día seleccionado y los indicadores de actividad.</p>
+ */
 public class CalendarAdapter extends RecyclerView.Adapter<CalendarAdapter.ViewHolder> {
 
+    /**
+     * Interfaz para gestionar el evento de clic en un día del calendario.
+     */
     public interface OnDateClickListener {
         void onDateClick(int day);
     }
 
+    // Lista de números de día a mostrar en el mes
     private List<Integer> days = new ArrayList<>();
+    
+    // Mapa que asocia cada día con un booleano indicando si tiene gastos
     private Map<Integer, Boolean> daysWithExpenses;
+    
+    // Día actualmente seleccionado por el usuario
     private int selectedDay = -1;
+    
+    // Escuchador de clics en las fechas
     private OnDateClickListener listener;
 
     public CalendarAdapter(OnDateClickListener listener) {

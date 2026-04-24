@@ -30,25 +30,30 @@ import asunfdiez.com.equilibra.viewmodels.AddExpenseViewModel;
 
 
 /**
- * AddExpenseActivity - Pantalla para añadir gastos con MVVM
- * Incluye detección inteligente de patrones y alertas
+ * Actividad para la creación y registro de nuevos gastos.
+ * 
+ * <p>Esta clase permite al usuario ingresar el monto, categoría, fecha y notas de un gasto.
+ * Implementa una arquitectura MVVM y utiliza Data Binding. Incluye características
+ * avanzadas como detección inteligente de patrones de gasto, recordatorios y diálogos 
+ * de confirmación para gastos importantes.</p>
  */
 public class AddExpenseActivity extends AppCompatActivity {
 
-    // View Binding
+    // Vinculación de Vistas (View Binding)
     private ActivityAddExpenseBinding binding;
 
-    // ViewModel
+    // Modelo de Vista (ViewModel)
     private AddExpenseViewModel viewModel;
 
-    // Adapter
+    // Adaptador para las categorías (Adapter)
     private CategoryAdapter categoryAdapter;
 
-    // Diálogos
+    // Diálogos de intervención y confirmación
     private Dialog smartReminderDialog;
     private Dialog confirmExpenseDialog;
     private Dialog importantExpenseDialog;
 
+    // Utilidad para la selección de fechas
     private DatePickerHelper datePickerHelper;
 
     @Override

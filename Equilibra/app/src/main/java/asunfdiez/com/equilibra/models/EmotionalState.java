@@ -7,10 +7,24 @@ import java.util.List;
 import java.util.Objects;
 import asunfdiez.com.equilibra.R;
 
+/**
+ * Clase que representa el estado emocional del usuario durante el registro inicial.
+ * 
+ * <p>Contiene un identificador, el texto descriptivo del sentimiento, un emoji asociado 
+ * y un mensaje de validación o consejo específico para ese estado emocional. 
+ * Se utiliza para personalizar la experiencia desde el onboarding.</p>
+ */
 public class EmotionalState {
+    // Identificador único del estado emocional (ej. "happy", "stressed")
     private final String id;
+    
+    // Texto descriptivo del sentimiento
     private final String text;
+    
+    // Representación visual (emoji)
     private final String emoji;
+    
+    // Mensaje de respuesta o validación asociado al estado
     private final String validation;
 
     public EmotionalState(String id, String text, String emoji, String validation) {

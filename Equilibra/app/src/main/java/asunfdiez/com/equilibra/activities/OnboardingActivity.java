@@ -39,13 +39,27 @@ import asunfdiez.com.equilibra.viewmodels.OnboardingViewModel;
 import asunfdiez.com.equilibra.viewmodels.OnboardingViewModel.OnboardingStep;
 
 
+/**
+ * Actividad que gestiona el proceso de bienvenida y configuración inicial del usuario.
+ * 
+ * <p>A través de una secuencia de pasos (onboarding), la aplicación recopila información 
+ * sobre el perfil emocional del usuario, sus objetivos de ahorro y su misión financiera. 
+ * Esta información se utiliza para personalizar la experiencia y proporcionar consejos adaptados.</p>
+ */
 public class OnboardingActivity extends AppCompatActivity {
 
+    // Modelo de Vista (ViewModel)
     private OnboardingViewModel viewModel;
+    
+    // Vinculación de la Actividad (Binding)
     private ActivityOnboardingBinding activityBinding;
 
     private Handler handler;
+    
+    // Adaptador para las opciones de preguntas
     private QuestionOptionAdapter questionAdapter;
+    
+    // Gestor de preferencias compartidas
     private SharedPrefsManager sharedPrefsManager;
 
     @Override

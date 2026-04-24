@@ -15,28 +15,38 @@ import asunfdiez.com.equilibra.models.Budget;
 import asunfdiez.com.equilibra.utils.Constants;
 
 /**
- * ViewModel para BudgetSettingsActivity
- * Gestiona los presupuestos (Room Database)
+ * ViewModel que gestiona la lógica de configuración y cálculo de presupuestos.
+ * 
+ * <p>Maneja el estado del presupuesto activo, permitiendo la edición de los límites 
+ * mensuales y realizando cálculos automáticos para los límites semanales y diarios. 
+ * Sincroniza los cambios con el controlador de presupuestos para su persistencia 
+ * en la base de datos.</p>
  */
 public class BudgetSettingsViewModel extends AndroidViewModel {
 
+    // Controlador para gestionar las operaciones CRUD de presupuestos
     private final BudgetController budgetController;
 
-    // LiveData observables
+    // Presupuesto actual observado desde la base de datos
     private final LiveData<Budget> budget;
+    
+    // Estados de carga y feedback de guardado
     private final MutableLiveData<Boolean> isSaving = new MutableLiveData<>(false);
     private final MutableLiveData<String> saveMessage = new MutableLiveData<>();
+    
+    // Estado de activación del presupuesto consolidado
     private final MediatorLiveData<Boolean> budgetEnabled = new MediatorLiveData<>();
 
-    // LiveData transformados
+    // Propiedades derivadas (símbolo de moneda y código)
     private final LiveData<String> currencySymbol;
     private final LiveData<String> currency;
 
+    // Valores numéricos del presupuesto para diferentes periodos
     private final MutableLiveData<Double> monthlyAmount = new MutableLiveData<>(0.0);
     private final MutableLiveData<Double> weeklyAmount = new MutableLiveData<>(0.0);
     private final MutableLiveData<Double> dailyAmount = new MutableLiveData<>(0.0);
 
-    // Flag para evitar bucles infinitos en el MediatorLiveData
+    // Indicador de edición activa para prevenir ciclos de actualización infinitos
     private boolean isEditing = false;
 
     /**

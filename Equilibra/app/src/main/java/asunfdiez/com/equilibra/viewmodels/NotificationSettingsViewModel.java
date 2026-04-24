@@ -11,18 +11,23 @@ import asunfdiez.com.equilibra.R;
 import asunfdiez.com.equilibra.utils.SharedPrefsManager;
 
 /**
- * ViewModel para NotificationSettingsActivity
- * Gestiona configuración de notificaciones (SharedPreferences)
+ * ViewModel que gestiona las preferencias de comunicación y alertas de la aplicación.
+ * 
+ * <p>Maneja el estado de activación de los diferentes tipos de notificaciones 
+ * (generales, de presupuesto y de logros) y persiste estos cambios a través del 
+ * gestor de preferencias compartidas.</p>
  */
 public class NotificationSettingsViewModel extends AndroidViewModel {
 
+    // Gestor de preferencias persistentes para los ajustes de notificación
     private final SharedPrefsManager prefsManager;
 
-    // LiveData observables
+    // Estados observados de las diferentes categorías de notificaciones
     private final LiveData<Boolean> notificationsEnabled;
     private final LiveData<Boolean> budgetNotifications;
     private final LiveData<Boolean> achievementNotifications;
 
+    // Mensaje de estado para informar al usuario sobre cambios realizados
     private final MutableLiveData<String> statusMessage = new MutableLiveData<>();
 
     /**

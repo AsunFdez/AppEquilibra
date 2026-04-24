@@ -8,8 +8,16 @@ import asunfdiez.com.equilibra.database.AppDatabase;
 import asunfdiez.com.equilibra.database.ExpenseCategoryDao;
 import asunfdiez.com.equilibra.models.ExpenseCategory;
 
+/**
+ * Repositorio que gestiona el catálogo de categorías de gastos.
+ * 
+ * <p>Proporciona acceso a las categorías disponibles para la clasificación de gastos 
+ * y asegura que la base de datos contenga las categorías iniciales predefinidas 
+ * mediante una inserción automática si se detecta que la tabla está vacía.</p>
+ */
 public class ExpenseCategoryRepository {
 
+    // DAO para la gestión de categorías
     private final ExpenseCategoryDao expenseCategoryDao;
     private final Context context;
 
@@ -19,8 +27,10 @@ public class ExpenseCategoryRepository {
     }
 
     /**
-     * Obtiene las categorías
-     * @return lista de categorías
+     * Recupera todas las categorías disponibles. Si la tabla está vacía, 
+     * dispara la inserción de las categorías predeterminadas del sistema.
+     * 
+     * @return Lista de objetos ExpenseCategory.
      */
     public List<ExpenseCategory> getCategories() {
         List<ExpenseCategory> categories = expenseCategoryDao.getCategories();
@@ -32,7 +42,7 @@ public class ExpenseCategoryRepository {
     }
 
     /**
-     * Borra todas las categorías de la base de datos
+     * Elimina permanentemente todos los registros de categorías en la base de datos.
      */
     public void deleteAll() {
         expenseCategoryDao.deleteAll();

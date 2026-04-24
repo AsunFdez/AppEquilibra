@@ -25,28 +25,33 @@ import asunfdiez.com.equilibra.models.ExpenseCategory;
 import asunfdiez.com.equilibra.models.SmartReminder;
 
 /**
- * AddExpenseViewModel - ViewModel para AddExpenseActivity
- * Maneja la lógica de negocio y estados con LiveData
+ * ViewModel que gestiona el estado y la lógica para la creación de nuevos gastos.
+ * 
+ * <p>Mantiene los datos temporales del formulario de creación, valida la integridad 
+ * de la información ingresada y coordina con el controlador de gastos para persistir 
+ * los datos. También gestiona la lógica de selección de categorías y fechas.</p>
  */
 public class AddExpenseViewModel extends AndroidViewModel {
 
+    // Controlador que gestiona la lógica de negocio de gastos
     private final ExpenseController expenseController;
 
-    // LiveData para el importe actual
+    // Estado del importe ingresado actualmente (formato String para facilitar el input)
     private MutableLiveData<String> currentAmount = new MutableLiveData<>("");
 
-    // LiveData para la categoría seleccionada
+    // Referencia a la categoría seleccionada por el usuario
     private MutableLiveData<ExpenseCategory> selectedCategory = new MutableLiveData<>();
 
-    // LiveData para las categorías disponibles
+    // Lista de categorías disponibles para el usuario
     private MutableLiveData<List<ExpenseCategory>> categories = new MutableLiveData<>();
 
-    // LiveData para la descripción
+    // Texto descriptivo del gasto
     private MutableLiveData<String> description = new MutableLiveData<>("");
 
-    // LiveData para validación del formulario
+    // Indicador reactivo que habilita o deshabilita la acción de guardar
     private MutableLiveData<Boolean> isFormValid = new MutableLiveData<>(false);
 
+    // ID del gasto actual (si se está editando uno existente)
     private long currentExpenseId = 0;
 
     public final MutableLiveData<Calendar> selectedDateTime = new MutableLiveData<>(Calendar.getInstance(TimeZone.getDefault(), Locale.getDefault()));

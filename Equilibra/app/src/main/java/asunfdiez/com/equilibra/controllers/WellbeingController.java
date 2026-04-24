@@ -9,13 +9,21 @@ import asunfdiez.com.equilibra.utils.Constants;
 import asunfdiez.com.equilibra.utils.SharedPrefsManager;
 
 /**
- * WellbeingController - Controlador para el bienestar financiero
- * Determina cuándo mostrar intervenciones suaves y genera mensajes personalizados
+ * Controlador especializado en la evaluación y fomento del bienestar financiero del usuario.
+ * 
+ * <p>Analiza el comportamiento de gasto actual comparándolo con el presupuesto y 
+ * determina el nivel de "estrés" financiero. Es responsable de decidir cuándo 
+ * activar una intervención suave y de generar los mensajes motivadores o de 
+ * alerta correspondientes.</p>
  */
 public class WellbeingController {
 
     private Context context;
+    
+    // Repositorio de gastos para el análisis de comportamiento
     private ExpenseRepository expenseRepository;
+    
+    // Gestor de preferencias para controlar la frecuencia de las intervenciones
     private SharedPrefsManager prefsManager;
 
 
@@ -26,7 +34,10 @@ public class WellbeingController {
     }
 
     /**
-     * Determina si se debe mostrar una intervención suave
+     * Evalúa diversos criterios para determinar si es oportuno presentar una 
+     * alerta de intervención al usuario en este momento.
+     * 
+     * @return Verdadero si se cumplen las condiciones de intervención y no se ha mostrado una hoy.
      */
     public boolean shouldShowIntervention() {
         // No mostrar si ya se vio hoy

@@ -32,11 +32,16 @@ import asunfdiez.com.equilibra.repositories.SavingGoalRepository;
 import asunfdiez.com.equilibra.repositories.UserProfileRepository;
 
 /**
- * ExpenseController - Controlador para la gestión de gastos e ingresos
- * Intermedia entre las Activities y el Repositorio (Capa de Datos)
+ * Controlador de alto nivel que gestiona la lógica de negocio para gastos e ingresos.
+ * 
+ * <p>Además de las operaciones básicas CRUD, este controlador integra la lógica de 
+ * recordatorios inteligentes, detección de patrones de gasto, impacto en metas de 
+ * ahorro y desbloqueo de logros relacionados con las transacciones financieras. 
+ * Actúa como el orquestador principal de la actividad económica del usuario.</p>
  */
 public class ExpenseController {
 
+    // Repositorio principal para la gestión de transacciones
     private final ExpenseRepository expenseRepository;
     private final ExpenseCategoryRepository expenseCategoryRepository;
     private final UserProfileRepository userProfileRepository;

@@ -10,8 +10,11 @@ import java.time.format.DateTimeFormatter;
 import asunfdiez.com.equilibra.utils.Constants;
 
 /**
- * Streak - Modelo de datos para racha de uso consecutivo
- * Contabiliza los días consecutivos de interacción con la app
+ * Modelo de datos que representa la racha de uso consecutivo del usuario.
+ * 
+ * <p>Mantiene el conteo de días seguidos que el usuario ha interactuado con la 
+ * aplicación (por ejemplo, registrando gastos). Se utiliza para incentivar la 
+ * constancia mediante el sistema de gamificación.</p>
  */
 @Entity(tableName = Constants.TABLE_STREAK)
 public class Streak {
@@ -19,9 +22,14 @@ public class Streak {
     @PrimaryKey (autoGenerate = true)
     @NonNull
     private long id;
+    
+    // ID del usuario asociado a la racha
     private long userId;
+    
+    // Número de días consecutivos registrados
     private int consecutiveDays;
 
+    // Tipo de racha (ej. "daily_register", "saving_streak")
     private String type;
 
     private String startDate; // Formato: yyyy-MM-dd

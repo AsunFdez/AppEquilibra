@@ -39,13 +39,21 @@ import asunfdiez.com.equilibra.utils.Constants;
 import asunfdiez.com.equilibra.viewmodels.AnalysisViewModel;
 
 /**
- * AnalysisActivity - Pantalla de análisis financiero
- * Muestra gráficos y estadísticas de gastos e ingresos
+ * Actividad que proporciona análisis visuales y estadísticos de los gastos.
+ * 
+ * <p>Esta clase utiliza la librería MPAndroidChart para mostrar gráficos de barras y de pastel
+ * que representan la distribución de los gastos por categoría y su evolución temporal. 
+ * Permite al usuario visualizar su comportamiento financiero de forma intuitiva.</p>
  */
 public class AnalysisActivity extends AppCompatActivity implements BottomNavigationHandler {
 
+    // Vinculación de Datos (Data Binding)
     private ActivityAnalysisBinding binding;
+    
+    // Modelo de Vista (ViewModel)
     private AnalysisViewModel viewModel;
+
+    // Adaptador para la leyenda de categorías
     private CategoryLegendAdapter legendAdapter;
     private final NumberFormat currencyFormat = NumberFormat.getCurrencyInstance(new Locale("es", "ES"));
 

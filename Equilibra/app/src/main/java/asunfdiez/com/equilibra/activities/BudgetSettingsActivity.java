@@ -24,21 +24,25 @@ import asunfdiez.com.equilibra.models.Budget;
 import asunfdiez.com.equilibra.viewmodels.BudgetSettingsViewModel;
 
 /**
- * Activity para configurar presupuestos
- *
+ * Actividad para la configuración y gestión de presupuestos financieros.
+ * 
+ * <p>Permite al usuario establecer límites de gasto mensuales, seleccionar la moneda 
+ * de la aplicación y gestionar su presupuesto actual. Utiliza Data Binding para 
+ * sincronizar los valores ingresados con el ViewModel y el repositorio de datos.</p>
  */
 public class BudgetSettingsActivity extends AppCompatActivity {
 
-    // Data Binding
+    // Vinculación de Datos (Data Binding)
     private ActivityBudgetSettingsBinding binding;
 
-    // ViewModel
+    // Modelo de Vista (ViewModel)
     private BudgetSettingsViewModel viewModel;
 
-    // Flag para prevenir loops en TextWatchers
+    // Indicador para evitar bucles infinitos en los observadores de texto
     private boolean isUpdatingFromViewModel = false;
     private long currentBudgetId = 0;
 
+    // Selector de moneda (Popup)
     private PopupWindow currencySelectorPopup;
 
     @Override

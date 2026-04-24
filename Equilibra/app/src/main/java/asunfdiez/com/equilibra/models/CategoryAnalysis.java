@@ -3,16 +3,26 @@ package asunfdiez.com.equilibra.models;
 import androidx.room.Ignore;
 
 /**
- * CategoryAnalysis - Modelo para análisis por categoría
- * Contiene el total gastado por categoría para gráficos y estadísticas
+ * Clase que representa el resultado de un análisis financiero agrupado por categoría.
+ * 
+ * <p>Proporciona información consolidada sobre el monto total gastado, el número de 
+ * transacciones realizadas y el porcentaje que representa esta categoría sobre el 
+ * total de gastos. Se utiliza principalmente para alimentar los gráficos de análisis.</p>
  */
 public class CategoryAnalysis {
 
+    // Nombre de la categoría analizada
     private String category;
+    
+    // Suma total de los montos de los gastos en esta categoría
     private double amount;
-    private int count; // Número de transacciones en esta categoría
+    
+    // Cantidad total de registros (gastos) en esta categoría
+    private int count; 
+    
     @Ignore
-    private double percentage; // Porcentaje del total
+    // Proporción porcentual respecto al gasto total consolidado
+    private double percentage;
 
     // Constructor vacío
     public CategoryAnalysis() {

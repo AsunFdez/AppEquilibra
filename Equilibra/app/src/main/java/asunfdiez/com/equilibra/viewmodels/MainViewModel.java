@@ -19,23 +19,34 @@ import asunfdiez.com.equilibra.repositories.SavingGoalRepository;
 import asunfdiez.com.equilibra.repositories.UserProfileRepository;
 import asunfdiez.com.equilibra.utils.SharedPrefsManager;
 
+/**
+ * ViewModel principal que orquestra el estado global del panel de control.
+ * 
+ * <p>Coordina la información proveniente de múltiples fuentes de datos (perfil, 
+ * presupuesto, gastos y metas de ahorro) para presentar un resumen coherente en 
+ * la pantalla principal. Gestiona la lógica de navegación interna y la activación 
+ * de avisos de intervención.</p>
+ */
 public class MainViewModel extends AndroidViewModel {
 
+    // Repositorios para el acceso a las diferentes entidades de datos
     private final UserProfileRepository userProfileRepository;
     private final BudgetRepository budgetRepository;
     private final ExpenseRepository expenseRepository;
     private final SavingGoalRepository savingGoalRepository;
 
+    // Controladores y gestores de utilidades
     private final UserProfileController userProfileController;
     private final SharedPrefsManager prefsManager;
 
-    // LiveData principal de Room
+    // Perfil de usuario observado como fuente principal de datos reactivos
     private final LiveData<UserProfile> userProfile;
 
-    // Estados de UI encapsulados (Patrón _variable / variable)
+    // Estados internos de la interfaz de usuario
     private final MutableLiveData<String> _currentView = new MutableLiveData<>();
     private final MutableLiveData<Boolean> _shouldShowIntervention = new MutableLiveData<>();
 
+    // Información financiera activa
     private final LiveData<Budget> activeBudget;
     private final MutableLiveData<SavingGoal> activeSavingGoal = new MutableLiveData<>();
     private final MutableLiveData<Double> currentMonthExpenses = new MutableLiveData<>(0.0);

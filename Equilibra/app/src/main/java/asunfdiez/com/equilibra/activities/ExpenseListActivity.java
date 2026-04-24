@@ -25,12 +25,25 @@ import asunfdiez.com.equilibra.utils.BottomNavigationHandler;
 import asunfdiez.com.equilibra.utils.Constants;
 import asunfdiez.com.equilibra.viewmodels.ExpenseListViewModel;
 
+/**
+ * Actividad que muestra el historial de gastos del usuario.
+ * 
+ * <p>Presenta una lista detallada de gastos vinculados a sus categorías, permitiendo 
+ * filtrar por fecha a través de un calendario interactivo. El usuario puede ver detalles, 
+ * editar o eliminar registros de gastos desde esta pantalla.</p>
+ */
 public class ExpenseListActivity extends AppCompatActivity implements ExpenseAdapter.OnExpenseClickListener, BottomNavigationHandler {
 
+    // Vinculación de Datos (Data Binding)
     private ActivityExpenseListBinding binding;
+    
+    // Modelo de Vista (ViewModel)
     private ExpenseListViewModel viewModel;
+    
+    // Adaptadores para la lista de gastos y el calendario
     private ExpenseAdapter expenseAdapter;
     private CalendarAdapter calendarAdapter;
+
     private final Handler handler = new Handler();
 
     @Override

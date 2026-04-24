@@ -9,13 +9,26 @@ import android.widget.TextView;
 import androidx.core.widget.ImageViewCompat;
 import androidx.databinding.BindingAdapter;
 
+/**
+ * Adaptadores de vinculación globales para el sistema de Data Binding de Android.
+ * 
+ * <p>Contiene lógica reutilizable en los archivos de diseño XML para tareas como 
+ * el formateo de moneda, la visibilidad condicional de vistas, el tintado dinámico 
+ * de iconos y la manipulación de cadenas para visualización.</p>
+ */
 public class BindingAdapters {
 
+    /**
+     * Formatea un valor numérico como moneda y lo establece en un TextView.
+     */
     @BindingAdapter("formattedAmount")
     public static void setFormattedAmount(TextView textView, double amount) {
         textView.setText(String.format(java.util.Locale.getDefault(), Constants.CURRENCY_FORMAT, amount));
     }
 
+    /**
+     * Calcula y muestra un monto prorrateado (ej. gasto por día o semana).
+     */
     @BindingAdapter({"amount", "divisor"})
     public static void setDividedAmount(TextView textView, double amount, int divisor) {
         if (divisor != 0) {

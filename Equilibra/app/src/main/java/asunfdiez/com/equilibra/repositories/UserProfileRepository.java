@@ -15,14 +15,24 @@ import asunfdiez.com.equilibra.database.UserProfileDao;
 import asunfdiez.com.equilibra.models.UserProfile;
 
 /**
- * Repository para gestionar el perfil de usuario
- * Intermedia entre ViewModel y Room DAOs
+ * Repositorio central para la gestión del perfil de usuario único.
+ * 
+ * <p>Proporciona acceso tanto síncrono como reactivo (LiveData) a la información 
+ * del perfil del usuario. Maneja la persistencia de cambios en los datos personales 
+ * y preferencias de configuración mediante hilos secundarios para no bloquear la UI.</p>
  */
 public class UserProfileRepository {
+    // DAO para la gestión de la entidad de perfil de usuario
     private final UserProfileDao userProfileDao;
+    
     private Context context;
+    
+    // Executor para realizar actualizaciones en segundo plano
     private final ExecutorService executorService;
+    
+    // Handler para comunicación con el hilo principal
     private final Handler mainHandler;
+    
     public UserProfileRepository(Context context) {
         this.context = context;
         this.userProfileDao = AppDatabase.getInstance(context).userProfileDao();
@@ -30,10 +40,16 @@ public class UserProfileRepository {
         this.mainHandler = new Handler(Looper.getMainLooper());
     }
 
+    /**
+     * Recupera el perfil del usuario como un objeto observable LiveData.
+     */
     public LiveData<UserProfile> getUserProfile() {
         return userProfileDao.getUserProfile();
     }
 
+    /**
+     * Recupera el perfil del usuario de forma síncrona (bloqueante).
+     */
     public UserProfile getUserProfileSync() {
         return userProfileDao.getUserProfileSync();
     }

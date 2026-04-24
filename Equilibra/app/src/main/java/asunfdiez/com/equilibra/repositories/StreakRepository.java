@@ -11,25 +11,21 @@ import asunfdiez.com.equilibra.database.StreakDao;
 import asunfdiez.com.equilibra.models.Streak;
 
 /**
- * StreakRepository - Repositorio para gestión de rachas
- *
- * Responsabilidades:
- * - Acceso a datos de rachas desde persistencia
- * - Crear/actualizar/eliminar rachas
- * - Queries por tipo de racha
- *
- * Patrón:
- * - Repository pattern
- * - Abstrae la fuente de datos (Room/SQLite)
- * - Operaciones en background threads
+ * Repositorio dedicado a la gestión y persistencia de las rachas de uso del usuario.
+ * 
+ * <p>Se encarga de abstraer las operaciones de acceso a datos para las rachas, 
+ * permitiendo su consulta reactiva por tipo y asegurando que los contadores 
+ * de días consecutivos se almacenen correctamente en la base de datos local.</p>
  */
 public class StreakRepository {
 
     private final Context context;
+    
+    // DAO para la gestión de las rachas en la base de datos Room
     private final StreakDao streakDAO;
 
     /**
-     * Constructor
+     * Constructor que inicializa el repositorio de rachas.
      */
     public StreakRepository(@NonNull Application application) {
         this.context = application.getApplicationContext();
@@ -37,7 +33,7 @@ public class StreakRepository {
     }
 
     /**
-     * Obtener racha por tipo (LiveData reactivo)
+     * Recupera una racha específica filtrada por su tipo como un observable LiveData.
      * @param userId ID del usuario
      * @param type Tipo de racha (TYPE_RECORDING, TYPE_BUDGET)
      * @return LiveData con la racha

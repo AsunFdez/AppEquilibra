@@ -1,17 +1,27 @@
 package asunfdiez.com.equilibra.models;
 
 /**
- * InterventionMessage - Modelo para mensajes de intervención suave
- * Contiene el título, mensaje y consejos personalizados
+ * Clase que estructura los mensajes de intervención suave presentados al usuario.
+ * 
+ * <p>Contiene el título, el cuerpo del mensaje, una lista de consejos personalizados 
+ * y un nivel de severidad. Se utiliza para representar visualmente las alertas 
+ * en la pantalla de intervención suave.</p>
  */
 public class InterventionMessage {
 
+    // Título de la alerta o consejo
     private String title;
+    
+    // Cuerpo principal del mensaje informativo
     private String message;
+    
+    // Lista de pequeños consejos prácticos (tips)
     private String[] tips;
-    private String severity; // "low", "medium", "high"
+    
+    // Nivel de urgencia o severidad ("low", "medium", "high")
+    private String severity; 
 
-    // Constructor vacío
+    // Constructor vacío inicializa con valores por defecto
     public InterventionMessage() {
         this.tips = new String[3];
         this.severity = "medium";

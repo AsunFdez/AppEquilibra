@@ -5,9 +5,19 @@ import java.util.Calendar;
 import java.util.Locale;
 import java.util.TimeZone;
 
+/**
+ * Clase de utilidad para el procesamiento y formateo de fechas y horas.
+ * 
+ * <p>Centraliza la lógica de conversión entre objetos Calendar, marcas de tiempo 
+ * (timestamps) y representaciones en cadena de texto legibles, asegurando que 
+ * se utilice el formato y la zona horaria consistentes en toda la aplicación.</p>
+ */
 public class DateUtils {
 
 
+    /**
+     * Convierte un objeto Calendar a una cadena de fecha formateada según Constants.DATE_FORMAT.
+     */
     public static String formatDate(Calendar calendar) {
         if (calendar == null) return "";
 
@@ -18,12 +28,18 @@ public class DateUtils {
         return sdf.format(calendar.getTime());
     }
 
+    /**
+     * Convierte una marca de tiempo en milisegundos a una cadena de fecha formateada.
+     */
     public static String formatDate(long timestamp) {
         Calendar calendar = Calendar.getInstance();
         calendar.setTimeInMillis(timestamp);
         return formatDate(calendar);
     }
 
+    /**
+     * Convierte un objeto Calendar a una cadena de hora formateada según Constants.TIME_FORMAT.
+     */
     public static String formatTime(Calendar calendar) {
         if (calendar == null) return "";
 
@@ -34,6 +50,9 @@ public class DateUtils {
         return sdf.format(calendar.getTime());
     }
 
+    /**
+     * Convierte una marca de tiempo en milisegundos a una cadena de hora formateada.
+     */
     public static String formatTime(long timestamp) {
         Calendar calendar = Calendar.getInstance();
         calendar.setTimeInMillis(timestamp);

@@ -9,13 +9,30 @@ import androidx.room.Query;
 import asunfdiez.com.equilibra.models.UserProfile;
 import asunfdiez.com.equilibra.utils.Constants;
 
+/**
+ * DAO para la gestión del perfil único de usuario.
+ * 
+ * <p>Como la aplicación está diseñada para un solo perfil local, este DAO 
+ * proporciona métodos para acceder a ese registro único de forma reactiva 
+ * o síncrona, así como para actualizar sus campos específicos.</p>
+ */
 @Dao
 public interface UserProfileDao {
+    /**
+     * Guarda o sobrescribe el perfil del usuario.
+     */
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     void insertOrUpdate(UserProfile userProfile);
 
+    /**
+     * Recupera el perfil completo del usuario como un observable LiveData.
+     */
     @Query("SELECT * FROM "+Constants.TABLE_USER_PROFILE+" LIMIT 1")
     LiveData<UserProfile> getUserProfile();
+    
+    /**
+     * Recupera únicamente el nombre del usuario de forma reactiva.
+     */
     @Query("SELECT "+Constants.COLUMN_USER_NAME+" FROM "+Constants.TABLE_USER_PROFILE+" LIMIT 1")
     LiveData<String>getUserName();
 

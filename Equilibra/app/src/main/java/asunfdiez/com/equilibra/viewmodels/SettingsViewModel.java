@@ -11,22 +11,31 @@ import asunfdiez.com.equilibra.repositories.UserProfileRepository;
 import asunfdiez.com.equilibra.utils.SharedPrefsManager;
 
 /**
- * ViewModel para SettingsActivity
- * Gestiona las preferencias generales de la app
+ * ViewModel que centraliza las preferencias generales de la aplicación.
+ * 
+ * <p>Maneja el estado resumido de las configuraciones de usuario para mostrarlas 
+ * en el menú principal de ajustes, incluyendo el nombre del usuario, el estado 
+ * de las notificaciones, el tema visual y el idioma. Actúa como puente entre 
+ * las preferencias compartidas y la interfaz de configuración.</p>
  */
 public class SettingsViewModel extends AndroidViewModel {
 
 
+    // Gestor de preferencias para lectura de ajustes guardados
     private final SharedPrefsManager prefsManager;
+    
+    // Repositorio para obtener datos básicos del usuario
     private final UserProfileRepository userRepository;
 
 
-    // LiveData observables
+    // LiveData que observan los diferentes ajustes generales
     private final LiveData<String> userName;
     private final LiveData<Boolean> notificationsEnabled;
     private final LiveData<Boolean> darkMode;
     private final LiveData<String> theme;
     private final LiveData<String> language;
+    
+    // Controlador de perfil para acciones administrativas
     private final UserProfileController userProfileController;
 
 

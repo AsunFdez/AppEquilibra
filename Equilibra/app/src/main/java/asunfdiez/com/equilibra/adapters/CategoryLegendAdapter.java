@@ -13,9 +13,19 @@ import java.util.List;
 import asunfdiez.com.equilibra.databinding.ItemCategoryLegendBinding;
 import asunfdiez.com.equilibra.models.CategoryAnalysis;
 
+/**
+ * Adaptador para mostrar la leyenda explicativa de los gráficos de análisis por categoría.
+ * 
+ * <p>Muestra una lista de categorías con sus respectivos colores, porcentajes de gasto 
+ * y montos totales, ayudando al usuario a interpretar la información visual 
+ * presentada en los gráficos circulares o de barras.</p>
+ */
 public class CategoryLegendAdapter extends RecyclerView.Adapter<CategoryLegendAdapter.ViewHolder> {
 
+    // Lista de resultados del análisis por categoría
     private List<CategoryAnalysis> items = new ArrayList<>();
+    
+    // Matriz de colores asociados a las porciones del gráfico
     private int[] colors = new int[0];
 
     public void setItems(List<CategoryAnalysis> items, int[] colors) {

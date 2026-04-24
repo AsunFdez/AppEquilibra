@@ -22,10 +22,15 @@ import asunfdiez.com.equilibra.R;
 
 
 /**
- * Utilidades para animaciones
- * Proporciona métodos reutilizables para animar vistas
+ * Clase de utilidad que centraliza la lógica de animaciones de la interfaz de usuario.
+ * 
+ * <p>Proporciona métodos estáticos reutilizables para aplicar efectos visuales 
+ * como desvanecimientos, desplazamientos, escalados y animaciones de progreso 
+ * en barras de estado. Ayuda a mantener la consistencia visual y mejorar 
+ * la fluidez de la experiencia de usuario.</p>
  */
 public class AnimationHelper {
+    // Manejador para la ejecución de animaciones en el hilo principal
     private static final Handler handler = new Handler(Looper.getMainLooper());
 
     public AnimationHelper() {

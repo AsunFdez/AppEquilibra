@@ -13,15 +13,11 @@ import asunfdiez.com.equilibra.databinding.ItemAchievementMiniBinding;
 import asunfdiez.com.equilibra.models.Achievement;
 
 /**
- * AchievementMiniAdapter - Adapter compacto para mostrar logros recientes
- *
- * Responsabilidad:
- * - Mostrar un grid de logros desbloqueados recientemente
- * - Versión compacta del AchievementAdapter para usar en el preview de pantalla principal
- *
- * Patrón:
- * - MVVM con Data Binding
- * - RecyclerView.Adapter estándar
+ * Adaptador compacto diseñado para mostrar una vista previa de los logros en el panel principal.
+ * 
+ * <p>A diferencia del adaptador principal, este utiliza un diseño más reducido enfocado 
+ * en mostrar los iconos de los logros recientemente desbloqueados o los hitos más 
+ * importantes de forma rápida y visual.</p>
  */
 public class AchievementMiniAdapter extends RecyclerView.Adapter<AchievementMiniAdapter.MiniViewHolder> {
 

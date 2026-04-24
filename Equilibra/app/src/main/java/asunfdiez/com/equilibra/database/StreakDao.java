@@ -13,9 +13,19 @@ import java.util.List;
 import asunfdiez.com.equilibra.models.Streak;
 import asunfdiez.com.equilibra.utils.Constants;
 
+/**
+ * DAO para la gestión de las rachas de uso y actividad del usuario.
+ * 
+ * <p>Proporciona acceso a la información sobre días consecutivos de uso, 
+ * permitiendo su actualización y consulta reactiva por tipo de racha para 
+ * alimentar el sistema de gamificación.</p>
+ */
 @Dao
 public interface StreakDao {
 
+    /**
+     * Inserta una nueva racha o actualiza una existente.
+     */
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     long insertStreak(Streak streak);
 

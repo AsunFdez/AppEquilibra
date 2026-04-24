@@ -10,11 +10,18 @@ import androidx.room.Update;
 import asunfdiez.com.equilibra.models.Budget;
 import asunfdiez.com.equilibra.utils.Constants;
 
+/**
+ * DAO para gestionar la persistencia de los presupuestos configurados.
+ * 
+ * <p>Proporciona acceso a las operaciones básicas de creación y actualización 
+ * de presupuestos, así como consultas para recuperar el presupuesto activo 
+ * que rige los límites de gasto actuales.</p>
+ */
 @Dao
 public interface BudgetDao {
 
     /**
-     * Inserta un nuevo presupuesto
+     * Inserta un nuevo registro de presupuesto. Si ya existe uno con el mismo ID, lo reemplaza.
      */
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     long insert(Budget budget);

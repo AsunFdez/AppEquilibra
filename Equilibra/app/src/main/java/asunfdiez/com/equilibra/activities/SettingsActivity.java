@@ -23,17 +23,20 @@ import asunfdiez.com.equilibra.utils.Constants;
 import asunfdiez.com.equilibra.viewmodels.SettingsViewModel;
 
 /**
- * Activity principal de Configuración
- * Menú de opciones que navega a sub-pantallas
+ * Actividad principal de configuración de la aplicación.
+ * 
+ * <p>Funciona como un centro de control desde el cual el usuario puede acceder a 
+ * diferentes sub-pantallas de ajustes (Apariencia, Presupuesto, Notificaciones), 
+ * ver información sobre la app o realizar acciones de mantenimiento de datos.</p>
  */
 public class SettingsActivity extends AppCompatActivity implements BottomNavigationHandler  {
 
     private static final String TAG = "SettingsActivity";
 
-    // Data Binding
+    // Vinculación de Datos (Data Binding)
     private ActivitySettingsBinding binding;
 
-    // ViewModel
+    // Modelo de Vista (ViewModel)
     private SettingsViewModel viewModel;
 
     private final Handler handler = new Handler();

@@ -1,5 +1,12 @@
 package asunfdiez.com.equilibra.utils;
 
+/**
+ * Clase que centraliza todas las constantes globales de la aplicación.
+ * 
+ * <p>Incluye formatos de fecha y hora, claves para SharedPreferences, nombres 
+ * de tablas de la base de datos, identificadores de logros y otros valores 
+ * estáticos configurables. Esta clase no es instanciable.</p>
+ */
 public final class Constants {
 
     private Constants() {
@@ -7,11 +14,12 @@ public final class Constants {
     }
 
 
+    // Formatos estándar de tiempo y fecha
     public static final String TIME_FORMAT = "HH:mm";
     public static final String DATE_FORMAT = "dd/MM/yyyy";
 
 
-    //---- SHARED PREFERENCES KEYS
+    //---- CLAVES PARA PREFERENCIAS COMPARTIDAS (SHARED PREFERENCES)
     public static final String PREFS_NAME = "EquilibraPrefs";
     public static final String PREF_MONTHLY_BUDGET = "monthly_budget";
     public static final String PREF_WEEKLY_BUDGET = "weekly_budget";
@@ -24,7 +32,7 @@ public final class Constants {
     public static final String PREF_LANGUAGE = "language";
     public static final String PREF_DARK_MODE = "dark_mode";
 
-    // Onboarding
+    // Claves relacionadas con el proceso de Onboarding
     public static final String KEY_ONBOARDING_COMPLETE = "onboardingComplete";
     public static final String KEY_USER_LEVEL = "userLevel";
     public static final String USER_LEVEL_BEGINNER = "beginner";
@@ -32,19 +40,19 @@ public final class Constants {
     public static final String USER_LEVEL_ADVANCED = "advanced";
     public static final String KEY_ONBOARDING_COMPLETED_AT = "onboardingCompletedAt";
 
-    // FAB
+    // Configuraciones de UI y animaciones
     public static final long FAB_ANIM_DURATION = 100;
 
-    // Perfil de usuario
+    // Claves para el Perfil de Usuario
     public static final String KEY_USER_PROFILE = "userProfile";
 
-    // Intervenciones
+    // Control de Intervenciones
     public static final String KEY_INTERVENTION_LAST_SEEN = "interventionLastSeen";
 
-    // Logros
+    // Gestión de Logros
     public static final String KEY_ACHIEVEMENTS = "achievement_";
 
-    // Configuración
+    // Ajustes Generales
     public static final String KEY_NOTIFICATIONS_ENABLED = "notificationsEnabled";
     public static final String KEY_CURRENCY_SYMBOL = "currencySymbol";
     public static final String KEY_THEME_MODE = "themeMode";

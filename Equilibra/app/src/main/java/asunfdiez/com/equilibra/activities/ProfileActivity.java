@@ -14,12 +14,18 @@ import asunfdiez.com.equilibra.utils.AnimationHelper;
 import asunfdiez.com.equilibra.viewmodels.ProfileViewModel;
 
 /**
- * Activity de perfil de usuario
- * Permite visualizar y editar información del perfil personal
+ * Actividad que muestra y permite gestionar el perfil del usuario.
+ * 
+ * <p>Muestra información resumida del usuario, su estado financiero y permite la navegación 
+ * a la edición de datos personales. Utiliza un ViewModel para observar los datos del 
+ * perfil en tiempo real a través de LiveData.</p>
  */
 public class ProfileActivity extends AppCompatActivity {
 
+    // Modelo de Vista (ViewModel)
     private ProfileViewModel viewModel;
+    
+    // Vinculación de Vistas (View Binding)
     private ActivityProfileBinding binding;
 
     @Override

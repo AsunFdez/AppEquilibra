@@ -19,22 +19,18 @@ import asunfdiez.com.equilibra.repositories.StreakRepository;
 import asunfdiez.com.equilibra.repositories.UserProfileRepository;
 
 /**
- * GamificationViewModel - Gestor centralizado de gamificación
- *
- * Responsabilidades:
- * - Logros (obtener, desbloquear, verificar)
- * - Rachas (obtener, actualizar)
- * - Puntos y niveles
- * - Notificaciones de desbloqueo
- *
- * Patrón:
- * - MVVM con LiveData reactivo
- * - Controllers para lógica de negocio
- * - Repositories para acceso a datos
+ * ViewModel centralizado para la gestión de todo el sistema de gamificación.
+ * 
+ * <p>Coordina la lógica de puntos de experiencia, niveles, rachas de uso y desbloqueo 
+ * de logros. Provee datos unificados a múltiples pantallas (MainActivity, AchievementsActivity) 
+ * y asegura que el progreso del usuario se actualice reactivamente en toda la app.</p>
  */
 public class GamificationViewModel extends AndroidViewModel {
 
+    // Controlador para la lógica compleja de desbloqueo de logros
     private final AchievementController achievementController;
+    
+    // Repositorios para acceso a perfiles, rachas y logros
     private final UserProfileRepository userRepository;
     private final StreakRepository streakRepository;
     private final AchievementRepository achievementRepository;

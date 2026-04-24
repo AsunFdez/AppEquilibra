@@ -10,12 +10,25 @@ import androidx.room.Update;
 import asunfdiez.com.equilibra.models.UserXP;
 import asunfdiez.com.equilibra.utils.Constants;
 
+/**
+ * DAO para la gestión de los puntos de experiencia (XP) y niveles del usuario.
+ * 
+ * <p>Mantiene el registro persistente del progreso de gamificación, permitiendo 
+ * la actualización de los puntos acumulados y la consulta de la situación 
+ * actual del usuario en el sistema de niveles.</p>
+ */
 @Dao
 public interface UserXPDao {
 
+    /**
+     * Registra el estado inicial de XP para un usuario.
+     */
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     void insertUserXP(UserXP userXP);
 
+    /**
+     * Actualiza el progreso de XP acumulado.
+     */
     @Update
     void updateUserXP(UserXP userXP);
 

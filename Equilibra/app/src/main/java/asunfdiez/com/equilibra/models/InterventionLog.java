@@ -7,8 +7,11 @@ import androidx.room.PrimaryKey;
 import asunfdiez.com.equilibra.utils.Constants;
 
 /**
- * InterventionLog - Modelo de datos para registro de intervenciones
- * Almacena las intervenciones inteligentes sugeridas al usuario
+ * Modelo de datos que registra las intervenciones inteligentes realizadas por la app.
+ * 
+ * <p>Almacena el historial de avisos y sugerencias presentados al usuario, vinculándolos 
+ * a gastos específicos o situaciones financieras. Permite auditar qué tipo de intervenciones 
+ * (impacto en metas, alternativas de ahorro, etc.) son más frecuentes.</p>
  */
 
 @Entity(tableName = Constants.TABLE_INTERVENTION_LOG)
@@ -17,11 +20,23 @@ public class InterventionLog {
     @PrimaryKey(autoGenerate = true)
     @NonNull
     private long id;
+    
+    // ID del usuario que recibió la intervención
     private long userId;
+    
+    // ID del gasto que disparó la intervención (opcional)
     private long expenseId;
-    private String interventionType; // "goal_impact", "saving_alternative", "emotional_trigger"
+    
+    // Tipo de intervención: "goal_impact", "saving_alternative", etc.
+    private String interventionType; 
+    
+    // Mensaje descriptivo mostrado al usuario
     private String message;
+    
+    // Descripción del impacto en las metas de ahorro
     private String impactOnGoal;
+    
+    // Sugerencia alternativa de comportamiento o ahorro
     private String alternativeSuggestion;
     private long timestamp;
 

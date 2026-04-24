@@ -17,19 +17,25 @@ import asunfdiez.com.equilibra.utils.Constants;
 import asunfdiez.com.equilibra.utils.DateUtils;
 
 /**
- * ExpenseRepository - Repositorio para gestionar los gastos
- * Intermedia entre ViewModel y Room DAOs
+ * Repositorio central para la gestión de todas las transacciones de gastos e ingresos.
+ * 
+ * <p>Este repositorio coordina el acceso a la tabla de gastos, proporcionando 
+ * métodos para la inserción, eliminación y consulta filtrada de transacciones. 
+ * Además, incluye lógica para obtener resúmenes estadísticos y análisis por 
+ * categoría utilizados en los informes financieros.</p>
  */
 public class ExpenseRepository {
+    // DAO para la ejecución de consultas sobre la entidad Expense
     private final ExpenseDao expenseDao;
 
     private final Context context;
 
+    // Executor para realizar operaciones de escritura de forma asíncrona
     private final ExecutorService executor = Executors.newSingleThreadExecutor();
 
 
     /**
-     * Constructor
+     * Constructor que inicializa el repositorio con el contexto de la aplicación.
      */
     public ExpenseRepository(Context context) {
         this.context = context;
@@ -37,7 +43,7 @@ public class ExpenseRepository {
     }
 
     /**
-     * Inserta un nuevo gasto en la base de datos
+     * Registra una nueva transacción en la base de datos de forma persistente.
      * @param expense Gasto a insertar
      */
     public void insertExpense(Expense expense) {

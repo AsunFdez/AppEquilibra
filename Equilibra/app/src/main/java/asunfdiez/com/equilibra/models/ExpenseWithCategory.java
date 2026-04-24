@@ -3,12 +3,18 @@ package asunfdiez.com.equilibra.models;
 import androidx.room.Embedded;
 
 /**
- * Pojo para representar un gasto con los metadatos de su categoría
+ * Objeto de transferencia de datos (DTO) que combina un gasto con su información de categoría.
+ * 
+ * <p>Esta clase se utiliza para facilitar la representación de gastos en la interfaz 
+ * de usuario, evitando realizar múltiples consultas o joins manuales en la capa 
+ * de vista al incluir directamente el nombre, icono y color de la categoría.</p>
  */
 public class ExpenseWithCategory {
+    // Entidad de gasto incrustada
     @Embedded
     private Expense expense;
 
+    // Metadatos de la categoría para visualización directa
     private String categoryName;
     private int categoryIconResId;
     private String categoryColor;

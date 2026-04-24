@@ -7,8 +7,18 @@ import java.util.Objects;
 import asunfdiez.com.equilibra.R;
 import asunfdiez.com.equilibra.utils.Constants;
 
+/**
+ * Clase que representa una opción de respuesta en los cuestionarios de la aplicación.
+ * 
+ * <p>Utilizada principalmente durante el proceso de onboarding para capturar las 
+ * preferencias, misiones o motivaciones del usuario a través de una lista de 
+ * opciones seleccionables.</p>
+ */
 public class QuestionOption {
+    // Identificador único de la opción
     private final String id;
+    
+    // Texto que se muestra al usuario
     private final String text;
 
     public QuestionOption(String id, String text) {

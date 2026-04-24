@@ -10,6 +10,13 @@ import java.util.List;
 import asunfdiez.com.equilibra.models.Alternative;
 import asunfdiez.com.equilibra.utils.Constants;
 
+/**
+ * DAO para la gestión de las alternativas de ahorro sugeridas.
+ * 
+ * <p>Define las consultas para recuperar sugerencias de ahorro basadas en la 
+ * categoría del gasto y palabras clave en su descripción. Se utiliza durante 
+ * el proceso de análisis para ofrecer opciones más económicas al usuario.</p>
+ */
 @Dao
 public interface AlternativeDao {
 

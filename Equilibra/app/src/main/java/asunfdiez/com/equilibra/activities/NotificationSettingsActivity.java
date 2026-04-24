@@ -16,14 +16,18 @@ import asunfdiez.com.equilibra.databinding.ActivityNotificationSettingsBinding;
 import asunfdiez.com.equilibra.viewmodels.NotificationSettingsViewModel;
 
 /**
- * Activity para configurar notificaciones
- * Usa SharedPreferences para guardar preferencias
+ * Actividad para la configuración de alertas y notificaciones del sistema.
+ * 
+ * <p>Permite al usuario habilitar o deshabilitar diferentes tipos de recordatorios, 
+ * como alertas de presupuesto, recordatorios de registro diario y avisos de logros. 
+ * Las preferencias se gestionan a través del ViewModel y se almacenan de forma persistente.</p>
  */
 public class NotificationSettingsActivity extends AppCompatActivity {
-    // Data Binding
+    
+    // Vinculación de Datos (Data Binding)
     private ActivityNotificationSettingsBinding binding;
 
-    // ViewModel
+    // Modelo de Vista (ViewModel)
     private NotificationSettingsViewModel viewModel;
 
     @Override

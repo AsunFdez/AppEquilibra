@@ -15,15 +15,19 @@ import asunfdiez.com.equilibra.utils.AnimationHelper;
 import asunfdiez.com.equilibra.viewmodels.SoftInterventionViewModel;
 
 /**
- * SoftInterventionActivity - Pantalla de intervención suave
- * Muestra alertas amigables cuando los gastos son altos
- * Ofrece consejos y sugerencias personalizadas
- *
+ * Actividad diseñada para proporcionar una "intervención suave" al usuario.
+ * 
+ * <p>Se activa cuando se detectan patrones de gasto inusuales o elevados. Muestra alertas 
+ * amigables, estadísticas rápidas y ofrece alternativas o consejos personalizados para 
+ * ayudar al usuario a retomar el control de sus finanzas sin ser intrusivo.</p>
  */
 
 public class SoftInterventionActivity extends AppCompatActivity {
 
+    // Vinculación de Vistas (View Binding)
     private ActivitySoftInterventionBinding binding;
+    
+    // Modelo de Vista (ViewModel)
     private SoftInterventionViewModel viewModel;
 
     @Override

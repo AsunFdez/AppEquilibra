@@ -14,17 +14,26 @@ import asunfdiez.com.equilibra.database.SavingGoalDao;
 import asunfdiez.com.equilibra.models.SavingGoal;
 
 /**
- * Repository para gestionar el objetivo de ahorro
- * Intermedia entre ViewModel y Room DAOs
+ * Repositorio encargado de gestionar las metas de ahorro del usuario.
+ * 
+ * <p>Facilita el acceso y la persistencia de los objetivos financieros, 
+ * permitiendo consultas síncronas y asíncronas. Coordina con el DAO 
+ * correspondiente para realizar operaciones de actualización de progreso 
+ * y gestión del estado de cumplimiento de las metas.</p>
  */
 public class SavingGoalRepository {
+    // DAO para la ejecución de consultas sobre objetivos de ahorro
     private final SavingGoalDao savingGoalDao;
+    
+    // Executor para realizar operaciones en segundo plano
     private final ExecutorService executorService;
+    
+    // Handler para reportar resultados al hilo principal de la UI
     private final Handler mainHandler;
 
     /**
-     * Constructor del repositorio
-     * @param context Contexto de la aplicación
+     * Constructor del repositorio que inicializa el acceso a datos.
+     * @param context Contexto de la aplicación.
      */
     public SavingGoalRepository(Context context) {
         this.savingGoalDao = AppDatabase.getInstance(context).savingGoalDao();
@@ -33,9 +42,9 @@ public class SavingGoalRepository {
     }
 
     /**
-     * Obtiene el primer objetivo de ahorro activo para un usuario
-     * @param userId Id del usuario
-     * @return Objetivo de ahorro activo
+     * Recupera de forma síncrona el primer objetivo de ahorro activo de un usuario.
+     * @param userId Identificador único del usuario.
+     * @return El objetivo de ahorro encontrado o null si no existe ninguno activo.
      */
     public SavingGoal getActiveSavingGoalSync(long userId) {
         return savingGoalDao.getFirstSavingGoalActiveByUserId(userId);

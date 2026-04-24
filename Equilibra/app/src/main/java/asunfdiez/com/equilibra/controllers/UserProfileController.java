@@ -24,16 +24,23 @@ import asunfdiez.com.equilibra.utils.DateUtils;
 import asunfdiez.com.equilibra.utils.SharedPrefsManager;
 
 /**
- * Controller para gestión de usuarios
- * Maneja la lógica de negocio relacionada con usuarios
- *
+ * Controlador encargado de la lógica de negocio del perfil de usuario.
+ * 
+ * <p>Gestiona el estado global del usuario, incluyendo el cálculo de su nivel 
+ * de bienestar financiero, el seguimiento de sus metas de ahorro y la actualización 
+ * de sus indicadores de progreso. Sirve como punto central para realizar cambios 
+ * en el perfil y coordinar la persistencia de los mismos.</p>
  */
 public class UserProfileController {
 
     private String TAG = "UserProfileController";
+    
+    // Repositorios para el acceso a datos relacionados con el usuario
     private final UserProfileRepository userRepository;
     private final SavingGoalRepository goalRepository;
     private final ExpenseRepository expenseRepository;
+    
+    // Gestores de estado y lógica adicional
     private final SharedPrefsManager prefsManager;
     private UserProfile user;
     private final WellbeingController wellbeingController;

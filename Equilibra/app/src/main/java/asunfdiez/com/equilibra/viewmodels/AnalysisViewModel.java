@@ -16,12 +16,25 @@ import asunfdiez.com.equilibra.controllers.ExpenseController;
 import asunfdiez.com.equilibra.models.AnalysisState;
 import asunfdiez.com.equilibra.models.CategoryAnalysis;
 
+/**
+ * ViewModel que gestiona la lógica de análisis financiero y datos estadísticos.
+ * 
+ * <p>Coordina la obtención y el procesamiento de los datos de gastos para generar 
+ * el estado de análisis, el cual incluye los totales para los gráficos de barras 
+ * y circulares. Permite alternar entre vistas semanales y mensuales.</p>
+ */
 public class AnalysisViewModel extends AndroidViewModel {
 
+    // Controlador de gastos para acceder a los datos de la base de datos
     private final ExpenseController expenseController;
+    
+    // Estado consolidado del análisis (totales, porcentajes, datos de gráficos)
     private final MutableLiveData<AnalysisState> analysisState = new MutableLiveData<>();
+    
+    // Indicador de la escala temporal del análisis (verdadero para semanal)
     private final MutableLiveData<Boolean> isWeekly = new MutableLiveData<>(true);
 
+    // Estados de carga o disponibilidad de datos para los gráficos
     private final MutableLiveData<Boolean> pieChartData = new MutableLiveData<>(false);
     private final MutableLiveData<Boolean> barChartData = new MutableLiveData<>(false);
 

@@ -4,9 +4,12 @@ import android.text.TextUtils;
 import android.util.Patterns;
 
 /**
- * Helper para validación de datos
- * Contiene métodos de validación reutilizables
- *
+ * Clase de utilidad que proporciona validaciones de formato de datos comunes.
+ * 
+ * <p>Contiene lógica para verificar la validez de correos electrónicos, 
+ * contraseñas, nombres y números de teléfono, asegurando que los datos 
+ * introducidos por el usuario cumplan con los requisitos mínimos de seguridad 
+ * y formato antes de su procesamiento.</p>
  */
 public final class ValidationHelper {
 
@@ -16,8 +19,7 @@ public final class ValidationHelper {
     }
 
     /**
-     * Valida si un email es válido
-     *
+     * Comprueba si una cadena de texto tiene un formato de correo electrónico válido.
      * @param email Email a validar
      * @return true si es válido, false en caso contrario
      */

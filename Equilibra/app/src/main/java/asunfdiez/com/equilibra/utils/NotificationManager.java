@@ -13,30 +13,29 @@ import java.util.concurrent.TimeUnit;
 import asunfdiez.com.equilibra.workers.NotificationWorker;
 
 /**
- * NotificationManager - Gestor de notificaciones programadas
- *
- * Responsabilidad:
- * - Programar notificaciones diarias a las 8:00 AM
- * - Manejar WorkManager internamente
- * - Cancelar/pausar notificaciones si es necesario
- *
- * Patrones:
- * - Singleton pattern
- * - WorkManager para scheduling flexible
- * - Persist a través de reinicios
+ * Gestor encargado de la programación y administración de notificaciones del sistema.
+ * 
+ * <p>Utiliza {@link WorkManager} para asegurar que las notificaciones (como los 
+ * consejos diarios o recordatorios de presupuesto) se entreguen de forma fiable, 
+ * incluso tras reinicios del dispositivo. Centraliza la configuración de canales 
+ * y horarios de entrega.</p>
  */
 public class NotificationManager {
 
     private static final String TAG = "NotificationManager";
+    
+    // Nombre único para la tarea periódica de consejos diarios
     private static final String DAILY_ADVICE_WORK_NAME = "daily_advice_notification";
-    private static final int NOTIFICATION_HOUR = 8; // 8:00 AM
+    
+    // Hora programada por defecto para la notificación matutina (8:00 AM)
+    private static final int NOTIFICATION_HOUR = 8; 
     private static final int NOTIFICATION_MINUTE = 0;
 
     /**
-     * Programar notificaciones diarias
-     * Se ejecutarán todos los días a las 8:00 AM
+     * Programa una tarea periódica para mostrar notificaciones diarias de consejos.
+     * La tarea se configura para ejecutarse cada 24 horas.
      *
-     * @param context Contexto de la aplicación
+     * @param context Contexto de la aplicación.
      */
     public static void scheduleDailyNotifications(@NonNull Context context) {
         // Calcular tiempo hasta la próxima ejecución

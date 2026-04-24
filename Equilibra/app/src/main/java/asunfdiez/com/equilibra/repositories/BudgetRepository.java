@@ -14,15 +14,23 @@ import asunfdiez.com.equilibra.models.Budget;
 import asunfdiez.com.equilibra.utils.Constants;
 
 /**
- * Repository para gestionar Presupuestos (Budget)
- * Usa Room Database para persistencia
+ * Repositorio encargado de la persistencia y gestión de los presupuestos del usuario.
+ * 
+ * <p>Centraliza las operaciones CRUD sobre la tabla de presupuestos, garantizando 
+ * que solo haya un presupuesto activo en el sistema y realizando inicializaciones 
+ * automáticas si no se encuentra ninguno configurado.</p>
  */
 public class BudgetRepository {
 
     private static final String TAG = "BudgetRepository";
 
+    // DAO para el acceso a la tabla de presupuestos
     private final BudgetDao budgetDao;
+    
+    // Executor para realizar operaciones de base de datos fuera del hilo principal
     private final ExecutorService executorService;
+    
+    // Presupuesto actualmente activo observado mediante LiveData
     private final LiveData<Budget> activeBudget;
 
     /**

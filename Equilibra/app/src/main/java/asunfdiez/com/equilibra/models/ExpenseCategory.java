@@ -7,8 +7,11 @@ import androidx.room.PrimaryKey;
 import asunfdiez.com.equilibra.utils.Constants;
 
 /**
- * ExpenseCategory - Modelo de datos para categorías de gastos
- * Representa una categoría predefinida para clasificar transacciones
+ * Modelo de datos que representa una categoría de clasificación para los gastos.
+ * 
+ * <p>Define la identidad visual y nominal de una categoría, incluyendo su nombre, 
+ * el icono asociado y un color distintivo. Se utiliza para agrupar transacciones 
+ * y facilitar el análisis de patrones de consumo.</p>
  */
 @Entity (tableName = Constants.TABLE_CATEGORIES)
 public class ExpenseCategory {
@@ -17,10 +20,19 @@ public class ExpenseCategory {
     @NonNull
     private long id;
 
+    // Nombre de la categoría (ej. "Comida", "Transporte")
     private String name;
+    
+    // ID del recurso de icono (obsoleto si se usa iconName)
     private int iconResId;
-    private String iconName; // Nombre del drawable
-    private String color;    // Color en formato hexadecimal #RRGGBB
+    
+    // Nombre del recurso drawable para el icono
+    private String iconName; 
+    
+    // Código de color hexadecimal para la UI
+    private String color;    
+    
+    // Estado de selección en la interfaz de usuario
     private boolean isSelected;
 
     public ExpenseCategory(String name, int iconResId, String iconName, String color) {

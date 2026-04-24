@@ -25,24 +25,36 @@ import asunfdiez.com.equilibra.viewmodels.AdviceViewModel;
 import asunfdiez.com.equilibra.viewmodels.GamificationViewModel;
 import asunfdiez.com.equilibra.viewmodels.MainViewModel;
 
+/**
+ * Actividad principal de la aplicación que sirve como panel de control (Dashboard).
+ * 
+ * <p>Esta clase coordina la visualización de los consejos diarios, el estado de bienestar financiero,
+ * el progreso de gamificación y los accesos rápidos a las funciones principales. Utiliza múltiples
+ * ViewModels para gestionar los diferentes componentes de la pantalla inicial.</p>
+ */
 public class MainActivity extends AppCompatActivity implements BottomNavigationHandler {
 
+    // Modelos de Vista (ViewModels)
     private MainViewModel viewModel;
     private AdviceViewModel adviceViewModel;
     private GamificationViewModel gamificationViewModel;
+    
+    // Controlador de lógica de bienestar
     private WellbeingController wellbeingController;
 
-    // Content Cards
+    // Tarjeta para ver todos los gastos
     private CardView viewAllExpensesCard;
 
-    // View State
+    // Estado de la vista actual
     private String currentViewType;
 
-    // Handler
+    // Manejador para tareas diferidas
     private final Handler handler = new Handler();
-    // dataBinding
+    
+    // Vinculación de Datos (Data Binding)
     private ActivityMainBinding binding;
 
+    // Datos del perfil de usuario
     private UserProfile lastUserProfile;
     private boolean isInitialLoad = true;
 

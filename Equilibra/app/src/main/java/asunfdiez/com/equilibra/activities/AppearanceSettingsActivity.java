@@ -21,21 +21,22 @@ import asunfdiez.com.equilibra.databinding.ItemSelectorPopupBinding;
 import asunfdiez.com.equilibra.viewmodels.AppearanceSettingsViewModel;
 
 /**
- * Activity para configurar apariencia de la app
- * Usa SharedPreferences para guardar preferencias
- *
+ * Actividad para configurar las opciones de personalización visual de la aplicación.
+ * 
+ * <p>Permite al usuario cambiar el tema (claro/oscuro), el idioma y otras preferencias de visualización. 
+ * Los cambios se gestionan a través de un ViewModel y se persisten en las preferencias de la aplicación.</p>
  */
 public class AppearanceSettingsActivity extends AppCompatActivity {
 
 
-    // Data Binding
+    // Vinculación de Datos (Data Binding)
     private ActivityAppearanceSettingsBinding binding;
 
-    // ViewModel
+    // Modelo de Vista (ViewModel)
     private AppearanceSettingsViewModel viewModel;
 
+    // Menús emergentes para selección de opciones
     private PopupWindow viewSelectorPopup;
-
     private PopupWindow themeSelectorPopup;
     private PopupWindow languageSelectorPopup;
 

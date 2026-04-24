@@ -9,23 +9,19 @@ import asunfdiez.com.equilibra.adapters.AchievementMiniAdapter;
 import asunfdiez.com.equilibra.models.Achievement;
 
 /**
- * BindingAdapters para Gamificación
- *
- * Responsabilidad:
- * - Configurar RecyclerView de logros desde XML Data Binding
- * - Manejar actualizaciones reactivas de datos
- *
- * Patrón:
- * - Android Data Binding BindingAdapter
+ * Adaptadores de vinculación específicos para componentes de gamificación.
+ * 
+ * <p>Proporciona lógica especializada para el Data Binding en elementos visuales 
+ * de logros y progreso, como la configuración automática de adaptadores de lista 
+ * en RecyclerViews directamente desde los archivos XML.</p>
  */
 public class GamificationBindingAdapters {
 
     /**
-     * Configura el adaptador de logros mini para un RecyclerView
-     * Uso en XML: app:achievementsList="@{gamificationViewModel.recentUnlockedAchievements}"
-     *
-     * @param recyclerView El RecyclerView a configurar
-     * @param achievements Lista de logros a mostrar
+     * Configura y actualiza la lista de logros en un RecyclerView utilizando el mini-adaptador.
+     * 
+     * @param recyclerView El RecyclerView a configurar.
+     * @param achievements Lista de logros a mostrar.
      */
     @BindingAdapter("achievementsList")
     public static void setAchievementsData(RecyclerView recyclerView, List<Achievement> achievements) {

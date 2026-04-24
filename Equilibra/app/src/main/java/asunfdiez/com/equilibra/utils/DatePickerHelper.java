@@ -11,14 +11,26 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Locale;
 
+/**
+ * Clase de utilidad para gestionar la selección de fechas y horas mediante diálogos nativos.
+ * 
+ * <p>Simplifica la visualización de DatePickerDialog y TimePickerDialog, vinculando 
+ * automáticamente la selección con campos de texto (TextInputEditText) y proporcionando 
+ * interfaces de escucha para gestionar los resultados de la selección.</p>
+ */
 public class DatePickerHelper {
     private final Context context;
 
-    // Interfaces funcionales para los callbacks
+    /**
+     * Interfaz para recibir la notificación de una fecha seleccionada.
+     */
     public interface OnDateSelectedListener {
         void onSelected(Calendar calendar);
     }
 
+    /**
+     * Interfaz para recibir la notificación de una hora seleccionada.
+     */
     public interface OnTimeSelectedListener {
         void onSelected(Calendar calendar);
     }
@@ -27,6 +39,9 @@ public class DatePickerHelper {
         this.context = context;
     }
 
+    /**
+     * Muestra un selector de fecha y actualiza el campo de texto con el resultado formateado.
+     */
     public void showDatePicker(final TextInputEditText dateInput, Calendar calendar) {
 
         DatePickerDialog dialog = new DatePickerDialog(

@@ -11,19 +11,24 @@ import asunfdiez.com.equilibra.R;
 import asunfdiez.com.equilibra.utils.SharedPrefsManager;
 
 /**
- * ViewModel para AppearanceSettingsActivity
- * Gestiona la apariencia de la app (SharedPreferences)
- *
+ * ViewModel que gestiona la lógica de configuración visual de la aplicación.
+ * 
+ * <p>Maneja el estado y la persistencia de las preferencias de apariencia, 
+ * como el tema visual (claro/oscuro), el idioma de la interfaz y el modo de 
+ * visualización de datos. Coordina con el gestor de preferencias para asegurar 
+ * que los cambios se guarden y apliquen correctamente.</p>
  */
 public class AppearanceSettingsViewModel extends AndroidViewModel {
 
+    // Gestor de preferencias persistentes para configuraciones de usuario
     private final SharedPrefsManager prefsManager;
 
-    // LiveData observables
+    // LiveData que observan las preferencias actuales del usuario
     private final LiveData<String> viewMode;
     private final LiveData<String> theme;
     private final LiveData<String> language;
 
+    // Mensajes de confirmación o error para la interfaz
     private final MutableLiveData<String> statusMessage = new MutableLiveData<>();
 
     /**

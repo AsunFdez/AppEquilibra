@@ -7,35 +7,63 @@ import androidx.room.PrimaryKey;
 import asunfdiez.com.equilibra.utils.Constants;
 
 
+/**
+ * Entidad que almacena la información detallada del perfil del usuario.
+ * 
+ * <p>Contiene datos personales, preferencias configuradas durante el onboarding 
+ * (estado emocional, preocupaciones financieras), indicadores de progreso en el uso 
+ * de la app y estadísticas acumuladas. Al estar limitado a un único registro (ID fijo), 
+ * actúa como la configuración global del usuario.</p>
+ */
 @Entity(tableName = Constants.TABLE_USER_PROFILE)
 public class UserProfile {
 
     @PrimaryKey
     private long id = 1; // Solo habrá un perfil, usamos un ID fijo.
+    
+    // Nombre del usuario
     private String name;
+    
+    // Correo electrónico de contacto
     private String email;
+    
+    // Teléfono (opcional)
     private String phone;
+    
+    // Hash de la contraseña para seguridad básica local
     private String passwordHash;
 
+    // Estado emocional detectado en el onboarding
     private EmotionalState emotionalState;
+    
+    // Identificador de la principal preocupación financiera
     private String mainConcernId;
+    
+    // Descripción de la principal preocupación financiera
     private String mainConcern;
+    
+    // Tiempo disponible declarado por el usuario para gestionar finanzas
     private String timeAvailable;
+    
+    // Marcas de tiempo de creación y actualización del perfil
     private long createdAt;
     private long updatedAt;
 
+    // Ingresos mensuales declarados
     private double monthlyIncome;
 
+    // Niveles declarados de conocimiento y hábitos financieros (1-10)
     private int financialKnowledge;
     private int budgetExperience;
     private int savingsHabit;
 
+    // Contadores para el seguimiento de la racha y progreso semanal
     private int dayCount = 1;
     private int weekProgress = 0;
     private int weekGoal = 7;
-
     private int weekCount = 0;
 
+    // Marcas de tiempo para control de reinicios y última conexión
     private long lastResetTimestamp = System.currentTimeMillis();
     private long lastConnectionTimestamp = System.currentTimeMillis();
 

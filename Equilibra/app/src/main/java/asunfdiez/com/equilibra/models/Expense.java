@@ -13,7 +13,11 @@ import java.text.ParseException;
 import asunfdiez.com.equilibra.utils.Constants;
 
 /**
- * Expense - Modelo para representar un gasto o ingreso
+ * Modelo de datos que representa una transacción financiera individual.
+ * 
+ * <p>Almacena la información de un gasto o ingreso, incluyendo el monto, la categoría 
+ * a la que pertenece, una descripción opcional y la fecha y hora de la transacción. 
+ * Esta entidad es el núcleo de la persistencia financiera en la base de datos Room.</p>
  */
 @Entity(tableName = Constants.TABLE_EXPENSES)
 public class Expense {
@@ -21,12 +25,26 @@ public class Expense {
     @PrimaryKey (autoGenerate = true)
     @NonNull
     private long id;
-    private String type; // "expense" o "income"
+    
+    // Tipo de transacción: "expense" (gasto) o "income" (ingreso)
+    private String type; 
+    
+    // Monto numérico de la transacción
     private double amount;
+    
+    // ID de la categoría asociada (FK)
     private long category;
+    
+    // Nota adicional sobre el gasto
     private String description;
+    
+    // Fecha en formato yyyy-MM-dd
     private String date;
+    
+    // Hora en formato HH:mm
     private String time;
+    
+    // Marca de tiempo Unix en milisegundos para ordenación y comparaciones rápidas
     private long timestamp;
     private boolean isRecurring; // Si es un gasto recurrente
     private int patternCount; // Cuántas veces se ha repetido este patrón

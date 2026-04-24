@@ -8,10 +8,14 @@ import asunfdiez.com.equilibra.models.Budget;
 import asunfdiez.com.equilibra.repositories.BudgetRepository;
 
 /**
- * BudgetController - Controlador para la gestión de presupuestos
- * Intermedia entre las Activities y el Repositorio (Capa de Datos)
+ * Controlador que orquestra las operaciones relacionadas con el presupuesto del usuario.
+ * 
+ * <p>Actúa como la capa intermedia que invoca las funciones del repositorio de 
+ * presupuestos, aislando la lógica de negocio de la implementación de persistencia 
+ * y facilitando la gestión del estado financiero global de la aplicación.</p>
  */
 public class BudgetController {
+    // Referencia al repositorio de presupuestos para el acceso a datos
     private final BudgetRepository budgetRepository;
 
     public BudgetController(Context context) {
@@ -19,24 +23,24 @@ public class BudgetController {
     }
 
     /**
-     * Guarda un presupuesto
-     * @param budget Presupuesto a guardar
+     * Persiste o crea un nuevo registro de presupuesto en el sistema.
+     * @param budget El objeto presupuesto a guardar.
      */
     public void saveBudget(Budget budget) {
         budgetRepository.saveBudget(budget);
     }
 
     /**
-     * Actualiza un presupuesto
-     * @param budget Presupuesto a actualizar
+     * Actualiza la información de un presupuesto existente.
+     * @param budget El objeto presupuesto con los cambios a aplicar.
      */
     public void updateBudget(Budget budget) {
         budgetRepository.updateBudget(budget);
     }
 
     /**
-     * Obtiene el presupuesto activo
-     * @return Presupuesto activo
+     * Recupera el presupuesto que está actualmente marcado como activo.
+     * @return Observable LiveData con el presupuesto activo.
      */
     public LiveData<Budget> getActiveBudget() {
         return budgetRepository.getActiveBudget();

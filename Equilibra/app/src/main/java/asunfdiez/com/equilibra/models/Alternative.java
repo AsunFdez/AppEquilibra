@@ -7,18 +7,29 @@ import androidx.room.PrimaryKey;
 import asunfdiez.com.equilibra.utils.Constants;
 
 /**
- * Alternative - Modelo de datos para alternativas de ahorro
- * Representa una sugerencia de ahorro basada en categoría y descripción
+ * Modelo de datos que representa una alternativa de ahorro sugerida.
+ * 
+ * <p>Contiene sugerencias basadas en categorías de gastos y palabras clave encontradas 
+ * en las descripciones de los gastos del usuario. Proporciona una estimación de ahorro 
+ * potencial mediante un porcentaje.</p>
  */
 @Entity(tableName = Constants.TABLE_ALTERNATIVES)
 public class Alternative {
     @PrimaryKey(autoGenerate = true)
     @NonNull
     private long id;
+    
+    // Categoría de gasto a la que se aplica la alternativa
     private String category;
-    private String descriptionKeyword; // Palabra clave en la descripción del gasto
+    
+    // Palabra clave utilizada para identificar el gasto relacionado
+    private String descriptionKeyword; 
+    
+    // La sugerencia de ahorro o comportamiento alternativo
     private String suggestion;
-    private double savingsPercentage; // Porcentaje estimado de ahorro
+    
+    // Porcentaje estimado que el usuario podría ahorrar al seguir esta sugerencia
+    private double savingsPercentage;
 
     public Alternative(String category, String descriptionKeyword, String suggestion, double savingsPercentage) {
         this.category = category;

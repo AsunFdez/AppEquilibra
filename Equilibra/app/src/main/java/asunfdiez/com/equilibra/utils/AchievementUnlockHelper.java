@@ -17,27 +17,22 @@ import asunfdiez.com.equilibra.R;
 import asunfdiez.com.equilibra.models.Achievement;
 
 /**
- * AchievementUnlockHelper - Helper para mostrar desbloqueos de logros
- *
- * Responsabilidad:
- * - Mostrar diálogo de desbloqueo de logro
- * - Aplicar animaciones de celebración
- * - Reproducir sonido de logro (opcional)
- * - Agradecer y motivar al usuario
- *
- * Patrón:
- * - Utility class con métodos estáticos
+ * Clase de utilidad para gestionar la retroalimentación visual al desbloquear logros.
+ * 
+ * <p>Se encarga de mostrar diálogos personalizados con animaciones de celebración 
+ * cuando el usuario alcanza un nuevo hito. Proporciona una experiencia de usuario 
+ * gratificante para reforzar los comportamientos financieros positivos.</p>
  */
 public class AchievementUnlockHelper {
 
     private static final String TAG = "AchievementUnlock";
 
     /**
-     * Mostrar diálogo de desbloqueo con animación
+     * Presenta un diálogo animado informando al usuario sobre el logro conseguido.
      *
-     * @param activity Activity actual
-     * @param achievement Logro desbloqueado
-     * @param onDismiss Callback al cerrar (opcional)
+     * @param activity Contexto de la actividad donde se mostrará el diálogo.
+     * @param achievement El objeto logro que ha sido desbloqueado.
+     * @param onDismiss Acción opcional a ejecutar cuando se cierra el diálogo.
      */
     public static void showUnlockDialog(
             @NonNull Activity activity,

@@ -12,9 +12,19 @@ import java.util.List;
 import asunfdiez.com.equilibra.models.ExpenseCategory;
 import asunfdiez.com.equilibra.utils.Constants;
 
+/**
+ * DAO para la gestión de las categorías de clasificación de gastos.
+ * 
+ * <p>Permite la gestión del catálogo de categorías, incluyendo la inserción masiva 
+ * de categorías iniciales, la recuperación de la lista completa para su selección 
+ * en formularios y la actualización de metadatos visuales como iconos y colores.</p>
+ */
 @Dao
 public interface ExpenseCategoryDao {
 
+    /**
+     * Inserta una lista completa de categorías en la base de datos.
+     */
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     void insertListOfCategories(List<ExpenseCategory> categories);
 

@@ -17,26 +17,32 @@ import asunfdiez.com.equilibra.controllers.AchievementController;
 import asunfdiez.com.equilibra.models.Achievement;
 
 /**
- * AchievementsViewModel - ViewModel para AchievementsActivity
- * Maneja la lógica de negocio y estados con LiveData
+ * ViewModel encargado de la gestión de datos para la pantalla de logros.
+ * 
+ * <p>Maneja la lógica para filtrar logros (todos, desbloqueados, bloqueados) y calcula 
+ * estadísticas de progreso como puntos totales y porcentaje de logros completados. 
+ * Utiliza LiveData para proporcionar actualizaciones reactivas a la interfaz de usuario.</p>
  */
 public class AchievementsViewModel extends AndroidViewModel {
 
+    // Controlador que encapsula la lógica de acceso a datos de logros
     private final AchievementController controller;
 
-    // LiveData observables desde el Repository
+    // Listas de logros observadas desde el repositorio
     private final LiveData<List<Achievement>> allAchievements;
     private final LiveData<List<Achievement>> unlockedAchievements;
     private final LiveData<List<Achievement>> lockedAchievements;
+    
+    // Estadísticas de puntos y conteos
     private final LiveData<Integer> totalPoints;
     private final LiveData<Integer> unlockedCount;
     private final LiveData<Integer> totalAchievements;
     private final LiveData<Integer> maxPossiblePoints;
 
-    // LiveData para el filtro seleccionado
+    // Estado del filtro de visualización seleccionado por el usuario
     private final MutableLiveData<FilterType> currentFilter = new MutableLiveData<>(FilterType.ALL);
 
-    // LiveData combinado según el filtro
+    // Lista resultante tras aplicar el filtro seleccionado
     private final MediatorLiveData<List<Achievement>> filteredAchievements = new MediatorLiveData<>();
 
     // LiveData para el progreso calculado (%)

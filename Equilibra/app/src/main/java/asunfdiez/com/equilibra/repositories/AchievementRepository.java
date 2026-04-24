@@ -15,24 +15,30 @@ import asunfdiez.com.equilibra.database.AppDatabase;
 import asunfdiez.com.equilibra.models.Achievement;
 
 /**
- * Repository para gestionar la lógica de Logros (Achievements)
- * Intermedia entre ViewModel y Room DAOs
+ * Repositorio encargado de la gestión de persistencia y lógica de datos de los logros.
+ * 
+ * <p>Actúa como mediador entre la base de datos Room y los ViewModels o controladores. 
+ * Proporciona acceso a las listas de logros y estadísticas de puntos, ejecutando 
+ * las operaciones de escritura en hilos secundarios mediante un ExecutorService.</p>
  */
 public class AchievementRepository {
 
     private static final String TAG = "AchievementRepository";
 
+    // DAO para acceso a la tabla de logros
     private final AchievementDao achievementDao;
+    
+    // Servicio para la ejecución de tareas asíncronas
     private final ExecutorService executorService;
 
-    // LiveData observables
+    // LiveData observables que proporcionan datos en tiempo real a la UI
     private final LiveData<List<Achievement>> allAchievements;
     private final LiveData<Integer> totalPoints;
     private final LiveData<Integer> unlockedCount;
     private final LiveData<Integer> totalAchievements;
     private final LiveData<Integer> maxPossiblePoints;
 
-    // MutableLiveData para notificar eventos
+    // LiveData para notificar el desbloqueo de un nuevo logro en tiempo real
     public final MutableLiveData<Achievement> newlyUnlockedAchievement = new MutableLiveData<>();
 
 

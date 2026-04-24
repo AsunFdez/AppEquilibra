@@ -20,14 +20,25 @@ import asunfdiez.com.equilibra.repositories.ExpenseRepository;
 import asunfdiez.com.equilibra.repositories.UserProfileRepository;
 import asunfdiez.com.equilibra.utils.Constants;
 
+/**
+ * Controlador de lógica de negocio encargado de la gestión de los logros del usuario.
+ * 
+ * <p>Centraliza la lógica para verificar si un usuario ha cumplido los requisitos 
+ * para desbloquear un logro específico, basándose en su actividad de gastos, 
+ * ahorros y uso de la aplicación. Coordina múltiples repositorios para realizar 
+ * estas comprobaciones de forma integral.</p>
+ */
 public class AchievementController {
 
     private static final String TAG = "AchievementController";
+    
+    // Repositorios requeridos para el análisis de los logros
     private final AchievementRepository achievementRepository;
     private final UserProfileRepository userProfileRepository;
     private final ExpenseRepository expenseRepository;
 
 
+    // Executor para ejecutar lógica de verificación pesada en segundo plano
     private final ExecutorService executorService = Executors.newSingleThreadExecutor();
 
     public AchievementController(Context context) {
@@ -37,6 +48,9 @@ public class AchievementController {
 
     }
 
+    /**
+     * Obtiene todos los logros registrados en el sistema como LiveData reactivo.
+     */
     public LiveData<List<Achievement>> getAllAchievements() {
         return achievementRepository.getAllAchievements();
     }

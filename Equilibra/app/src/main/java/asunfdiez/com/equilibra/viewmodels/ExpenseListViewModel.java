@@ -21,18 +21,36 @@ import asunfdiez.com.equilibra.models.Expense;
 import asunfdiez.com.equilibra.models.ExpenseWithCategory;
 
 /**
- * ExpenseListViewModel - ViewModel para ExpenseListActivity
- * Maneja la lógica de negocio y estados con LiveData
+ * ViewModel que gestiona la lógica de visualización y filtrado del historial de gastos.
+ * 
+ * <p>Mantiene el estado de la lista de gastos filtrada, calcula totales acumulados 
+ * y gestiona el calendario de navegación. Proporciona datos reactivos sobre qué 
+ * días del mes contienen registros para facilitar la visualización en el calendario.</p>
  */
 public class ExpenseListViewModel extends AndroidViewModel {
 
+    // Controlador para operaciones CRUD y consultas de gastos
     private final ExpenseController controller;
+    
+    // Lista de gastos enriquecidos con su categoría para mostrar en la UI
     private final MutableLiveData<List<ExpenseWithCategory>> expenses = new MutableLiveData<>(new ArrayList<>());
+    
+    // Importe total calculado de los gastos en el periodo o día seleccionado
     private final MutableLiveData<String> totalAmount = new MutableLiveData<>("0.00");
+    
+    // Conteo total de transacciones registradas
     private final MutableLiveData<Integer> totalRecords = new MutableLiveData<>(0);
+    
+    // Mapa que indica qué días del mes tienen gastos (para el calendario)
     private final MutableLiveData<Map<Integer, Boolean>> daysWithExpenses = new MutableLiveData<>(new HashMap<>());
+    
+    // Texto descriptivo del mes y año visualizados
     private final MutableLiveData<String> currentMonthYear = new MutableLiveData<>("");
+    
+    // Referencia temporal del mes actual para navegación por calendario
     private final Calendar currentMonthCalendar = Calendar.getInstance();
+    
+    // Marca de tiempo del día seleccionado para el filtrado detallado
     private final MutableLiveData<Long> selectedDateTimestamp = new MutableLiveData<>(null);
 
     /**

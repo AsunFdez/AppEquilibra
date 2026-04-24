@@ -7,18 +7,23 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
 /**
- * Gestor centralizado de SharedPreferences
- * con patrón Singleton
+ * Gestor centralizado para el acceso y modificación de las preferencias compartidas.
+ * 
+ * <p>Utiliza el patrón Singleton para asegurar una única instancia en toda la app. 
+ * Además de persistir los datos, expone las preferencias como objetos {@link LiveData}, 
+ * permitiendo que la interfaz de usuario reaccione automáticamente a cambios en 
+ * la configuración (como el modo oscuro o el idioma).</p>
  */
 public final class SharedPrefsManager {
 
+    // Instancia única del gestor (Patrón Singleton)
     private static SharedPrefsManager instance;
     private final SharedPreferences sharedPreferences;
 
     private final SharedPreferences.Editor editor;
 
+    // Observables LiveData para sincronización con la UI en tiempo real
     private final MutableLiveData<Boolean> onboardingCompleted = new MutableLiveData<>();
-
     private final MutableLiveData<Boolean> notificationsEnabled = new MutableLiveData<>();
     private final MutableLiveData<Boolean> budgetNotifications = new MutableLiveData<>();
     private final MutableLiveData<Boolean> achievementNotifications = new MutableLiveData<>();
@@ -34,7 +39,7 @@ public final class SharedPrefsManager {
     }
 
     /**
-     * Carga los valores iniciales en LiveData
+     * Carga los valores persistidos en los objetos LiveData durante la inicialización.
      */
     private void loadInitialValues() {
         onboardingCompleted.postValue(sharedPreferences.getBoolean(

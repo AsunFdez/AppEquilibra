@@ -12,8 +12,18 @@ import java.util.List;
 import asunfdiez.com.equilibra.models.Challenge;
 import asunfdiez.com.equilibra.utils.Constants;
 
+/**
+ * DAO para la gestión de desafíos financieros gamificados.
+ * 
+ * <p>Contiene métodos para registrar el progreso del usuario en los diferentes retos, 
+ * así como consultas para listar desafíos activos, completados o vencidos dentro 
+ * de un rango de fechas determinado.</p>
+ */
 @Dao
 public interface ChallengeDao {
+    /**
+     * Registra o actualiza un desafío en la base de datos.
+     */
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     void insertChallenge(Challenge challenge);
 

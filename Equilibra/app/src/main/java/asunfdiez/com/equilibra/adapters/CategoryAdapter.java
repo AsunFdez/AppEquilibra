@@ -16,17 +16,24 @@ import asunfdiez.com.equilibra.databinding.ItemCategoryBinding;
 import asunfdiez.com.equilibra.models.ExpenseCategory;
 
 /**
- * CategoryAdapter - Adapter para mostrar categorías en grid
- * Utiliza Data Binding para vincular datos con la vista
+ * Adaptador encargado de mostrar la cuadrícula de categorías de gastos.
+ * 
+ * <p>Permite al usuario seleccionar una categoría durante el registro de un nuevo gasto. 
+ * Utiliza Data Binding para actualizar el estado visual de selección y mostrar el 
+ * nombre e icono correspondiente a cada categoría.</p>
  */
 public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.CategoryViewHolder> {
 
     private Context context;
+    
+    // Lista de categorías disponibles para clasificar gastos
     private List<ExpenseCategory> categories;
+    
+    // Escuchador de eventos de selección de categoría
     private OnCategoryClickListener listener;
 
     /**
-     * Interface para manejar clicks en categorías
+     * Interfaz para gestionar la interacción del usuario con las categorías.
      */
     public interface OnCategoryClickListener {
         void onCategoryClick(ExpenseCategory category);

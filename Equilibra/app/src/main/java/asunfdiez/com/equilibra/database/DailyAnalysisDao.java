@@ -12,9 +12,19 @@ import java.util.List;
 import asunfdiez.com.equilibra.models.DailyAnalysis;
 import asunfdiez.com.equilibra.utils.Constants;
 
+/**
+ * DAO para gestionar la persistencia de los análisis financieros diarios.
+ * 
+ * <p>Almacena los resúmenes consolidados de cada día, facilitando la recuperación 
+ * histórica de balances, desglose de categorías y detección de anomalías 
+ * sin necesidad de recalcular toda la información de transacciones individuales.</p>
+ */
 @Dao
 public interface DailyAnalysisDao {
 
+    /**
+     * Guarda un registro de análisis diario. Si ya existe uno para la misma fecha (ID), lo sobrescribe.
+     */
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     void insertDailyAnalysis(DailyAnalysis dailyAnalysis);
 

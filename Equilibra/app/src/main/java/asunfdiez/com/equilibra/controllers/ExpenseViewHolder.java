@@ -6,7 +6,15 @@ import asunfdiez.com.equilibra.adapters.ExpenseAdapter;
 import asunfdiez.com.equilibra.databinding.ItemExpenseBinding;
 import asunfdiez.com.equilibra.models.ExpenseWithCategory;
 
+/**
+ * ViewHolder que representa visualmente un registro de gasto en una lista.
+ * 
+ * <p>Gestiona la vinculación de datos entre el modelo enriquecido ExpenseWithCategory 
+ * y la vista del elemento, configurando además los escuchadores de eventos para 
+ * acciones como clic simple, edición o eliminación del gasto.</p>
+ */
 public class ExpenseViewHolder extends RecyclerView.ViewHolder {
+    // Vinculación de la vista del elemento de gasto
     private final ItemExpenseBinding binding;
 
     public ExpenseViewHolder(ItemExpenseBinding binding) {
@@ -14,6 +22,12 @@ public class ExpenseViewHolder extends RecyclerView.ViewHolder {
         this.binding = binding;
     }
 
+    /**
+     * Vincula los datos de una transacción y configura los eventos de interacción.
+     * 
+     * @param expense El gasto con información de categoría a visualizar.
+     * @param listener El escuchador de eventos para gestionar las acciones del usuario.
+     */
     public void bind(ExpenseWithCategory expense, ExpenseAdapter.OnExpenseClickListener listener) {
         binding.setExpense(expense);
 

@@ -7,23 +7,44 @@ import androidx.room.PrimaryKey;
 import asunfdiez.com.equilibra.utils.Constants;
 
 /**
- * SavingGoal - Modelo de datos para objetivos de ahorro
- * Representa un objetivo de ahorro del usuario con meta y plazo
+ * Modelo de datos que representa una meta u objetivo de ahorro establecido por el usuario.
+ * 
+ * <p>Contiene información sobre el monto objetivo, el progreso actual, la fecha límite 
+ * y el ahorro mensual necesario para alcanzar la meta. Es una entidad persistida 
+ * que ayuda a motivar al usuario mediante el seguimiento de sus propósitos financieros.</p>
  */
 @Entity(tableName = Constants.TABLE_SAVING_GOALS)
 public class SavingGoal {
     @PrimaryKey(autoGenerate = true)
     @NonNull
     private long id;
+    
+    // ID del usuario dueño de la meta
     private long userId;
+    
+    // Nombre descriptivo de la meta (ej. "Coche", "Viaje")
     private String name;
+    
+    // Monto total que se desea ahorrar
     private double targetAmount;
+    
+    // Monto acumulado hasta el momento
     private double currentAmount;
-    private String deadline; // Formato: yyyy-MM-dd
+    
+    // Fecha límite para alcanzar el objetivo (formato yyyy-MM-dd)
+    private String deadline; 
+    
+    // Marcas de tiempo para auditoría
     private long createdAt;
     private long updatedAt;
+    
+    // Indica si la meta ya ha sido alcanzada
     private boolean completed;
+    
+    // Monto calculado que debería ahorrarse mensualmente
     private double monthlySavingAmount;
+    
+    // Cantidad de meses que faltan para llegar a la fecha límite
     private int monthsRemaining;
 
     // Constructor vacío

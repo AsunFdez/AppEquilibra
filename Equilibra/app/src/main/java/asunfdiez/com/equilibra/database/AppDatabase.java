@@ -28,25 +28,30 @@ import asunfdiez.com.equilibra.models.Streak;
 import asunfdiez.com.equilibra.models.UserProfile;
 import asunfdiez.com.equilibra.utils.Constants;
 
+/**
+ * Clase principal de la base de datos de la aplicación utilizando Room.
+ * 
+ * <p>Define todas las entidades que componen el esquema de persistencia local y 
+ * proporciona los métodos abstractos para acceder a sus respectivos DAOs. Implementa 
+ * el patrón Singleton para garantizar una única instancia de la base de datos y 
+ * gestiona la inicialización de datos semilla (categorías, logros, etc.) en la 
+ * primera ejecución.</p>
+ */
 @Database(entities = { Achievement.class, Budget.class, Challenge.class, DailyAnalysis.class, Expense.class, ExpenseCategory.class, InterventionLog.class, SavingGoal.class, Streak.class, UserProfile.class, Alternative.class }, version = Constants.DATABASE_VERSION, exportSchema = false)
 @TypeConverters({Converters.class})
 public abstract class AppDatabase extends RoomDatabase {
 
+    // Instancia única de la base de datos (Patrón Singleton)
     private static volatile AppDatabase INSTANCE;
     private static Context mContext;
 
+    // Métodos de acceso a los Objetos de Acceso a Datos (DAOs)
     public abstract UserProfileDao userProfileDao();
-
     public abstract SavingGoalDao savingGoalDao();
-
     public abstract ExpenseDao expenseDao();
-
     public abstract ExpenseCategoryDao expenseCategoryDao();
-
     public abstract AchievementDao achievementDao();
-
     public abstract AlternativeDao alternativeDao();
-
     public abstract StreakDao streakDao();
 
     public abstract ChallengeDao challengeDao();

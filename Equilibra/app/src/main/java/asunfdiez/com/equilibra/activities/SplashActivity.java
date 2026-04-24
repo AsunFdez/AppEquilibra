@@ -16,17 +16,25 @@ import asunfdiez.com.equilibra.utils.AnimationHelper;
 import asunfdiez.com.equilibra.utils.SharedPrefsManager;
 import asunfdiez.com.equilibra.viewmodels.SplashViewModel;
 
-/*
-* SplashActivity con implementación nativa de animaciones
-* utilizando la clase específica para AnimationHelper
-* */
+/**
+ * Actividad de bienvenida (Splash Screen) que se muestra al iniciar la aplicación.
+ * 
+ * <p>Gestiona la visualización del logo con animaciones y realiza las comprobaciones 
+ * iniciales de estado (si el usuario ha completado el onboarding) para decidir a qué 
+ * actividad navegar (MainActivity o OnboardingActivity).</p>
+ */
 
 public class SplashActivity extends AppCompatActivity {
 
     private final Handler handler = new Handler(Looper.getMainLooper());
     private SharedPrefsManager prefsManager;
+    
+    // Vinculación de Vistas (View Binding)
     ActivitySplashBinding binding;
+    
+    // Modelo de Vista (ViewModel)
     private SplashViewModel viewModel;
+
     private boolean animationsFinished = false;
     private boolean userLoaded = false;
 

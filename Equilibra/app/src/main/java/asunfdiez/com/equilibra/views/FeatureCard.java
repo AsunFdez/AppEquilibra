@@ -14,9 +14,14 @@ import androidx.databinding.BindingAdapter;
 import asunfdiez.com.equilibra.R;
 import asunfdiez.com.equilibra.databinding.FeatureCardBinding;
 
-/*
-* Componente reutilizable en los layout con atributos definidos en attrs.xml
-* */
+/**
+ * Vista personalizada (Custom View) que representa una tarjeta de funcionalidad.
+ * 
+ * <p>Este componente reutilizable permite configurar mediante XML atributos como 
+ * el icono, el título, la descripción y los colores de fondo. Se utiliza en toda 
+ * la aplicación para mantener una estética consistente en las opciones del dashboard 
+ * y menús de ajustes.</p>
+ */
 public class FeatureCard extends CardView {
 
     private FeatureCardBinding binding;

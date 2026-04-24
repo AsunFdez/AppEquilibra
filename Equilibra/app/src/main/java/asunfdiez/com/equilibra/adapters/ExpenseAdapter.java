@@ -17,16 +17,29 @@ import asunfdiez.com.equilibra.databinding.ItemExpenseBinding;
 import asunfdiez.com.equilibra.models.ExpenseWithCategory;
 
 /**
- * ExpenseAdapter - Adapter para RecyclerView de gastos
- * Muestra lista de gastos e ingresos con diseño card usando ViewBinding
+ * Adaptador para gestionar la lista detallada de transacciones financieras (gastos e ingresos).
+ * 
+ * <p>Se encarga de renderizar cada registro de gasto utilizando el modelo enriquecido 
+ * {@link ExpenseWithCategory}, aplicando formatos de moneda locales y gestionando 
+ * las interacciones del usuario (clic, edición, eliminación) a través de una 
+ * interfaz de escucha específica.</p>
  */
 public class ExpenseAdapter extends RecyclerView.Adapter<ExpenseViewHolder> {
 
     private final Context context;
+    
+    // Lista de transacciones enriquecidas con información de categoría
     private List<ExpenseWithCategory> expenses;
+    
+    // Escuchador para acciones sobre los elementos de la lista
     private final OnExpenseClickListener listener;
+    
+    // Formateador de moneda configurado para la región local
     private final NumberFormat currencyFormat;
 
+    /**
+     * Interfaz para la gestión de eventos de usuario sobre los gastos.
+     */
     public interface OnExpenseClickListener {
         void onExpenseClick(ExpenseWithCategory expense);
         void onExpenseDelete(ExpenseWithCategory expense);

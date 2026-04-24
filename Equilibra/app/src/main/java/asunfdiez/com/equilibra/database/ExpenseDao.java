@@ -14,26 +14,58 @@ import asunfdiez.com.equilibra.models.Expense;
 import asunfdiez.com.equilibra.models.ExpenseWithCategory;
 import asunfdiez.com.equilibra.utils.Constants;
 
+/**
+ * DAO principal para la gestión de la tabla de transacciones de gastos.
+ * 
+ * <p>Define todas las operaciones de persistencia para los gastos individuales, 
+ * incluyendo inserciones, eliminaciones, actualizaciones y consultas complejas 
+ * para filtrado por fecha, categoría o tipo. También incluye consultas de 
+ * agregación para el análisis financiero.</p>
+ */
 @Dao
 public interface ExpenseDao {
 
+    /**
+     * Inserta una lista de transacciones en lote.
+     */
     @Insert (onConflict = OnConflictStrategy.REPLACE)
     void insertListOfExpenses (List<Expense> expenseList);
+    
+    /**
+     * Registra un nuevo gasto o ingreso.
+     */
     @Insert (onConflict = OnConflictStrategy.REPLACE)
     void insertExpense (Expense expense);
+    
+    /**
+     * Elimina un registro de transacción específico.
+     */
     @Delete
     void deleteExpense (Expense expense);
+    
+    /**
+     * Actualiza la información de una transacción existente.
+     */
     @Update
     void updateExpenses (Expense expense);
 
+    /**
+     * Elimina permanentemente todos los registros de la tabla de gastos.
+     */
     @Query("DELETE FROM " + Constants.TABLE_EXPENSES)
     void deleteAll();
 
 
+    /**
+     * Recupera todas las transacciones ordenadas por fecha (más reciente primero).
+     */
     @Query("SELECT * FROM " + Constants.TABLE_EXPENSES +
             " ORDER BY " + Constants.COLUMN_EXPENSE_TIMESTAMP + " DESC")
     List<Expense> getAllExpenses();
 
+    /**
+     * Obtiene una lista limitada de las transacciones más recientes.
+     */
     @Query("SELECT * FROM " + Constants.TABLE_EXPENSES +
             " ORDER BY " + Constants.COLUMN_EXPENSE_TIMESTAMP + " DESC LIMIT :limit")
     List<Expense> getRecentExpenses(int limit);

@@ -7,8 +7,11 @@ import androidx.room.PrimaryKey;
 import asunfdiez.com.equilibra.utils.Constants;
 
 /**
- * Budget - Modelo de datos para presupuesto
- * Representa el límite de gasto por cada categoría en un periodo determinado (mensual)
+ * Modelo de datos que representa el presupuesto configurado por el usuario.
+ * 
+ * <p>Define los límites de gasto para diferentes periodos (diario, semanal, mensual) 
+ * y la moneda de preferencia. Esta entidad es fundamental para el seguimiento 
+ * del estado financiero y la generación de alertas de gasto.</p>
  */
 @Entity (tableName = Constants.TABLE_BUDGETS)
 public class Budget {
@@ -17,13 +20,24 @@ public class Budget {
     @NonNull
     private long id;
 
-    private double monthlyBudget;      // Presupuesto mensual
-    private double weeklyBudget;       // Presupuesto semanal
-    private double dailyBudget;        // Presupuesto diario
-    private String currency;           // Moneda (EUR, USD, etc.)
-    private boolean enabled;           // Si el presupuesto está activo
-    private long createdAt;            // Timestamp de creación
-    private long updatedAt;            // Timestamp de última actualización
+    // Límite de gasto mensual establecido
+    private double monthlyBudget;
+    
+    // Límite de gasto semanal (calculado o establecido)
+    private double weeklyBudget;
+    
+    // Límite de gasto diario (calculado o establecido)
+    private double dailyBudget;
+    
+    // Código de la moneda (ej. "EUR", "USD")
+    private String currency;
+    
+    // Indica si este presupuesto está actualmente activo
+    private boolean enabled;
+    
+    // Marcas de tiempo para auditoría de creación y actualización
+    private long createdAt;
+    private long updatedAt;
 
     /**
      * Constructor requerido por Room

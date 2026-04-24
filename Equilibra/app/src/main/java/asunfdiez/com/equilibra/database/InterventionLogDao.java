@@ -12,9 +12,19 @@ import java.util.List;
 import asunfdiez.com.equilibra.models.InterventionLog;
 import asunfdiez.com.equilibra.utils.Constants;
 
+/**
+ * DAO para la gestión del historial de intervenciones realizadas por el sistema.
+ * 
+ * <p>Permite registrar cada vez que se presenta una sugerencia o alerta al usuario, 
+ * facilitando el análisis posterior de la efectividad de las intervenciones 
+ * y el seguimiento de los consejos proporcionados.</p>
+ */
 @Dao
 public interface InterventionLogDao {
 
+    /**
+     * Registra un nuevo evento de intervención en la base de datos.
+     */
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     void insertInterventionLog(InterventionLog log);
 

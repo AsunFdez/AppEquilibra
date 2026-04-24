@@ -17,16 +17,12 @@ import asunfdiez.com.equilibra.utils.AdviceManager;
 import asunfdiez.com.equilibra.utils.Constants;
 
 /**
- * NotificationWorker - Tarea programada para enviar notificaciones diarias
- *
- * Responsabilidad:
- * - Ejecutarse diariamente a una hora específica (8:00 AM)
- * - Obtener el consejo del día
- * - Enviar notificación con el consejo
- * - Deep link a MainActivity cuando se toca la notificación
- *
- * Tecnología: WorkManager API (scheduling flexible)
- * Frecuencia: Una vez al día
+ * Trabajador en segundo plano encargado de la ejecución de notificaciones programadas.
+ * 
+ * <p>Esta tarea es orquestada por WorkManager para ejecutarse periódicamente. 
+ * Su función principal es seleccionar el consejo financiero del día y lanzarlo 
+ * como una notificación del sistema, permitiendo al usuario acceder directamente 
+ * a la aplicación al interactuar con ella.</p>
  */
 public class NotificationWorker extends Worker {
 
@@ -35,7 +31,7 @@ public class NotificationWorker extends Worker {
     private static final String TAG = "NotificationWorker";
 
     /**
-     * Constructor
+     * Constructor del trabajador.
      */
     public NotificationWorker(@NonNull Context context, @NonNull WorkerParameters params) {
         super(context, params);
@@ -108,7 +104,6 @@ public class NotificationWorker extends Worker {
 
     /**
      * Obtener el canal de notificación para Android 8.0+
-     * @param context Contexto
      * @return ID del canal
      */
     public static String getNotificationChannelId() {

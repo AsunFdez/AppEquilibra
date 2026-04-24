@@ -13,29 +13,27 @@ import asunfdiez.com.equilibra.models.UserProfile;
 import asunfdiez.com.equilibra.repositories.UserProfileRepository;
 
 /**
- * AdviceViewModel - Gestor de consejos diarios
- *
- * Responsabilidad: Manejo centralizado de consejos financieros
+ * ViewModel responsable de la lógica de generación y provisión de consejos financieros.
  * 
- * - Obtiene el consejo del día actual
- * - Obtiene la acción rápida recomendada
- * - Valida el estado del usuario antes de mostrar consejos
- *
- * Patrones:
- * - Observables reactivos con LiveData
- * - Transformations.map() para derivar datos
- * - Sin lógica de UI (Activities limpias)
- * - Mantiene aislada la lógica de consejos
+ * <p>Centraliza la lógica para seleccionar qué consejo diario o acción rápida debe 
+ * mostrarse al usuario en función de su perfil, estado financiero y comportamiento. 
+ * Utiliza transformaciones reactivas para actualizar los consejos automáticamente 
+ * cuando cambian los datos del usuario.</p>
  */
 public class AdviceViewModel extends AndroidViewModel {
 
+    // Controlador para gestionar el estado del perfil de usuario
     private final UserProfileController userProfileController;
+    
+    // Repositorio para el acceso a datos del usuario
     private final UserProfileRepository userRepository;
+    
+    // Perfil de usuario observado
     private final LiveData<UserProfile> userProfile;
 
     /**
-     * LiveData reactivo: Consejos del día
-     * Emite un nuevo consejo cada vez que el perfil cambia
+     * LiveData reactivo que proporciona el consejo financiero del día.
+     * Se actualiza automáticamente si ocurren cambios relevantes en el perfil.
      */
     private final LiveData<Advice> dailyAdvice;
 

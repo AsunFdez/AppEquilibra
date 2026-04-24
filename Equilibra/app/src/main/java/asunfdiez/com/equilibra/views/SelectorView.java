@@ -13,7 +13,11 @@ import asunfdiez.com.equilibra.R;
 import asunfdiez.com.equilibra.databinding.ViewSelectorBinding;
 
 /**
- * Componente personalizado que simula un selector/spinner con la estética de Equilibra.
+ * Vista personalizada que implementa un componente de selección (selector).
+ * 
+ * <p>Simula el comportamiento de un selector o spinner pero con una estética personalizada 
+ * integrada en el diseño de tarjetas (CardView) de la aplicación. Permite definir 
+ * títulos, iconos y valores seleccionados de forma declarativa en los layouts XML.</p>
  */
 public class SelectorView extends CardView {
 

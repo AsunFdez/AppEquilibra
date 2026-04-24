@@ -3,18 +3,31 @@ package asunfdiez.com.equilibra.models;
 import java.util.List;
 
 /**
- * SmartReminder - Modelo para recordatorios inteligentes
- * Detecta patrones de gastos repetitivos
- *
+ * Modelo de datos para la representación de recordatorios generados por detección de patrones.
+ * 
+ * <p>Esta clase encapsula la información sobre comportamientos de gasto repetitivos 
+ * identificados por el sistema, ofreciendo mensajes personalizados y sugerencias 
+ * de ahorro basadas en la frecuencia y el monto acumulado en una categoría.</p>
  */
 public class SmartReminder {
 
+    // Categoría donde se ha detectado el patrón
     private String category;
-    private int occurrenceCount; // Número de veces que se ha gastado en esta categoría
-    private double totalAmount; // Total gastado en esta categoría
-    private String timeFrame; // "esta semana", "este mes", etc.
-    private List<String> suggestions; // Sugerencias de ahorro
-    private String patternMessage; // Mensaje personalizado del patrón
+    
+    // Cantidad de transacciones que forman parte del patrón detectado
+    private int occurrenceCount; 
+    
+    // Suma total de dinero involucrado en estas transacciones
+    private double totalAmount; 
+    
+    // Marco temporal del análisis (ej. "en los últimos 7 días")
+    private String timeFrame; 
+    
+    // Lista de acciones sugeridas para mitigar este gasto
+    private List<String> suggestions; 
+    
+    // Mensaje descriptivo del patrón detectado (ej. "Has gastado mucho en café esta semana")
+    private String patternMessage;
 
     public SmartReminder() {
     }

@@ -7,8 +7,11 @@ import androidx.room.PrimaryKey;
 import asunfdiez.com.equilibra.utils.Constants;
 
 /**
- * UserXP - Modelo de datos para experiencia y progreso gamificado
- * Almacena puntos de experiencia, nivel actual y logros desbloqueados
+ * Modelo de datos que gestiona el progreso de gamificación del usuario.
+ * 
+ * <p>Registra el total de puntos de experiencia (XP) acumulados, el nivel actual 
+ * alcanzado y los requisitos para el siguiente nivel. Es el núcleo que permite 
+ * visualizar el avance del usuario en el sistema de recompensas.</p>
  */
 @Entity(tableName = Constants.TABLE_USER_XP)
 public class UserXP {
@@ -16,11 +19,23 @@ public class UserXP {
     @PrimaryKey(autoGenerate = true)
     @NonNull
     private long id;
+    
+    // ID del usuario asociado a estos puntos
     private long userId;
+    
+    // Total acumulado de puntos de experiencia
     private int totalXP;
+    
+    // Nivel actual calculado del usuario
     private int currentLevel;
+    
+    // Puntos necesarios para alcanzar el nivel superior
     private int xpForNextLevel;
+    
+    // Conteo total de logros conseguidos
     private int achievementsUnlocked;
+    
+    // Marca de tiempo de la última vez que se otorgaron puntos
     private long lastXPEarnedAt;
 
     // Constructor vacío

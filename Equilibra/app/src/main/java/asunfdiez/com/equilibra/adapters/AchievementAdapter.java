@@ -15,12 +15,19 @@ import asunfdiez.com.equilibra.databinding.ItemAchievementBinding;
 import asunfdiez.com.equilibra.models.Achievement;
 
 /**
- * Adapter para mostrar Achievements en RecyclerView
- *
+ * Adaptador para gestionar la visualización de una lista de logros en un RecyclerView.
+ * 
+ * <p>Esta clase se encarga de inflar el diseño de cada elemento de logro y de vincular 
+ * los datos de los modelos {@link Achievement} con sus respectivos ViewHolders. 
+ * Soporta clics en los elementos a través de una interfaz de escucha.</p>
  */
 public class AchievementAdapter extends RecyclerView.Adapter<AchievementViewHolder> {
     private final Context context;
+    
+    // Lista de logros a visualizar
     private List<Achievement> achievements;
+    
+    // Escuchador de eventos de clic
     private OnAchievementClickListener listener;
 
     public AchievementAdapter(Context context, OnAchievementClickListener listener) {

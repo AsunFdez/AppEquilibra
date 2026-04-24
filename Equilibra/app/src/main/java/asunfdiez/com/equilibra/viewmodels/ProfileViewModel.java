@@ -12,12 +12,29 @@ import asunfdiez.com.equilibra.controllers.UserProfileController;
 import asunfdiez.com.equilibra.models.UserProfile;
 import asunfdiez.com.equilibra.utils.ValidationHelper;
 
+/**
+ * ViewModel que gestiona la visualización y edición del perfil del usuario.
+ * 
+ * <p>Maneja el estado de edición de la pantalla de perfil, valida los cambios 
+ * realizados y coordina con el controlador de usuario para la persistencia. 
+ * También gestiona los mensajes de feedback (éxito/error) y la lógica de 
+ * eliminación de la cuenta.</p>
+ */
 public class ProfileViewModel extends AndroidViewModel {
+    // Controlador para operaciones de gestión de perfil
     private final UserProfileController userProfileController;
+    
+    // Perfil de usuario observado
     private final LiveData<UserProfile> userProfile;
+    
+    // Estado que determina si la vista está en modo lectura o edición
     private final MutableLiveData<Boolean> editMode = new MutableLiveData<>(false);
+    
+    // Mensajes de feedback para la interfaz
     private final MutableLiveData<String> errorMessage = new MutableLiveData<>();
     private final MutableLiveData<String> successMessage = new MutableLiveData<>();
+    
+    // Estado de confirmación de eliminación de cuenta
     private final MutableLiveData<Boolean> accountDeleted = new MutableLiveData<>(false);
 
     public ProfileViewModel(@NonNull Application application) {

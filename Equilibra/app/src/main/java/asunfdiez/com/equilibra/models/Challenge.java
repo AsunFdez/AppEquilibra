@@ -7,8 +7,11 @@ import androidx.room.PrimaryKey;
 import asunfdiez.com.equilibra.utils.Constants;
 
 /**
- * Challenge - Modelo de datos para desafíos semanales/mensuales
- * Representa un reto temporal con recompensa en XP
+ * Modelo de datos que representa un desafío o reto financiero para el usuario.
+ * 
+ * <p>Los desafíos son objetivos temporales que el usuario puede cumplir para ganar 
+ * recompensas en experiencia (XP). Pueden estar vinculados a categorías específicas 
+ * y tienen una fecha de inicio y fin determinada.</p>
  */
 @Entity (tableName = Constants.TABLE_CHALLENGES)
 public class Challenge {
@@ -16,15 +19,35 @@ public class Challenge {
     @PrimaryKey(autoGenerate = true)
     @NonNull
     private long id;
+    
+    // ID del usuario al que pertenece el desafío
     private long userId;
+    
+    // Título descriptivo del reto
     private String title;
+    
+    // Detalle de las condiciones para completar el reto
     private String description;
+    
+    // Categoría de gasto a la que aplica el reto (opcional)
     private String category;
+    
+    // Monto objetivo (ej. no gastar más de X, o ahorrar Y)
     private double targetAmount;
+    
+    // Progreso actual del usuario hacia el objetivo
     private double currentAmount;
-    private String startDate; // Formato: yyyy-MM-dd
-    private String endDate; // Formato: yyyy-MM-dd
+    
+    // Fecha de inicio del desafío (formato yyyy-MM-dd)
+    private String startDate; 
+    
+    // Fecha de vencimiento del desafío (formato yyyy-MM-dd)
+    private String endDate; 
+    
+    // Estado de cumplimiento del desafío
     private boolean completed;
+    
+    // Cantidad de puntos de experiencia otorgados al finalizar con éxito
     private int xpReward;
 
     // Constructor vacío
