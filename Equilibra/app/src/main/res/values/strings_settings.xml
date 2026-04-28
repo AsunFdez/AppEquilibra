@@ -142,8 +142,8 @@
 
     <string name="privacy_policy">Política de Privacidad</string>
     <string name="terms_conditions">Términos y Condiciones</string>
-    <string name="open_source_licenses">Licencias Open Source</string>
-    <string name="licenses_content">Esta aplicación utiliza las siguientes bibliotecas de código abierto:\n\n• Android Jetpack\n• Material Design Components\n• Room Database\n• LiveData &amp; ViewModel\n\nTodas bajo licencia Apache 2.0</string>
+    <string name="open_source_licenses">Licencias de Código Abierto</string>
+    <string name="licenses_content">Esta aplicación utiliza las siguientes bibliotecas de código abierto:\n\n• Android Jetpack (AppCompat, ConstraintLayout, Lifecycle, Room, WorkManager)\n• Google Material Design Components\n• Gson (Google)\n• MPAndroidChart (PhilJay)\n\nConsulta los términos de las licencias Apache 2.0 y MIT en sus respectivos sitios web.</string>
 
     <string name="support">Soporte</string>
     <string name="support_email_subject">Soporte Equilibra</string>

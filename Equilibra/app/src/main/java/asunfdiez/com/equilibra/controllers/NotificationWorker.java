@@ -1,4 +1,4 @@
-package asunfdiez.com.equilibra.workers;
+package asunfdiez.com.equilibra.controllers;
 
 import android.content.Context;
 import android.app.NotificationManager;
@@ -14,7 +14,6 @@ import asunfdiez.com.equilibra.R;
 import asunfdiez.com.equilibra.activities.MainActivity;
 import asunfdiez.com.equilibra.models.Advice;
 import asunfdiez.com.equilibra.utils.AdviceManager;
-import asunfdiez.com.equilibra.utils.Constants;
 
 /**
  * Trabajador en segundo plano encargado de la ejecución de notificaciones programadas.

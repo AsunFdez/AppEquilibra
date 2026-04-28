@@ -8,6 +8,7 @@ import android.animation.ValueAnimator;
 import android.app.Activity;
 import android.os.Handler;
 import android.os.Looper;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.AccelerateDecelerateInterpolator;
@@ -17,6 +18,8 @@ import android.view.animation.DecelerateInterpolator;
 import android.view.animation.ScaleAnimation;
 import android.view.animation.TranslateAnimation;
 import android.widget.ProgressBar;
+
+import androidx.annotation.Nullable;
 
 import asunfdiez.com.equilibra.R;
 
@@ -601,6 +604,128 @@ public class AnimationHelper {
                     }
                 })
                 .start();
+    }
+
+    /**
+     * Anima una racha cuando se actualiza (pulso visual)
+     * @param view Vista del chip o contenedor de racha
+     */
+    public static void animateStreakPulse(View view) {
+        if (view == null) return;
+        Animation animation = AnimationUtils.loadAnimation(view.getContext(), R.anim.streak_pulse);
+        view.startAnimation(animation);
+    }
+
+    /**
+     * Celebración cuando se alcanza un hito de racha (30, 60, 90 días, etc.)
+     * @param view Vista a celebrar
+     * @param onAnimationEnd Callback cuando termina la animación
+     */
+    public static void animateStreakMilestone(View view, @Nullable Runnable onAnimationEnd) {
+        if (view == null) return;
+        
+        Animation animation = AnimationUtils.loadAnimation(view.getContext(), R.anim.streak_milestone);
+        if (onAnimationEnd != null) {
+            animation.setAnimationListener(new Animation.AnimationListener() {
+                @Override
+                public void onAnimationStart(Animation animation) {}
+
+                @Override
+                public void onAnimationEnd(Animation animation) {
+                    onAnimationEnd.run();
+                }
+
+                @Override
+                public void onAnimationRepeat(Animation animation) {}
+            });
+        }
+        view.startAnimation(animation);
+    }
+
+    /**
+     * Anima la barra de progreso de racha llenándose
+     * @param progressBar Barra de progreso a animar
+     * @param targetProgress Progreso objetivo (0-100)
+     */
+    public static void animateProgressBarFill(ProgressBar progressBar, int targetProgress) {
+        if (progressBar == null) return;
+
+        ObjectAnimator animator = ObjectAnimator.ofInt(progressBar, "progress", 
+            progressBar.getProgress(), targetProgress);
+        animator.setDuration(800);
+        animator.setInterpolator(new DecelerateInterpolator());
+        animator.start();
+    }
+
+    /**
+     * Efecto "pop in" para chips de racha cuando aparecen
+     * @param chip Chip a animar
+     */
+    public static void animateChipPopIn(View chip) {
+        if (chip == null) return;
+        
+        chip.setScaleX(0f);
+        chip.setScaleY(0f);
+        chip.setAlpha(0f);
+        
+        Animation animation = AnimationUtils.loadAnimation(chip.getContext(), R.anim.chip_pop_in);
+        chip.startAnimation(animation);
+    }
+
+    /**
+     * Anima el cambio de valor en un TextView (contador de días)
+     * @param textView TextView a actualizar
+     * @param startValue Valor inicial
+     * @param endValue Valor final
+     */
+    public static void animateTextCounter(android.widget.TextView textView, int startValue, int endValue) {
+        if (textView == null) return;
+
+        ValueAnimator animator = ValueAnimator.ofInt(startValue, endValue);
+        animator.setDuration(600);
+        animator.setInterpolator(new AccelerateDecelerateInterpolator());
+        animator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+            @Override
+            public void onAnimationUpdate(ValueAnimator animation) {
+                int value = (int) animation.getAnimatedValue();
+                textView.setText(String.valueOf(value));
+            }
+        });
+        animator.start();
+    }
+
+    /**
+     * Celebración completa para logro de racha con efectos múltiples
+     * @param container Contenedor que incluye el chip, progreso y titulo
+     */
+    public static void celebrateStreakMilestone(ViewGroup container) {
+        if (container == null) return;
+
+        // Vibración (si está disponible)
+        android.os.Vibrator vibrator = (android.os.Vibrator) 
+            container.getContext().getSystemService(android.content.Context.VIBRATOR_SERVICE);
+        if (vibrator != null && vibrator.hasVibrator()) {
+            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+                try {
+                    android.os.VibrationEffect effect = android.os.VibrationEffect.createPredefined(
+                        android.os.VibrationEffect.DEFAULT_AMPLITUDE);
+                    vibrator.vibrate(effect);
+                } catch (Exception e) {
+                    Log.e("AnimationHelper", "Error creating vibration effect", e);
+                }
+            }
+        }
+
+        // Animación del contenedor
+        animateStreakMilestone(container, null);
+
+        // Animar chispas si existen
+        for (int i = 0; i < container.getChildCount(); i++) {
+            View child = container.getChildAt(i);
+            if (child != null && child.getId() == R.id.sparkles) {
+                animateCoinSparkle(child, 800, 100);
+            }
+        }
     }
 
 

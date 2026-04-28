@@ -7,7 +7,6 @@ import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 
 import asunfdiez.com.equilibra.controllers.UserProfileController;
-import asunfdiez.com.equilibra.repositories.UserProfileRepository;
 import asunfdiez.com.equilibra.utils.SharedPrefsManager;
 
 /**
@@ -23,10 +22,6 @@ public class SettingsViewModel extends AndroidViewModel {
 
     // Gestor de preferencias para lectura de ajustes guardados
     private final SharedPrefsManager prefsManager;
-    
-    // Repositorio para obtener datos básicos del usuario
-    private final UserProfileRepository userRepository;
-
 
     // LiveData que observan los diferentes ajustes generales
     private final LiveData<String> userName;
@@ -46,16 +41,16 @@ public class SettingsViewModel extends AndroidViewModel {
         super(application);
 
         this.prefsManager = SharedPrefsManager.getInstance(application);
-        this.userRepository = new UserProfileRepository(application);
+        this.userProfileController = new UserProfileController(application);
 
         // Inicializar LiveData
-        this.userName = userRepository.getUserName();
+        this.userName = userProfileController.getUserName();
         this.notificationsEnabled = prefsManager.getNotificationsEnabled();
         this.darkMode = prefsManager.getDarkMode();
         this.theme = prefsManager.getTheme();
         this.language = prefsManager.getLanguage();
 
-        this.userProfileController = new UserProfileController(application);
+
     }
 
     // ========== GETTERS LIVEDATA ==========

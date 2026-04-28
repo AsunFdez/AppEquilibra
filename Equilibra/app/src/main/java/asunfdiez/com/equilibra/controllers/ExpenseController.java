@@ -545,4 +545,11 @@ public class ExpenseController {
         }
     }
 
+    public long getTopExpenseCategoryThisMonth() {
+        return expenseRepository.getTopExpenseCategoryThisMonth();
+    }
+
+    public double getCategoryExpensesThisMonth(long topCategoryId) {
+        return expenseRepository.getCategoryExpensesThisMonth(topCategoryId);
+    }
 }

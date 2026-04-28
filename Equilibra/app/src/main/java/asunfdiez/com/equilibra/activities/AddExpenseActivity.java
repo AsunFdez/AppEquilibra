@@ -27,6 +27,7 @@ import asunfdiez.com.equilibra.models.SmartReminder;
 import asunfdiez.com.equilibra.utils.AnimationHelper;
 import asunfdiez.com.equilibra.utils.DatePickerHelper;
 import asunfdiez.com.equilibra.viewmodels.AddExpenseViewModel;
+import asunfdiez.com.equilibra.viewmodels.GamificationViewModel;
 
 
 /**
@@ -44,6 +45,7 @@ public class AddExpenseActivity extends AppCompatActivity {
 
     // Modelo de Vista (ViewModel)
     private AddExpenseViewModel viewModel;
+    private GamificationViewModel gamificationViewModel;
 
     // Adaptador para las categorías (Adapter)
     private CategoryAdapter categoryAdapter;
@@ -63,8 +65,9 @@ public class AddExpenseActivity extends AppCompatActivity {
         // Inicializar Data Binding
         binding = DataBindingUtil.setContentView(this, R.layout.activity_add_expense);
 
-        // Inicializar ViewModel
+        // Inicializar ViewModels
         viewModel = new ViewModelProvider(this).get(AddExpenseViewModel.class);
+        gamificationViewModel = new ViewModelProvider(this).get(GamificationViewModel.class);
 
         // Configurar UI
         setupToolbar();
@@ -253,6 +256,8 @@ public class AddExpenseActivity extends AppCompatActivity {
         viewModel.getExpenseSaved().observe(this, saved -> {
             if (saved != null && saved) {
                 Toast.makeText(this, R.string.expense_saved_ok, Toast.LENGTH_SHORT).show();
+                // Registrar actividad en racha de registro
+                gamificationViewModel.recordActivity();
                 // Limpiar el estado en el ViewModel para que no se dispare otra vez
                 viewModel.consumeExpenseSavedEvent();
                 finish();

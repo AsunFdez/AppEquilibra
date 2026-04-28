@@ -13,6 +13,7 @@ import androidx.databinding.DataBindingUtil;
 import androidx.lifecycle.ViewModelProvider;
 
 import asunfdiez.com.equilibra.R;
+import asunfdiez.com.equilibra.controllers.BudgetController;
 import asunfdiez.com.equilibra.controllers.WellbeingController;
 import asunfdiez.com.equilibra.databinding.ActivityMainBinding;
 import asunfdiez.com.equilibra.databinding.BottomNavigationBinding;
@@ -38,6 +39,9 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationH
     private MainViewModel viewModel;
     private AdviceViewModel adviceViewModel;
     private GamificationViewModel gamificationViewModel;
+    
+    // Controlador de presupuesto para chequeos diarios
+    private BudgetController budgetController;
     
     // Controlador de lógica de bienestar
     private WellbeingController wellbeingController;
@@ -73,6 +77,9 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationH
         binding.setViewModel(viewModel);
         binding.setAdviceViewModel(adviceViewModel);
         binding.setGamificationViewModel(gamificationViewModel);
+
+        // Inicializar controller de presupuesto
+        budgetController = new BudgetController(this);
 
         // Establecer user inicial para evitar parpadeo
         UserProfile initialUser = viewModel.getUserProfile().getValue();
@@ -307,6 +314,10 @@ protected void onResume() {
     // Refrescar datos a través del ViewModel (dispara checkWellbeing en 2º plano)
     if (viewModel != null) {
         viewModel.refreshData();
+        // Verificar si se mantiene dentro del presupuesto diario y registrar racha
+        if (budgetController != null) {
+            budgetController.checkDailyBudgetStreak();
+        }
     }
 }
 
@@ -315,4 +326,5 @@ protected void onDestroy() {
     super.onDestroy();
     handler.removeCallbacksAndMessages(null);
 }
+
 }

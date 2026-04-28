@@ -1,0 +1,88 @@
+@startuml
+title Flujo de Ejecución - App Equilibra (MainActivity & MainViewModel)
+
+skinparam monochrome false
+skinparam shadowing true
+skinparam ActivityBackgroundColor #fdfdfd
+skinparam ActivityBorderColor #333333
+
+start
+
+partition "MainActivity (Ciclo de Vida)" {
+    :onCreate();
+    :Inicializar ViewModels\n(Main, Advice, Gamification);
+    :Data Binding Setup;
+    :setupObservers();
+    :updateBottomNavigationBinding("home");
+    
+    :onResume();
+    :Llamar a viewModel.refreshData();
+}
+
+partition "MainViewModel (Lógica de Negocio)" {
+    :refreshData();
+    split
+        :checkPreferenceView();
+        :Consultar SharedPrefsManager;
+        :Actualizar _currentView (LiveData);
+    split again
+        :checkWellbeing();
+        :Consultar UserController;
+        :Actualizar _shouldShowIntervention (LiveData);
+    end split
+}
+
+partition "MainActivity (Observadores)" {
+    split
+        :Observar currentView;
+        if (¿Cambió el tipo de vista?) then (sí)
+            :loadLayout(viewType, user);
+            if (viewType == 'BEGINNER') then (sí)
+                :setBeginnerLayout();
+                :animateBeginnerCards();
+            elseif (viewType == 'INTERMEDIATE') then (sí)
+                :setIntermediateLayout();
+                :animateIntermediateCards();
+            else (ADVANCED)
+                :setAdvancedLayout();
+                :animateAdvancedCards();
+            endif
+            :setupCommonListeners();
+        else (no)
+        endif
+    split again
+        :Observar shouldShowIntervention;
+        if (¿Es true?) then (sí)
+            :viewModel.resetInterventionTrigger();
+            :Navegar a SoftInterventionActivity;
+        else (no)
+        endif
+    split again
+        :Observar userProfile;
+        if (¿Perfil actualizado?) then (sí)
+            :handleUserProfileUpdate(user);
+            :Actualizar Binding de Usuario;
+            if (Es usuario Principiante?) then (sí)
+                :Animar Weekly ProgressBar;
+            endif
+            :executePendingBindings();
+        else (no)
+        endif
+    end split
+}
+
+partition "Interacción del Usuario (Eventos)" {
+    :Interacción con UI;
+    split
+        :Click BottomNav / Cards;
+        :navigateTo(ActivityClass);
+        :Lanzar Intent con Animación;
+    split again
+        :Click Add Expense (FAB);
+        :animateFABPress();
+        :Delay -> navigateTo(AddExpenseActivity);
+    end split
+}
+
+stop
+@enduml

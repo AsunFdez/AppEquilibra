@@ -23,7 +23,7 @@ android {
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
-            applicationIdSuffix = "1"
+            applicationIdSuffix = ".release"
             versionNameSuffix = "1.1.0"
         }
     }
@@ -68,6 +68,42 @@ dependencies {
     //Room para SQLite
     implementation("androidx.room:room-runtime:2.6.1")
     annotationProcessor("androidx.room:room-compiler:2.6.1")
+}
 
+// Tarea de Javadoc corregida para KTS
+tasks.register<Javadoc>("generateJavadoc") {
+    description = "Genera la documentación Javadoc del proyecto."
+    group = "documentation"
 
+    // Acceso a la extensión de Android de forma segura para KTS
+    val android = project.extensions.getByName("android") as com.android.build.gradle.AppExtension
+    
+    // Configurar fuentes
+    source(android.sourceSets.getByName("main").java.srcDirs)
+    
+    // El classpath inicial incluye el SDK de Android
+    classpath = project.files(android.bootClasspath)
+
+    // Configuración de opciones de Javadoc
+    options {
+        this as StandardJavadocDocletOptions
+        encoding = "UTF-8"
+        charSet = "UTF-8"
+        memberLevel = JavadocMemberLevel.PROTECTED
+        links("https://developer.android.com/reference", "https://docs.oracle.com/javase/8/docs/api/")
+        addStringOption("Xdoclint:none", "-quiet")
+    }
+
+    // Lugar de salida
+    destinationDir = file("C:/Users/asunf/Documentos/DAM/Proyecto/AppEquilibra/Documentación/JavaDoc")
+
+    // Añadir dependencias al classpath justo antes de ejecutar para asegurar que estén resueltas
+    doFirst {
+        val debugVariant = android.applicationVariants.find { it.name == "debug" }
+        if (debugVariant != null) {
+            classpath += debugVariant.getCompileClasspath(null)
+            // Añadir clases compiladas para resolver R y DataBinding
+            classpath += debugVariant.javaCompileProvider.get().outputs.files
+        }
+    }
 }

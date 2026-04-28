@@ -10,7 +10,6 @@ import androidx.lifecycle.Transformations;
 import asunfdiez.com.equilibra.controllers.UserProfileController;
 import asunfdiez.com.equilibra.models.Advice;
 import asunfdiez.com.equilibra.models.UserProfile;
-import asunfdiez.com.equilibra.repositories.UserProfileRepository;
 
 /**
  * ViewModel responsable de la lógica de generación y provisión de consejos financieros.
@@ -24,9 +23,6 @@ public class AdviceViewModel extends AndroidViewModel {
 
     // Controlador para gestionar el estado del perfil de usuario
     private final UserProfileController userProfileController;
-    
-    // Repositorio para el acceso a datos del usuario
-    private final UserProfileRepository userRepository;
     
     // Perfil de usuario observado
     private final LiveData<UserProfile> userProfile;
@@ -51,7 +47,6 @@ public class AdviceViewModel extends AndroidViewModel {
         super(application);
 
         this.userProfileController = new UserProfileController(application);
-        this.userRepository = new UserProfileRepository(application);
         this.userProfile = userProfileController.getCurrentUser();
 
         // Transformar el perfil de usuario → Consejo del día
@@ -95,14 +90,14 @@ public class AdviceViewModel extends AndroidViewModel {
 
     /**
      * Refresh manual de consejos (si es necesario)
-     * Nota: Normalmente se actualiza automáticamente via Transformations
+     * Nota: Normalmente, se actualiza automáticamente via Transformations
      */
     public void refreshAdvice() {
         // Forzar actualización del perfil
         UserProfile current = userProfile.getValue();
         if (current != null) {
             // Los Transformations se actualizarán automáticamente
-            userRepository.updateProfile(current, null);
+            userProfileController.updateUser(current, null);
         }
     }
 }

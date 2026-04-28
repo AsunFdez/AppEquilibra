@@ -298,4 +298,16 @@ public class UserProfileController {
             executor.shutdown();
         }
     }
+
+    public UserProfile getUserProfileSync() {
+        return userRepository.getUserProfileSync();
+    }
+
+    public SavingGoal getActiveSavingGoalSync(long id) {
+        return goalRepository.getActiveSavingGoalSync(id);
+    }
+
+    public LiveData<String> getUserName() {
+        return userRepository.getUserName();
+    }
 }

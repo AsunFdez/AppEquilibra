@@ -1,0 +1,145 @@
+@startuml
+
+!theme plain
+skinparam LCColor #333
+skinparam class {
+    BackgroundColor white
+    Arrows #black
+    BorderColor #333
+}
+
+title Diagrama Entidad-Relación - App Equilibra
+
+entity "UserProfile" as User {
+    * id : long (PK)
+    --
+    name : String
+    email : String
+    monthlyIncome : double
+    dayCount : int
+    weekProgress : int
+    weekCount : int
+    lastConnectionTimestamp : long
+    lastResetTimestamp : long
+    updatedAt : long
+}
+
+entity "Expense" as Exp {
+    * id : long (PK)
+    --
+    amount : double
+    type : String (expense/income)
+    categoryId : long (FK)
+    description : String
+    date : String
+    time : String
+    timestamp : long
+}
+
+entity "ExpenseCategory" as Cat {
+    * id : long (PK)
+    --
+    name : String
+    iconResId : int
+    iconName : String
+    color : String
+}
+
+entity "Budget" as Bud {
+    * id : long (PK)
+    --
+    monthlyBudget : double
+    currency : String
+    currencySymbol : String
+    enabled : boolean
+    updatedAt : long
+}
+
+entity "SavingGoal" as Goal {
+    * id : long (PK)
+    --
+    userId : long (FK)
+    name : String
+    targetAmount : double
+    currentAmount : double
+    deadline : String
+    monthsRemaining : int
+    monthlySavingAmount : double
+    completed : boolean
+}
+
+entity "Achievement" as Ach {
+    * id : String (PK)
+    --
+    title : String
+    description : String
+    points : int
+    unlocked : boolean
+    unlockedAt : long
+    color : int
+    iconResId : int
+}
+
+entity "Streak" as Str {
+    * id : long (PK)
+    --
+    userId : long (FK)
+    type : String (RECORDING/BUDGET)
+    currentCount : int
+    longestCount : int
+    lastActivityDate : long
+}
+
+entity "DailyAnalysis" as Analysis {
+    * id : long (PK)
+    --
+    userId : long (FK)
+    date : String
+    emotionalState : String (JSON)
+    spendingScore : int
+    notes : String
+}
+
+entity "InterventionLog" as Log {
+    * id : long (PK)
+    --
+    userId : long (FK)
+    timestamp : long
+    type : String
+    messageId : String
+}
+
+entity "Challenge" as Chal {
+    * id : long (PK)
+    --
+    userId : long (FK)
+    title : String
+    description : String
+    startDate : long
+    endDate : long
+    completed : boolean
+}
+
+entity "Alternative" as Alt {
+    * id : long (PK)
+    --
+    category : String
+    descriptionKeyword : String
+    suggestion : String
+    savingsPercentage : double
+}
+
+' Relaciones
+User "1" -- "0..*" Exp : registra
+Cat "1" -- "0..*" Exp : clasifica
+User "1" -- "0..1" Bud : define
+User "1" -- "0..*" Goal : ahorra para
+User "1" -- "0..*" Str : mantiene
+User "1" -- "0..*" Analysis : analiza
+User "1" -- "0..*" Log : recibe
+User "1" -- "0..*" Chal : compite
+User "1" -- "0..*" Ach : desbloquea
+
+' Relación indirecta de alternativas por nombre de categoría
+Alt "0..*" .. Cat : vinculada por nombre
+@enduml

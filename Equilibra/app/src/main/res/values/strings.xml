@@ -107,6 +107,14 @@
     <string name="active_streaks">Rachas activas:</string>
     <string name="streak_days_recording">%1$d días registrando gastos</string>
     <string name="streak_days_budget">%1$d días bajo presupuesto</string>
+    <string name="recording_streak_title">Registro de Gastos</string>
+    <string name="recording_streak_description">Días consecutivos registrando</string>
+    <string name="recording_streak_icon">Icono racha registro</string>
+    <string name="budget_streak_title">Control de Presupuesto</string>
+    <string name="budget_streak_description">Días bajo presupuesto</string>
+    <string name="budget_streak_icon">Icono racha presupuesto</string>
+    <string name="days_short">d</string>
+    <string name="streak_goal_30">Meta: %d de 30 días</string>
     <string name="pattern_title">Patrón:</string>
     <string name="pattern_desc">Gastas más los viernes (+40%%)</string>
     <string name="suggestion_title">Sugerencia:</string>

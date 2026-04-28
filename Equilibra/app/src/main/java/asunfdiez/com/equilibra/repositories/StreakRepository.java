@@ -1,6 +1,5 @@
 package asunfdiez.com.equilibra.repositories;
 
-import android.app.Application;
 import android.content.Context;
 
 import androidx.annotation.NonNull;
@@ -27,8 +26,8 @@ public class StreakRepository {
     /**
      * Constructor que inicializa el repositorio de rachas.
      */
-    public StreakRepository(@NonNull Application application) {
-        this.context = application.getApplicationContext();
+    public StreakRepository(@NonNull Context context) {
+        this.context = context;
         this.streakDAO =  AppDatabase.getInstance(context).streakDao();
     }
 

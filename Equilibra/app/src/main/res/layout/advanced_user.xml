@@ -28,88 +28,10 @@
                     android:id="@+id/insightCard" />
 
                 <!-- Rachas Activas -->
-                <androidx.cardview.widget.CardView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="16dp"
-                    app:cardCornerRadius="16dp"
-                    app:cardElevation="4dp"
-                    app:cardBackgroundColor="@android:color/white">
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="vertical"
-                        android:padding="20dp">
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="@string/active_streaks"
-                            android:textColor="@color/gray_800"
-                            android:textSize="14sp"
-                            android:textStyle="bold"
-                            android:layout_marginBottom="16dp"/>
-
-                        <!-- Racha 1 -->
-                        <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:orientation="horizontal"
-                            android:gravity="center_vertical"
-                            android:layout_marginBottom="16dp">
-                            <FrameLayout
-                                android:layout_width="36dp"
-                                android:layout_height="36dp"
-                                android:background="@drawable/circle_accent"
-                                android:alpha="0.1"
-                                android:layout_marginEnd="12dp"/>
-                            <!-- Reusing icon with actual color on top -->
-                            <ImageView
-                                android:layout_width="18dp"
-                                android:layout_height="18dp"
-                                android:src="@drawable/ic_fea_lightbulb"
-                                app:tint="@color/accent"
-                                android:layout_marginStart="-42dp"
-                                android:layout_marginEnd="24dp"/>
-
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text='@{@string/streak_days_recording(45)}'
-                                android:textColor="@color/gray_700"
-                                android:textSize="14sp" />
-                        </LinearLayout>
-
-                        <!-- Racha 2 -->
-                        <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:orientation="horizontal"
-                            android:gravity="center_vertical">
-                            <FrameLayout
-                                android:layout_width="36dp"
-                                android:layout_height="36dp"
-                                android:background="@drawable/circle_primary"
-                                android:alpha="0.1"
-                                android:layout_marginEnd="12dp"/>
-                            <ImageView
-                                android:layout_width="18dp"
-                                android:layout_height="18dp"
-                                android:src="@drawable/ic_ach_target"
-                                app:tint="@color/secondary"
-                                android:layout_marginStart="-42dp"
-                                android:layout_marginEnd="24dp"/>
-
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text='@{@string/streak_days_budget(12)}'
-                                android:textColor="@color/gray_700"
-                                android:textSize="14sp" />
-                        </LinearLayout>
-                    </LinearLayout>
-                </androidx.cardview.widget.CardView>
+                <include
+                    layout="@layout/component_streaks"
+                    android:id="@+id/streaksCard"
+                    app:gamificationViewModel="@{gamificationViewModel}" />
 
                 <!-- Preview de Logros Gamificación -->
                 <include

@@ -1,0 +1,251 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    Layout componente de rachas para usuario avanzado
+    Muestra el progreso de rachas de registro y presupuesto
+    Incluye animaciones automáticas al actualizar datos
+-->
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+        <import type="android.view.View" />
+        <import type="asunfdiez.com.equilibra.models.Streak" />
+        <variable
+            name="gamificationViewModel"
+            type="asunfdiez.com.equilibra.viewmodels.GamificationViewModel" />
+    </data>
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/streaksCard"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="16dp"
+        app:cardCornerRadius="16dp"
+        app:cardElevation="4dp"
+        app:cardBackgroundColor="@android:color/white"
+        app:streakMilestone="@{gamificationViewModel.recordingStreak}">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="20dp">
+
+            <!-- Header: Título -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/active_streaks"
+                android:textColor="@color/gray_800"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                android:layout_marginBottom="16dp" />
+
+            <!-- Racha de Registro de Gastos -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_marginBottom="20dp">
+
+                <!-- Header Racha 1 -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:layout_marginBottom="8dp">
+
+                    <FrameLayout
+                        android:layout_width="36dp"
+                        android:layout_height="36dp"
+                        android:background="@drawable/circle_accent"
+                        android:alpha="0.1"
+                        android:layout_marginEnd="12dp" />
+
+                    <ImageView
+                        android:layout_width="18dp"
+                        android:layout_height="18dp"
+                        android:src="@drawable/ic_fea_lightbulb"
+                        app:tint="@color/accent"
+                        android:layout_marginStart="-42dp"
+                        android:layout_marginEnd="12dp"
+                        android:contentDescription="@string/recording_streak_icon" />
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/recording_streak_title"
+                            android:textColor="@color/gray_800"
+                            android:textSize="14sp"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/recording_streak_description"
+                            android:textColor="@color/gray_600"
+                            android:textSize="12sp" />
+                    </LinearLayout>
+
+                    <!-- Contador de días -->
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/recordingStreakChip"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:clickable="false"
+                        android:text="@{gamificationViewModel.recordingStreak.consecutiveDays + @string/days_short}"
+                        android:textColor="@android:color/white"
+                        android:textSize="13sp"
+                        android:textStyle="bold"
+                        app:chipBackgroundColor="@color/accent"
+                        app:chipIcon="@drawable/ic_fea_lightbulb"
+                        app:chipIconSize="18dp"
+                        app:chipIconTint="@android:color/white"
+                        app:streakDays="@{gamificationViewModel.recordingStreak.consecutiveDays}"
+                        app:chipPopIn="@{gamificationViewModel.recordingStreak}"
+                        tools:text="45 d" />
+                </LinearLayout>
+
+                <!-- Progress Bar -->
+                <ProgressBar
+                    android:id="@+id/recordingStreakProgress"
+                    style="?android:attr/progressBarStyleHorizontal"
+                    android:layout_width="match_parent"
+                    android:layout_height="6dp"
+                    android:indeterminate="false"
+                    android:max="100"
+                    android:progress="@{Math.min((gamificationViewModel.recordingStreak.consecutiveDays % 30) * 3, 100)}"
+                    android:progressDrawable="@drawable/progress_streak_recording"
+                    app:streakProgress="@{gamificationViewModel.recordingStreak.consecutiveDays}"
+                    android:layout_marginStart="48dp"
+                    android:layout_marginTop="8dp" />
+
+                <!-- Meta de racha -->
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="end"
+                    android:text="@{@string/streak_goal_30(Math.min(gamificationViewModel.recordingStreak.consecutiveDays, 30))}"
+                    android:textColor="@color/gray_600"
+                    android:textSize="11sp"
+                    android:layout_marginTop="4dp"
+                    android:layout_marginStart="48dp"
+                    tools:text="Meta: 30 días" />
+            </LinearLayout>
+
+            <!-- Separador -->
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/divider"
+                android:layout_marginBottom="20dp" />
+
+            <!-- Racha de Presupuesto -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <!-- Header Racha 2 -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:layout_marginBottom="8dp">
+
+                    <FrameLayout
+                        android:layout_width="36dp"
+                        android:layout_height="36dp"
+                        android:background="@drawable/circle_primary"
+                        android:alpha="0.1"
+                        android:layout_marginEnd="12dp" />
+
+                    <ImageView
+                        android:layout_width="18dp"
+                        android:layout_height="18dp"
+                        android:src="@drawable/ic_ach_target"
+                        app:tint="@color/secondary"
+                        android:layout_marginStart="-42dp"
+                        android:layout_marginEnd="12dp"
+                        android:contentDescription="@string/budget_streak_icon" />
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/budget_streak_title"
+                            android:textColor="@color/gray_800"
+                            android:textSize="14sp"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/budget_streak_description"
+                            android:textColor="@color/gray_600"
+                            android:textSize="12sp" />
+                    </LinearLayout>
+
+                    <!-- Contador de días -->
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/budgetStreakChip"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:clickable="false"
+                        android:text="@{gamificationViewModel.budgetStreak.consecutiveDays + @string/days_short}"
+                        android:textColor="@android:color/white"
+                        android:textSize="13sp"
+                        android:textStyle="bold"
+                        app:chipBackgroundColor="@color/secondary"
+                        app:chipIcon="@drawable/ic_ach_target"
+                        app:chipIconSize="18dp"
+                        app:chipIconTint="@android:color/white"
+                        app:streakDays="@{gamificationViewModel.budgetStreak.consecutiveDays}"
+                        app:chipPopIn="@{gamificationViewModel.budgetStreak}"
+                        tools:text="12 d" />
+                </LinearLayout>
+
+                <!-- Progress Bar -->
+                <ProgressBar
+                    android:id="@+id/budgetStreakProgress"
+                    style="?android:attr/progressBarStyleHorizontal"
+                    android:layout_width="match_parent"
+                    android:layout_height="6dp"
+                    android:indeterminate="false"
+                    android:max="100"
+                    android:progress="@{Math.min((gamificationViewModel.budgetStreak.consecutiveDays % 30) * 3, 100)}"
+                    android:progressDrawable="@drawable/progress_streak_budget"
+                    app:streakProgress="@{gamificationViewModel.budgetStreak.consecutiveDays}"
+                    android:layout_marginStart="48dp"
+                    android:layout_marginTop="8dp" />
+
+                <!-- Meta de racha -->
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="end"
+                    android:text="@{@string/streak_goal_30(Math.min(gamificationViewModel.budgetStreak.consecutiveDays, 30))}"
+                    android:textColor="@color/gray_600"
+                    android:textSize="11sp"
+                    android:layout_marginTop="4dp"
+                    android:layout_marginStart="48dp"
+                    tools:text="Meta: 30 días" />
+            </LinearLayout>
+
+        </LinearLayout>
+    </androidx.cardview.widget.CardView>
+</layout>

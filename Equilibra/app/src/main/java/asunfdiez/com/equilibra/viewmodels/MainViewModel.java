@@ -9,18 +9,16 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MediatorLiveData;
 import androidx.lifecycle.MutableLiveData;
 
+import asunfdiez.com.equilibra.controllers.BudgetController;
+import asunfdiez.com.equilibra.controllers.ExpenseController;
 import asunfdiez.com.equilibra.controllers.UserProfileController;
 import asunfdiez.com.equilibra.models.Budget;
 import asunfdiez.com.equilibra.models.SavingGoal;
 import asunfdiez.com.equilibra.models.UserProfile;
-import asunfdiez.com.equilibra.repositories.BudgetRepository;
-import asunfdiez.com.equilibra.repositories.ExpenseRepository;
-import asunfdiez.com.equilibra.repositories.SavingGoalRepository;
-import asunfdiez.com.equilibra.repositories.UserProfileRepository;
 import asunfdiez.com.equilibra.utils.SharedPrefsManager;
 
 /**
- * ViewModel principal que orquestra el estado global del panel de control.
+ * ViewModel principal que orquesta el estado global del panel de control.
  * 
  * <p>Coordina la información proveniente de múltiples fuentes de datos (perfil, 
  * presupuesto, gastos y metas de ahorro) para presentar un resumen coherente en 
@@ -29,15 +27,11 @@ import asunfdiez.com.equilibra.utils.SharedPrefsManager;
  */
 public class MainViewModel extends AndroidViewModel {
 
-    // Repositorios para el acceso a las diferentes entidades de datos
-    private final UserProfileRepository userProfileRepository;
-    private final BudgetRepository budgetRepository;
-    private final ExpenseRepository expenseRepository;
-    private final SavingGoalRepository savingGoalRepository;
-
-    // Controladores y gestores de utilidades
+    // Controladores
     private final UserProfileController userProfileController;
     private final SharedPrefsManager prefsManager;
+    private final BudgetController budgetController;
+    private final ExpenseController expenseController;
 
     // Perfil de usuario observado como fuente principal de datos reactivos
     private final LiveData<UserProfile> userProfile;
@@ -65,19 +59,13 @@ public class MainViewModel extends AndroidViewModel {
     public MainViewModel(@NonNull Application application) {
         super(application);
 
-        // Inicialización de controladores (Capa de Dominio)
         userProfileController = new UserProfileController(application);
-
-        // Obtenemos el flujo de datos (No el valor estático)
         userProfile = userProfileController.getCurrentUser();
 
         prefsManager = SharedPrefsManager.getInstance(application);
-
-        userProfileRepository = new UserProfileRepository(application);
-        budgetRepository = new BudgetRepository(application);
-        expenseRepository = new ExpenseRepository(application);
-        savingGoalRepository = new SavingGoalRepository(application);
-        activeBudget = budgetRepository.getActiveBudget();
+        budgetController = new BudgetController(application);
+        expenseController = new ExpenseController(application);
+        activeBudget = budgetController.getActiveBudget();
 
         // Realizar comprobaciones iniciales
         performMaintenance();
@@ -104,6 +92,9 @@ public class MainViewModel extends AndroidViewModel {
             _shouldShowIntervention.postValue(userProfileController.checkWellbeing());
         }
     }
+    public void checkDailyBudgetStreak() {
+        budgetController.checkDailyBudgetStreak();
+    }
 
     public void resetInterventionTrigger() {
         _shouldShowIntervention.setValue(false);
@@ -112,13 +103,13 @@ public class MainViewModel extends AndroidViewModel {
 
     private void loadFinancialSummary() {
         new Thread(() -> {
-            double expenses = expenseRepository.getTotalExpensesThisMonth();
+            double expenses = expenseController.getTotalExpensesThisMonth();
 
             // Cargar perfil para obtener ID de usuario
-            UserProfile profile = userProfileRepository.getUserProfileSync();
+            UserProfile profile = userProfileController.getUserProfileSync();
             SavingGoal goal = null;
             if (profile != null) {
-                goal = savingGoalRepository.getActiveSavingGoalSync(profile.getId());
+                goal = userProfileController.getActiveSavingGoalSync(profile.getId());
             }
 
             // Calcular días restantes del mes
@@ -157,11 +148,11 @@ public class MainViewModel extends AndroidViewModel {
 
     private void loadFinancialData() {
         new Thread(() -> {
-            double expenses = expenseRepository.getTotalExpensesThisMonth();
-            double income = expenseRepository.getTotalIncomeThisMonth();
+            double expenses = expenseController.getTotalExpensesThisMonth();
+            double income = expenseController.getTotalIncomeThisMonth();
 
             // Si el ingreso mensual del perfil es mayor que las transacciones de ingreso, lo usamos como base
-            UserProfile profile = userProfileRepository.getUserProfile().getValue(); // Simplificado
+            UserProfile profile = userProfileController.getUserProfileSync();
             if (income == 0 && profile != null) {
                 income = profile.getMonthlyIncome();
             }
@@ -212,5 +203,8 @@ public class MainViewModel extends AndroidViewModel {
     public void refreshData() {
         checkPreferenceView();
         checkWellbeing();
+        checkDailyBudgetStreak();
     }
+
+
 }

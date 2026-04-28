@@ -11,12 +11,11 @@ import androidx.lifecycle.Transformations;
 import java.util.List;
 
 import asunfdiez.com.equilibra.controllers.AchievementController;
+import asunfdiez.com.equilibra.controllers.StreakController;
+import asunfdiez.com.equilibra.controllers.UserProfileController;
 import asunfdiez.com.equilibra.models.Achievement;
 import asunfdiez.com.equilibra.models.Streak;
 import asunfdiez.com.equilibra.models.UserProfile;
-import asunfdiez.com.equilibra.repositories.AchievementRepository;
-import asunfdiez.com.equilibra.repositories.StreakRepository;
-import asunfdiez.com.equilibra.repositories.UserProfileRepository;
 
 /**
  * ViewModel centralizado para la gestión de todo el sistema de gamificación.
@@ -28,12 +27,9 @@ import asunfdiez.com.equilibra.repositories.UserProfileRepository;
 public class GamificationViewModel extends AndroidViewModel {
 
     // Controlador para la lógica compleja de desbloqueo de logros
+    private final UserProfileController userProfileController;
     private final AchievementController achievementController;
-    
-    // Repositorios para acceso a perfiles, rachas y logros
-    private final UserProfileRepository userRepository;
-    private final StreakRepository streakRepository;
-    private final AchievementRepository achievementRepository;
+    private final StreakController streakController;
 
     private final LiveData<UserProfile> userProfile;
     private final MutableLiveData<List<Achievement>> _allAchievements = new MutableLiveData<>(new java.util.ArrayList<>());
@@ -62,30 +58,28 @@ public class GamificationViewModel extends AndroidViewModel {
      */
     public GamificationViewModel(@NonNull Application application) {
         super(application);
-
+        this.userProfileController = new UserProfileController(application);
         this.achievementController = new AchievementController(application);
-        this.userRepository = new UserProfileRepository(application);
-        this.streakRepository = new StreakRepository(application);
-        this.achievementRepository = new AchievementRepository(application);
-        this.userProfile = userRepository.getUserProfile();
+        this.streakController = new StreakController(application);
+        this.userProfile = userProfileController.getCurrentUser();
 
         // Obtener rachas del usuario actual
         this.recordingStreak = Transformations.switchMap(userProfile, user -> {
             if (user != null) {
-                return streakRepository.getStreakByType(user.getId(), Streak.TYPE_RECORDING);
+                return streakController.getStreakByType(user.getId(), Streak.TYPE_RECORDING);
             }
             return new MutableLiveData<>();
         });
 
         this.budgetStreak = Transformations.switchMap(userProfile, user -> {
             if (user != null) {
-                return streakRepository.getStreakByType(user.getId(), Streak.TYPE_BUDGET);
+                return streakController.getStreakByType(user.getId(), Streak.TYPE_BUDGET);
             }
             return new MutableLiveData<>();
         });
 
         // Obtener logros recientes (últimos 4)
-        this.recentUnlockedAchievements = achievementRepository.getRecentUnlocked(4);
+        this.recentUnlockedAchievements = achievementController.getRecentUnlocked(4);
 
         // Cargar datos iniciales
         loadAchievements();
@@ -169,40 +163,14 @@ public class GamificationViewModel extends AndroidViewModel {
      * Incrementar racha de registro de gastos
      */
     public void recordActivity() {
-        new Thread(() -> {
-            try {
-                UserProfile user = userProfile.getValue();
-                if (user != null) {
-                    Streak streak = streakRepository.getStreakByTypeSync(user.getId(), Streak.TYPE_RECORDING);
-                    if (streak != null) {
-                        streak.recordActivity();
-                        streakRepository.updateStreak(streak);
-                    }
-                }
-            } catch (Exception e) {
-                android.util.Log.e("GamificationVM", "Error recording activity", e);
-            }
-        }).start();
+        streakController.recordActivity();
     }
 
     /**
      * Incrementar racha de presupuesto
      */
     public void recordBudgetDay() {
-        new Thread(() -> {
-            try {
-                UserProfile user = userProfile.getValue();
-                if (user != null) {
-                    Streak streak = streakRepository.getStreakByTypeSync(user.getId(), Streak.TYPE_BUDGET);
-                    if (streak != null) {
-                        streak.recordActivity();
-                        streakRepository.updateStreak(streak);
-                    }
-                }
-            } catch (Exception e) {
-                android.util.Log.e("GamificationVM", "Error recording budget day", e);
-            }
-        }).start();
+        streakController.recordBudgetDay();
     }
 
     // ===== GETTERS =====

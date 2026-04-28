@@ -7,14 +7,14 @@ import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
-import asunfdiez.com.equilibra.repositories.ExpenseRepository;
+import asunfdiez.com.equilibra.controllers.ExpenseController;
 import asunfdiez.com.equilibra.controllers.WellbeingController;
 import asunfdiez.com.equilibra.models.FinancialData;
 import asunfdiez.com.equilibra.models.InterventionMessage;
 
 public class SoftInterventionViewModel extends AndroidViewModel {
 
-    private final ExpenseRepository expenseRepository;
+    private final ExpenseController expenseController;
     private final WellbeingController wellbeingController;
 
     private final MutableLiveData<FinancialData> financialData = new MutableLiveData<>();
@@ -22,21 +22,21 @@ public class SoftInterventionViewModel extends AndroidViewModel {
 
     public SoftInterventionViewModel(@NonNull Application application) {
         super(application);
-        expenseRepository = new ExpenseRepository(application);
+        expenseController = new ExpenseController(application);
         wellbeingController = new WellbeingController(application);
         loadData();
     }
 
     public void loadData() {
         new Thread(() -> {
-            double income = expenseRepository.getTotalIncomeThisMonth();
-            double expenses = expenseRepository.getTotalExpensesThisMonth();
+            double income = expenseController.getTotalIncomeThisMonth();
+            double expenses = expenseController.getTotalExpensesThisMonth();
             double percentage = (income > 0) ? (expenses / income) * 100 : 0;
-            long topCategoryId = expenseRepository.getTopExpenseCategoryThisMonth();
+            long topCategoryId = expenseController.getTopExpenseCategoryThisMonth();
             double topCategoryAmount = 0;
             String topCategoryName = "";
             if (topCategoryId != 0) {
-                topCategoryAmount = expenseRepository.getCategoryExpensesThisMonth(topCategoryId);
+                topCategoryAmount = expenseController.getCategoryExpensesThisMonth(topCategoryId);
                 // Aquí idealmente pediríamos el nombre al repositorio o DAO
                 // Como no quiero añadir más métodos al repo ahora, si el repo tuviera getCategoryName...
                 // Pero puedo usar un placeholder o intentar obtenerlo si añado el método al repo.

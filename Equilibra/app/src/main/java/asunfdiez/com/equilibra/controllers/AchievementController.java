@@ -45,7 +45,6 @@ public class AchievementController {
         this.achievementRepository = new AchievementRepository(context);
         this.userProfileRepository = new UserProfileRepository(context);
         this.expenseRepository = new ExpenseRepository(context);
-
     }
 
     /**
@@ -286,6 +285,10 @@ public class AchievementController {
      */
     public void unlockAchievement(String achievementKey) {
         unlockAchievementIfNotUnlocked(achievementKey);
+    }
+
+    public LiveData<List<Achievement>> getRecentUnlocked(int i) {
+        return achievementRepository.getRecentUnlocked(i);
     }
 }
 
