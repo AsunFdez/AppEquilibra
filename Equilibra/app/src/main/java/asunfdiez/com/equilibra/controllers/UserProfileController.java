@@ -8,6 +8,8 @@ import android.util.Log;
 import androidx.annotation.Nullable;
 import androidx.lifecycle.LiveData;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -44,6 +46,7 @@ public class UserProfileController {
     private final SharedPrefsManager prefsManager;
     private UserProfile user;
     private final WellbeingController wellbeingController;
+    private final StreakController streakController;
 
     private final ExecutorService executor = Executors.newSingleThreadExecutor();
     Context context;
@@ -59,6 +62,7 @@ public class UserProfileController {
         this.expenseRepository = new ExpenseRepository(context);
         this.prefsManager = SharedPrefsManager.getInstance(context);
         this.wellbeingController = new WellbeingController(context);
+        this.streakController = new StreakController(context);
         this.context = context;
     }
 
@@ -79,10 +83,22 @@ public class UserProfileController {
         if (user == null) return;
         userRepository.updateProfile(user, () -> {
             Log.d(TAG, "Perfil guardado: " + user.toString());
-            setDummyData(user); //solo para probar funciones concretas
-            if (onComplete != null) {
-                onComplete.run();
-            }
+            
+            // Una vez guardado el perfil, obtenemos el usuario síncronamente
+            // para asegurar que tenemos el ID (si era nuevo) e inicializamos rachas.
+            executor.execute(() -> {
+                UserProfile savedUser = userRepository.getUserProfileSync();
+                if (savedUser != null) {
+                    streakController.initializeDefaultStreaks(savedUser.getId());
+                }
+                
+                new Handler(Looper.getMainLooper()).post(() -> {
+                    setDummyData(user); //solo para probar funciones concretas
+                    if (onComplete != null) {
+                        onComplete.run();
+                    }
+                });
+            });
         });
 
     }
@@ -150,22 +166,40 @@ public class UserProfileController {
     }
 
     /**
-     * Obtiene una acción rápida para el usuario
-     * @param user Perfil del usuario
-     * @return Advice con la acción
+     * Obtiene una lista de acciones recomendadas para el usuario.
+     * Siempre devuelve exactamente dos elementos: el primero para quickAction
+     * y el segundo para nextGoal.
      */
-    public Advice getQuickAction(UserProfile user) {
-        // Caso 1: Usuario sin perfil → Completar perfil
+    public List<Advice> getQuickAction(UserProfile user) {
+        List<Advice> advices = new ArrayList<>();
+
+        if (user == null) {
+            advices.add(Advice.getWelcome(context));
+            advices.add(Advice.getCompleteUserProfile(context));
+            return advices;
+        }
+
+        // Caso 1: Usuario sin perfil → Acción: Completar perfil, Meta: Configurar presupuesto
         if (user.getName() == null || user.getName().isEmpty()) {
-            return Advice.getCompleteUserProfile(context);
+            advices.add(Advice.getCompleteUserProfile(context));
+            advices.add(Advice.getCompleteBudget(context));
         }
-        // Caso 2: Usuario sin ingreso mensual → Completar ingreso mensual
-        else if (user.getMonthlyIncome() == 0) {
-            return Advice.getCompleteBudget(context);
+        // Caso 2: Sin ingresos → Acción: Configurar presupuesto, Meta: Registrar primer gasto
+        else if (user.getMonthlyIncome() <= 0) {
+            advices.add(Advice.getCompleteBudget(context));
+            advices.add(Advice.getRegisterExpenseToday(context));
         }
+        // Caso 3: Usuario activo → Acción genérica, Meta: Seguir registrando
         else {
-            return Advice.getQuickAction(context);
+            advices.add(Advice.getQuickAction(context));
+            advices.add(Advice.getRegisterExpenseToday(context));
         }
+
+        // Garantizar que siempre haya exactamente dos elementos
+        while (advices.size() < 2) {
+            advices.add(Advice.getQuickAction(context));
+        }
+        return advices.subList(0, 2);
     }
 
     /**
@@ -187,12 +221,19 @@ public class UserProfileController {
             boolean weekReset = false;
             boolean dayIncremented = false;
 
+            // 0. Asegurar que las rachas existan (comprobación inicial)
+            streakController.ensureStreaksExist(profile.getId());
+
             // 1. Comprobar reinicio semanal
             if (DateUtils.isNewWeek(profile.getLastResetTimestamp())) {
                 profile.setWeekProgress(0);
                 profile.setLastResetTimestamp(now);
                 profile.setWeekCount(profile.getWeekCount() + 1);
-                Log.d(TAG, "Mantenimiento: Progreso semanal reiniciado");
+                
+                // Resetear rachas semanales
+                streakController.resetWeeklyStreaks(profile.getId());
+                
+                Log.d(TAG, "Mantenimiento: Progreso semanal y rachas reiniciadas");
                 changed = true;
                 weekReset = true;
             }
@@ -226,49 +267,7 @@ public class UserProfileController {
             }
         });
     }
-
-    /**
-     * Sincroniza el contador weekProgress con los gastos reales
-     * Solo se usa cuando sabemos que algo ha cambiado (ej. después de borrar un gasto)
-     */
-    public void syncWeekProgress() {
-        executor.execute(() -> {
-            int actualCount = expenseRepository.getExpensesThisWeekCount();
-            UserProfile profile = userRepository.getUserProfileSync();
-            if (profile != null && profile.getWeekProgress() != actualCount) {
-                userRepository.updateWeekProgress(actualCount, null);
-                Log.d("UserProfileController", "Sincronizado progreso semanal: " + actualCount);
-            }
-        });
-    }
-
-
-    /**
-     * Cambia la contraseña del usuario
-     *
-     * @param currentPassword Contraseña actual
-     * @param newPassword Nueva contraseña
-     * @return true si se cambió correctamente
-     */
-    public boolean changePassword(String currentPassword, String newPassword) {
-        // TODO: Implementar cambio de contraseña con validación
-        // Verificar contraseña actual
-        // Hashear nueva contraseña
-        // Actualizar en base de datos
-        return false;
-    }
-
-    /**
-     * Valida las credenciales del usuario
-     *
-     * @param email Email del usuario
-     * @param password Contraseña del usuario
-     * @return Usuario si las credenciales son válidas, null en caso contrario
-     */
-    public UserProfile validateCredentials(String email, String password) {
-        // TODO: Implementar validación real con base de datos
-        return null;
-    }
+    
 
     /**
      * Crea datos dummy para pruebas solo si el nombre del usuario es Dummy
@@ -277,7 +276,7 @@ public class UserProfileController {
     public void setDummyData(UserProfile user) {
         if (user != null && user.getName() != null && user.getName().equals("Dummy") ){
             Log.d("User Controller setDummyData", "Setting dummy data");
-            AppDatabase.dummyData();
+            executor.execute(AppDatabase::dummyData);
         }
     }
 

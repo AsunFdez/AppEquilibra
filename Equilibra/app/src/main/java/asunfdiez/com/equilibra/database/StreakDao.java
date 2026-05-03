@@ -29,6 +29,9 @@ public interface StreakDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     long insertStreak(Streak streak);
 
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    void insertListOfStreak (List<Streak> streak);
+
     @Update
     void updateStreak(Streak streak);
 

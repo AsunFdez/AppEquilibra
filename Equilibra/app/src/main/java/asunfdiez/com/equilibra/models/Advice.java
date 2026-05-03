@@ -23,7 +23,7 @@ public class Advice {
     public String description() { return description; }
 
     public static Advice getRegisterExpenseToday(Context context) {
-        return new Advice (context.getString(R.string.today_advice), context.getString(R.string.advice_1));
+        return new Advice (context.getString(R.string.today_advice), context.getString(R.string.advice));
     }
     public static Advice getWelcome(Context context) {
         return new Advice (context.getString(R.string.tip_title_welcome), context.getString(R.string.tip_desc_welcome));

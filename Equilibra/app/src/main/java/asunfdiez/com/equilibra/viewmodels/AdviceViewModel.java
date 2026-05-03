@@ -7,6 +7,8 @@ import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.Transformations;
 
+import java.util.List;
+
 import asunfdiez.com.equilibra.controllers.UserProfileController;
 import asunfdiez.com.equilibra.models.Advice;
 import asunfdiez.com.equilibra.models.UserProfile;
@@ -35,9 +37,15 @@ public class AdviceViewModel extends AndroidViewModel {
 
     /**
      * LiveData reactivo: Acción rápida recomendada
-     * Emite una acción según el estado de completitud del perfil
+     * Emite una acción según el estado del perfil, presupuesto...
      */
     private final LiveData<Advice> quickAction;
+
+    /**
+     * LiveData reactivo: Título y descripción para la siguiente acción
+     * Emitter una acción según se haya completado pasos
+     */
+    private final LiveData<Advice> nextGoal;
 
     /**
      * Constructor
@@ -56,11 +64,16 @@ public class AdviceViewModel extends AndroidViewModel {
             return userProfileController.getAdvice(user);
         });
 
-        // Transformar el perfil de usuario → Acción rápida
-        // Se ejecuta automáticamente cada vez que userProfile cambia
         this.quickAction = Transformations.map(userProfile, user -> {
             if (user == null) return null;
-            return userProfileController.getQuickAction(user);
+            List<Advice> actions = userProfileController.getQuickAction(user);
+            return actions.get(0);
+        });
+
+        this.nextGoal = Transformations.map(userProfile, user -> {
+            if (user == null) return null;
+            List<Advice> actions = userProfileController.getQuickAction(user);
+            return actions.get(actions.size() - 1); // Siempre el último elemento (el segundo)
         });
     }
 
@@ -78,6 +91,10 @@ public class AdviceViewModel extends AndroidViewModel {
      */
     public LiveData<Advice> getQuickAction() {
         return quickAction;
+    }
+
+    public LiveData<Advice> getNextGoal() {
+        return nextGoal;
     }
 
     /**

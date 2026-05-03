@@ -14,7 +14,8 @@ import asunfdiez.com.equilibra.utils.Constants;
  * y su estado de desbloqueo. Esta clase es una entidad de Room vinculada a la tabla 
  * de logros en la base de datos.</p>
  */
-@Entity(tableName = Constants.TABLE_ACHIEVEMENTS)
+@Entity(tableName = Constants.TABLE_ACHIEVEMENTS,
+        indices = {@androidx.room.Index(value = {"title"}, unique = true)})
 public class Achievement {
 
     @PrimaryKey (autoGenerate = true)

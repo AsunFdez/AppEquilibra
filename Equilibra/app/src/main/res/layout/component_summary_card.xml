@@ -1,55 +1,67 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--
-    Componente común: Card de resumen financiero
-    Muestra un valor con etiqueta e icono
--->
-<androidx.cardview.widget.CardView
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/cardSummary"
-    android:layout_width="0dp"
-    android:layout_height="wrap_content"
-    android:layout_weight="1"
-    android:layout_margin="8dp"
-    app:cardCornerRadius="12dp"
-    app:cardElevation="3dp"
-    app:cardBackgroundColor="@android:color/white">
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <LinearLayout
+    <data>
+        <variable
+            name="label"
+            type="String" />
+        <variable
+            name="amount"
+            type="Double" />
+        <variable
+            name="icon"
+            type="Integer" />
+        <variable
+            name="iconTint"
+            type="Integer" />
+    </data>
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/cardSummary"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:padding="16dp"
-        android:gravity="center">
+        android:layout_margin="4dp"
+        app:cardCornerRadius="12dp"
+        app:cardElevation="3dp"
+        app:cardBackgroundColor="@android:color/white">
 
-        <!-- Icono -->
-        <ImageView
-            android:id="@+id/ivSummaryIcon"
-            android:layout_width="32dp"
-            android:layout_height="32dp"
-            android:src="@drawable/ic_wallet"
-            app:tint="@color/primary"
-            android:layout_marginBottom="8dp" />
-
-        <!-- Valor principal -->
-        <TextView
-            android:id="@+id/tvSummaryValue"
-            android:layout_width="wrap_content"
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="0.00€"
-            android:textSize="20sp"
-            android:textColor="@color/text_primary"
-            android:layout_marginBottom="4dp" />
+            android:orientation="vertical"
+            android:padding="12dp"
+            android:gravity="center">
 
-        <!-- Etiqueta -->
-        <TextView
-            android:id="@+id/tvSummaryLabel"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Etiqueta"
-            android:textSize="12sp"
-            android:textColor="@color/text_secondary" />
+            <!-- Icono -->
+            <ImageView
+                android:id="@+id/ivSummaryIcon"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                app:imageResource="@{icon}"
+                app:tint="@{iconTint}"
+                android:layout_marginBottom="8dp" />
 
-    </LinearLayout>
+            <!-- Valor principal -->
+            <TextView
+                android:id="@+id/tvSummaryValue"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:formattedAmount="@{amount}"
+                android:textSize="14sp"
+                android:textStyle="bold"
+                android:textColor="@color/text_primary"
+                android:layout_marginBottom="4dp" />
 
-</androidx.cardview.widget.CardView>
+            <!-- Etiqueta -->
+            <TextView
+                android:id="@+id/tvSummaryLabel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@{label}"
+                android:textSize="11sp"
+                android:textColor="@color/text_secondary" />
+
+        </LinearLayout>
+
+    </androidx.cardview.widget.CardView>
+</layout>

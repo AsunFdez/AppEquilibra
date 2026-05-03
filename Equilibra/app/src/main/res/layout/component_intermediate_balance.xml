@@ -3,7 +3,10 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <data>
-
+        <import type="asunfdiez.com.equilibra.R" />
+        <variable
+            name="viewModel"
+            type="asunfdiez.com.equilibra.viewmodels.MainViewModel" />
     </data>
 
     <androidx.cardview.widget.CardView
@@ -12,7 +15,7 @@
         android:layout_marginBottom="16dp"
         app:cardCornerRadius="16dp"
         app:cardElevation="4dp"
-        app:cardBackgroundColor="@android:color/white">
+        app:cardBackgroundColor="@color/backgroundCard">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -31,8 +34,8 @@
                 android:id="@+id/tvIntermediateBalance"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="€2,847.50"
-                android:textColor="@color/gray_800"
+                app:formattedAmount="@{viewModel.balance}"
+                android:textColor="@color/primary"
                 android:textSize="28sp"
                 android:textStyle="bold"
                 android:layout_marginTop="4dp" />
@@ -55,10 +58,55 @@
                     android:id="@+id/tvBalanceComparison"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/balance_comparison"
+                    android:text='@{String.format("%.1f%% vs mes anterior", viewModel.monthlyTrend)}'
                     android:textColor="@color/secondary"
                     android:textSize="14sp"
                     android:textStyle="bold" />
+            </LinearLayout>
+
+            <!-- Mini cards de resumen -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginTop="8dp">
+
+                <include
+                    layout="@layout/component_summary_card"
+                    android:id="@+id/summaryIncome"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:layout_margin="5dp"
+                    app:amount="@{viewModel.totalIncomeThisMonth}"
+                    app:icon="@{R.drawable.ic_income}"
+                    app:iconTint="@{@color/primary}"
+                    app:label="@{@string/total_income}" />
+
+                <include
+                    layout="@layout/component_summary_card"
+                    android:id="@+id/summaryExpenses"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:layout_margin="5dp"
+                    app:amount="@{viewModel.totalExpensesThisMonth}"
+                    app:icon="@{R.drawable.ic_expense}"
+                    app:iconTint="@{@color/error}"
+                    app:label="@{@string/total_expenses}" />
+
+                <include
+                    layout="@layout/component_summary_card"
+                    android:id="@+id/summarySavings"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:layout_margin="5dp"
+                    app:amount="@{viewModel.balance}"
+                    app:icon="@{R.drawable.ic_wallet}"
+                    app:iconTint="@{@color/secondary}"
+                    app:label="@{@string/savings}" />
+
             </LinearLayout>
 
         </LinearLayout>

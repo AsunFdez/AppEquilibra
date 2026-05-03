@@ -91,126 +91,68 @@
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:clipToPadding="false"
-                android:paddingBottom="100dp"
+                android:paddingBottom="50dp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/headerSection">
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_marginBottom="60dp"
                     android:orientation="vertical">
 
                     <!-- Cards de Resumen Superior -->
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="20dp"
+                        android:layout_marginTop="12dp"
                         android:paddingHorizontal="16dp"
+                        android:layout_marginBottom="16dp"
                         android:orientation="horizontal">
 
                         <include
                             android:id="@+id/cardExpenses"
-                            layout="@layout/component_summary_card" />
+                            layout="@layout/component_summary_card"
+                            android:layout_margin="4dp"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1" />
 
                         <include
                             android:id="@+id/cardSavings"
-                            layout="@layout/component_summary_card" />
+                            layout="@layout/component_summary_card"
+                            android:layout_margin="4dp"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1" />
                     </LinearLayout>
 
                     <!-- Card de Gastos por Categoría (PieChart) -->
-                    <androidx.cardview.widget.CardView
-                        style="@style/Card.Elevated"
+                    <include
+                        android:id="@+id/cardPieChart"
+                        layout="@layout/component_pie_chart"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_margin="16dp">
-
-                        <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:orientation="vertical"
-                            android:padding="16dp">
-
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="@string/expenses_by_category"
-                                android:textColor="@color/text_primary"
-                                android:textSize="18sp"
-                                android:textStyle="bold" />
-
-
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="@string/no_data_available"
-                                android:textColor="@color/text_secondary"
-                                android:layout_marginTop="16dp"
-                                android:textStyle="bold"
-                                android:visibility="@{viewModel.pieChartData ? View.GONE : View.VISIBLE}" />
-
-
-                            <com.github.mikephil.charting.charts.PieChart
-                                android:id="@+id/pieChart"
-                                android:layout_width="match_parent"
-                                android:layout_height="300dp"
-                                android:layout_marginTop="16dp"
-                                android:visibility="@{viewModel.pieChartData ? View.VISIBLE : View.GONE}"/>
-
-                            <androidx.recyclerview.widget.RecyclerView
-                                android:id="@+id/rvLegend"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:layout_marginTop="16dp"
-                                app:spanCount="2"
-                                android:clipToPadding="false"
-                                android:nestedScrollingEnabled="false"
-                                android:visibility="@{viewModel.pieChartData ? View.VISIBLE : View.GONE}"
-                                app:layoutManager="androidx.recyclerview.widget.GridLayoutManager" />
-
-
-                        </LinearLayout>
-                    </androidx.cardview.widget.CardView>
+                        android:layout_marginHorizontal="16dp"
+                        android:layout_marginBottom="16dp"
+                        app:title="@{@string/expenses_by_category}"
+                        app:hasData="@{viewModel.pieChartData}"
+                        app:analysisEntries="@{viewModel.analysisState.pieEntries}"
+                        app:showLegend="@{true}" />
 
                     <!-- Card de Tendencia (BarChart) -->
-                    <androidx.cardview.widget.CardView
-                        style="@style/Card.Elevated"
+                    <include
+                        android:id="@+id/cardBarChart"
+                        layout="@layout/component_bar_chart"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_margin="16dp">
-
-                        <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:orientation="vertical"
-                            android:padding="16dp">
-
-                            <TextView
-                                android:id="@+id/tvTrendTitle"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="@string/weekly_tendency"
-                                android:textColor="@color/text_primary"
-                                android:textSize="18sp"
-                                android:textStyle="bold" />
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="@string/no_data_available"
-                                android:textColor="@color/text_secondary"
-                                android:layout_marginTop="16dp"
-                                android:textSize="14sp"
-                                android:textStyle="bold"
-                                android:visibility="@{viewModel.barChartData ? View.GONE : View.VISIBLE}" />
-
-                            <com.github.mikephil.charting.charts.BarChart
-                                android:id="@+id/barChart"
-                                android:layout_width="match_parent"
-                                android:layout_height="250dp"
-                                android:layout_marginTop="16dp"
-                                android:layout_marginBottom="32dp"
-                                android:visibility="@{viewModel.barChartData ? View.VISIBLE : View.GONE}"/>
-                        </LinearLayout>
-                    </androidx.cardview.widget.CardView>
+                        android:layout_marginHorizontal="16dp"
+                        android:layout_marginBottom="16dp"
+                        app:title="@{viewModel.isWeekly ? @string/weekly_tendency : @string/trend_monthly}"
+                        app:hasData="@{viewModel.barChartData}"
+                        app:chartData="@{viewModel.chartValues}"
+                        app:labels="@{viewModel.chartLabels}"
+                        app:showValues="@{true}" />
 
                 </LinearLayout>
             </androidx.core.widget.NestedScrollView>

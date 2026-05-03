@@ -1,0 +1,89 @@
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+        <import type="asunfdiez.com.equilibra.R" />
+        <variable
+            name="viewModel"
+            type="asunfdiez.com.equilibra.viewmodels.MainViewModel" />
+    </data>
+
+    <androidx.cardview.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="12dp"
+        app:cardBackgroundColor="@color/secondary_lighter"
+        app:cardCornerRadius="16dp"
+        app:cardElevation="4dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="20dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/balance"
+                android:textSize="14sp"
+                android:textColor="@color/text_secondary"
+                android:layout_marginBottom="8dp" />
+
+            <TextView
+                android:id="@+id/tvMainBalance"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:formattedAmount="@{viewModel.balance}"
+                android:textSize="36sp"
+                android:textColor="@color/text_primary"
+                android:layout_marginBottom="16dp" />
+
+            <!-- Mini cards de resumen -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <include
+                    layout="@layout/component_summary_card"
+                    android:id="@+id/summaryIncome"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:layout_margin="5dp"
+                    app:amount="@{viewModel.totalIncomeThisMonth}"
+                    app:icon="@{R.drawable.ic_income}"
+                    app:iconTint="@{@color/primary}"
+                    app:label="@{@string/total_income}" />
+
+                <include
+                    layout="@layout/component_summary_card"
+                    android:id="@+id/summaryExpenses"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:layout_margin="5dp"
+                    app:amount="@{viewModel.totalExpensesThisMonth}"
+                    app:icon="@{R.drawable.ic_expense}"
+                    app:iconTint="@{@color/error}"
+                    app:label="@{@string/total_expenses}" />
+
+                <include
+                    layout="@layout/component_summary_card"
+                    android:id="@+id/summarySavings"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:layout_margin="5dp"
+                    app:amount="@{viewModel.balance}"
+                    app:icon="@{R.drawable.ic_wallet}"
+                    app:iconTint="@{@color/secondary}"
+                    app:label="@{@string/savings}" />
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+    </androidx.cardview.widget.CardView>
+</layout>

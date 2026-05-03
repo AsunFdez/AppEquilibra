@@ -25,14 +25,16 @@
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
 
-                <!-- Progress Card -->
                 <include
                     android:id="@+id/progressCard"
-                    layout="@layout/progress_card"
+                    layout="@layout/component_progress_card"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="12dp"
-                    app:user="@{user}" />
+                    app:title="@{gamificationViewModel.mainProgressInfo.title}"
+                    app:current="@{gamificationViewModel.mainProgressInfo.current}"
+                    app:goal="@{gamificationViewModel.mainProgressInfo.goal}"
+                    app:progressText="@{gamificationViewModel.mainProgressInfo.progressText}" />
 
                 <!-- Daily Tip Card -->
                 <asunfdiez.com.equilibra.views.FeatureCard
@@ -78,13 +80,13 @@
                     android:clickable="true"
                     android:focusable="true"
                     android:foreground="?android:attr/selectableItemBackground"
-
                     app:cardIconCircle="@drawable/circle_secondary_light"
                     app:cardIcon="@drawable/ic_fea_flag"
                     app:cardIconTint="@color/secondary"
-                    app:cardTitle="@string/next_goal_title"
-                    app:cardDescription="@string/next_goal_1"
-                    app:showRightIcon="false" />
+                    app:cardTitle='@{adviceViewModel.nextGoal.title}'
+                    app:cardDescription='@{adviceViewModel.nextGoal.description}'
+                    app:cardRightIconTint="@color/accent"
+                    app:showRightIcon="true" />
 
     </LinearLayout>
 </layout>

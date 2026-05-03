@@ -82,26 +82,12 @@ public class AnalysisActivity extends AppCompatActivity implements BottomNavigat
                 viewModel.setPeriod(checkedId == R.id.btnWeekly);
             }
         });
-
-        setupPieChart();
-        setupBarChart();
-        setupLegendRecyclerView();
     }
 
     private void setObservers() {
-        viewModel.getIsWeekly().observe(this, isWeekly -> {
-            updatePeriodLabels(isWeekly);
-        });
-
         viewModel.getAnalysisState().observe(this, state -> {
             updateSummaryCards(state.totalExpenses, state.savings);
-            updatePieChartData(state.pieEntries);
-            updateBarChartData(state.barValues, viewModel.getIsWeekly().getValue());
         });
-    }
-
-    private void updatePeriodLabels(boolean isWeekly) {
-        binding.tvTrendTitle.setText(isWeekly ? R.string.trend_weekly : R.string.trend_monthly);
     }
 
     private void updateSummaryCards(double expenses, double savings) {
@@ -114,93 +100,6 @@ public class AnalysisActivity extends AppCompatActivity implements BottomNavigat
         binding.cardSavings.tvSummaryLabel.setText(R.string.label_saved);
         binding.cardSavings.ivSummaryIcon.setImageResource(R.drawable.ic_nav_trending_up);
         binding.cardSavings.ivSummaryIcon.setColorFilter(ContextCompat.getColor(this, R.color.primary));
-    }
-
-    private void setupPieChart() {
-        binding.pieChart.setHoleRadius(0f);
-        binding.pieChart.setTransparentCircleRadius(0f);
-        binding.pieChart.setUsePercentValues(true);
-        binding.pieChart.getDescription().setEnabled(false);
-        binding.pieChart.getLegend().setEnabled(false); // Desactivar la leyenda por defecto
-        binding.pieChart.setEntryLabelColor(Color.WHITE);
-        binding.pieChart.setEntryLabelTextSize(14f);
-        binding.pieChart.animateY(1400, Easing.EaseInOutQuad);
-    }
-
-    private void setupLegendRecyclerView() {
-        legendAdapter = new CategoryLegendAdapter();
-        binding.rvLegend.setAdapter(legendAdapter);
-    }
-
-    private void setupBarChart() {
-        binding.barChart.getDescription().setEnabled(false);
-        binding.barChart.getAxisRight().setEnabled(false);
-        binding.barChart.getLegend().setEnabled(false);
-
-        XAxis xAxis = binding.barChart.getXAxis();
-        xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
-        xAxis.setGranularity(1f);
-
-        //hiding the x-axis line, default true if not set
-        //xAxis.setDrawAxisLine(false);
-        //hiding the vertical grid lines, default true if not set
-        xAxis.setDrawGridLines(false);
-        //xAxis.setAxisLineWidth(4f);
-        //xAxis.setAxisLineColor(R.color.accent);
-
-        YAxis yAxis = binding.barChart.getAxisLeft();
-        yAxis.setDrawGridLines(false);
-        //yAxis.setAxisLineWidth(4f);
-        //yAxis.setAxisLineColor(R.color.accent);
-        //yAxis.setDrawAxisLine(false);
-    }
-
-    private void updatePieChartData(List<CategoryAnalysis> analysis) {
-        ArrayList<PieEntry> entries = new ArrayList<>();
-        for (CategoryAnalysis item : analysis) {
-            entries.add(new PieEntry((float) item.getAmount(), item.getCategory()));
-        }
-
-        PieDataSet dataSet = new PieDataSet(entries, "");
-        int[] chartColors = new int[]{
-                getColor(R.color.accent),
-                getColor(R.color.secondary),
-                getColor(R.color.primary),
-                getColor(R.color.purple),
-                getColor(R.color.teal),
-                getColor(R.color.gray_400) // Color para "Resto"
-        };
-        dataSet.setColors(chartColors);
-
-        PieData data = new PieData(dataSet);
-        data.setValueFormatter(new PercentFormatter(binding.pieChart));
-        data.setDrawValues(false); // No mostrar valores dentro del gráfico para que se vea más limpio
-
-        binding.pieChart.setData(data);
-        binding.pieChart.invalidate();
-
-        // Actualizar la leyenda personalizada
-        legendAdapter.setItems(analysis, chartColors);
-    }
-
-    private void updateBarChartData(double[] values, boolean isWeekly) {
-        ArrayList<BarEntry> entries = new ArrayList<>();
-        String[] labels = isWeekly
-                ? new String[]{getString(R.string.day_mon), getString(R.string.day_tue), getString(R.string.day_wed), getString(R.string.day_thu), getString(R.string.day_fri), getString(R.string.day_sat), getString(R.string.day_sun)}
-                : new String[]{getString(R.string.month_jan), getString(R.string.month_feb), getString(R.string.month_mar), getString(R.string.month_apr), getString(R.string.month_may), getString(R.string.month_jun), getString(R.string.month_jul), getString(R.string.month_aug), getString(R.string.month_sep), getString(R.string.month_oct), getString(R.string.month_nov), getString(R.string.month_dec)};
-
-        for (int i = 0; i < values.length; i++) {
-            entries.add(new BarEntry(i, (float) values[i]));
-        }
-
-        BarDataSet dataSet = new BarDataSet(entries, getString(R.string.chart_label_expenses));
-        dataSet.setColor(ContextCompat.getColor(this, R.color.secondary_light));
-        dataSet.setValueTextSize(14f);
-
-        binding.barChart.setData(new BarData(dataSet));
-        binding.barChart.getXAxis().setValueFormatter(new IndexAxisValueFormatter(labels));
-        binding.barChart.animateY(1000);
-        binding.barChart.invalidate();
     }
 
     private void setupBottomNavigation() {

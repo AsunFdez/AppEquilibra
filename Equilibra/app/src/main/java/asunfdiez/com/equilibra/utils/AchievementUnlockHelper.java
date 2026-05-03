@@ -18,9 +18,10 @@ import asunfdiez.com.equilibra.models.Achievement;
 
 /**
  * Clase de utilidad para gestionar la retroalimentación visual al desbloquear logros.
+ * O ante hitos de rachas conseguidos
  * 
  * <p>Se encarga de mostrar diálogos personalizados con animaciones de celebración 
- * cuando el usuario alcanza un nuevo hito. Proporciona una experiencia de usuario 
+ * cuando el usuario alcanza un nuevo hito, consigue un logro. Proporciona una experiencia de usuario
  * gratificante para reforzar los comportamientos financieros positivos.</p>
  */
 public class AchievementUnlockHelper {
@@ -58,17 +59,54 @@ public class AchievementUnlockHelper {
             pointsView.setText(String.format("+%d pts", achievement.getPoints()));
 
             // Crear diálogo
-            AlertDialog.Builder builder = new AlertDialog.Builder(activity, R.style.AchievementDialogStyle)
+            AlertDialog dialog = new AlertDialog.Builder(activity, R.style.AchievementDialogStyle)
                     .setView(dialogView)
-                    .setCancelable(false)
-                    .setPositiveButton("¡Genial!", (dialog, which) -> {
-                        dialog.dismiss();
-                        if (onDismiss != null) {
-                            onDismiss.run();
-                        }
-                    });
+                    .setCancelable(true) // Permitir cerrar al tocar fuera si se desea, o manejarlo en el container
+                    .create();
 
-            AlertDialog dialog = builder.create();
+            // Configurar botón de acción "Genial" dentro del layout
+            View btnAwesome = dialogView.findViewById(R.id.btn_awesome);
+            if (btnAwesome != null) {
+                btnAwesome.setOnClickListener(v -> {
+                    dialog.dismiss();
+                    if (onDismiss != null) {
+                        onDismiss.run();
+                    }
+                });
+            }
+
+            // Cerrar al hacer click en cualquier parte del contenedor del diálogo
+            View dialogContainer = dialogView.findViewById(R.id.dialog_container);
+            if (dialogContainer != null) {
+                dialogContainer.setOnClickListener(v -> {
+                    dialog.dismiss();
+                    if (onDismiss != null) {
+                        onDismiss.run();
+                    }
+                });
+            }
+            
+            // También asegurar que el recuadro interno cierre el diálogo si se pulsa
+            View dialogBox = dialogView.findViewById(R.id.dialog_box);
+            if (dialogBox != null) {
+                dialogBox.setOnClickListener(v -> {
+                    dialog.dismiss();
+                    if (onDismiss != null) {
+                        onDismiss.run();
+                    }
+                });
+            }
+
+            // Configurar botón de cierre X
+            View btnClose = dialogView.findViewById(R.id.btn_close);
+            if (btnClose != null) {
+                btnClose.setOnClickListener(v -> {
+                    dialog.dismiss();
+                    if (onDismiss != null) {
+                        onDismiss.run();
+                    }
+                });
+            }
 
             // Mostrar y animar
             dialog.show();
@@ -204,5 +242,82 @@ public class AchievementUnlockHelper {
     public static void showUnlockToast(@NonNull Context context, @NonNull Achievement achievement) {
         String message = String.format("🏆 %s +%d pts", achievement.getTitle(), achievement.getPoints());
         android.widget.Toast.makeText(context, message, android.widget.Toast.LENGTH_SHORT).show();
+    }
+
+    /**
+     * Muestra un diálogo de hito de racha (weekly goal)
+     */
+    public static void showMilestoneDialog(
+            @NonNull Activity activity,
+            String title,
+            String description,
+            int iconRes,
+            @Nullable Runnable onDismiss) {
+
+        try {
+            LayoutInflater inflater = LayoutInflater.from(activity);
+            View dialogView = inflater.inflate(R.layout.dialog_achievement_unlock, null);
+
+            ImageView iconView = dialogView.findViewById(R.id.achievement_icon);
+            TextView titleView = dialogView.findViewById(R.id.achievement_title);
+            TextView descriptionView = dialogView.findViewById(R.id.achievement_description);
+            TextView pointsView = dialogView.findViewById(R.id.achievement_points);
+            View sparklesView = dialogView.findViewById(R.id.sparkles);
+
+            iconView.setImageResource(iconRes);
+            titleView.setText(title);
+            descriptionView.setText(description);
+            pointsView.setVisibility(View.GONE); // No hay puntos para hitos genéricos
+            iconView.setVisibility(View.GONE);
+
+
+            AlertDialog dialog = new AlertDialog.Builder(activity, R.style.AchievementDialogStyle)
+                    .setView(dialogView)
+                    .setCancelable(true)
+                    .create();
+
+            // Configurar botón de acción "Genial" dentro del layout
+            View btnAwesome = dialogView.findViewById(R.id.btn_awesome);
+            if (btnAwesome != null) {
+                btnAwesome.setOnClickListener(v -> {
+                    dialog.dismiss();
+                    if (onDismiss != null) onDismiss.run();
+                });
+            }
+
+            // Cerrar al hacer click en cualquier parte del contenedor del diálogo
+            View dialogContainer = dialogView.findViewById(R.id.dialog_container);
+            if (dialogContainer != null) {
+                dialogContainer.setOnClickListener(v -> {
+                    dialog.dismiss();
+                    if (onDismiss != null) onDismiss.run();
+                });
+            }
+            
+            // También asegurar que el recuadro interno cierre el diálogo si se pulsa
+            View dialogBox = dialogView.findViewById(R.id.dialog_box);
+            if (dialogBox != null) {
+                dialogBox.setOnClickListener(v -> {
+                    dialog.dismiss();
+                    if (onDismiss != null) onDismiss.run();
+                });
+            }
+
+            // Configurar botón de cierre X
+            View btnClose = dialogView.findViewById(R.id.btn_close);
+            if (btnClose != null) {
+                btnClose.setOnClickListener(v -> {
+                    dialog.dismiss();
+                    if (onDismiss != null) onDismiss.run();
+                });
+            }
+
+            dialog.show();
+            animateUnlock(activity, dialogView, sparklesView);
+            playUnlockSound(activity);
+
+        } catch (Exception e) {
+            android.util.Log.e(TAG, "Error showing milestone dialog", e);
+        }
     }
 }

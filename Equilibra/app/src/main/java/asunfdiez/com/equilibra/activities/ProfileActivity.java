@@ -109,11 +109,6 @@ public class ProfileActivity extends AppCompatActivity {
             viewModel.saveProfileChanges();
         });
 
-        binding.btnChangePassword.setOnClickListener(v -> {
-            AnimationHelper.scaleUp(v);
-            showChangePasswordDialog();
-        });
-
         binding.btnDeleteAccount.setOnClickListener(v -> {
             AnimationHelper.scaleUp(v);
             showDeleteAccountDialog();
@@ -127,10 +122,6 @@ public class ProfileActivity extends AppCompatActivity {
     }
 
     private void changeProfileImage() {
-        showMessage(getString(R.string.feature_coming_soon));
-    }
-
-    private void showChangePasswordDialog() {
         showMessage(getString(R.string.feature_coming_soon));
     }
 

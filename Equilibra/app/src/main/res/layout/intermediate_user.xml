@@ -19,7 +19,8 @@
                 <!-- Balance Card -->
                 <include
                     layout="@layout/component_intermediate_balance"
-                    android:id="@+id/intermediateBalance" />
+                    android:id="@+id/intermediateBalance"
+                    app:viewModel="@{viewModel}" />
 
                 <!-- Presupuesto Card -->
                 <androidx.cardview.widget.CardView
@@ -44,7 +45,7 @@
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text='@{@string/budget_month("Octubre")}'
+                                android:text='@{@string/budget_month(viewModel.currentMonthName)}'
                                 android:textColor="@color/gray_800"
                                 android:textSize="14sp"
                                 android:textStyle="bold" />
@@ -52,7 +53,7 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_alignParentEnd="true"
-                                android:text='@{@string/days_left(18)}'
+                                android:text='@{@string/days_left(viewModel.daysRemaining)}'
                                 android:textColor="@color/gray_600"
                                 android:textSize="12sp" />
                         </RelativeLayout>
@@ -61,7 +62,7 @@
                             style="@style/Widget.AppCompat.ProgressBar.Horizontal"
                             android:layout_width="match_parent"
                             android:layout_height="8dp"
-                            android:progress="73"
+                            android:progress="@{viewModel.budgetProgress}"
                             android:progressDrawable="@drawable/custom_progress_bar"
                             android:layout_marginBottom="12dp" />
 
@@ -71,14 +72,14 @@
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text='@{@string/used_amount_percent(73)}'
+                                android:text='@{@string/used_amount_percent(viewModel.budgetProgress)}'
                                 android:textColor="@color/gray_600"
                                 android:textSize="12sp" />
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_alignParentEnd="true"
-                                android:text='@{@string/available_amount("€320")}'
+                                app:formattedAmount="@{viewModel.activeBudget.monthlyBudget - viewModel.currentMonthExpenses}"
                                 android:textColor="@color/gray_800"
                                 android:textSize="12sp"
                                 android:textStyle="bold" />
@@ -143,75 +144,29 @@
                     </LinearLayout>
                 </androidx.cardview.widget.CardView>
 
-                <!-- Alerta Card -->
-                <androidx.cardview.widget.CardView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="16dp"
-                    app:cardCornerRadius="16dp"
-                    app:cardElevation="2dp"
-                    app:cardBackgroundColor="@color/background_accent_light">
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="horizontal"
-                        android:padding="16dp"
-                        android:gravity="center_vertical">
-
-                        <ImageView
-                            android:layout_width="32dp"
-                            android:layout_height="32dp"
-                            android:src="@drawable/ic_alert_soft"
-                            app:tint="@color/accent"
-                            android:layout_marginEnd="16dp"/>
-
-                        <LinearLayout
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:orientation="vertical">
-
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="@string/alert_coffee"
-                                android:textColor="@color/accent"
-                                android:textStyle="bold"
-                                android:textSize="14sp" />
-
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="@string/view_analysis"
-                                android:textColor="@color/gray_800"
-                                android:textSize="12sp"
-                                android:layout_marginTop="2dp"
-                                android:textStyle="bold"
-                                android:background="?selectableItemBackground"/>
-                        </LinearLayout>
-                    </LinearLayout>
-                </androidx.cardview.widget.CardView>
-
-                <!-- Resumen financiero principal -->
-                <include
-                    layout="@layout/balance_card"
-                    android:id="@+id/balanceCard" />
 
                 <!-- Gráfico de gastos -->
                 <include
-                    layout="@layout/chart_card"
-                    android:id="@+id/includeChartExpenses" />
+                    android:id="@+id/includeChartExpenses"
+                    layout="@layout/component_bar_chart"
+                    app:title="@{@string/weekly_tendency}"
+                    app:hasData="@{viewModel.hasWeeklyData}"
+                    app:chartData="@{viewModel.weeklyExpensesChart}"
+                    app:labels="@{viewModel.weeklyChartLabels}"
+                    app:showValues="@{false}" />
 
                 <!-- Metas financieras -->
                 <include
-                    layout="@layout/goal_card"
-                    android:id="@+id/goalCard" />
+                    layout="@layout/component_goal_card"
+                    android:id="@+id/goalCard"
+                    app:viewModel="@{viewModel}" />
 
-                <!-- Insight/Consejo -->
+
+                <!-- Preview de Logros Gamificación -->
                 <include
-                    layout="@layout/insight_card"
-                    android:id="@+id/includeInsight" />
+                    layout="@layout/component_achievements_preview"
+                    android:id="@+id/achievementsPreview"
+                    app:gamificationViewModel="@{gamificationViewModel}" />
 
             </LinearLayout>
 

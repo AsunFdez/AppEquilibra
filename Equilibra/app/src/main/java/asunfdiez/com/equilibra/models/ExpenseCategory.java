@@ -13,7 +13,8 @@ import asunfdiez.com.equilibra.utils.Constants;
  * el icono asociado y un color distintivo. Se utiliza para agrupar transacciones 
  * y facilitar el análisis de patrones de consumo.</p>
  */
-@Entity (tableName = Constants.TABLE_CATEGORIES)
+@Entity(tableName = Constants.TABLE_CATEGORIES,
+        indices = {@androidx.room.Index(value = {"name"}, unique = true)})
 public class ExpenseCategory {
 
     @PrimaryKey (autoGenerate = true)

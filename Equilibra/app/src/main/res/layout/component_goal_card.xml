@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    Componente común: Card de meta/objetivo
+    Muestra progreso de una meta financiera
+
+-->
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+        <variable
+            name="viewModel"
+            type="asunfdiez.com.equilibra.viewmodels.MainViewModel" />
+    </data>
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/cardGoal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="8dp"
+        app:cardCornerRadius="12dp"
+        app:cardElevation="3dp"
+        android:clickable="true"
+        android:focusable="true"
+        android:foreground="?attr/selectableItemBackground"
+        android:visibility="@{viewModel.activeSavingGoal != null ? android.view.View.VISIBLE : android.view.View.GONE}">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="16dp">
+
+            <!-- Header -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:layout_marginBottom="12dp">
+
+                <!-- Icono -->
+                <ImageView
+                    android:id="@+id/ivGoalIcon"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:src="@drawable/ic_ach_target"
+                    app:tint="@color/secondary"
+                    android:layout_marginEnd="12dp" />
+
+                <!-- Título y cantidad -->
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/tvGoalTitle"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@{viewModel.activeSavingGoal.name}"
+                        android:textSize="16sp"
+                        android:textStyle="bold"
+                        android:textColor="@color/text_primary" />
+
+                    <TextView
+                        android:id="@+id/tvGoalAmount"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text='@{String.format("%.0f€ de %.0f€", viewModel.activeSavingGoal.currentAmount, viewModel.activeSavingGoal.targetAmount)}'
+                        android:textSize="12sp"
+                        android:textColor="@color/text_secondary"
+                        android:layout_marginTop="4dp" />
+
+                </LinearLayout>
+
+                <!-- Porcentaje -->
+                <TextView
+                    android:id="@+id/tvGoalPercentage"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text='@{viewModel.goalProgress + "%"}'
+                    android:textSize="18sp"
+                    android:textColor="@color/secondary" />
+
+            </LinearLayout>
+
+            <!-- Barra de progreso -->
+            <ProgressBar
+                android:id="@+id/progressGoal"
+                style="?android:attr/progressBarStyleHorizontal"
+                android:layout_width="match_parent"
+                android:layout_height="8dp"
+                android:max="100"
+                android:progress="@{viewModel.goalProgress}"
+                android:progressDrawable="@drawable/custom_progress_bar" />
+
+        </LinearLayout>
+
+    </androidx.cardview.widget.CardView>
+</layout>

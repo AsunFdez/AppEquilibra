@@ -20,12 +20,8 @@
                 <!-- Resumen Financiero -->
                 <include
                     layout="@layout/component_advanced_summary"
-                    android:id="@+id/advancedSummary" />
-
-                <!-- Insight/Alerta -->
-                <include
-                    layout="@layout/insight_card"
-                    android:id="@+id/insightCard" />
+                    android:id="@+id/advancedSummary"
+                    app:viewModel="@{viewModel}" />
 
                 <!-- Rachas Activas -->
                 <include
@@ -33,31 +29,32 @@
                     android:id="@+id/streaksCard"
                     app:gamificationViewModel="@{gamificationViewModel}" />
 
-                <!-- Preview de Logros Gamificación -->
-                <include
-                    layout="@layout/component_achievements_preview"
-                    android:id="@+id/achievementsPreview"
-                    app:gamificationViewModel="@{gamificationViewModel}" />
 
-                <!-- Resumen financiero principal -->
-                <include
-                    layout="@layout/balance_card"
-                    android:id="@+id/balanceCard" />
 
-                <!-- Gráfico principal: Flujo de efectivo -->
+                <!-- Gráfico principal: BarChart mensual -->
                 <include
-                    layout="@layout/chart_card"
-                    android:id="@+id/chartCashFlowCard" />
+                    layout="@layout/component_bar_chart"
+                    android:id="@+id/chartMonthlyCard"
+                    app:title="@{@string/trend_monthly}"
+                    app:hasData="@{viewModel.monthlyExpensesChart != null}"
+                    app:chartData="@{viewModel.monthlyExpensesChart}"
+                    app:labels="@{viewModel.monthlyChartLabels}"
+                    app:showValues="@{false}" />
 
-                <!-- Gráfico secundario: Distribución de gastos -->
+                <!-- Gráfico secundario: PieChart Mensual con Distribución de gastos -->
                 <include
-                    layout="@layout/chart_card"
-                    android:id="@+id/chartExpensesDistributionCard" />
+                    layout="@layout/component_pie_chart"
+                    android:id="@+id/chartExpensesDistributionCard"
+                    app:title="@{@string/expenses_by_category}"
+                    app:hasData="@{viewModel.topCategoriesAnalysis != null &amp;&amp; !viewModel.topCategoriesAnalysis.isEmpty()}"
+                    app:analysisEntries="@{viewModel.topCategoriesAnalysis}"
+                    app:showLegend="@{false}" />
 
                 <!-- Metas y objetivos -->
                 <include
-                    layout="@layout/goal_card"
-                    android:id="@+id/goalCard" />
+                    layout="@layout/component_goal_card"
+                    android:id="@+id/goalCard"
+                    app:viewModel="@{viewModel}" />
 
             </LinearLayout>
 

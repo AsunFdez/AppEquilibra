@@ -48,6 +48,7 @@ public class ExpenseController {
     private final SavingGoalRepository savingGoalRepository;
     private final AlternativeRepository alternativeRepository;
     private final AchievementRepository achievementRepository;
+    private final StreakController streakController;
     private final Context context;
 
     private final ExecutorService executor = Executors.newSingleThreadExecutor();
@@ -61,6 +62,7 @@ public class ExpenseController {
         this.savingGoalRepository = new SavingGoalRepository(context);
         this.alternativeRepository = new AlternativeRepository(context);
         this.achievementRepository = new AchievementRepository(context);
+        this.streakController = new StreakController(context);
         this.mainHandler = new Handler(Looper.getMainLooper());
     }
 
@@ -98,6 +100,7 @@ public class ExpenseController {
             // Decrementar el contador de la semana si era un gasto (opcional, según lógica de negocio)
             if (expense.isExpense()) {
                 userProfileRepository.decrementWeekProgress();
+                streakController.decrementActivity();
             }
             if (onComplete != null) {
                 mainHandler.post(onComplete);

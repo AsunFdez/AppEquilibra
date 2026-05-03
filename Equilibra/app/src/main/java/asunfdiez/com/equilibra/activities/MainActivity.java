@@ -1,5 +1,6 @@
 package asunfdiez.com.equilibra.activities;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
@@ -10,13 +11,16 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
 import androidx.core.widget.NestedScrollView;
 import androidx.databinding.DataBindingUtil;
+import androidx.lifecycle.Transformations;
 import androidx.lifecycle.ViewModelProvider;
 
+import asunfdiez.com.equilibra.BR;
 import asunfdiez.com.equilibra.R;
 import asunfdiez.com.equilibra.controllers.BudgetController;
 import asunfdiez.com.equilibra.controllers.WellbeingController;
 import asunfdiez.com.equilibra.databinding.ActivityMainBinding;
 import asunfdiez.com.equilibra.databinding.BottomNavigationBinding;
+import asunfdiez.com.equilibra.models.Advice;
 import asunfdiez.com.equilibra.models.UserProfile;
 import asunfdiez.com.equilibra.utils.AchievementUnlockHelper;
 import asunfdiez.com.equilibra.utils.AnimationHelper;
@@ -84,7 +88,7 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationH
         // Establecer user inicial para evitar parpadeo
         UserProfile initialUser = viewModel.getUserProfile().getValue();
         if (initialUser != null) {
-            binding.setVariable(asunfdiez.com.equilibra.BR.user, initialUser);
+            binding.setVariable(BR.user, initialUser);
             lastUserProfile = initialUser;
         }
 
@@ -97,7 +101,7 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationH
     private void setupObservers() {
         // Observar el perfil de usuario para manejar cambios de datos
         // Usar Transformations.distinctUntilChanged para evitar múltiples emisiones del mismo valor
-        androidx.lifecycle.Transformations.distinctUntilChanged(viewModel.getUserProfile())
+        Transformations.distinctUntilChanged(viewModel.getUserProfile())
                 .observe(this, user -> {
             if (user != null) {
                 Log.d("MainActivity - setupObservers", "Perfil de usuario actualizado: " + user.toString());
@@ -111,6 +115,31 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationH
                 if (binding == null || !viewType.equals(currentViewType)) {
                     currentViewType = viewType;
                     loadLayout(viewType, viewModel.getUserProfile().getValue());
+                }
+            }
+        });
+
+        // Observar acciones rápidas para configurar listeners condicionales
+        adviceViewModel.getQuickAction().observe(this, quickAction -> {
+            if (quickAction != null) {
+                Context context = getApplicationContext();
+                if (quickAction.equals(Advice.getCompleteUserProfile(context))) {
+                    binding.beginnerUser.quickActionCard.setOnClickListener(v -> navigateTo(ProfileActivity.class));
+                } else if (quickAction.equals(Advice.getCompleteBudget(context))) {
+                    binding.beginnerUser.quickActionCard.setOnClickListener(v -> navigateTo(BudgetSettingsActivity.class));
+                } else if (quickAction.equals(Advice.getQuickAction(context))) {
+                    binding.beginnerUser.quickActionCard.setOnClickListener(v-> navigateTo(AnalysisActivity.class));
+                }
+            }
+        });
+
+        adviceViewModel.getNextGoal().observe(this, nextGoal -> {
+            if (nextGoal != null) {
+                Context context = getApplicationContext();
+                if (nextGoal.equals(Advice.getCompleteBudget(context))) {
+                    binding.beginnerUser.nextGoalCard.setOnClickListener(v -> navigateTo(BudgetSettingsActivity.class));
+                } else if (nextGoal.equals(Advice.getRegisterExpenseToday(context))) {
+                    binding.beginnerUser.nextGoalCard.setOnClickListener(v -> navigateTo(AddExpenseActivity.class));
                 }
             }
         });
@@ -132,6 +161,29 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationH
             }
         });
 
+        // Observar hitos de racha (weekly goals)
+        gamificationViewModel.getStreakMilestoneReached().observe(this, milestone -> {
+            if (milestone != null) {
+                String title = "";
+                String desc = "";
+                int icon = R.drawable.ic_achievement_week;
+
+                if (milestone.type == GamificationViewModel.StreakMilestone.Type.RECORDING) {
+                    title = getString(R.string.milestone_recording_title);
+                    desc = getString(R.string.milestone_recording_desc);
+                    icon = R.drawable.ic_achievement_explorer;
+                } else if (milestone.type == GamificationViewModel.StreakMilestone.Type.BUDGET) {
+                    title = getString(R.string.milestone_budget_title);
+                    desc = getString(R.string.milestone_budget_desc);
+                    icon = R.drawable.ic_achievement_budget_week;
+                }
+
+                AchievementUnlockHelper.showMilestoneDialog(this, title, desc, icon, () -> {
+                    gamificationViewModel.consumeStreakMilestoneEvent();
+                });
+            }
+        });
+
     }
 
     private void handleUserProfileUpdate(UserProfile user) {
@@ -147,15 +199,6 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationH
         if (binding != null) {
             // Actualizar binding solo si hay cambios significativos en la UI
             binding.setVariable(asunfdiez.com.equilibra.BR.user, user);
-
-            // Animar progress bar solo para usuarios principiantes y si hay cambios
-            if (Constants.USER_LEVEL_BEGINNER.equals(currentViewType) && binding.beginnerUser.progressCard != null) {
-                AnimationHelper.animateProgressBar(
-                        user.getWeekProgress(),
-                        user.getWeekGoal(),
-                        binding.beginnerUser.progressCard.weeklyProgressBar
-                );
-            }
 
             // Usar postDelayed para evitar múltiples executePendingBindings seguidos
             handler.removeCallbacksAndMessages(null); // Cancelar cualquier actualización pendiente
@@ -192,10 +235,9 @@ private void setBeginnerLayout(UserProfile user) {
     binding.beginnerUser.getRoot().setVisibility(View.VISIBLE);
     binding.advancedUser.getRoot().setVisibility(View.GONE);
     binding.intermediateUser.getRoot().setVisibility(View.GONE);
-    setBeginnerListeners();
     // Usamos post para asegurar que la transición de visibilidad se procese
     // antes de iniciar las animaciones de los elementos internos.
-    binding.beginnerUser.getRoot().post(() -> animateBeginnerCards(user));
+    binding.beginnerUser.getRoot().post(this::animateBeginnerCards);
 }
 
 private void setAdvancedLayout() {
@@ -240,11 +282,8 @@ private void setupCommonListeners() {
 
 }
 
-private void setBeginnerListeners() {
-    binding.beginnerUser.quickActionCard.setOnClickListener(v -> navigateTo(AddExpenseActivity.class));
-}
 
-private void animateBeginnerCards(UserProfile user) {
+private void animateBeginnerCards() {
     View[] cards = {
             binding.beginnerUser.progressCard.getRoot(),
             binding.beginnerUser.tipCard,
@@ -253,23 +292,15 @@ private void animateBeginnerCards(UserProfile user) {
             binding.viewAllExpensesCard
     };
     AnimationHelper.animateCardsEntrance(cards);
-
-    if (user != null) {
-        AnimationHelper.animateProgressBar(
-                user.getWeekProgress(),
-                user.getWeekGoal(),
-                binding.beginnerUser.progressCard.weeklyProgressBar
-        );
-    }
 }
 
 private void animateAdvancedCards() {
-    View[] cards = {binding.advancedUser.advancedSummary.getRoot(), binding.advancedUser.insightCard.getRoot(), binding.viewAllExpensesCard};
+    View[] cards = {binding.advancedUser.advancedSummary.getRoot(), binding.viewAllExpensesCard};
     AnimationHelper.animateCardsEntrance(cards);
 }
 
 private void animateIntermediateCards() {
-    View[] cards = {binding.intermediateUser.intermediateBalance.getRoot(), binding.intermediateUser.budgetCard, binding.viewAllExpensesCard};
+    View[] cards = {binding.intermediateUser.intermediateBalance.getRoot(), binding.intermediateUser.budgetCard, binding.intermediateUser.achievementsPreview.getRoot(), binding.viewAllExpensesCard};
     AnimationHelper.animateCardsEntrance(cards);
 }
 

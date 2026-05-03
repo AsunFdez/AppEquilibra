@@ -12,9 +12,11 @@ import java.util.Calendar;
 import java.util.List;
 import java.util.concurrent.Executors;
 
-import asunfdiez.com.equilibra.controllers.ExpenseController;
+import asunfdiez.com.equilibra.controllers.AnalyticsController;
+import asunfdiez.com.equilibra.controllers.UserProfileController;
 import asunfdiez.com.equilibra.models.AnalysisState;
 import asunfdiez.com.equilibra.models.CategoryAnalysis;
+import asunfdiez.com.equilibra.models.UserProfile;
 
 /**
  * ViewModel que gestiona la lógica de análisis financiero y datos estadísticos.
@@ -25,8 +27,10 @@ import asunfdiez.com.equilibra.models.CategoryAnalysis;
  */
 public class AnalysisViewModel extends AndroidViewModel {
 
-    // Controlador de gastos para acceder a los datos de la base de datos
-    private final ExpenseController expenseController;
+    // Controlador de análisis para acceder a los datos de la base de datos
+    private final AnalyticsController analyticsController;
+
+    private final UserProfileController userProfileController;
     
     // Estado consolidado del análisis (totales, porcentajes, datos de gráficos)
     private final MutableLiveData<AnalysisState> analysisState = new MutableLiveData<>();
@@ -38,10 +42,13 @@ public class AnalysisViewModel extends AndroidViewModel {
     private final MutableLiveData<Boolean> pieChartData = new MutableLiveData<>(false);
     private final MutableLiveData<Boolean> barChartData = new MutableLiveData<>(false);
 
+    private final MutableLiveData<String[]> chartLabels = new MutableLiveData<>();
+    private final MutableLiveData<Double[]> chartValues = new MutableLiveData<>();
+
     public AnalysisViewModel(@NonNull Application application) {
         super(application);
-        // Nota: En un futuro, el Controller debería ser reemplazado por un Repository según agents.md
-        this.expenseController = new ExpenseController(application);
+        this.analyticsController = new AnalyticsController(application);
+        this.userProfileController = new UserProfileController(application);
         loadData();
     }
 
@@ -59,6 +66,14 @@ public class AnalysisViewModel extends AndroidViewModel {
 
     public LiveData<Boolean> getBarChartData() {
         return barChartData;
+    }
+
+    public LiveData<String[]> getChartLabels() {
+        return chartLabels;
+    }
+
+    public LiveData<Double[]> getChartValues() {
+        return chartValues;
     }
 
 
@@ -113,12 +128,20 @@ public class AnalysisViewModel extends AndroidViewModel {
                 end = cal.getTimeInMillis();
             }
 
-            double totalExpenses = expenseController.getTotalExpensesInRange(start, end);
-            double totalIncome = expenseController.getTotalIncomeInRange(start, end);
+            double totalExpenses = analyticsController.getTotalExpensesInRange(start, end);
+            double totalIncome = analyticsController.getTotalIncomeInRange(start, end);
+
+            // Si el totalIncome es 0, intentar usar el ingreso mensual del perfil
+            if (totalIncome == 0) {
+                UserProfile profile = userProfileController.getUserProfileSync();
+                if (profile != null) totalIncome = profile.getMonthlyIncome();
+                if (weekly) totalIncome = totalIncome /4;
+            }
+
             double savings = Math.max(0, totalIncome - totalExpenses);
 
             // Obtener todos los análisis de categoría para agrupar el "Resto"
-            List<CategoryAnalysis> allEntries = expenseController.getTopCategoriesAnalysis(start, end, 100); // Suficientemente grande para traer todos
+            List<CategoryAnalysis> allEntries = analyticsController.getTopCategoriesAnalysis(start, end, 100); // Suficientemente grande para traer todos
             List<CategoryAnalysis> pieEntries;
 
             if (allEntries.size() > 5) {
@@ -149,7 +172,7 @@ public class AnalysisViewModel extends AndroidViewModel {
 
             pieChartData.postValue(!pieEntries.isEmpty());
 
-            double[] barValues = weekly ? expenseController.getWeeklyExpenses(start) : expenseController.getMonthlyExpenses(start);
+            double[] barValues = weekly ? analyticsController.getWeeklyExpenses(start) : analyticsController.getMonthlyExpenses(start);
             
             // Verificar si hay datos significativos (mayores a cero)
             boolean hasBarData = false;
@@ -163,6 +186,39 @@ public class AnalysisViewModel extends AndroidViewModel {
             }
 
             barChartData.postValue(hasBarData);
+
+            if (barValues != null) {
+                Double[] barValuesDouble = new Double[barValues.length];
+                for (int i = 0; i < barValues.length; i++) {
+                    barValuesDouble[i] = barValues[i];
+                }
+                chartValues.postValue(barValuesDouble);
+            }
+
+            String[] labels = weekly
+                    ? new String[]{
+                    getApplication().getString(asunfdiez.com.equilibra.R.string.day_mon),
+                    getApplication().getString(asunfdiez.com.equilibra.R.string.day_tue),
+                    getApplication().getString(asunfdiez.com.equilibra.R.string.day_wed),
+                    getApplication().getString(asunfdiez.com.equilibra.R.string.day_thu),
+                    getApplication().getString(asunfdiez.com.equilibra.R.string.day_fri),
+                    getApplication().getString(asunfdiez.com.equilibra.R.string.day_sat),
+                    getApplication().getString(asunfdiez.com.equilibra.R.string.day_sun)}
+                    : new String[]{
+                    getApplication().getString(asunfdiez.com.equilibra.R.string.month_jan),
+                    getApplication().getString(asunfdiez.com.equilibra.R.string.month_feb),
+                    getApplication().getString(asunfdiez.com.equilibra.R.string.month_mar),
+                    getApplication().getString(asunfdiez.com.equilibra.R.string.month_apr),
+                    getApplication().getString(asunfdiez.com.equilibra.R.string.month_may),
+                    getApplication().getString(asunfdiez.com.equilibra.R.string.month_jun),
+                    getApplication().getString(asunfdiez.com.equilibra.R.string.month_jul),
+                    getApplication().getString(asunfdiez.com.equilibra.R.string.month_aug),
+                    getApplication().getString(asunfdiez.com.equilibra.R.string.month_sep),
+                    getApplication().getString(asunfdiez.com.equilibra.R.string.month_oct),
+                    getApplication().getString(asunfdiez.com.equilibra.R.string.month_nov),
+                    getApplication().getString(asunfdiez.com.equilibra.R.string.month_dec)};
+
+            chartLabels.postValue(labels);
 
             analysisState.postValue(new AnalysisState(totalExpenses, totalIncome, savings, pieEntries, barValues));
 

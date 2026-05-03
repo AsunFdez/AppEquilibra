@@ -56,8 +56,6 @@ public class Streak {
         this.id = id;
     }
 
-
-
     public long getUserId() {
         return userId;
     }
@@ -112,6 +110,27 @@ public class Streak {
 
     public void setActive(boolean active) {
         isActive = active;
+    }
+
+    /**
+     * Incrementa el contador de la racha sin aplicar lógica de días consecutivos.
+     * Útil para conteos semanales (ej. número de gastos).
+     */
+    public void incrementCounter() {
+        consecutiveDays++;
+        lastActivityDate = today();
+        if (consecutiveDays > maxStreakRecord) {
+            maxStreakRecord = consecutiveDays;
+        }
+    }
+
+    /**
+     * Decrementa el contador de la racha (ej. al borrar un gasto).
+     */
+    public void decrementCounter() {
+        if (consecutiveDays > 0) {
+            consecutiveDays--;
+        }
     }
 
     /**

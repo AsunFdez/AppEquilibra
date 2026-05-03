@@ -13,7 +13,8 @@ import asunfdiez.com.equilibra.utils.Constants;
  * en las descripciones de los gastos del usuario. Proporciona una estimación de ahorro 
  * potencial mediante un porcentaje.</p>
  */
-@Entity(tableName = Constants.TABLE_ALTERNATIVES)
+@Entity(tableName = Constants.TABLE_ALTERNATIVES,
+        indices = {@androidx.room.Index(value = {"suggestion"}, unique = true)})
 public class Alternative {
     @PrimaryKey(autoGenerate = true)
     @NonNull

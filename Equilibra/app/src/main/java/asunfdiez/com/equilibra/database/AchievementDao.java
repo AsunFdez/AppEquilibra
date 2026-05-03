@@ -66,21 +66,21 @@ public interface AchievementDao {
      * Obtiene un logro específico por su key
      */
     @Query("SELECT * FROM " + Constants.TABLE_ACHIEVEMENTS +
-            " WHERE id = :key LIMIT 1")
+            " WHERE `key` = :key LIMIT 1")
     Achievement getAchievementByKey(String key);
 
     /**
      * Obtiene un logro por su key como LiveData
      */
     @Query("SELECT * FROM " + Constants.TABLE_ACHIEVEMENTS +
-            " WHERE id = :key LIMIT 1")
+            " WHERE `key` = :key LIMIT 1")
     LiveData<Achievement> getAchievementByKeyLive(String key);
 
     /**
      * Desbloquea un logro específico por su key
      */
     @Query("UPDATE " + Constants.TABLE_ACHIEVEMENTS +
-            " SET unlocked = 1, unlockedAt = :timestamp WHERE id = :key")
+            " SET unlocked = 1, unlockedAt = :timestamp WHERE `key` = :key")
     void unlockAchievement(String key, long timestamp);
 
     /**
@@ -117,7 +117,7 @@ public interface AchievementDao {
      * Verifica si un logro está desbloqueado
      */
     @Query("SELECT unlocked FROM " + Constants.TABLE_ACHIEVEMENTS +
-            " WHERE id = :key LIMIT 1")
+            " WHERE `key` = :key LIMIT 1")
     boolean isAchievementUnlocked(String key);
 
     /**

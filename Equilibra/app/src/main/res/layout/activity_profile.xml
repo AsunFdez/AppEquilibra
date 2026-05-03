@@ -239,28 +239,6 @@
                         android:text="@string/save_changes"
                         android:visibility="@{viewModel.editMode ? View.VISIBLE : View.GONE}" />
 
-
-                    <!-- Sección de seguridad -->
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@string/profile_security"
-                        android:textSize="14sp"
-                        android:textColor="@color/text_secondary"
-                        android:layout_marginTop="8dp"
-                        android:layout_marginBottom="12dp"
-                        android:paddingStart="4dp"
-                        android:visibility="@{viewModel.editMode ? View.GONE : View.VISIBLE}"/>
-
-
-                    <com.google.android.material.button.MaterialButton
-                        style="@style/Equilibra.Button.Accent"
-                        android:id="@+id/btnChangePassword"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="@string/change_password"
-                        android:visibility="@{viewModel.editMode ? View.GONE : View.VISIBLE}"/>
-
                     <!-- Zona de peligro -->
                     <TextView
                         android:layout_width="wrap_content"

@@ -52,12 +52,12 @@
                     android:layout_height="wrap_content"
                     android:clickable="false"
                     android:text="@{gamificationViewModel.userLevel}"
-                    android:textColor="@color/accent"
+                    android:textColor="@color/secondary"
                     android:textSize="12sp"
-                    app:chipBackgroundColor="@color/primary_lighter"
+                    app:chipBackgroundColor="@color/background_secondary"
                     app:chipIcon="@drawable/ic_ach_star"
                     app:chipIconSize="16dp"
-                    app:chipIconTint="@color/accent"
+                    app:chipIconTint="@color/secondary"
                     tools:text="Experto" />
             </LinearLayout>
 
@@ -66,7 +66,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                android:background="@drawable/bg_light_gradient"
                 android:padding="12dp"
                 android:layout_marginStart="-8dp"
                 android:layout_marginEnd="-8dp"
@@ -86,7 +85,7 @@
                         android:layout_height="24dp"
                         android:src="@drawable/ic_ach_star"
                         android:contentDescription="@string/points_icon"
-                        app:tint="@color/accent"
+                        app:tint="@color/secondary"
                         android:layout_marginEnd="8dp" />
 
                     <TextView
@@ -101,7 +100,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@{@plurals/points_format(gamificationViewModel.totalPoints ?? 0, gamificationViewModel.totalPoints ?? 0)}"
-                        android:textColor="@color/accent"
+                        android:textColor="@color/secondary"
                         android:textSize="14sp"
                         android:textStyle="bold"
                         tools:text="350 pts" />
@@ -121,14 +120,14 @@
                         android:indeterminate="false"
                         android:max="100"
                         android:progress="@{gamificationViewModel.levelProgress ?? 0}"
-                        android:progressDrawable="@drawable/progress_level"
+                        android:progressDrawable="@drawable/custom_progress_bar"
                         android:layout_marginBottom="4dp" />
 
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:gravity="end"
-                        android:text='@{String.valueOf(gamificationViewModel.levelProgress ?? 0) + "%" + @string/to_next_level}'
+                        android:text='@{String.valueOf(gamificationViewModel.levelProgress ?? 0) + "% " + @string/to_next_level}'
                         android:textColor="@color/gray_600"
                         android:textSize="11sp"
                         tools:text="45% para siguiente nivel" />
@@ -162,20 +161,6 @@
                 app:achievementsList="@{gamificationViewModel.recentUnlockedAchievements}"
                 tools:itemCount="4"
                 tools:listitem="@layout/item_achievement_mini" />
-
-            <!-- Ver Todos los Logros (Link) -->
-            <TextView
-                android:id="@+id/tvViewAllAchievements"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/view_all_achievements"
-                android:textColor="@color/accent"
-                android:textSize="13sp"
-                android:textStyle="bold"
-                android:layout_gravity="end"
-                android:layout_marginTop="12dp"
-                android:clickable="true"
-                android:focusable="true" />
 
         </LinearLayout>
     </androidx.cardview.widget.CardView>

@@ -15,8 +15,6 @@
     <string name="no_data_available">No hay datos disponibles. Registre gastos" </string>
 
 
-
-
     <!-- Días de la semana (Abreviados para el gráfico) -->
     <string name="day_mon">Lun</string>
     <string name="day_tue">Mar</string>
@@ -40,4 +38,13 @@
     <string name="month_nov">Nov</string>
     <string name="month_dec">Dic</string>
 
+    <string name="excellent_savings">Excelente: ¡Estás ahorrando muy bien!</string>
+    <string name="good_savings">Bueno: Mantén este ritmo de ahorro</string>
+    <string name="aceptable_savings">Aceptable: Intenta aumentar tus ahorros</string>
+    <string name="alert_savings">Alerta: Revisa tus gastos y reduce lo posible</string>
+
+    <string name="excellent_savings_1">¡Excelente! Tu ahorro es muy alto.</string>
+    <string name="good_savings_1">Muy bien, mantienes un buen nivel de ahorro.</string>
+    <string name="aceptable_savings_1">Bien, pero podrías ahorrar un poco más.</string>
+    <string name="alert_savings_1">¡Atención! Tus ahorros son muy bajos este mes.</string>
 </resources>

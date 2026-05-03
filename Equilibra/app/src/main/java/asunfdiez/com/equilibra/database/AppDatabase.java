@@ -10,6 +10,7 @@ import androidx.room.TypeConverters;
 import androidx.sqlite.db.SupportSQLiteDatabase;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 import java.util.Random;
 import java.util.concurrent.Executors;
@@ -137,6 +138,14 @@ public abstract class AppDatabase extends RoomDatabase {
         categories.add(new ExpenseCategory(mContext.getString(R.string.category_others), R.drawable.ic_cat_package, "ic_cat_package", "#1ABC9C"));
 
         dao.insertListOfCategories(categories);
+    }
+
+    public static void initInitalStreaks() {
+        //TODO
+        List <Streak> streaks = new ArrayList<>();
+        StreakDao dao = INSTANCE.streakDao();
+        streaks.add ( new Streak ());
+        dao.insertListOfStreak(streaks);
     }
 
     /**
@@ -319,72 +328,84 @@ public abstract class AppDatabase extends RoomDatabase {
     public static void dummyData() {
         ExpenseDao dao = INSTANCE.expenseDao();
         List<Expense> expenses = new ArrayList<>();
-        expenses.add(new Expense("expense",getRandom(45., 120.) , 1, "supermercado", "10/01/2026"));
-        expenses.add(new Expense("expense",getRandom(45., 120.), 1, "supermercado", "17/01/2026"));
-        expenses.add(new Expense("expense",getRandom(45., 120.), 1, "supermercado", "24/01/2026"));
-        expenses.add(new Expense("expense",getRandom(45., 120.), 1, "supermercado", "31/01/2026"));
-        expenses.add(new Expense("expense",getRandom(45., 120.), 1, "supermercado", "07/02/2026"));
-        expenses.add(new Expense("expense",getRandom(45., 120.), 1, "supermercado", "14/02/2026"));
-        expenses.add(new Expense("expense",getRandom(45., 120.), 1, "supermercado", "21/02/2026"));
-        expenses.add(new Expense("expense",getRandom(45., 120.), 1, "supermercado", "28/02/2026"));
-        expenses.add(new Expense("expense",getRandom(45., 120.), 1, "supermercado", "07/03/2026"));
-        expenses.add(new Expense("expense",getRandom(45., 120.), 1, "supermercado", "14/03/2026"));
-        expenses.add(new Expense("expense",getRandom(45., 120.), 1, "supermercado", "21/03/2026"));
-        expenses.add(new Expense("expense",getRandom(45., 120.), 1, "supermercado", "28/03/2026"));
-        expenses.add(new Expense("expense",getRandom(45., 120.), 1, "supermercado", "04/04/2026"));
+        
+        int year = Calendar.getInstance().get(Calendar.YEAR);
+        String y = String.valueOf(year);
 
-        expenses.add(new Expense("expense",getRandom(30., 80.) , 5, "cena amigos", "10/01/2026"));
-        expenses.add(new Expense("expense",getRandom(30., 80.), 5, "cena amigos", "17/01/2026"));
-        expenses.add(new Expense("expense",getRandom(30., 80.), 5, "cena amigos", "24/01/2026"));
-        expenses.add(new Expense("expense",getRandom(30., 80.), 5, "cena amigos", "31/01/2026"));
-        expenses.add(new Expense("expense",getRandom(30., 80.), 5, "cena amigos", "07/02/2026"));
-        expenses.add(new Expense("expense",getRandom(30., 80.), 5, "cena amigos", "14/02/2026"));
-        expenses.add(new Expense("expense",getRandom(30., 80.), 5, "cena amigos", "21/02/2026"));
-        expenses.add(new Expense("expense",getRandom(30., 80.), 5, "cena amigos", "28/02/2026"));
-        expenses.add(new Expense("expense",getRandom(30., 80.), 5, "cena amigos", "07/03/2026"));
-        expenses.add(new Expense("expense",getRandom(30., 80.), 5, "cena amigos", "14/03/2026"));
-        expenses.add(new Expense("expense",getRandom(30., 80.), 5, "cena amigos", "21/03/2026"));
-        expenses.add(new Expense("expense",getRandom(30., 80.), 5, "cena amigos", "28/03/2026"));
-        expenses.add(new Expense("expense",getRandom(30., 80.), 5, "cena amigos", "04/04/2026"));
+        expenses.add(new Expense("expense",getRandom(45., 120.) , 1, "supermercado", "10/01/" + y));
+        expenses.add(new Expense("expense",getRandom(45., 120.), 1, "supermercado", "17/01/" + y));
+        expenses.add(new Expense("expense",getRandom(45., 120.), 1, "supermercado", "24/01/" + y));
+        expenses.add(new Expense("expense",getRandom(45., 120.), 1, "supermercado", "31/01/" + y));
+        expenses.add(new Expense("expense",getRandom(45., 120.), 1, "supermercado", "07/02/" + y));
+        expenses.add(new Expense("expense",getRandom(45., 120.), 1, "supermercado", "14/02/" + y));
+        expenses.add(new Expense("expense",getRandom(45., 120.), 1, "supermercado", "21/02/" + y));
+        expenses.add(new Expense("expense",getRandom(45., 120.), 1, "supermercado", "28/02/" + y));
+        expenses.add(new Expense("expense",getRandom(45., 120.), 1, "supermercado", "07/03/" + y));
+        expenses.add(new Expense("expense",getRandom(45., 120.), 1, "supermercado", "14/03/" + y));
+        expenses.add(new Expense("expense",getRandom(45., 120.), 1, "supermercado", "21/03/" + y));
+        expenses.add(new Expense("expense",getRandom(45., 120.), 1, "supermercado", "28/03/" + y));
+        expenses.add(new Expense("expense",getRandom(45., 120.), 1, "supermercado", "04/04/" + y));
 
-        expenses.add(new Expense("expense",getRandom(2., 3.) , 1, "café", "01/01/2026"));
-        expenses.add(new Expense("expense",getRandom(2., 3.), 1, "café", "07/01/2026"));
-        expenses.add(new Expense("expense",getRandom(2., 3.), 1, "café", "14/01/2026"));
-        expenses.add(new Expense("expense",getRandom(2., 3.), 1, "café", "21/01/2026"));
-        expenses.add(new Expense("expense",getRandom(2., 3.), 1, "café", "05/02/2026"));
-        expenses.add(new Expense("expense",getRandom(2., 3.), 1, "café", "04/02/2026"));
-        expenses.add(new Expense("expense",getRandom(2., 3.), 1, "café", "11/02/2026"));
-        expenses.add(new Expense("expense",getRandom(2., 3.), 1, "café", "18/02/2026"));
-        expenses.add(new Expense("expense",getRandom(2., 3.), 1, "café", "17/03/2026"));
-        expenses.add(new Expense("expense",getRandom(2., 3.), 1, "café", "04/03/2026"));
-        expenses.add(new Expense("expense",getRandom(2., 3.), 1, "café", "01/03/2026"));
-        expenses.add(new Expense("expense",getRandom(2., 3.), 1, "café", "08/03/2026"));
-        expenses.add(new Expense("expense",getRandom(2., 3.), 1, "café", "04/04/2026"));
+        expenses.add(new Expense("expense",getRandom(30., 80.) , 5, "cena amigos", "10/01/" + y));
+        expenses.add(new Expense("expense",getRandom(30., 80.), 5, "cena amigos", "17/01/" + y));
+        expenses.add(new Expense("expense",getRandom(30., 80.), 5, "cena amigos", "24/01/" + y));
+        expenses.add(new Expense("expense",getRandom(30., 80.), 5, "cena amigos", "31/01/" + y));
+        expenses.add(new Expense("expense",getRandom(30., 80.), 5, "cena amigos", "07/02/" + y));
+        expenses.add(new Expense("expense",getRandom(30., 80.), 5, "cena amigos", "14/02/" + y));
+        expenses.add(new Expense("expense",getRandom(30., 80.), 5, "cena amigos", "21/02/" + y));
+        expenses.add(new Expense("expense",getRandom(30., 80.), 5, "cena amigos", "28/02/" + y));
+        expenses.add(new Expense("expense",getRandom(30., 80.), 5, "cena amigos", "07/03/" + y));
+        expenses.add(new Expense("expense",getRandom(30., 80.), 5, "cena amigos", "14/03/" + y));
+        expenses.add(new Expense("expense",getRandom(30., 80.), 5, "cena amigos", "21/03/" + y));
+        expenses.add(new Expense("expense",getRandom(30., 80.), 5, "cena amigos", "28/03/" + y));
+        expenses.add(new Expense("expense",getRandom(30., 80.), 5, "cena amigos", "04/04/" + y));
+
+        expenses.add(new Expense("expense",getRandom(2., 3.) , 1, "café", "01/01/" + y));
+        expenses.add(new Expense("expense",getRandom(2., 3.), 1, "café", "07/01/" + y));
+        expenses.add(new Expense("expense",getRandom(2., 3.), 1, "café", "14/01/" + y));
+        expenses.add(new Expense("expense",getRandom(2., 3.), 1, "café", "21/01/" + y));
+        expenses.add(new Expense("expense",getRandom(2., 3.), 1, "café", "05/02/" + y));
+        expenses.add(new Expense("expense",getRandom(2., 3.), 1, "café", "04/02/" + y));
+        expenses.add(new Expense("expense",getRandom(2., 3.), 1, "café", "11/02/" + y));
+        expenses.add(new Expense("expense",getRandom(2., 3.), 1, "café", "18/02/" + y));
+        expenses.add(new Expense("expense",getRandom(2., 3.), 1, "café", "17/03/" + y));
+        expenses.add(new Expense("expense",getRandom(2., 3.), 1, "café", "04/03/" + y));
+        expenses.add(new Expense("expense",getRandom(2., 3.), 1, "café", "01/03/" + y));
+        expenses.add(new Expense("expense",getRandom(2., 3.), 1, "café", "08/03/" + y));
+        expenses.add(new Expense("expense",getRandom(2., 3.), 1, "café", "04/04/" + y));
 
 
-        expenses.add(new Expense("expense",getRandom(20., 50.) , 10, "camisa", "01/01/2026"));
-        expenses.add(new Expense("expense",getRandom(20., 50.), 10, "pantalón", "17/02/2026"));
-        expenses.add(new Expense("expense",getRandom(20., 50.), 10, "vestido", "24/03/2026"));
-        expenses.add(new Expense("expense",getRandom(20., 50.), 10, "calcetines", "01/04/2006"));
+        expenses.add(new Expense("expense",getRandom(20., 50.) , 10, "camisa", "01/01/" + y));
+        expenses.add(new Expense("expense",getRandom(20., 50.), 10, "pantalón", "17/02/" + y));
+        expenses.add(new Expense("expense",getRandom(20., 50.), 10, "vestido", "24/03/" + y));
+        expenses.add(new Expense("expense",getRandom(20., 50.), 10, "calcetines", "01/04/" + y));
 
-        expenses.add(new Expense("expense",500 , 3, "alquiler", "01/01/2026"));
-        expenses.add(new Expense("expense",500 , 3, "alquiler", "01/02/2026"));
-        expenses.add(new Expense("expense",500 , 3, "alquiler", "01/03/2026"));
-        expenses.add(new Expense("expense",500 , 3, "alquiler", "01/04/2026"));
+        expenses.add(new Expense("expense",500 , 3, "alquiler", "01/01/" + y));
+        expenses.add(new Expense("expense",500 , 3, "alquiler", "01/02/" + y));
+        expenses.add(new Expense("expense",500 , 3, "alquiler", "01/03/" + y));
+        expenses.add(new Expense("expense",500 , 3, "alquiler", "01/04/" + y));
 
-        expenses.add(new Expense("expense",getRandom(40., 70.) , 3, "luz", "10/01/2026"));
-        expenses.add(new Expense("expense",getRandom(40., 70.) , 3, "luz", "12/02/2026"));
-        expenses.add(new Expense("expense",getRandom(70., 170.) , 3, "calefacción", "15/01/2026"));
-        expenses.add(new Expense("expense",getRandom(70., 170.) , 3, "calefacción", "15/04/2026"));
+        expenses.add(new Expense("expense",getRandom(40., 70.) , 3, "luz", "10/01/" + y));
+        expenses.add(new Expense("expense",getRandom(40., 70.) , 3, "luz", "12/02/" + y));
+        expenses.add(new Expense("expense",getRandom(70., 170.) , 3, "calefacción", "15/01/" + y));
+        expenses.add(new Expense("expense",getRandom(70., 170.) , 3, "calefacción", "15/04/" + y));
+
+        // Gastos para el mes actual para que se vean en el dashboard
+        int currentMonth = Calendar.getInstance().get(Calendar.MONTH) + 1;
+        String mStr = String.format(java.util.Locale.US, "/%02d/", currentMonth);
+        expenses.add(new Expense("expense",getRandom(50., 100.) , 1, "Compra semanal", "02" + mStr + y));
+        expenses.add(new Expense("expense",getRandom(20., 40.) , 2, "Gasolina", "05" + mStr + y));
+        expenses.add(new Expense("expense",getRandom(10., 30.) , 5, "Cine", "08" + mStr + y));
+        expenses.add(new Expense("expense",getRandom(15., 25.) , 1, "Pizza", "10" + mStr + y));
 
         dao.deleteAll();
         dao.insertListOfExpenses(expenses);
-
-
     }
+
     private static double getRandom(Double valorMinimo, Double valorMaximo) {
         Random rand = new Random();
-        return  valorMinimo + ( valorMaximo - valorMinimo ) * rand.nextDouble();
+        double randomValue = valorMinimo + (valorMaximo - valorMinimo) * rand.nextDouble();
+        return Math.round(randomValue * 100.0) / 100.0;
     }
 
 }

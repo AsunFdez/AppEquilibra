@@ -64,6 +64,17 @@ public class StreakBindingAdapter {
     }
 
     /**
+     * Anima el progreso genérico de una barra (ej. semanal)
+     */
+    @BindingAdapter({"progressValue", "progressGoal"})
+    public static void animateGenericProgress(ProgressBar progressBar, Integer current, Integer goal) {
+        if (progressBar == null || current == null || goal == null) {
+            return;
+        }
+        AnimationHelper.animateProgressBar(current, goal, progressBar);
+    }
+
+    /**
      * Efecto pop-in cuando aparece un chip de racha
      */
     @BindingAdapter("chipPopIn")

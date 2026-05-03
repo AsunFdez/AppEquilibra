@@ -19,20 +19,29 @@
     <string name="day_count">Día %1$d</string>
     <string name="week_progress">%1$d/%2$d gastos registrados</string>
 
+    <!-- Botones del bottom_navigation -->
     <string name="nav_home_text">Inicio</string>
     <string name="nav_analysis_text">Análisis</string>
     <string name="nav_achievements_text">Logros</string>
     <string name="nav_settings_text">Ajustes</string>
-    <string name="weekly_progress_title">Tu progreso esta semana:</string>
+
+    <string name="week_budget_progress">%1$d/%2$d días bajo presupuesto</string>
+    <string name="weekly_expenses_title">Gastos registrados esta semana:</string>
+    <string name="weekly_budget_title">Días bajo presupuesto esta semana:</string>
+
+    <string name="milestone_recording_title">¡Hábito Semanal Logrado!</string>
+    <string name="milestone_recording_desc">Has registrado 7 gastos esta semana. ¡Mantener el control es el primer paso para el bienestar!</string>
+    <string name="milestone_budget_title">¡Presupuesto Dominado!</string>
+    <string name="milestone_budget_desc">Llevas 7 días consecutivos sin pasarte de tu presupuesto diario. ¡Increíble disciplina!</string>
 
     <!-- Advices -->
     <string name="today_advice">Consejo de hoy:</string>
-    <string name="advice">\"Registra gastos pequeños también. ¡Suman!\"</string>
+    <string name="advice">\"Registra los gastos pequeños. ¡También suman!\"</string>
     <string name="quick_action_title">Acción rápida:</string>
-    <string name="quick_action_desc">Lee uno de nuestros consejos para ayudarte a mejorar tu finanzas</string>
-    <string name="register_last_expense">[+ Registrar último gasto]</string>
+    <string name="quick_action_desc">Revisa el análisis de los gastos registrados</string>
+    <string name="register_last_expense">Registrar tu último gasto</string>
     <string name="next_goal_title">Próximo objetivo:</string>
-    <string name="next_goal_1">Completar tu primer presupuesto</string>
+    <string name="next_goal_1">Establece tu presupuesto</string>
     <string name="my_expenses_tile">Mis Gastos</string>
     <string name="my_expenses_text">Ver, editar o eliminar</string>
     <string name="total_amount_expenses">Total gastado</string>
@@ -74,6 +83,7 @@
     <!-- Common -->
     <string name="ok">Aceptar</string>
     <string name="cancel">Cancelar</string>
+    <string name="close">Cerrar</string>
     <string name="delete">Eliminar</string>
     <string name="export">Exportar</string>
     <string name="confirm">Confirmar</string>
@@ -129,6 +139,8 @@
     <string name="view_analysis">Ver análisis</string>
     <string name="balance_comparison">+%1$s vs mes anterior</string>
     <string name="balance">Balance</string>
-
+    <string name="total_income">Ingresos</string>
+    <string name="total_expenses">Gastos</string>
+    <string name="savings">Ahorro</string>
 
 </resources>
