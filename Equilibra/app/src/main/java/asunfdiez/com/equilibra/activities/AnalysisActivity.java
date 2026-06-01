@@ -4,6 +4,8 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
@@ -61,6 +63,30 @@ public class AnalysisActivity extends AppCompatActivity implements BottomNavigat
         binding.togglePeriod.addOnButtonCheckedListener((group, checkedId, isChecked) -> {
             if (isChecked) {
                 viewModel.setPeriod(checkedId == R.id.btnWeekly);
+            }
+        });
+
+        viewModel.getPeriodOptions().observe(this, options -> {
+            ArrayAdapter<String> adapter = new ArrayAdapter<>(this,
+                    android.R.layout.simple_spinner_item, options);
+            adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+            binding.spinnerPeriod.setAdapter(adapter);
+        });
+
+        viewModel.getSelectedPeriodIndex().observe(this, index -> {
+            if (binding.spinnerPeriod.getSelectedItemPosition() != index) {
+                binding.spinnerPeriod.setSelection(index);
+            }
+        });
+
+        binding.spinnerPeriod.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                viewModel.selectPeriod(position);
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
             }
         });
     }

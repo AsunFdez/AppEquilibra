@@ -26,7 +26,7 @@
             <RelativeLayout
                 android:id="@+id/headerSection"
                 android:layout_width="match_parent"
-                android:layout_height="100dp"
+                android:layout_height="140dp"
                 android:background="@drawable/header_gradient_secondary"
                 android:paddingHorizontal="20dp"
                 android:layout_marginBottom="24dp"
@@ -36,15 +36,16 @@
                     android:id="@+id/btnBack"
                     android:layout_width="40dp"
                     android:layout_height="40dp"
-                    android:layout_centerVertical="true"
+                    android:layout_marginTop="30dp"
                     android:background="@drawable/button_translucent"
                     android:src="@drawable/ic_arrow_back"
                     app:tint="@android:color/white" />
 
                 <TextView
+                    android:id="@+id/tvTitle"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_centerVertical="true"
+                    android:layout_marginTop="36dp"
                     android:layout_marginStart="16dp"
                     android:layout_toEndOf="@id/btnBack"
                     android:text="@string/analysis"
@@ -57,7 +58,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignParentEnd="true"
-                    android:layout_centerVertical="true"
+                    android:layout_marginTop="28dp"
                     app:checkedButton="@+id/btnWeekly"
                     app:singleSelection="true"
                     app:selectionRequired="true"> <!-- Evita que se puedan desmarcar ambos -->
@@ -84,6 +85,37 @@
                         android:textColor="@color/toggle_text_color"
                         app:strokeColor="@android:color/white" />
                 </com.google.android.material.button.MaterialButtonToggleGroup>
+
+                <!-- Selector de Periodo Concreto -->
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/tvTitle"
+                    android:layout_marginTop="16dp"
+                    android:layout_centerHorizontal="true"
+                    android:background="@drawable/bg_spinner_translucent"
+                    android:paddingHorizontal="8dp"
+                    android:paddingVertical="4dp"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/period"
+                        android:textColor="@android:color/white"
+                        android:textSize="14sp"
+                        android:layout_marginEnd="8dp"/>
+
+                    <Spinner
+                        android:id="@+id/spinnerPeriod"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:minWidth="120dp"
+                        android:backgroundTint="@android:color/white"
+                        android:spinnerMode="dropdown" />
+                </LinearLayout>
+
             </RelativeLayout>
 
             <androidx.core.widget.NestedScrollView

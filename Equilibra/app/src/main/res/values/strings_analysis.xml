@@ -47,4 +47,10 @@
     <string name="good_savings_1">Muy bien, mantienes un buen nivel de ahorro.</string>
     <string name="aceptable_savings_1">Bien, pero podrías ahorrar un poco más.</string>
     <string name="alert_savings_1">¡Atención! Tus ahorros son muy bajos este mes.</string>
+
+
+    <!-- Analysis Activity Strings -->
+    <string name="period">Periodo:</string>
+    <string name="this_month">Este mes</string>
+
 </resources>
