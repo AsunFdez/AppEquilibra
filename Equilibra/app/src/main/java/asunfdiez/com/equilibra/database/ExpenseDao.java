@@ -85,9 +85,13 @@ public interface ExpenseDao {
             Constants.COLUMN_EXPENSE_TIMESTAMP + " BETWEEN :startTime AND :endTime")
     Double getTotalForTypeInRange(String type, long startTime, long endTime);
 
-    @Query("SELECT c." + Constants.COLUMN_CATEGORY_NAME + " as category, " +
+    @Query("SELECT e." + Constants.COLUMN_EXPENSE_CATEGORY + " as categoryId, " +
+            "c." + Constants.COLUMN_CATEGORY_NAME + " as category, " +
             "SUM(e." + Constants.COLUMN_EXPENSE_AMOUNT + ") as amount, " +
-            "COUNT(*) as count " +
+            "COUNT(*) as count, " +
+            "AVG(e." + Constants.COLUMN_EXPENSE_AMOUNT + ") as averageAmount, " +
+            "MAX(e." + Constants.COLUMN_EXPENSE_AMOUNT + ") as highestAmount, " +
+            "MIN(e." + Constants.COLUMN_EXPENSE_AMOUNT + ") as lowestAmount " +
             "FROM " + Constants.TABLE_EXPENSES + " e " +
             "LEFT JOIN " + Constants.TABLE_CATEGORIES + " c ON e." + Constants.COLUMN_EXPENSE_CATEGORY + " = c.id " +
             "WHERE e." + Constants.COLUMN_EXPENSE_TYPE + " = :type AND " +
@@ -119,9 +123,13 @@ public interface ExpenseDao {
             Constants.COLUMN_EXPENSE_TIMESTAMP + " BETWEEN :startTime AND :endTime")
     Double getCategoryTotalInRange(long category, long startTime, long endTime);
 
-    @Query("SELECT c." + Constants.COLUMN_CATEGORY_NAME + " as category, " +
+    @Query("SELECT e." + Constants.COLUMN_EXPENSE_CATEGORY + " as categoryId, " +
+            "c." + Constants.COLUMN_CATEGORY_NAME + " as category, " +
             "SUM(e." + Constants.COLUMN_EXPENSE_AMOUNT + ") as amount, " +
-            "COUNT(*) as count " +
+            "COUNT(*) as count, " +
+            "AVG(e." + Constants.COLUMN_EXPENSE_AMOUNT + ") as averageAmount, " +
+            "MAX(e." + Constants.COLUMN_EXPENSE_AMOUNT + ") as highestAmount, " +
+            "MIN(e." + Constants.COLUMN_EXPENSE_AMOUNT + ") as lowestAmount " +
             "FROM " + Constants.TABLE_EXPENSES + " e " +
             "LEFT JOIN " + Constants.TABLE_CATEGORIES + " c ON e." + Constants.COLUMN_EXPENSE_CATEGORY + " = c.id " +
             "WHERE e." + Constants.COLUMN_EXPENSE_TYPE + " = :type AND " +
@@ -171,4 +179,25 @@ public interface ExpenseDao {
             "WHERE e." + Constants.COLUMN_EXPENSE_TIMESTAMP + " BETWEEN :startTime AND :endTime " +
             "ORDER BY e." + Constants.COLUMN_EXPENSE_TIMESTAMP + " DESC")
     List<ExpenseWithCategory> getExpensesWithCategoryInRange(long startTime, long endTime);
+
+
+    /**
+     * Obtiene gastos de un mes específico.
+     */
+    @Query("SELECT * FROM " + Constants.TABLE_EXPENSES +
+            " WHERE CAST(strftime('%m', datetime(" + Constants.COLUMN_EXPENSE_TIMESTAMP + " / 1000, 'unixepoch')) AS INTEGER) = :month " +
+            " AND CAST(strftime('%Y', datetime(" + Constants.COLUMN_EXPENSE_TIMESTAMP + " / 1000, 'unixepoch')) AS INTEGER) = :year " +
+            " ORDER BY " + Constants.COLUMN_EXPENSE_TIMESTAMP + " DESC")
+    List<Expense> getExpensesByMonthSync(int month, int year);
+
+    /**
+     * Obtiene gastos de los últimos N días.
+     */
+    @Query("SELECT * FROM " + Constants.TABLE_EXPENSES +
+            " WHERE " + Constants.COLUMN_EXPENSE_TIMESTAMP + " >= (strftime('%s', 'now', '-' || :days || ' days') * 1000) " +
+            " ORDER BY " + Constants.COLUMN_EXPENSE_TIMESTAMP + " DESC")
+    List<Expense> getExpensesLastNDaysSync(int days);
+
+
+
 }

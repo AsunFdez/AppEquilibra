@@ -54,11 +54,15 @@
     <string name="alternative_transport_4">Usar transporte público</string>
 
 
-
-
-
-
-
+    <!-- Diálogos de Vivienda -->
+    <string name="housing_expense_title">Gasto de Vivienda</string>
+    <string name="housing_type_prefix">Tipo: </string>
+    <string name="housing_question">¿Es este un gasto necesario?</string>
+    <string name="btn_yes_necessary">✓ Sí, es necesario</string>
+    <string name="btn_no_review">✕ No, quiero revisarlo</string>
+    <string name="necessary_expense_label">Gasto Esencial</string>
+    <string name="housing_tip">Gastos como alquiler, hipoteca y servicios (agua, luz, gas, internet) son considerados inversiones esenciales en tu hogar.</string>
+    <string name="housing_message">%s</string>
 
 
 

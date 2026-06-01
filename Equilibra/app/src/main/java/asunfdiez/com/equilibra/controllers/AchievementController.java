@@ -166,7 +166,7 @@ public class AchievementController {
      * Logros por racha de días consecutivos
      */
     private void checkStreakAchievements() {
-        UserProfile profile = userProfileRepository.getUserProfile().getValue();
+        UserProfile profile = userProfileRepository.getUserProfileSync();
         if (profile == null) return;
         int consecutiveDays = profile.getDayCount();
 

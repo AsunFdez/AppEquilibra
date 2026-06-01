@@ -5,23 +5,29 @@ import android.content.Context;
 import androidx.annotation.NonNull;
 import androidx.lifecycle.LiveData;
 
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+
 import asunfdiez.com.equilibra.database.AppDatabase;
 import asunfdiez.com.equilibra.database.StreakDao;
 import asunfdiez.com.equilibra.models.Streak;
 
 /**
  * Repositorio dedicado a la gestión y persistencia de las rachas de uso del usuario.
- * 
- * <p>Se encarga de abstraer las operaciones de acceso a datos para las rachas, 
- * permitiendo su consulta reactiva por tipo y asegurando que los contadores 
+ *
+ * <p>Se encarga de abstraer las operaciones de acceso a datos para las rachas,
+ * permitiendo su consulta reactiva por tipo y asegurando que los contadores
  * de días consecutivos se almacenen correctamente en la base de datos local.</p>
  */
 public class StreakRepository {
 
     private final Context context;
-    
+
     // DAO para la gestión de las rachas en la base de datos Room
     private final StreakDao streakDAO;
+
+    // Executor para realizar operaciones de actualización en segundo plano
+    private final ExecutorService executorService;
 
     /**
      * Constructor que inicializa el repositorio de rachas.
@@ -29,6 +35,7 @@ public class StreakRepository {
     public StreakRepository(@NonNull Context context) {
         this.context = context;
         this.streakDAO =  AppDatabase.getInstance(context).streakDao();
+        this.executorService = Executors.newSingleThreadExecutor();
     }
 
     /**
@@ -62,34 +69,34 @@ public class StreakRepository {
     }
 
     /**
-     * Actualizar racha existente
+     * Actualizar racha existente en background usando ExecutorService.
      * @param streak Racha a actualizar
      */
     public void updateStreak(@NonNull Streak streak) {
-        new Thread(() -> streakDAO.updateStreak(streak)).start();
+        executorService.execute(() -> streakDAO.updateStreak(streak));
     }
 
     /**
-     * Eliminar racha
+     * Eliminar racha en background usando ExecutorService.
      * @param streak Racha a eliminar
      */
     public void deleteStreak(@NonNull Streak streak) {
-        new Thread(() -> streakDAO.deleteStreak(streak)).start();
+        executorService.execute(() -> streakDAO.deleteStreak(streak));
     }
 
     /**
-     * Resetear racha del usuario
+     * Resetear racha del usuario en background.
      * @param userId ID del usuario
      * @param type Tipo de racha a resetear
      */
     public void resetStreak(long userId, String type) {
-        new Thread(() -> {
+        executorService.execute(() -> {
             Streak streak = streakDAO.getStreakByTypeSync(userId, type);
             if (streak != null) {
                 streak.reset();
                 streakDAO.updateStreak(streak);
             }
-        }).start();
+        });
     }
 
     /**
@@ -99,5 +106,15 @@ public class StreakRepository {
      */
     public LiveData<java.util.List<Streak>> getUserStreaks(long userId) {
         return streakDAO.getUserStreaks(userId);
+    }
+
+    /**
+     * Libera recursos del ExecutorService cuando ya no se necesite.
+     * Se recomienda llamar desde onDestroy() de la Activity que use este repositorio.
+     */
+    public void shutdown() {
+        if (executorService != null && !executorService.isShutdown()) {
+            executorService.shutdown();
+        }
     }
 }

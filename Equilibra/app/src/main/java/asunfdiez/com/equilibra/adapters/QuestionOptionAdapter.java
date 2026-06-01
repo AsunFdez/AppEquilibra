@@ -2,27 +2,28 @@ package asunfdiez.com.equilibra.adapters;
 
 import android.view.LayoutInflater;
 import android.widget.LinearLayout;
-import android.widget.TextView;
 
-import androidx.cardview.widget.CardView;
+import androidx.annotation.NonNull;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import asunfdiez.com.equilibra.R;
+import asunfdiez.com.equilibra.databinding.OnboardingItemQuestionOptionBinding;
 import asunfdiez.com.equilibra.models.QuestionOption;
 
 /**
  * Adaptador personalizado para gestionar la selección de opciones en los cuestionarios.
- * 
- * <p>Aunque no extiende de RecyclerView.Adapter, esta clase gestiona dinámicamente 
- * la creación y visualización de tarjetas de opción en un contenedor lineal (LinearLayout), 
- * manejando el estado de selección única y notificando a través de un escuchador.</p>
+ *
+ * <p>Aunque no extiende de RecyclerView.Adapter, esta clase gestiona dinámicamente
+ * la creación y visualización de tarjetas de opción en un contenedor lineal (LinearLayout),
+ * manejando el estado de selección única y notificando a través de un escuchador.
+ * Utiliza ViewBinding para acceso seguro a las vistas.</p>
  */
 public class QuestionOptionAdapter {
     // Lista de opciones de respuesta a renderizar
     private final List<QuestionOption> options = new ArrayList<>();
-    
+
     // Escuchador para la selección de una opción
     private OnOptionSelectedListener listener;
 
@@ -50,7 +51,12 @@ public class QuestionOptionAdapter {
         }
     }
 
-    public void addOptionsToContainer(LinearLayout container, LayoutInflater inflater) {
+    /**
+     * Añade las opciones de pregunta al contenedor usando ViewBinding.
+     * @param container Contenedor LinearLayout donde se añadirán las tarjetas
+     * @param inflater LayoutInflater para inflar los layouts
+     */
+    public void addOptionsToContainer(@NonNull LinearLayout container, @NonNull LayoutInflater inflater) {
         if (container == null || inflater == null) {
             return;
         }
@@ -58,20 +64,25 @@ public class QuestionOptionAdapter {
         container.removeAllViews();
 
         for (QuestionOption option : options) {
-            CardView card = (CardView) inflater.inflate(R.layout.onboarding_item_question_option, container, false);
-            TextView optionText = card.findViewById(R.id.optionText);
-            optionText.setText(option.text());
+            // Usar el método inflate propio de la clase generada para evitar errores de tipos
+            OnboardingItemQuestionOptionBinding binding = OnboardingItemQuestionOptionBinding.inflate(
+                    inflater,
+                    container,
+                    false
+            );
+
+            binding.optionText.setText(option.text());
 
             final String optionId = option.id();
             final String optionTextValue = option.text();
 
-            card.setOnClickListener(v -> {
+            binding.getRoot().setOnClickListener(v -> {
                 if (listener != null) {
                     listener.onOptionSelected(optionId, optionTextValue);
                 }
             });
 
-            container.addView(card);
+            container.addView(binding.getRoot());
         }
     }
 }

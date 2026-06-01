@@ -57,6 +57,14 @@ public class BudgetRepository {
     }
 
     /**
+     * Obtiene el presupuesto activo de forma síncrona
+     * @return Presupuesto activo o null
+     */
+    public Budget getActiveBudgetSync() {
+        return budgetDao.getActiveOrLastBudgetSync();
+    }
+
+    /**
      * Inserta o actualiza un presupuesto
      * @param budget Presupuesto a guardar
      */

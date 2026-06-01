@@ -11,6 +11,8 @@ import androidx.room.Ignore;
  */
 public class CategoryAnalysis {
 
+    private long categoryId;
+
     // Nombre de la categoría analizada
     private String category;
     
@@ -24,17 +26,37 @@ public class CategoryAnalysis {
     // Proporción porcentual respecto al gasto total consolidado
     private double percentage;
 
+    private double averageAmount;
+    private double highestAmount;
+    private double lowestAmount;
+
     // Constructor vacío
     public CategoryAnalysis() {
     }
 
     // Getters y Setters
+    public long getCategoryId() {
+        return categoryId;
+    }
+
+    public void setCategoryId(long categoryId) {
+        this.categoryId = categoryId;
+    }
+
     public String getCategory() {
         return category;
     }
 
     public void setCategory(String category) {
         this.category = category;
+    }
+
+    public String getCategoryName() {
+        return category;
+    }
+
+    public void setCategoryName(String categoryName) {
+        this.category = categoryName;
     }
 
     public double getAmount() {
@@ -45,6 +67,14 @@ public class CategoryAnalysis {
         this.amount = amount;
     }
 
+    public double getTotalAmount() {
+        return amount;
+    }
+
+    public void setTotalAmount(double totalAmount) {
+        this.amount = totalAmount;
+    }
+
     public int getCount() {
         return count;
     }
@@ -53,12 +83,44 @@ public class CategoryAnalysis {
         this.count = count;
     }
 
+    public int getTransactionCount() {
+        return count;
+    }
+
+    public void setTransactionCount(int transactionCount) {
+        this.count = transactionCount;
+    }
+
     public double getPercentage() {
         return percentage;
     }
 
     public void setPercentage(double percentage) {
         this.percentage = percentage;
+    }
+
+    public double getAverageAmount() {
+        return averageAmount;
+    }
+
+    public void setAverageAmount(double averageAmount) {
+        this.averageAmount = averageAmount;
+    }
+
+    public double getHighestAmount() {
+        return highestAmount;
+    }
+
+    public void setHighestAmount(double highestAmount) {
+        this.highestAmount = highestAmount;
+    }
+
+    public double getLowestAmount() {
+        return lowestAmount;
+    }
+
+    public void setLowestAmount(double lowestAmount) {
+        this.lowestAmount = lowestAmount;
     }
 
     @Override

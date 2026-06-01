@@ -1,7 +1,6 @@
 package asunfdiez.com.equilibra.activities;
 
 import android.content.Intent;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
 import android.view.View;
@@ -11,28 +10,12 @@ import androidx.core.content.ContextCompat;
 import androidx.databinding.DataBindingUtil;
 import androidx.lifecycle.ViewModelProvider;
 
-import com.github.mikephil.charting.animation.Easing;
-import com.github.mikephil.charting.components.XAxis;
-import com.github.mikephil.charting.components.YAxis;
-import com.github.mikephil.charting.data.BarData;
-import com.github.mikephil.charting.data.BarDataSet;
-import com.github.mikephil.charting.data.BarEntry;
-import com.github.mikephil.charting.data.PieData;
-import com.github.mikephil.charting.data.PieDataSet;
-import com.github.mikephil.charting.data.PieEntry;
-import com.github.mikephil.charting.formatter.IndexAxisValueFormatter;
-import com.github.mikephil.charting.formatter.PercentFormatter;
-
 import java.text.NumberFormat;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Locale;
 
 import asunfdiez.com.equilibra.R;
-import asunfdiez.com.equilibra.adapters.CategoryLegendAdapter;
 import asunfdiez.com.equilibra.databinding.ActivityAnalysisBinding;
 import asunfdiez.com.equilibra.databinding.BottomNavigationBinding;
-import asunfdiez.com.equilibra.models.CategoryAnalysis;
 import asunfdiez.com.equilibra.utils.AnimationHelper;
 import asunfdiez.com.equilibra.utils.BottomNavigationHandler;
 import asunfdiez.com.equilibra.utils.Constants;
@@ -53,8 +36,6 @@ public class AnalysisActivity extends AppCompatActivity implements BottomNavigat
     // Modelo de Vista (ViewModel)
     private AnalysisViewModel viewModel;
 
-    // Adaptador para la leyenda de categorías
-    private CategoryLegendAdapter legendAdapter;
     private final NumberFormat currencyFormat = NumberFormat.getCurrencyInstance(new Locale("es", "ES"));
 
     private final Handler handler = new Handler();
@@ -86,7 +67,9 @@ public class AnalysisActivity extends AppCompatActivity implements BottomNavigat
 
     private void setObservers() {
         viewModel.getAnalysisState().observe(this, state -> {
-            updateSummaryCards(state.totalExpenses, state.savings);
+            if (state != null) {
+                updateSummaryCards(state.totalExpenses, state.savings);
+            }
         });
     }
 
@@ -103,7 +86,6 @@ public class AnalysisActivity extends AppCompatActivity implements BottomNavigat
     }
 
     private void setupBottomNavigation() {
-
         if (binding.bottomNav != null) {
             BottomNavigationBinding navBinding = DataBindingUtil.getBinding(binding.bottomNav.bottomNavigation);
             if (navBinding != null) {
@@ -112,6 +94,7 @@ public class AnalysisActivity extends AppCompatActivity implements BottomNavigat
             }
         }
     }
+
     @Override
     public void onHomeClick() {
         navigateTo(MainActivity.class);

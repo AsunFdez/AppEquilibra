@@ -21,6 +21,7 @@ import asunfdiez.com.equilibra.R;
 import asunfdiez.com.equilibra.adapters.CategoryAdapter;
 import asunfdiez.com.equilibra.databinding.ActivityAddExpenseBinding;
 import asunfdiez.com.equilibra.databinding.DialogConfirmExpenseBinding;
+import asunfdiez.com.equilibra.databinding.DialogHousingExpenseBinding;
 import asunfdiez.com.equilibra.databinding.DialogImportantExpenseBinding;
 import asunfdiez.com.equilibra.databinding.DialogSmartReminderBinding;
 import asunfdiez.com.equilibra.models.SmartReminder;
@@ -33,7 +34,7 @@ import asunfdiez.com.equilibra.viewmodels.GamificationViewModel;
 /**
  * Actividad para la creación y registro de nuevos gastos.
  * 
- * <p>Esta clase permite al usuario ingresar el monto, categoría, fecha y notas de un gasto.
+ * <p>Esta clase permite al usuario ingresar el importe, categoría, fecha y notas de un gasto.
  * Implementa una arquitectura MVVM y utiliza Data Binding. Incluye características
  * avanzadas como detección inteligente de patrones de gasto, recordatorios y diálogos 
  * de confirmación para gastos importantes.</p>
@@ -54,6 +55,9 @@ public class AddExpenseActivity extends AppCompatActivity {
     private Dialog smartReminderDialog;
     private Dialog confirmExpenseDialog;
     private Dialog importantExpenseDialog;
+
+    private Dialog housingExpenseDialog;
+
 
     // Utilidad para la selección de fechas
     private DatePickerHelper datePickerHelper;
@@ -128,7 +132,7 @@ public class AddExpenseActivity extends AppCompatActivity {
      * Configura el RecyclerView de categorías
      */
     private void setupCategoryRecyclerView() {
-        // Configurar GridLayoutManager horizontal con 2 filas (para matriz 3x2 por scroll)
+        // Configurar GridLayoutManager horizontal con 2 filas ( matriz 3x2 con scroll hacia los lados)
         GridLayoutManager layoutManager = new GridLayoutManager(this, 2, GridLayoutManager.HORIZONTAL, false);
         binding.rvCategories.setLayoutManager(layoutManager);
 
@@ -292,6 +296,12 @@ public class AddExpenseActivity extends AppCompatActivity {
                 showImportantExpenseDialog();
             }
         });
+
+        viewModel.getShowHousingExpenseDialog().observe(this, show -> {
+            if (show != null && show) {
+                showHousingExpenseDialog();
+            }
+        });
     }
 
     /**
@@ -442,6 +452,57 @@ public class AddExpenseActivity extends AppCompatActivity {
         importantExpenseDialog.show();
     }
 
+
+    /**
+     * Muestra diálogo específico para gastos de vivienda
+     */
+    private void showHousingExpenseDialog() {
+        if (housingExpenseDialog != null && housingExpenseDialog.isShowing()) {
+            housingExpenseDialog.dismiss();
+        }
+
+        housingExpenseDialog = new Dialog(this);
+        housingExpenseDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        housingExpenseDialog.setCancelable(false);
+
+        // Obtener el tipo de gasto
+        String expenseType = viewModel.getHousingExpenseType().getValue();
+        if (expenseType == null) expenseType = "vivienda";
+
+        // Crear binding con datos
+        DialogHousingExpenseBinding dialogBinding = DataBindingUtil.inflate(
+                getLayoutInflater(),
+                R.layout.dialog_housing_expense,  // Nuevo layout
+                null,
+                false
+        );
+
+        // Pasar datos al diálogo
+        dialogBinding.setExpenseType(expenseType);
+        dialogBinding.setViewModel(viewModel);
+        dialogBinding.setLifecycleOwner(this);
+
+        housingExpenseDialog.setContentView(dialogBinding.getRoot());
+
+        Window window = housingExpenseDialog.getWindow();
+        if (window != null) {
+            window.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        }
+
+        // Botón: Sí, es necesario
+        dialogBinding.btnYesNecessary.setOnClickListener(v -> {
+            housingExpenseDialog.dismiss();
+            viewModel.handleHousingExpenseResponse(true); // Guardar directamente
+        });
+
+        // Botón: No, quiero revisarlo
+        dialogBinding.btnNoReview.setOnClickListener(v -> {
+            housingExpenseDialog.dismiss();
+            viewModel.handleHousingExpenseResponse(false); // Mostrar dialog importante
+        });
+
+        housingExpenseDialog.show();
+    }
 
     @Override
     protected void onDestroy() {

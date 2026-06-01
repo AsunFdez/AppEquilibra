@@ -3,9 +3,17 @@ package asunfdiez.com.equilibra.controllers;
 import android.app.Application;
 import android.content.Context;
 
+import androidx.annotation.NonNull;
+import java.time.LocalDate;
+import java.time.YearMonth;
+import java.util.*;
+
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 import asunfdiez.com.equilibra.R;
 import asunfdiez.com.equilibra.models.CategoryAnalysis;
@@ -317,5 +325,145 @@ public class AnalyticsController {
 
             return new long[]{startTime, endTime};
         }
+    }
+
+    /**
+     * Comparativa de gastos: mes actual vs mes anterior.
+     * @return Array [mes actual, mes anterior]
+     */
+    @NonNull
+    public double[] getMonthComparison() {
+        YearMonth current = YearMonth.now();
+        YearMonth previous = current.minusMonths(1);
+
+        double currentTotal = getTotalExpensesByMonth(
+                current.getMonthValue(),
+                current.getYear()
+        );
+
+        double previousTotal = getTotalExpensesByMonth(
+                previous.getMonthValue(),
+                previous.getYear()
+        );
+
+        return new double[]{currentTotal, previousTotal};
+    }
+
+    /**
+     * Total de gastos en un mes específico.
+     * @param month Mes (1-12)
+     * @param year Año
+     * @return Total en euros
+     */
+    public double getTotalExpensesByMonth(int month, int year) {
+        List<Expense> expenses = expenseRepository.getAllExpensesByMonthSync(month, year);
+        return expenses.stream().mapToDouble(Expense::getAmount).sum();
+    }
+
+
+    /**
+     * Obtiene datos agregados de gastos por categoría para el mes actual.
+     * @return Map<categoría, total>
+     */
+    @NonNull
+    public Map<String, Double> getExpensesByCategory() {
+        Map<String, Double> categoryTotals = new HashMap<>();
+        List<Expense> expenses = expenseRepository.getAllExpensesByMonthSync(
+                YearMonth.now().getMonthValue(),
+                YearMonth.now().getYear()
+        );
+
+        for (Expense expense : expenses) {
+            String category = String.valueOf(expense.getCategory());
+            double amount = expense.getAmount();
+            categoryTotals.put(category, categoryTotals.getOrDefault(category, 0.0) + amount);
+        }
+
+        return categoryTotals;
+    }
+
+    /**
+     * Obtiene datos de gastos por día para los últimos N días (para gráfico de línea).
+     * @param days Número de días hacia atrás
+     * @return Map<fecha, total>
+     */
+    @NonNull
+    public Map<LocalDate, Double> getExpensesByDay(int days) {
+        Map<LocalDate, Double> dailyTotals = new LinkedHashMap<>();
+        LocalDate today = LocalDate.now();
+
+        for (int i = days - 1; i >= 0; i--) {
+            LocalDate date = today.minusDays(i);
+            dailyTotals.put(date, 0.0);
+        }
+
+        List<Expense> expenses = expenseRepository.getExpensesLastNDaysSync(days);
+        for (Expense expense : expenses) {
+            LocalDate date = java.time.Instant.ofEpochMilli(expense.getTimestamp())
+                    .atZone(java.time.ZoneId.systemDefault())
+                    .toLocalDate();
+            if (dailyTotals.containsKey(date)) {
+                dailyTotals.put(date, dailyTotals.get(date) + expense.getAmount());
+            }
+        }
+
+        return dailyTotals;
+    }
+
+
+    /**
+     * Genera predicción de gasto para fin de mes.
+     * @return Predicción en euros
+     */
+    public double predictMonthTotal() {
+        LocalDate today = LocalDate.now();
+        int daysElapsed = today.getDayOfMonth();
+        int daysInMonth = today.getMonth().length(today.isLeapYear());
+
+        double currentSpent = getTotalExpensesByMonth(today.getMonthValue(), today.getYear());
+
+        // Proyección lineal: si hemos gastado X en Y días, al final del mes gastaremos...
+        return (currentSpent / daysElapsed) * daysInMonth;
+    }
+
+    /**
+     * Alerta de sobre-gasto: compara gasto actual vs presupuesto.
+     * @param budgetLimit Límite de presupuesto
+     * @return true si se ha superado
+     */
+    public boolean isOverBudget(double budgetLimit) {
+        double currentMonth = getTotalExpensesByMonth(
+                LocalDate.now().getMonthValue(),
+                LocalDate.now().getYear()
+        );
+        return currentMonth > budgetLimit;
+    }
+
+    /**
+     * Porcentaje de presupuesto consumido.
+     * @param budgetLimit Límite de presupuesto
+     * @return Porcentaje (0-100+)
+     */
+    public float getBudgetPercentage(double budgetLimit) {
+        double currentMonth = getTotalExpensesByMonth(
+                LocalDate.now().getMonthValue(),
+                LocalDate.now().getYear()
+        );
+        return (float) ((currentMonth / budgetLimit) * 100);
+    }
+
+    /**
+     * Top N categorías por gasto.
+     * @param topN Número de categorías a retornar
+     * @return List de categorías ordenadas por gasto descendente
+     */
+    @NonNull
+    public List<String> getTopCategories(int topN) {
+        Map<String, Double> categoryTotals = getExpensesByCategory();
+        return categoryTotals.entrySet().stream()
+                .sorted((a, b) -> Double.compare(b.getValue(), a.getValue()))
+                .limit(topN)
+                .map(Map.Entry::getKey)
+                .collect(java.util.stream.Collectors.toList());
     }
 }

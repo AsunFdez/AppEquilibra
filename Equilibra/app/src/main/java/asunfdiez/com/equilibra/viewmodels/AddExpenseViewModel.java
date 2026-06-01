@@ -74,6 +74,10 @@ public class AddExpenseViewModel extends AndroidViewModel {
     private MutableLiveData<String> goalImpact = new MutableLiveData<>("");
     private MutableLiveData<List<String>> alternatives = new MutableLiveData<>();
 
+    private MutableLiveData<Boolean> showHousingExpenseDialog = new MutableLiveData<>(false);
+    private MutableLiveData<String> housingExpenseType = new MutableLiveData<>(); // "alquiler", "hipoteca", etc.
+
+
     private final ExecutorService executor = Executors.newSingleThreadExecutor();
 
     public AddExpenseViewModel(@NonNull Application application) {
@@ -195,6 +199,8 @@ public class AddExpenseViewModel extends AndroidViewModel {
     /**
      * Guarda el gasto - verifica patrones primero
      */
+
+
     public void saveExpense() {
         String amount = currentAmount.getValue();
         ExpenseCategory category = selectedCategory.getValue();
@@ -207,28 +213,38 @@ public class AddExpenseViewModel extends AndroidViewModel {
         try {
             double amountValue = Double.parseDouble(amount.replace(',', '.'));
 
-            // Realizar comprobaciones en hilo secundario para evitar NetworkOnMainThread o DatabaseOnMainThread
             executor.execute(() -> {
                 try {
+                    // Detectar si es gasto de Vivienda importante
+                    if (isHousingCategory(category) && expenseController.isImportantExpense(amountValue)) {
+                        String expenseType = detectHousingExpenseType(description.getValue());
+                        housingExpenseType.postValue(expenseType);
+                        showHousingExpenseDialog.postValue(true);
+                        return;
+                    }
+
                     // Verificar si es un gasto importante (muy alto)
                     if (expenseController.isImportantExpense(amountValue)) {
                         String impact = expenseController.calculateGoalImpact(amountValue);
-                        List<String> alts = expenseController.generateAlternatives(category.getId(), amountValue, description.getValue());
-
+                        List<String> alts = expenseController.generateAlternatives(
+                                category.getId(), amountValue, description.getValue()
+                        );
                         goalImpact.postValue(impact);
                         alternatives.postValue(alts);
                         showImportantExpense.postValue(true);
                         return;
                     }
 
-                    // Verificar patrones de gastos repetitivos (Smart Reminder)
-                    SmartReminder reminder = expenseController.detectExpensePattern(category.getId(), amountValue);
+                    // Verificar patrones de gastos repetitivos
+                    SmartReminder reminder = expenseController.detectExpensePattern(
+                            category.getId(), amountValue
+                    );
                     if (reminder != null) {
                         showSmartReminder.postValue(reminder);
                         return;
                     }
 
-                    // Verificar si necesita confirmación
+                    // Verificar confirmación
                     if (expenseController.shouldShowConfirmation(amountValue)) {
                         int percentage = expenseController.calculateBudgetPercentage(amountValue);
                         budgetPercentage.postValue(percentage);
@@ -248,6 +264,74 @@ public class AddExpenseViewModel extends AndroidViewModel {
             errorMessage.setValue(getApplication().getString(R.string.invalid_input_number));
         }
     }
+
+    /**
+     * Verifica si la categoría es Vivienda
+     */
+    private boolean isHousingCategory(ExpenseCategory category) {
+        // Comparar con el string de categoría "Vivienda"
+        String housingName = getApplication().getString(R.string.category_home); // "Vivienda"
+        return category.getName().equalsIgnoreCase(housingName);
+    }
+
+    /**
+     * Detecta el tipo de gasto de vivienda basándose en la descripción
+     */
+    private String detectHousingExpenseType(String description) {
+        if (description == null) return "vivienda";
+
+        String desc = description.toLowerCase();
+        if (desc.contains("alquiler") || desc.contains("rent")) {
+            return "alquiler";
+        } else if (desc.contains("hipoteca") || desc.contains("mortgage")) {
+            return "hipoteca";
+        } else if (desc.contains("agua") || desc.contains("water")) {
+            return "agua";
+        } else if (desc.contains("luz") || desc.contains("electricity") || desc.contains("electricidad")) {
+            return "electricidad";
+        } else if (desc.contains("gas")) {
+            return "gas";
+        } else if (desc.contains("internet") || desc.contains("wifi")) {
+            return "internet";
+        }
+        return "vivienda";
+    }
+
+    /**
+     * Maneja la respuesta del diálogo de gasto de vivienda
+     * @param isNecessary true si el usuario confirma que es necesario
+     */
+    public void handleHousingExpenseResponse(boolean isNecessary) {
+        if (isNecessary) {
+            // Es un gasto necesario, guardar directamente
+            saveExpenseDirectly();
+        } else {
+            // No es necesario, mostrar el diálogo de gasto importante
+            // Importante: No llamar a resetDialogStates aquí porque resetearía showImportantExpense después de ponerlo a true
+            showHousingExpenseDialog.postValue(false);
+
+            String amount = currentAmount.getValue();
+            ExpenseCategory category = selectedCategory.getValue();
+
+            if (amount != null && category != null) {
+                try {
+                    double amountValue = Double.parseDouble(amount.replace(',', '.'));
+                    executor.execute(() -> {
+                        String impact = expenseController.calculateGoalImpact(amountValue);
+                        List<String> alts = expenseController.generateAlternatives(
+                                category.getId(), amountValue, description.getValue()
+                        );
+                        goalImpact.postValue(impact);
+                        alternatives.postValue(alts);
+                        showImportantExpense.postValue(true);
+                    });
+                } catch (NumberFormatException e) {
+                    Log.e("AddExpenseViewModel", "Error: " + e.getMessage());
+                }
+            }
+        }
+    }
+
 
     /**
      * Guarda el gasto directamente sin mostrar diálogos
@@ -351,11 +435,22 @@ public class AddExpenseViewModel extends AndroidViewModel {
     public LiveData<List<String>> getAlternatives() {
         return alternatives;
     }
+    public LiveData<Boolean> getShowHousingExpenseDialog() {
+        return showHousingExpenseDialog;
+    }
 
+    public LiveData<String> getHousingExpenseType() {
+        return housingExpenseType;
+    }
+
+    /**
+     * Actualiza el estado de los diálogos
+     */
     public void resetDialogStates() {
         showSmartReminder.setValue(null);
         showConfirmExpense.setValue(false);
         showImportantExpense.setValue(false);
+        showHousingExpenseDialog.setValue(false);
     }
 
     public void consumeExpenseSavedEvent() {

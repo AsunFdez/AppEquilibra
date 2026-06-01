@@ -91,7 +91,7 @@ public class BudgetController {
     public void checkDailyBudgetStreak() {
         new Thread(() -> {
             try {
-                UserProfile profile = userProfileRepository.getUserProfile().getValue();
+                UserProfile profile = userProfileRepository.getUserProfileSync();
                 if (profile == null) return;
 
                 // Verificar si es un nuevo día
@@ -100,7 +100,7 @@ public class BudgetController {
                 }
 
                 // Es un nuevo día - verificar si el usuario se mantuvo dentro del presupuesto ayer
-                Budget budget = budgetRepository.getActiveBudget().getValue();
+                Budget budget = budgetRepository.getActiveBudgetSync();
                 if (budget == null || budget.getDailyBudget() <= 0) {
                     return; // No hay presupuesto diario configurado
                 }

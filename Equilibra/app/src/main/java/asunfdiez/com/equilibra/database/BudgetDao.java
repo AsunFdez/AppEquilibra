@@ -42,6 +42,13 @@ public interface BudgetDao {
     LiveData<Budget> getActiveOrLastBudget();
 
     /**
+     * Obtiene el presupuesto activo o el último de forma síncrona
+     */
+    @Query("SELECT * FROM " + Constants.TABLE_BUDGETS +
+            " ORDER BY enabled DESC, updatedAt DESC LIMIT 1")
+    Budget getActiveOrLastBudgetSync();
+
+    /**
      * Obtiene el presupuesto activo de forma síncrona
      */
     @Query("SELECT * FROM " + Constants.TABLE_BUDGETS +

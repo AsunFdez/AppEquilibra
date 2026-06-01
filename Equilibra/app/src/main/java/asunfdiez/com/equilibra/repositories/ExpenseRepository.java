@@ -127,10 +127,10 @@ public class ExpenseRepository {
     }
 
     /**
-     * Obtiene todos los gastos del mes actual
-     * @return Lista de gastos
+     * Obtiene todos los gastos del mes actual con información de categoría
+     * @return Lista de gastos con categoría
      */
-    public List<Expense> getExpensesThisMonth() {
+    public List<ExpenseWithCategory> getExpensesThisMonth() {
         Calendar calendar = Calendar.getInstance();
         calendar.set(Calendar.DAY_OF_MONTH, 1);
         calendar.set(Calendar.HOUR_OF_DAY, 0);
@@ -145,7 +145,7 @@ public class ExpenseRepository {
         calendar.set(Calendar.SECOND, 59);
         long endTime = calendar.getTimeInMillis();
 
-        return expenseDao.getExpensesInRange(startTime, endTime);
+        return expenseDao.getExpensesWithCategoryInRange(startTime, endTime);
     }
 
     /**
@@ -387,6 +387,20 @@ public class ExpenseRepository {
     }
 
     /**
+     * Obtiene todos los gastos de un mes específico (síncrono para background).
+     */
+    public List<Expense> getAllExpensesByMonthSync(int month, int year) {
+        return expenseDao.getExpensesByMonthSync(month, year);
+    }
+
+    /**
+     * Obtiene gastos de los últimos N días.
+     */
+    public List<Expense> getExpensesLastNDaysSync(int days) {
+        return expenseDao.getExpensesLastNDaysSync(days);
+    }
+
+    /**
      * Cierra el executor service
      */
     public void close() {
@@ -394,5 +408,7 @@ public class ExpenseRepository {
             executor.shutdown();
         }
     }
+
+
 
 }

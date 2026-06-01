@@ -17,6 +17,7 @@ import java.util.concurrent.Executors;
 import asunfdiez.com.equilibra.R;
 import asunfdiez.com.equilibra.models.Achievement;
 import asunfdiez.com.equilibra.models.Alternative;
+import asunfdiez.com.equilibra.models.Budget;
 import asunfdiez.com.equilibra.models.CategoryAnalysis;
 import asunfdiez.com.equilibra.models.Expense;
 import asunfdiez.com.equilibra.models.ExpenseCategory;
@@ -26,6 +27,7 @@ import asunfdiez.com.equilibra.models.SmartReminder;
 import asunfdiez.com.equilibra.models.UserProfile;
 import asunfdiez.com.equilibra.repositories.AchievementRepository;
 import asunfdiez.com.equilibra.repositories.AlternativeRepository;
+import asunfdiez.com.equilibra.repositories.BudgetRepository;
 import asunfdiez.com.equilibra.repositories.ExpenseCategoryRepository;
 import asunfdiez.com.equilibra.repositories.ExpenseRepository;
 import asunfdiez.com.equilibra.repositories.SavingGoalRepository;
@@ -43,6 +45,7 @@ public class ExpenseController {
 
     // Repositorio principal para la gestión de transacciones
     private final ExpenseRepository expenseRepository;
+    private final BudgetRepository budgetRepository;
     private final ExpenseCategoryRepository expenseCategoryRepository;
     private final UserProfileRepository userProfileRepository;
     private final SavingGoalRepository savingGoalRepository;
@@ -57,6 +60,7 @@ public class ExpenseController {
     public ExpenseController(Context context) {
         this.context = context;
         this.expenseRepository = new ExpenseRepository(context);
+        this.budgetRepository = new BudgetRepository(context);
         this.expenseCategoryRepository = new ExpenseCategoryRepository(context);
         this.userProfileRepository = new UserProfileRepository(context);
         this.savingGoalRepository = new SavingGoalRepository(context);
@@ -66,12 +70,6 @@ public class ExpenseController {
         this.mainHandler = new Handler(Looper.getMainLooper());
     }
 
-    /**
-     * Guarda un nuevo gasto
-     */
-    public void addExpense(Expense expense) {
-        saveExpense(expense);
-    }
 
     /**
      * Guarda un nuevo gasto o actualiza uno existente
@@ -110,7 +108,7 @@ public class ExpenseController {
 
     /**
      * Obtiene un gasto por su ID
-     * @param expenseId
+     * @param expenseId id del gasto
      * @return gasto
      */
     public Expense getExpenseById(long expenseId) {
@@ -118,10 +116,10 @@ public class ExpenseController {
     }
 
     /**
-    * Obtiene los gastos del mes actual
-    * @return lista de gastos
+    * Obtiene los gastos del mes actual con información de categoría
+    * @return lista de gastos con categoría
     */
-    public List<Expense> getExpensesThisMonth() {
+    public List<ExpenseWithCategory> getExpensesThisMonth() {
         return expenseRepository.getExpensesThisMonth();
     }
 
@@ -130,7 +128,14 @@ public class ExpenseController {
     * @return suma de ingresos
     */
     public double getTotalIncomeThisMonth() {
-        return expenseRepository.getTotalIncomeThisMonth();
+        double totalIncome = 0.0;
+        Budget activeBudget = budgetRepository.getActiveBudgetSync();
+        if (activeBudget != null && activeBudget.isEnabled()) {
+            totalIncome = activeBudget.getMonthlyBudget();
+        } else {
+            totalIncome = expenseRepository.getTotalIncomeThisMonth();
+        }
+        return totalIncome;
     }
 
     /**
@@ -241,7 +246,7 @@ public class ExpenseController {
      * o si no hay ingresos y el gasto es >100€)
      */
     public boolean isImportantExpense(double amount) {
-        //TODO implementar con Budget
+
         double monthlyIncome = getTotalIncomeThisMonth();
 
         if (monthlyIncome == 0) {
