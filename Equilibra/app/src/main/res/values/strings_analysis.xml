@@ -52,5 +52,8 @@
     <!-- Analysis Activity Strings -->
     <string name="period">Periodo:</string>
     <string name="this_month">Este mes</string>
+    <string name="this_week">Esta semana</string>
+    <string name="comparative_analysis">Análisis Comparativo</string>
+    <string name="base_period">Periodo Base:</string>
 
 </resources>

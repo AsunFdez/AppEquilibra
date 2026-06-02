@@ -60,6 +60,11 @@ public class AnalysisActivity extends AppCompatActivity implements BottomNavigat
     private void setupUI() {
         binding.btnBack.setOnClickListener(v -> finish());
 
+        binding.btnComparativeAnalysis.setOnClickListener(v -> {
+            Intent intent = new Intent(this, ComparativeAnalysisActivity.class);
+            startActivity(intent);
+        });
+
         binding.togglePeriod.addOnButtonCheckedListener((group, checkedId, isChecked) -> {
             if (isChecked) {
                 viewModel.setPeriod(checkedId == R.id.btnWeekly);

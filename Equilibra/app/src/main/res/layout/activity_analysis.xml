@@ -186,6 +186,17 @@
                         app:labels="@{viewModel.chartLabels}"
                         app:showValues="@{true}" />
 
+                    <!-- Botón Análisis Comparativo -->
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/btnComparativeAnalysis"
+                        style="@style/Equilibra.Button.Secondary"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:layout_marginBottom="24dp"
+                        android:text="@string/comparative_analysis"
+                        app:icon="@drawable/ic_ana_chart_column_decreasing" />
+
                 </LinearLayout>
             </androidx.core.widget.NestedScrollView>
 

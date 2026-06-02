@@ -32,6 +32,9 @@
             android:name=".activities.AnalysisActivity"
             android:exported="false" />
         <activity
+            android:name=".activities.ComparativeAnalysisActivity"
+            android:exported="false" />
+        <activity
             android:name=".activities.SoftInterventionActivity"
             android:exported="false" />
         <activity

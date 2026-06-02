@@ -84,6 +84,7 @@
                             android:layout_height="wrap_content"
                             android:text="@string/recording_streak_title"
                             android:textColor="@color/gray_800"
+                            android:layout_marginStart="12dp"
                             android:textSize="14sp"
                             android:textStyle="bold" />
 
@@ -91,6 +92,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="@string/recording_streak_description"
+                            android:layout_marginStart="12dp"
                             android:textColor="@color/gray_600"
                             android:textSize="12sp" />
                     </LinearLayout>
@@ -188,6 +190,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="@string/budget_streak_title"
+                            android:layout_marginStart="12dp"
                             android:textColor="@color/gray_800"
                             android:textSize="14sp"
                             android:textStyle="bold" />
@@ -196,6 +199,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="@string/budget_streak_description"
+                            android:layout_marginStart="12dp"
                             android:textColor="@color/gray_600"
                             android:textSize="12sp" />
                     </LinearLayout>

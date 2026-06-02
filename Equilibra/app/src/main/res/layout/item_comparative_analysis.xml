@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+        <variable
+            name="state"
+            type="asunfdiez.com.equilibra.models.ComparativeAnalysisState" />
+    </data>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:paddingBottom="24dp">
+
+        <!-- Card de Resumen del periodo -->
+        <androidx.cardview.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:cardCornerRadius="16dp"
+            app:cardElevation="4dp"
+            app:cardBackgroundColor="@color/backgroundCard">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="20dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@{state.periodLabel}"
+                    android:textColor="@color/primary"
+                    android:textSize="18sp"
+                    android:textStyle="bold" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <include
+                        layout="@layout/component_summary_card"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:layout_margin="8dp"
+                        app:amount="@{state.totalExpenses}"
+                        app:label='@{"Gastos"}'
+                        app:icon='@{asunfdiez.com.equilibra.R.drawable.ic_expense}'
+                        app:iconTint='@{@color/error}' />
+
+                    <include
+                        layout="@layout/component_summary_card"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:layout_margin="8dp"
+                        app:amount="@{state.balance}"
+                        app:label='@{"Ahorro"}'
+                        app:icon='@{asunfdiez.com.equilibra.R.drawable.ic_wallet}'
+                        app:iconTint='@{@color/secondary}' />
+
+                </LinearLayout>
+
+            </LinearLayout>
+        </androidx.cardview.widget.CardView>
+
+        <!-- Card de Gráfico Circular -->
+        <include
+            layout="@layout/component_pie_chart"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="16dp"
+            app:title='@{"Distribución " + state.periodLabel}'
+            app:hasData="@{state.hasData}"
+            app:analysisEntries="@{state.pieEntries}"
+            app:showLegend="@{true}" />
+
+    </LinearLayout>
+</layout>
