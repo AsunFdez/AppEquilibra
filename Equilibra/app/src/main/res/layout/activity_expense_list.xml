@@ -53,10 +53,44 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="@string/my_expenses_tile"
+                        android:text='@{viewModel.isExpenseMode ? @string/my_expenses_tile : @string/total_income}'
                         android:textColor="@android:color/white"
                         android:textSize="22sp"
                         android:textStyle="bold" />
+
+                    <com.google.android.material.button.MaterialButtonToggleGroup
+                        android:id="@+id/toggleType"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentEnd="true"
+                        android:layout_marginTop="6dp"
+                        android:layout_below="@id/tvTitle"
+                        app:checkedButton="@+id/btnExpense"
+                        app:singleSelection="true"
+                        app:selectionRequired="true">
+
+                        <com.google.android.material.button.MaterialButton
+                            android:id="@+id/btnExpense"
+                            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/total_expenses"
+                            android:textAllCaps="false"
+                            app:backgroundTint="@color/toggle_background_color"
+                            android:textColor="@color/toggle_text_color_primary"
+                            app:strokeColor="@android:color/white" />
+
+                        <com.google.android.material.button.MaterialButton
+                            android:id="@+id/btnIncome"
+                            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/total_income"
+                            android:textAllCaps="false"
+                            app:backgroundTint="@color/toggle_background_color"
+                            android:textColor="@color/toggle_text_color_primary"
+                            app:strokeColor="@android:color/white" />
+                    </com.google.android.material.button.MaterialButtonToggleGroup>
 
                     <TextView
                         android:layout_width="wrap_content"
@@ -85,7 +119,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="@string/total_amount_expenses"
+                        android:text='@{viewModel.isExpenseMode ? @string/total_amount_expenses : @string/total_income}'
                         android:textColor="@color/text_secondary"
                         android:textSize="14sp" />
 

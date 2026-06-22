@@ -1,4 +1,4 @@
-package asunfdiez.com.equilibra.utils;
+package asunfdiez.com.equilibra.adapters;
 
 import android.content.res.ColorStateList;
 import android.graphics.Color;
@@ -27,6 +27,8 @@ import java.util.List;
 
 import asunfdiez.com.equilibra.R;
 import asunfdiez.com.equilibra.models.CategoryAnalysis;
+import asunfdiez.com.equilibra.utils.Constants;
+import asunfdiez.com.equilibra.utils.DateUtils;
 
 /**
  * Adaptadores de vinculación globales para el sistema de Data Binding de Android.
@@ -208,6 +210,22 @@ public class BindingAdapters {
 
         barChart.setData(new BarData(dataSet));
         barChart.invalidate();
+    }
+
+
+    /**
+     * Muestra la última fecha y hora de sincronización formateada de manera amigable.
+     */
+    @BindingAdapter("formattedSyncTime")
+    public static void setFormattedSyncTime(TextView textView, long timestamp) {
+        String baseText = textView.getContext().getString(R.string.profile_last_sync);
+        if (timestamp <= 0) {
+            String never = textView.getContext().getString(R.string.profile_sync_never);
+            textView.setText(String.format(baseText, never));
+        } else {
+            String formatted = DateUtils.formatDateTime(timestamp);
+            textView.setText(String.format(baseText, formatted));
+        }
     }
 }
 

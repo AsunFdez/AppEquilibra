@@ -3,20 +3,29 @@ package asunfdiez.com.equilibra.activities;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.animation.AnimationUtils;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.credentials.CredentialManager;
+import androidx.credentials.GetCredentialRequest;
+import androidx.credentials.GetCredentialResponse;
+import androidx.credentials.exceptions.GetCredentialException;
 import androidx.databinding.DataBindingUtil;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 
+import java.util.concurrent.Executor;
+import java.util.concurrent.Executors;
+
 import asunfdiez.com.equilibra.R;
 import asunfdiez.com.equilibra.databinding.ActivitySettingsBinding;
 import asunfdiez.com.equilibra.databinding.BottomNavigationBinding;
+import asunfdiez.com.equilibra.repositories.CloudSyncRepository;
 import asunfdiez.com.equilibra.utils.AnimationHelper;
 import asunfdiez.com.equilibra.utils.BottomNavigationHandler;
 import asunfdiez.com.equilibra.utils.Constants;
@@ -41,6 +50,9 @@ public class SettingsActivity extends AppCompatActivity implements BottomNavigat
 
     private final Handler handler = new Handler();
 
+    private CredentialManager credentialManager;
+    private final Executor executor = Executors.newSingleThreadExecutor();
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -53,6 +65,8 @@ public class SettingsActivity extends AppCompatActivity implements BottomNavigat
         viewModel = new ViewModelProvider(this).get(SettingsViewModel.class);
         binding.setViewModel(viewModel);
 
+        credentialManager = CredentialManager.create(this);
+
         // Configurar UI
         setupToolbar();
         setupListeners();
@@ -64,7 +78,7 @@ public class SettingsActivity extends AppCompatActivity implements BottomNavigat
     }
 
     private void initAnimations() {
-        View[] cards ={binding.cardProfile, binding.cardBudget, binding.cardNotifications, binding.cardAppearance, binding.cardAbout};
+        View[] cards ={binding.cardGoogle, binding.cardProfile, binding.cardBudget, binding.cardNotifications, binding.cardAppearance, binding.cardAbout};
         AnimationHelper.animateCardsEntrance(cards);
     }
 
@@ -83,6 +97,16 @@ public class SettingsActivity extends AppCompatActivity implements BottomNavigat
      * Configura los click listeners
      */
     private void setupListeners() {
+
+        // Google
+        binding.cardGoogle.setOnClickListener(v -> {
+            if (Boolean.TRUE.equals(viewModel.getFirebaseAuthenticated().getValue())) {
+                showLogoutConfirmation();
+            } else {
+                launchGoogleSignIn();
+            }
+        });
+
         // Perfil
         binding.cardProfile.setOnClickListener(v -> openProfileSettings());
 
@@ -105,6 +129,12 @@ public class SettingsActivity extends AppCompatActivity implements BottomNavigat
         binding.btnResetApp.setOnClickListener(v -> showResetAppDialog());
     }
 
+    private void openAbout() {
+        Intent intent = new Intent(this, AboutActivity.class);
+        startActivity(intent);
+        overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
+    }
+
     /**
      * Configura los observadores de LiveData
      */
@@ -116,7 +146,6 @@ public class SettingsActivity extends AppCompatActivity implements BottomNavigat
     }
 
     private void setupBottomNavigation() {
-
         if (binding.bottomNav != null) {
             BottomNavigationBinding navBinding = DataBindingUtil.getBinding(binding.bottomNav.bottomNavigation);
             if (navBinding != null) {
@@ -164,13 +193,53 @@ public class SettingsActivity extends AppCompatActivity implements BottomNavigat
         overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
     }
 
-    /**
-     * Abre AboutActivity
-     */
-    private void openAbout() {
-        Intent intent = new Intent(this, AboutActivity.class);
-        startActivity(intent);
-        overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
+    // ========== AUTENTICACIÓN GOOGLE (CREDENTIAL MANAGER) ==========
+
+    private void launchGoogleSignIn() {
+        GetCredentialRequest request = viewModel.getGoogleIdTokenRequest();
+
+        credentialManager.getCredentialAsync(this, request, null, executor, new androidx.credentials.CredentialManagerCallback<GetCredentialResponse, GetCredentialException>() {
+            @Override
+            public void onResult(GetCredentialResponse result) {
+                handleSignInResult(result);
+            }
+
+            @Override
+            public void onError(GetCredentialException e) {
+                Log.e(TAG, "Error de Credential Manager", e);
+                runOnUiThread(() -> showMessage(getString(R.string.error_login_failed)));
+            }
+        });
+    }
+
+    private void handleSignInResult(GetCredentialResponse result) {
+        runOnUiThread(() -> {
+            viewModel.handleGoogleIdTokenResponse(result, new CloudSyncRepository.OnAuthCompleteListener() {
+                @Override
+                public void onSuccess(String uid) {
+                    showMessage(getString(R.string.success_login));
+                    viewModel.refreshAuthState();
+                }
+
+                @Override
+                public void onFailure(Exception e) {
+                    showMessage(getString(R.string.error_login_failed));
+                }
+            });
+        });
+    }
+
+    private void showLogoutConfirmation() {
+        new MaterialAlertDialogBuilder(this)
+                .setTitle(R.string.profile_logout_firebase)
+                .setMessage(getString(R.string.confirm) + " ¿" + getString(R.string.profile_logout_firebase).toLowerCase() + "?")
+                .setPositiveButton(R.string.ok, (dialog, which) -> {
+                    viewModel.logoutFromFirebase();
+                    showMessage(getString(R.string.success_logout));
+                    viewModel.refreshAuthState();
+                })
+                .setNegativeButton(R.string.cancel, null)
+                .show();
     }
 
     // ========== ACCIONES PELIGROSAS ==========
@@ -185,7 +254,7 @@ public class SettingsActivity extends AppCompatActivity implements BottomNavigat
                 .setIcon(R.drawable.ic_alert_soft)
                 .setPositiveButton(R.string.clear, (dialog, which) -> {
                     viewModel.clearAllSettings();
-                    showConfirmation(getString(R.string.data_cleared));
+                    showMessage(getString(R.string.data_cleared));
                 })
                 .setNegativeButton(R.string.cancel, null)
                 .show();
@@ -201,7 +270,7 @@ public class SettingsActivity extends AppCompatActivity implements BottomNavigat
                 .setIcon(R.drawable.ic_fea_triangle_alert)
                 .setPositiveButton(R.string.reset, (dialog, which) -> {
                     viewModel.resetApp();
-                    showConfirmation(getString(R.string.app_reset));
+                    showMessage(getString(R.string.app_reset));
 
                     // Reiniciar app después de 2 segundos
                     new android.os.Handler().postDelayed(() -> {
@@ -216,11 +285,8 @@ public class SettingsActivity extends AppCompatActivity implements BottomNavigat
     /**
      * Muestra mensaje de confirmación
      */
-    private void showConfirmation(String message) {
-        com.google.android.material.snackbar.Snackbar.make(
-                binding.getRoot(), message,
-                com.google.android.material.snackbar.Snackbar.LENGTH_LONG
-        ).show();
+    private void showMessage(String message) {
+        Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
     }
 
     @Override
@@ -271,5 +337,11 @@ public class SettingsActivity extends AppCompatActivity implements BottomNavigat
         startActivity(intent);
         overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
         finish();
+    }
+
+    @Override
+    protected void onRestart() {
+        super.onRestart();
+        viewModel.refreshAuthState();
     }
 }

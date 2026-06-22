@@ -66,4 +66,8 @@ public interface UserProfileDao {
 
     @Query("SELECT "+Constants.COLUMN_USER_MONTHLY_INCOME+" FROM "+Constants.TABLE_USER_PROFILE+" LIMIT 1")
     double getUserMonthlyIncome();
+
+    @Query("SELECT EXISTS (SELECT 1 FROM "+Constants.TABLE_USER_PROFILE+" WHERE "+Constants.COLUMN_USER_NAME+" IS NOT NULL AND "+Constants.COLUMN_USER_NAME+" != '' LIMIT 1)")
+    LiveData<Boolean> hasProfile();
+
 }

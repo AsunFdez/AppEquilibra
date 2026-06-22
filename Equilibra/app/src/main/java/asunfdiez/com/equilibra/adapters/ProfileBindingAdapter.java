@@ -5,12 +5,16 @@ import android.content.Context;
 import android.graphics.Typeface;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.core.content.ContextCompat;
 import androidx.databinding.BindingAdapter;
 import androidx.databinding.InverseBindingAdapter;
 import androidx.databinding.InverseBindingListener;
+
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.resource.bitmap.CircleCrop;
 
 import asunfdiez.com.equilibra.R;
 
@@ -36,6 +40,24 @@ public class ProfileBindingAdapter {
         // Obtener la primera letra y convertir a Mayúscula
         String initial = name.substring(0, 1).toUpperCase();
         textView.setText(initial);
+    }
+
+    /**
+     * Carga la imagen de perfil desde una URL.
+     */
+    @BindingAdapter("profileImage")
+    public static void setProfileImage(ImageView imageView, String url) {
+        if (url == null || url.isEmpty()) {
+            imageView.setImageResource(R.drawable.ic_person_circle);
+            return;
+        }
+
+        Glide.with(imageView.getContext())
+                .load(url)
+                .transform(new CircleCrop())
+                .placeholder(R.drawable.ic_person_circle)
+                .error(R.drawable.ic_person_circle)
+                .into(imageView);
     }
     @BindingAdapter("viewModeText")
     public static void setViewModeText(TextView view, String mode) {
@@ -119,5 +141,7 @@ public class ProfileBindingAdapter {
                 break;
         }
     }
+
+
 
 }

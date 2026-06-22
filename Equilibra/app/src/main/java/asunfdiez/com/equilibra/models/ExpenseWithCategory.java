@@ -36,15 +36,14 @@ public class ExpenseWithCategory {
     }
 
     public int getCategoryIconResId() {
+        if (expense != null && !expense.isExpense()) {
+            return asunfdiez.com.equilibra.R.drawable.ic_income;
+        }
         return categoryIconResId;
     }
 
     public void setCategoryIconResId(int categoryIconResId) {
         this.categoryIconResId = categoryIconResId;
-    }
-
-    public String getCategoryColor() {
-        return categoryColor;
     }
 
     public void setCategoryColor(String categoryColor) {
@@ -57,7 +56,17 @@ public class ExpenseWithCategory {
     }
 
     public String getCategory() {
+        if (expense != null && !expense.isExpense()) {
+            return "Ingreso";
+        }
         return categoryName != null ? categoryName : (expense != null ? String.valueOf(expense.getCategory()) : "");
+    }
+
+    public String getCategoryColor() {
+        if (expense != null && !expense.isExpense()) {
+            return "#4CAF50"; // Verde para ingresos
+        }
+        return categoryColor;
     }
 
     public String getTime() {

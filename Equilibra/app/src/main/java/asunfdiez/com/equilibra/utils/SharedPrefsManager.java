@@ -31,6 +31,7 @@ public final class SharedPrefsManager {
     private final MutableLiveData<String> theme = new MutableLiveData<>();
     private final MutableLiveData<String> language = new MutableLiveData<>();
     private final MutableLiveData<Boolean> darkMode = new MutableLiveData<>();
+    private final MutableLiveData<Long> lastSyncTime = new MutableLiveData<>();
 
     private SharedPrefsManager(Context context) {
         this.sharedPreferences = context.getSharedPreferences(Constants.PREFS_NAME, Context.MODE_PRIVATE);
@@ -55,6 +56,7 @@ public final class SharedPrefsManager {
         theme.postValue(sharedPreferences.getString(Constants.PREF_THEME, "dark"));
         language.postValue(sharedPreferences.getString(Constants.PREF_LANGUAGE, "es"));
         darkMode.postValue(sharedPreferences.getBoolean(Constants.PREF_DARK_MODE, false));
+        lastSyncTime.postValue(sharedPreferences.getLong(Constants.PREF_LAST_SYNC_TIME, 0L));
     }
 
     /**
@@ -285,6 +287,15 @@ public final class SharedPrefsManager {
     public void setDarkMode(boolean enabled) {
         editor.putBoolean(Constants.PREF_DARK_MODE, enabled).apply();
         darkMode.setValue(enabled);
+    }
+
+    public LiveData<Long> getLastSyncTime() {
+        return lastSyncTime;
+    }
+
+    public void setLastSyncTime(long timestamp) {
+        editor.putLong(Constants.PREF_LAST_SYNC_TIME, timestamp).apply();
+        lastSyncTime.postValue(timestamp);
     }
 
     // ========== MÉTODOS AUXILIARES ==========

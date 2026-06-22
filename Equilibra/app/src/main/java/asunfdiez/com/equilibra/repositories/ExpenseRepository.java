@@ -47,7 +47,10 @@ public class ExpenseRepository {
      * @param expense Gasto a insertar
      */
     public void insertExpense(Expense expense) {
-        executor.execute(() -> expenseDao.insertExpense(expense));
+        executor.execute(() -> {
+            expenseDao.insertExpense(expense);
+            new CloudSyncRepository(context).scheduleImmediateSync();
+        });
     }
 
     /**
@@ -55,7 +58,10 @@ public class ExpenseRepository {
      * @param expense Gasto a actualizar
      */
     public void updateExpenses(Expense expense) {
-        executor.execute(() -> expenseDao.updateExpenses(expense));
+        executor.execute(() -> {
+            expenseDao.updateExpenses(expense);
+            new CloudSyncRepository(context).scheduleImmediateSync();
+        });
     }
 
     /**
@@ -64,7 +70,9 @@ public class ExpenseRepository {
      */
     public void deleteExpense(Expense expense) {
         executor.execute(() -> {
-            expenseDao.deleteExpense(expense);});
+            expenseDao.deleteExpense(expense);
+            new CloudSyncRepository(context).scheduleImmediateSync();
+        });
     }
     /**
      * Elimina todos los gastos de la base de datos

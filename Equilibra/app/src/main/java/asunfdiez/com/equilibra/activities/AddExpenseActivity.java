@@ -74,7 +74,6 @@ public class AddExpenseActivity extends AppCompatActivity {
         gamificationViewModel = new ViewModelProvider(this).get(GamificationViewModel.class);
 
         // Configurar UI
-        setupToolbar();
         setupCategoryRecyclerView();
         initDateTimePickers();
 
@@ -90,9 +89,7 @@ public class AddExpenseActivity extends AppCompatActivity {
         long expenseId = getIntent().getLongExtra("expense_id", -1);
         if (expenseId != -1) {
             viewModel.loadExpense(expenseId);
-            if (getSupportActionBar() != null) {
-                getSupportActionBar().setTitle(getString(R.string.edit_expense));
-            }
+            binding.tvTitle.setText(getString(R.string.edit_expense));
             binding.btnSaveExpense.setText(getString(R.string.save_changes));
         } else {
             binding.btnSaveExpense.setText(getString(R.string.add_expense));
@@ -110,22 +107,6 @@ public class AddExpenseActivity extends AppCompatActivity {
             }
         }, 200);
 
-    }
-
-    /**
-     * Configura el Toolbar
-     */
-    private void setupToolbar() {
-        setSupportActionBar(binding.toolbar);
-        if (getSupportActionBar() != null) {
-            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-            getSupportActionBar().setTitle(getString(R.string.add_expense));
-        }
-
-        binding.toolbar.setNavigationOnClickListener(v -> {
-            finish();
-            overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
-        });
     }
 
     /**
@@ -213,6 +194,18 @@ public class AddExpenseActivity extends AppCompatActivity {
      */
     private void setupListeners() {
 
+        binding.btnBack.setOnClickListener(v -> {
+            finish();
+            overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
+        });
+
+        binding.toggleType.addOnButtonCheckedListener((group, checkedId, isChecked) -> {
+            if (isChecked) {
+                viewModel.setIsExpense(checkedId == R.id.btnExpense);
+            }
+        });
+
+
         binding.ivScrollIndicatorLeft.setOnClickListener(v -> {
             if (binding.rvCategories.canScrollHorizontally(-1)) {
                 binding.rvCategories.smoothScrollBy(-binding.rvCategories.getWidth(), 0);
@@ -259,7 +252,9 @@ public class AddExpenseActivity extends AppCompatActivity {
         // Observar cuando se guarda el gasto
         viewModel.getExpenseSaved().observe(this, saved -> {
             if (saved != null && saved) {
-                Toast.makeText(this, R.string.expense_saved_ok, Toast.LENGTH_SHORT).show();
+                boolean isExpense = viewModel.getIsExpense().getValue() != null && viewModel.getIsExpense().getValue();
+                int messageRes = isExpense ? R.string.expense_saved_ok : R.string.income_saved_ok;
+                Toast.makeText(this, messageRes, Toast.LENGTH_SHORT).show();
                 // Registrar actividad en racha de registro
                 gamificationViewModel.recordActivity();
                 // Limpiar el estado en el ViewModel para que no se dispare otra vez
@@ -300,6 +295,35 @@ public class AddExpenseActivity extends AppCompatActivity {
         viewModel.getShowHousingExpenseDialog().observe(this, show -> {
             if (show != null && show) {
                 showHousingExpenseDialog();
+            }
+        });
+
+        // Observar tipo de transacción (Gasto o Ingreso)
+        viewModel.getIsExpense().observe(this, isExpense -> {
+            boolean isEditMode = getIntent().getLongExtra("expense_id", -1) != -1;
+            
+            if (isExpense) {
+                binding.toggleType.check(R.id.btnExpense);
+                binding.tvAmountLabel.setText(R.string.expense_amount);
+                
+                if (isEditMode) {
+                    binding.tvTitle.setText(R.string.edit_expense);
+                    binding.btnSaveExpense.setText(R.string.save_changes);
+                } else {
+                    binding.tvTitle.setText(R.string.add_expense_title);
+                    binding.btnSaveExpense.setText(R.string.add_expense);
+                }
+            } else {
+                binding.toggleType.check(R.id.btnIncome);
+                binding.tvAmountLabel.setText(R.string.income_amount);
+                
+                if (isEditMode) {
+                    binding.tvTitle.setText(R.string.edit_income);
+                    binding.btnSaveExpense.setText(R.string.save_changes);
+                } else {
+                    binding.tvTitle.setText(R.string.add_income);
+                    binding.btnSaveExpense.setText(R.string.add_income);
+                }
             }
         });
     }

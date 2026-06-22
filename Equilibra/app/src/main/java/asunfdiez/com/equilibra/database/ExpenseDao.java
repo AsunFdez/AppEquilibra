@@ -64,6 +64,13 @@ public interface ExpenseDao {
     List<Expense> getAllExpenses();
 
     /**
+     * Recupera todas las transacciones como LiveData para observación reactiva.
+     */
+    @Query("SELECT * FROM " + Constants.TABLE_EXPENSES +
+            " ORDER BY " + Constants.COLUMN_EXPENSE_TIMESTAMP + " DESC")
+    androidx.lifecycle.LiveData<List<Expense>> getAllExpensesAsync();
+
+    /**
      * Obtiene una lista limitada de las transacciones más recientes.
      */
     @Query("SELECT * FROM " + Constants.TABLE_EXPENSES +
@@ -154,18 +161,22 @@ public interface ExpenseDao {
             Constants.COLUMN_EXPENSE_TIMESTAMP + " >= :sinceTimestamp")
     Double getTotalSpentInCategorySince(long category, long sinceTimestamp);
 
-    @Query("SELECT COUNT(*) FROM " + Constants.TABLE_EXPENSES )
+    @Query("SELECT COUNT(*) FROM " + Constants.TABLE_EXPENSES
+    + " WHERE "+Constants.COLUMN_EXPENSE_TYPE+" = '" + Constants.TYPE_EXPENSE + "'")
     int getTotalExpenseCount();
 
 
-    @Query("SELECT SUM(" + Constants.COLUMN_EXPENSE_AMOUNT + ") FROM " + Constants.TABLE_EXPENSES )
+    @Query("SELECT SUM(" + Constants.COLUMN_EXPENSE_AMOUNT + ") FROM " + Constants.TABLE_EXPENSES
+    + " WHERE "+Constants.COLUMN_EXPENSE_TYPE+" = '" + Constants.TYPE_EXPENSE + "'")
     double getTotalExpenseAmount();
 
     @Query("SELECT COUNT(DISTINCT " + Constants.COLUMN_EXPENSE_CATEGORY + ") FROM " + Constants.TABLE_EXPENSES)
     int getUniqueCategoriesCount();
 
     @Query("SELECT CAST(" + Constants.COLUMN_EXPENSE_TIMESTAMP + " / 86400000 AS INTEGER) as day " +
-            "FROM " + Constants.TABLE_EXPENSES + " GROUP BY day ORDER BY day DESC")
+            "FROM " + Constants.TABLE_EXPENSES +
+            " WHERE "+Constants.COLUMN_EXPENSE_TYPE+" = '" + Constants.TYPE_EXPENSE + "'" +
+            " GROUP BY day ORDER BY day DESC")
     List<Long> getUniqueDaysWithExpenses();
 
     @Query("SELECT COUNT(*) FROM " + Constants.TABLE_EXPENSES +
@@ -177,7 +188,7 @@ public interface ExpenseDao {
             "FROM " + Constants.TABLE_EXPENSES + " e " +
             "LEFT JOIN " + Constants.TABLE_CATEGORIES + " c ON e." + Constants.COLUMN_EXPENSE_CATEGORY + " = c.id " +
             "WHERE e." + Constants.COLUMN_EXPENSE_TIMESTAMP + " BETWEEN :startTime AND :endTime " +
-            "ORDER BY e." + Constants.COLUMN_EXPENSE_TIMESTAMP + " DESC")
+            " ORDER BY e." + Constants.COLUMN_EXPENSE_TIMESTAMP + " DESC")
     List<ExpenseWithCategory> getExpensesWithCategoryInRange(long startTime, long endTime);
 
 
@@ -187,6 +198,7 @@ public interface ExpenseDao {
     @Query("SELECT * FROM " + Constants.TABLE_EXPENSES +
             " WHERE CAST(strftime('%m', datetime(" + Constants.COLUMN_EXPENSE_TIMESTAMP + " / 1000, 'unixepoch')) AS INTEGER) = :month " +
             " AND CAST(strftime('%Y', datetime(" + Constants.COLUMN_EXPENSE_TIMESTAMP + " / 1000, 'unixepoch')) AS INTEGER) = :year " +
+            " AND "+Constants.COLUMN_EXPENSE_TYPE+" = '" + Constants.TYPE_EXPENSE + "'" +
             " ORDER BY " + Constants.COLUMN_EXPENSE_TIMESTAMP + " DESC")
     List<Expense> getExpensesByMonthSync(int month, int year);
 
@@ -195,6 +207,7 @@ public interface ExpenseDao {
      */
     @Query("SELECT * FROM " + Constants.TABLE_EXPENSES +
             " WHERE " + Constants.COLUMN_EXPENSE_TIMESTAMP + " >= (strftime('%s', 'now', '-' || :days || ' days') * 1000) " +
+            " AND "+Constants.COLUMN_EXPENSE_TYPE+" = '" + Constants.TYPE_EXPENSE + "'" +
             " ORDER BY " + Constants.COLUMN_EXPENSE_TIMESTAMP + " DESC")
     List<Expense> getExpensesLastNDaysSync(int days);
 

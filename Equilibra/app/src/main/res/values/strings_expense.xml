@@ -15,19 +15,25 @@
     <string name="add_expense_hour">Hora (opcional)</string>
 
     <string name="save_expense">Guardar gasto</string>
+    <string name="add">Añadir</string>
     <string name="add_expense">Añadir gasto</string>
+    <string name="add_income">Añadir ingreso</string>
     <string name="edit_expense">Editar gasto</string>
+    <string name="edit_income">Editar ingreso</string>
     <string name="expense_amount">Cantidad del gasto</string>
+    <string name="income_amount">Cantidad del ingreso</string>
     <string name="category">Categoría</string>
     <string name="optional_description">Descripción (opcional)</string>
     <string name="date">Fecha</string>
     <string name="quantity">Cantidad</string>
     <string name="chose_category">Selecciona categoría</string>
+    <string name="chose_income_category">Selecciona categoría de ingreso</string>
     <string name="example_expense">Ej: Cena en restaurante italiano</string>
 
     <string name="complete_all_fields">Completa todos los campos</string>
     <string name="invalid_input_number">Formato de importe inválido</string>
     <string name="expense_saved_ok">Gasto guardado correctamente</string>
+    <string name="income_saved_ok">Ingreso guardado correctamente</string>
     <string name="saving_expense_error">Error al procesar el gasto</string>
 
 

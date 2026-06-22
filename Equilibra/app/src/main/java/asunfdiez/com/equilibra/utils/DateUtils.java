@@ -59,6 +59,18 @@ public class DateUtils {
         return formatTime(calendar);
     }
 
+    /**
+     * Convierte una marca de tiempo en milisegundos a una cadena de fecha y hora formateada.
+     */
+    public static String formatDateTime(long timestamp) {
+        if (timestamp <= 0) return "";
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTimeInMillis(timestamp);
+        SimpleDateFormat sdf = new SimpleDateFormat(Constants.DATETIME_FORMAT, Locale.getDefault());
+        sdf.setTimeZone(TimeZone.getDefault());
+        return sdf.format(calendar.getTime());
+    }
+
     public static long getStartOfMonth() {
         Calendar calendar = Calendar.getInstance();
         calendar.set(Calendar.DAY_OF_MONTH, 1);

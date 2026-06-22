@@ -21,9 +21,6 @@ public final class Constants {
 
     //---- CLAVES PARA PREFERENCIAS COMPARTIDAS (SHARED PREFERENCES)
     public static final String PREFS_NAME = "EquilibraPrefs";
-    public static final String PREF_MONTHLY_BUDGET = "monthly_budget";
-    public static final String PREF_WEEKLY_BUDGET = "weekly_budget";
-    public static final String PREF_CURRENCY = "currency";
     public static final String PREF_NOTIFICATIONS_ENABLED = "notifications_enabled";
     public static final String PREF_BUDGET_NOTIFICATIONS = "budget_notifications";
     public static final String PREF_ACHIEVEMENT_NOTIFICATIONS = "achievement_notifications";
@@ -34,7 +31,7 @@ public final class Constants {
 
     // Claves relacionadas con el proceso de Onboarding
     public static final String KEY_ONBOARDING_COMPLETE = "onboardingComplete";
-    public static final String KEY_USER_LEVEL = "userLevel";
+    public static final String PREF_LAST_SYNC_TIME = "last_sync_time";
     public static final String USER_LEVEL_BEGINNER = "beginner";
     public static final String USER_LEVEL_INTERMEDIATE = "intermediate";
     public static final String USER_LEVEL_ADVANCED = "advanced";
@@ -43,27 +40,19 @@ public final class Constants {
     // Configuraciones de UI y animaciones
     public static final long FAB_ANIM_DURATION = 100;
 
-    // Claves para el Perfil de Usuario
-    public static final String KEY_USER_PROFILE = "userProfile";
 
     // Control de Intervenciones
     public static final String KEY_INTERVENTION_LAST_SEEN = "interventionLastSeen";
 
-    // Gestión de Logros
-    public static final String KEY_ACHIEVEMENTS = "achievement_";
 
     // Ajustes Generales
-    public static final String KEY_NOTIFICATIONS_ENABLED = "notificationsEnabled";
     public static final String KEY_CURRENCY_SYMBOL = "currencySymbol";
     public static final String KEY_THEME_MODE = "themeMode";
-    public static final String KEY_LANGUAGE = "language";
 
     // Gamificación
     public static final String KEY_TOTAL_XP = "totalXP";
     public static final String KEY_CURRENT_MISSION = "currentMission";
     public static final String KEY_MISSIONS_COMPLETED = "missionsCompleted";
-
-
 
 
     // Duraciones de animación
@@ -96,7 +85,6 @@ public final class Constants {
 
     // Formato de
     public static final String CURRENCY_FORMAT = "%.2f";
-    //public static final String CURRENCY_FORMAT = "%.2f€";
 
     // Factor de división para ahorro mensual
     public static final int MONTHLY_DIVISION_FACTOR = 6;
@@ -106,7 +94,7 @@ public final class Constants {
     // DATABASE CONSTANTS
     // ========================================
     public static final String DATABASE_NAME = "equilibra.db";
-    public static final int DATABASE_VERSION = 1;
+    public static final int DATABASE_VERSION = 3;
 
     //Tabla UserProfile
     public static final String TABLE_USER_PROFILE = "user_profile";

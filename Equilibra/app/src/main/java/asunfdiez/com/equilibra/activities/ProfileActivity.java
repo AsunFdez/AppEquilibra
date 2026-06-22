@@ -2,11 +2,21 @@ package asunfdiez.com.equilibra.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.Toast;
 
 import androidx.activity.OnBackPressedCallback;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.credentials.CredentialManager;
+import androidx.credentials.GetCredentialRequest;
+import androidx.credentials.GetCredentialResponse;
+import androidx.credentials.exceptions.GetCredentialException;
 import androidx.lifecycle.ViewModelProvider;
+
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
+
+import java.util.concurrent.Executor;
+import java.util.concurrent.Executors;
 
 import asunfdiez.com.equilibra.R;
 import asunfdiez.com.equilibra.databinding.ActivityProfileBinding;
@@ -16,17 +26,22 @@ import asunfdiez.com.equilibra.viewmodels.ProfileViewModel;
 /**
  * Actividad que muestra y permite gestionar el perfil del usuario.
  * 
- * <p>Muestra información resumida del usuario, su estado financiero y permite la navegación 
- * a la edición de datos personales. Utiliza un ViewModel para observar los datos del 
- * perfil en tiempo real a través de LiveData.</p>
+ * <p>Muestra información del usuario, su estado de sincronización de sus datos en la nube
+ * y permite la edición de datos personales y eliminación de todos los datos.
+ * Utiliza un ViewModel para observar los datos del perfil en tiempo real a través de LiveData.</p>
  */
 public class ProfileActivity extends AppCompatActivity {
+
+    private static final String TAG = "ProfileActivity";
 
     // Modelo de Vista (ViewModel)
     private ProfileViewModel viewModel;
     
     // Vinculación de Vistas (View Binding)
     private ActivityProfileBinding binding;
+
+    private CredentialManager credentialManager;
+    private final Executor executor = Executors.newSingleThreadExecutor();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,6 +57,8 @@ public class ProfileActivity extends AppCompatActivity {
 
         binding.setViewModel(viewModel);
 
+        credentialManager = CredentialManager.create(this);
+        
         // Observar el usuario y pasarlo al binding
         viewModel.getUserProfile().observe(this, user -> {
             binding.setUser(user);
@@ -94,6 +111,12 @@ public class ProfileActivity extends AppCompatActivity {
                 navigateToOnboarding();
             }
         });
+
+        // Observar estado de autenticación para forzar refresco del binding
+        viewModel.getFirebaseAuthenticated().observe(this, authenticated -> {
+            Log.d(TAG, "Estado de Firebase cambiado: " + authenticated);
+            binding.executePendingBindings();
+        });
     }
 
     private void setupListeners() {
@@ -113,6 +136,69 @@ public class ProfileActivity extends AppCompatActivity {
             AnimationHelper.scaleUp(v);
             showDeleteAccountDialog();
         });
+
+
+        binding.btnGoogleProfile.setOnClickListener(v -> {
+            AnimationHelper.scaleUp(v);
+            if (Boolean.TRUE.equals(viewModel.getFirebaseAuthenticated().getValue())) {
+                String name = viewModel.getUserProfile().getValue() != null ? viewModel.getUserProfile().getValue().getName() : "";
+                String email = viewModel.getFirebaseEmail().getValue();
+                viewModel.syncProfileWithGoogle(name, email, null);
+            } else {
+                showMessage("Inicia sesión en Google primero");
+            }
+        });
+
+        binding.cardGoogle.setOnClickListener(v -> {
+            if (Boolean.TRUE.equals(viewModel.getFirebaseAuthenticated().getValue())) {
+                showLogoutConfirmation();
+            } else {
+                signIn();
+            }
+        });
+    }
+
+    private void signIn() {
+        Log.d(TAG, "Iniciando proceso de Google Sign-In con Credential Manager");
+
+        GetCredentialRequest request = viewModel.getGoogleIdTokenRequest();
+
+        credentialManager.getCredentialAsync(this, request, null, executor, new androidx.credentials.CredentialManagerCallback<GetCredentialResponse, GetCredentialException>() {
+            @Override
+            public void onResult(GetCredentialResponse result) {
+                runOnUiThread(() -> viewModel.loginWithGoogleResponse(result));
+            }
+
+            @Override
+            public void onError(GetCredentialException e) {
+                Log.e(TAG, "Error de Credential Manager", e);
+                runOnUiThread(() -> showMessage(getString(R.string.error_login_failed)));
+            }
+        });
+    }
+
+
+    private void showLogoutConfirmation() {
+        new MaterialAlertDialogBuilder(this)
+                .setTitle(R.string.profile_logout_firebase)
+                .setMessage(getString(R.string.confirm) + " ¿" + getString(R.string.profile_logout_firebase).toLowerCase() + "?")
+                .setPositiveButton(R.string.ok, (dialog, which) -> {
+                    viewModel.logoutFromFirebase();
+                    showConfirmation(getString(R.string.success_logout));
+                    viewModel.refreshAuthState();
+                })
+                .setNegativeButton(R.string.cancel, null)
+                .show();
+    }
+
+    /**
+     * Muestra mensaje de confirmación
+     */
+    private void showConfirmation(String message) {
+        com.google.android.material.snackbar.Snackbar.make(
+                binding.getRoot(), message,
+                com.google.android.material.snackbar.Snackbar.LENGTH_LONG
+        ).show();
     }
 
     private void showMessage(String message) {

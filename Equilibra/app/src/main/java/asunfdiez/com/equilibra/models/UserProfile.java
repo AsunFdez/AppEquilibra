@@ -27,6 +27,9 @@ public class UserProfile {
     // Correo electrónico de contacto
     private String email;
     
+    // URL de la foto de perfil (por ejemplo, de Google)
+    private String photoUrl;
+    
     // Teléfono (opcional)
     private String phone;
     
@@ -95,6 +98,14 @@ public class UserProfile {
 
     public void setEmail(String a_email) {
         email = a_email;
+    }
+
+    public String getPhotoUrl() {
+        return photoUrl;
+    }
+
+    public void setPhotoUrl(String photoUrl) {
+        this.photoUrl = photoUrl;
     }
 
     public String getPhone() {

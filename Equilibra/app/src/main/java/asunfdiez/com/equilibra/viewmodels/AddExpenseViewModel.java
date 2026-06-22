@@ -20,6 +20,7 @@ import java.util.concurrent.Executors;
 
 import asunfdiez.com.equilibra.R;
 import asunfdiez.com.equilibra.controllers.ExpenseController;
+import asunfdiez.com.equilibra.utils.Constants;
 import asunfdiez.com.equilibra.models.Expense;
 import asunfdiez.com.equilibra.models.ExpenseCategory;
 import asunfdiez.com.equilibra.models.SmartReminder;
@@ -53,6 +54,9 @@ public class AddExpenseViewModel extends AndroidViewModel {
 
     // ID del gasto actual (si se está editando uno existente)
     private long currentExpenseId = 0;
+
+    // Tipo de transacción: true para gasto, false para ingreso
+    private MutableLiveData<Boolean> isExpense = new MutableLiveData<>(true);
 
     public final MutableLiveData<Calendar> selectedDateTime = new MutableLiveData<>(Calendar.getInstance(TimeZone.getDefault(), Locale.getDefault()));
 
@@ -88,6 +92,7 @@ public class AddExpenseViewModel extends AndroidViewModel {
         currentAmount.observeForever(s -> validateForm());
     }
 
+
     /**
      * Carga un gasto existente para editar
      */
@@ -102,6 +107,7 @@ public class AddExpenseViewModel extends AndroidViewModel {
                 new Handler(Looper.getMainLooper()).post(() -> {
                     currentAmount.setValue(String.valueOf(expense.getAmount()));
                     description.setValue(expense.getDescription());
+                    isExpense.setValue(expense.isExpense());
 
                     Calendar cal = Calendar.getInstance();
                     cal.setTimeInMillis(expense.getTimestamp());
@@ -172,6 +178,7 @@ public class AddExpenseViewModel extends AndroidViewModel {
     public void validateForm() {
         String amount = currentAmount.getValue();
         ExpenseCategory category = selectedCategory.getValue();
+        Boolean isExpenseValue = isExpense.getValue();
 
         boolean valid = false;
 
@@ -180,7 +187,14 @@ public class AddExpenseViewModel extends AndroidViewModel {
                 // Reemplazar coma por punto si el teclado del usuario usa coma
                 String amountStr = amount.replace(',', '.');
                 double amountValue = Double.parseDouble(amountStr);
-                valid = amountValue > 0 && category != null;
+                
+                if (isExpenseValue != null && isExpenseValue) {
+                    // Si es gasto, requiere importe > 0 y categoría
+                    valid = amountValue > 0 && category != null;
+                } else {
+                    // Si es ingreso, solo requiere importe > 0
+                    valid = amountValue > 0;
+                }
             } catch (NumberFormatException e) {
                 Log.d("AddExpenseViewModel", "Error al validar el importe: " + e.getMessage());
             }
@@ -204,8 +218,15 @@ public class AddExpenseViewModel extends AndroidViewModel {
     public void saveExpense() {
         String amount = currentAmount.getValue();
         ExpenseCategory category = selectedCategory.getValue();
+        Boolean isExpenseValue = isExpense.getValue();
 
-        if (amount == null || amount.isEmpty() || category == null) {
+        if (amount == null || amount.isEmpty()) {
+            errorMessage.setValue(getApplication().getString(R.string.complete_all_fields));
+            return;
+        }
+
+        // Si es gasto, verificar que la categoría no sea nula
+        if (isExpenseValue != null && isExpenseValue && category == null) {
             errorMessage.setValue(getApplication().getString(R.string.complete_all_fields));
             return;
         }
@@ -213,8 +234,15 @@ public class AddExpenseViewModel extends AndroidViewModel {
         try {
             double amountValue = Double.parseDouble(amount.replace(',', '.'));
 
+            // Si es un ingreso, guardar directamente sin intervenciones
+            if (isExpenseValue != null && !isExpenseValue) {
+                saveExpenseDirectly();
+                return;
+            }
+
             executor.execute(() -> {
                 try {
+                    // Si llegamos aquí es un gasto (isExpenseValue es true) y category no es null
                     // Detectar si es gasto de Vivienda importante
                     if (isHousingCategory(category) && expenseController.isImportantExpense(amountValue)) {
                         String expenseType = detectHousingExpenseType(description.getValue());
@@ -341,8 +369,9 @@ public class AddExpenseViewModel extends AndroidViewModel {
         String amount = currentAmount.getValue();
         ExpenseCategory category = selectedCategory.getValue();
         String desc = description.getValue();
+        Boolean isExpenseValue = isExpense.getValue();
 
-        if (amount == null || category == null) {
+        if (amount == null) {
             errorMessage.setValue(getApplication().getString(R.string.complete_all_fields));
             return;
         }
@@ -352,9 +381,9 @@ public class AddExpenseViewModel extends AndroidViewModel {
 
             Expense expense = new Expense();
             expense.setId(currentExpenseId);
-            expense.setType("expense");
+            expense.setType(isExpenseValue != null && isExpenseValue ? Constants.TYPE_EXPENSE : Constants.TYPE_INCOME);
             expense.setAmount(amountValue);
-            expense.setCategory( category.getId() );
+            expense.setCategory( category != null ? category.getId() : 0 );
             expense.setDescription(desc != null ? desc : "");
 
             SimpleDateFormat sdfDate = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
@@ -441,6 +470,15 @@ public class AddExpenseViewModel extends AndroidViewModel {
 
     public LiveData<String> getHousingExpenseType() {
         return housingExpenseType;
+    }
+
+    public void setIsExpense(boolean isExpense) {
+        this.isExpense.setValue(isExpense);
+        validateForm();
+    }
+
+    public LiveData<Boolean> getIsExpense() {
+        return isExpense;
     }
 
     /**

@@ -102,6 +102,13 @@ public class FeatureCard extends CardView {
         }
     }
 
+    @BindingAdapter("cardIcon")
+    public static void setCardIcon(FeatureCard view, android.graphics.drawable.Drawable drawable) {
+        if (view.binding != null && view.binding.cardIcon != null) {
+            view.binding.cardIcon.setImageDrawable(drawable);
+        }
+    }
+
     @BindingAdapter("cardDescription")
     public static void setCardDescription(FeatureCard view, String description) {
         if (view.binding != null && view.binding.cardDescription != null) {
@@ -111,6 +118,27 @@ public class FeatureCard extends CardView {
             } else {
                 view.binding.cardDescription.setVisibility(View.GONE);
             }
+        }
+    }
+
+    @BindingAdapter("cardFormattedSyncTime")
+    public static void setCardFormattedSyncTime(FeatureCard view, Long timestamp) {
+        // Si el timestamp es nulo o negativo (ej: -1L), ignoramos este adapter para que
+        // prevalezca el valor de cardDescription normal.
+        if (timestamp == null || timestamp < 0) return;
+
+        if (view.binding != null && view.binding.cardDescription != null) {
+            String baseText = view.getContext().getString(R.string.profile_last_sync);
+            String textToDisplay;
+            if (timestamp <= 0) {
+                String never = view.getContext().getString(R.string.profile_sync_never);
+                textToDisplay = String.format(baseText, never);
+            } else {
+                String formatted = asunfdiez.com.equilibra.utils.DateUtils.formatDateTime(timestamp);
+                textToDisplay = String.format(baseText, formatted);
+            }
+            view.binding.cardDescription.setText(textToDisplay);
+            view.binding.cardDescription.setVisibility(View.VISIBLE);
         }
     }
 

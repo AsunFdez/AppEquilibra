@@ -83,6 +83,12 @@ public class ExpenseListActivity extends AppCompatActivity implements ExpenseAda
 
     private void setupListeners() {
         binding.btnBack.setOnClickListener(v -> finish());
+
+        binding.toggleType.addOnButtonCheckedListener((group, checkedId, isChecked) -> {
+            if (isChecked) {
+                viewModel.setIsExpenseMode(checkedId == R.id.btnExpense);
+            }
+        });
         
         binding.btnPrevMonth.setOnClickListener(v -> {
             viewModel.previousMonth();

@@ -5,8 +5,12 @@ import android.app.Application;
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
+import androidx.lifecycle.MutableLiveData;
+import androidx.credentials.GetCredentialRequest;
+import androidx.credentials.GetCredentialResponse;
 
 import asunfdiez.com.equilibra.controllers.UserProfileController;
+import asunfdiez.com.equilibra.repositories.CloudSyncRepository;
 import asunfdiez.com.equilibra.utils.SharedPrefsManager;
 
 /**
@@ -29,6 +33,10 @@ public class SettingsViewModel extends AndroidViewModel {
     private final LiveData<Boolean> darkMode;
     private final LiveData<String> theme;
     private final LiveData<String> language;
+
+    private final MutableLiveData<Boolean> firebaseAuthenticated = new MutableLiveData<>();
+    private final MutableLiveData<String> firebaseEmail = new MutableLiveData<>();
+    private final LiveData<Long> lastSyncTime;
     
     // Controlador de perfil para acciones administrativas
     private final UserProfileController userProfileController;
@@ -49,8 +57,14 @@ public class SettingsViewModel extends AndroidViewModel {
         this.darkMode = prefsManager.getDarkMode();
         this.theme = prefsManager.getTheme();
         this.language = prefsManager.getLanguage();
+        this.lastSyncTime = prefsManager.getLastSyncTime();
 
+        refreshAuthState();
+    }
 
+    public void refreshAuthState() {
+        firebaseAuthenticated.setValue(userProfileController.isFirebaseAuthenticated());
+        firebaseEmail.setValue(userProfileController.getFirebaseUserEmail());
     }
 
     // ========== GETTERS LIVEDATA ==========
@@ -73,6 +87,18 @@ public class SettingsViewModel extends AndroidViewModel {
 
     public LiveData<String> getLanguage() {
         return language;
+    }
+
+    public LiveData<Boolean> getFirebaseAuthenticated() {
+        return firebaseAuthenticated;
+    }
+
+    public LiveData<String> getFirebaseEmail() {
+        return firebaseEmail;
+    }
+
+    public LiveData<Long> getLastSyncTime() {
+        return lastSyncTime;
     }
 
     // ========== MÉTODOS DE ACCIÓN ==========
@@ -103,5 +129,23 @@ public class SettingsViewModel extends AndroidViewModel {
      */
     public String exportSettings() {
         return prefsManager.exportPreferences();
+    }
+
+    public void loginToFirebase(String idToken, CloudSyncRepository.OnAuthCompleteListener listener) {
+        userProfileController.loginToFirebase(idToken, listener);
+    }
+
+    public void logoutFromFirebase() {
+        userProfileController.logoutFromFirebase();
+    }
+
+    // ========== MÉTODOS DE GOOGLE SIGN-IN UNIFICADOS ==========
+
+    public GetCredentialRequest getGoogleIdTokenRequest() {
+        return userProfileController.getGoogleIdTokenRequest();
+    }
+
+    public void handleGoogleIdTokenResponse(GetCredentialResponse response, CloudSyncRepository.OnAuthCompleteListener listener) {
+        userProfileController.handleGoogleIdTokenResponse(response, listener);
     }
 }

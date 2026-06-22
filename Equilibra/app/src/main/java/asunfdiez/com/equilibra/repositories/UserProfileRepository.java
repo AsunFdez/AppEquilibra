@@ -141,5 +141,9 @@ public class UserProfileRepository {
             executorService.shutdown();
         }
     }
+
+    public LiveData<Boolean> hasProfile() {
+        return userProfileDao.hasProfile();
+    }
 }
 

@@ -53,6 +53,9 @@ public class ExpenseListViewModel extends AndroidViewModel {
     // Marca de tiempo del día seleccionado para el filtrado detallado
     private final MutableLiveData<Long> selectedDateTimestamp = new MutableLiveData<>(null);
 
+    // Tipo de transacción a visualizar: true para gastos, false para ingresos
+    private final MutableLiveData<Boolean> isExpenseMode = new MutableLiveData<>(true);
+
     /**
      *Constructor
      * @param application
@@ -72,20 +75,29 @@ public class ExpenseListViewModel extends AndroidViewModel {
     public void loadData() {
         Executors.newSingleThreadExecutor().execute(() -> {
             List<ExpenseWithCategory> expenseList = getExpensesCurrentMonth();
-            List<ExpenseWithCategory> filteredList = getExpensesFilteredByDay(expenseList);
-            // Calcular total solo para gastos filtrados
+            Boolean isExpense = isExpenseMode.getValue();
+            
+            // Filtrar la lista del mes por el tipo seleccionado (gasto/ingreso)
+            List<ExpenseWithCategory> typeFilteredList = new ArrayList<>();
+            for (ExpenseWithCategory e : expenseList) {
+                if (isExpense != null && e.getExpense().isExpense() == isExpense) {
+                    typeFilteredList.add(e);
+                }
+            }
+
+            List<ExpenseWithCategory> filteredList = getExpensesFilteredByDay(typeFilteredList);
+            
+            // Calcular total solo para la selección filtrada
             double total = 0;
             for (ExpenseWithCategory e : filteredList) {
-                if (e.getExpense().isExpense()) {
-                    total += e.getExpense().getAmount();
-                }
+                total += e.getExpense().getAmount();
             }
 
             expenses.postValue(filteredList);
             totalAmount.postValue(String.format("%.2f", total));
             totalRecords.postValue(filteredList.size());
 
-            setDaysWithExpenses(expenseList);
+            setDaysWithExpenses(typeFilteredList);
         });
     }
 
@@ -237,6 +249,15 @@ public class ExpenseListViewModel extends AndroidViewModel {
 
     public LiveData<Map<Integer, Boolean>> getDaysWithExpenses() {
         return daysWithExpenses;
+    }
+
+    public void setIsExpenseMode(boolean isExpense) {
+        isExpenseMode.setValue(isExpense);
+        loadData();
+    }
+
+    public LiveData<Boolean> getIsExpenseMode() {
+        return isExpenseMode;
     }
 
     /**

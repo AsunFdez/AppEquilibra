@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "621384864062",
+    "project_id": "appequilibra-a60f2",
+    "storage_bucket": "appequilibra-a60f2.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:621384864062:android:9f0d42699f94a9611e1c6f",
+        "android_client_info": {
+          "package_name": "asunfdiez.com.equilibra"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "621384864062-squpp7d1aidgl2j3kv1uen8ag880dkgb.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBHJqQrExhul6Cq97beXGLe_LqrBrOn_4Q"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "621384864062-squpp7d1aidgl2j3kv1uen8ag880dkgb.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

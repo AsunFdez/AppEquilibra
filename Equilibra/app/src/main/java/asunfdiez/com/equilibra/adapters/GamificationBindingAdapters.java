@@ -1,11 +1,10 @@
-package asunfdiez.com.equilibra.utils;
+package asunfdiez.com.equilibra.adapters;
 
 import androidx.databinding.BindingAdapter;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.List;
 
-import asunfdiez.com.equilibra.adapters.AchievementMiniAdapter;
 import asunfdiez.com.equilibra.models.Achievement;
 
 /**

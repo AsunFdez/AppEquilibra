@@ -6,7 +6,13 @@ import android.os.Looper;
 import android.util.Log;
 
 import androidx.annotation.Nullable;
+import androidx.credentials.GetCredentialResponse;
+import androidx.credentials.GetCredentialRequest;
+import androidx.credentials.CustomCredential;
 import androidx.lifecycle.LiveData;
+
+import com.google.android.libraries.identity.googleid.GetGoogleIdOption;
+import com.google.android.libraries.identity.googleid.GoogleIdTokenCredential;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -18,6 +24,7 @@ import asunfdiez.com.equilibra.database.AppDatabase;
 import asunfdiez.com.equilibra.models.Advice;
 import asunfdiez.com.equilibra.models.SavingGoal;
 import asunfdiez.com.equilibra.models.UserProfile;
+import asunfdiez.com.equilibra.repositories.CloudSyncRepository;
 import asunfdiez.com.equilibra.repositories.ExpenseRepository;
 import asunfdiez.com.equilibra.repositories.SavingGoalRepository;
 import asunfdiez.com.equilibra.repositories.UserProfileRepository;
@@ -44,6 +51,7 @@ public class UserProfileController {
     
     // Gestores de estado y lógica adicional
     private final SharedPrefsManager prefsManager;
+    private final CloudSyncController syncController;
     private UserProfile user;
     private final WellbeingController wellbeingController;
     private final StreakController streakController;
@@ -61,6 +69,7 @@ public class UserProfileController {
         this.goalRepository = new SavingGoalRepository(context);
         this.expenseRepository = new ExpenseRepository(context);
         this.prefsManager = SharedPrefsManager.getInstance(context);
+        this.syncController = new CloudSyncController(context);
         this.wellbeingController = new WellbeingController(context);
         this.streakController = new StreakController(context);
         this.context = context;
@@ -308,5 +317,97 @@ public class UserProfileController {
 
     public LiveData<String> getUserName() {
         return userRepository.getUserName();
+    }
+
+    public LiveData<Boolean> hasProfile() {
+        return userRepository.hasProfile();
+    }
+
+    // --- Métodos de Autenticación y Sincronización en la Nube ---
+
+
+    /**
+     * Indica si el usuario está autenticado en Firebase.
+     */
+    public boolean isFirebaseAuthenticated() {
+        return syncController.isFirebaseAuthenticated();
+    }
+
+    /**
+     * Obtiene el email del usuario conectado en Firebase.
+     */
+    public String getFirebaseUserEmail() {
+        return syncController.getFirebaseUserEmail();
+    }
+
+    /**
+     * Inicia el proceso de login en Firebase con un token de Google.
+     */
+    public void loginToFirebase(String idToken, CloudSyncRepository.OnAuthCompleteListener listener) {
+        syncController.login(idToken, new CloudSyncRepository.OnAuthCompleteListener() {
+            @Override
+            public void onSuccess(String uid) {
+                syncController.syncNow();
+                if (listener != null) listener.onSuccess(uid);
+            }
+
+            @Override
+            public void onFailure(Exception e) {
+                if (listener != null) listener.onFailure(e);
+            }
+        });
+    }
+
+    /**
+     * Cierra la sesión de Firebase.
+     */
+    public void logoutFromFirebase() {
+        syncController.logout();
+    }
+
+    /**
+     * Sincroniza los datos actuales con la nube.
+     */
+    public void syncNow() {
+        syncController.syncNow();
+    }
+
+    // --- Métodos de Google Sign-In Unificados ---
+
+    /**
+     * Crea la petición para obtener el token de identidad de Google.
+     * @return Petición configurada para Credential Manager
+     */
+    public GetCredentialRequest getGoogleIdTokenRequest() {
+        GetGoogleIdOption googleIdTokenOption = new GetGoogleIdOption.Builder()
+                .setFilterByAuthorizedAccounts(false)
+                .setServerClientId(context.getString(asunfdiez.com.equilibra.R.string.default_web_client_id))
+                .build();
+
+        return new GetCredentialRequest.Builder()
+                .addCredentialOption(googleIdTokenOption)
+                .build();
+    }
+
+    /**
+     * Procesa la respuesta de Credential Manager y realiza el login en Firebase.
+     * @param result Resultado obtenido de Credential Manager
+     * @param listener Callback para notificar el resultado del login
+     */
+    public void handleGoogleIdTokenResponse(GetCredentialResponse result, CloudSyncRepository.OnAuthCompleteListener listener) {
+        if (result.getCredential() instanceof CustomCredential &&
+                result.getCredential().getType().equals(GoogleIdTokenCredential.TYPE_GOOGLE_ID_TOKEN_CREDENTIAL)) {
+            try {
+                GoogleIdTokenCredential googleIdTokenCredential = GoogleIdTokenCredential.createFrom(result.getCredential().getData());
+                String idToken = googleIdTokenCredential.getIdToken();
+                loginToFirebase(idToken, listener);
+            } catch (Exception e) {
+                Log.e(TAG, "Error al extraer token de Google", e);
+                if (listener != null) listener.onFailure(e);
+            }
+        } else {
+            Log.e(TAG, "Tipo de credencial no esperado");
+            if (listener != null) listener.onFailure(new Exception("Invalid credential type"));
+        }
     }
 }

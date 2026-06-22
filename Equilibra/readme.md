@@ -1,8 +1,173 @@
 # Proyecto Equilibra
 
-## Estructura actual
+## Estado actual del proyecto
 
-app/src/main/java/asunfdiez/com/equilibra/
+Este documento refleja el estado observado del proyecto a fecha de 2026-06-17.
+La aplicación es un proyecto Android nativo en Java con Gradle Kotlin DSL y utiliza una arquitectura basada en actividades, view models, repositorios y Room para el almacenamiento local.
+
+Además, el proyecto ya incluye integración con Firebase para autenticación y sincronización de datos, así como un flujo de sincronización en segundo plano mediante WorkManager.
+
+---
+
+## Objetivo de la app
+
+Equilibra es una app para el seguimiento financiero personal y el bienestar económico. Permite:
+
+- registrar ingresos y gastos;
+- analizar el comportamiento mensual;
+- visualizar metas de ahorro;
+- gestionar perfil y configuración;
+- mostrar intervenciones suaves cuando el gasto o el patrón de consumo lo requiere;
+- sincronizar datos locales con Firebase.
+
+---
+
+## Arquitectura actual
+
+### Capas principales
+
+- **Activities / UI**: pantallas principales y configuración.
+- **ViewModels**: preparación de datos para la interfaz.
+- **Controllers**: lógica de negocio específica.
+- **Repositories**: acceso a datos locales y sincronización remota.
+- **Database / Room**: persistencia local mediante `AppDatabase` y DAOs.
+- **Workers**: operaciones en segundo plano para sincronización.
+
+### Tecnologías principales
+
+- Android SDK / Jetpack
+- Java 21
+- Room 2.6.1
+- ViewModel + LiveData
+- WorkManager
+- Firebase Auth
+- Firebase Firestore
+- Google Services plugin
+
+---
+
+## Persistencia local
+
+El proyecto usa Room para la capa local. El componente principal es:
+
+- `AppDatabase`: base de datos principal.
+- `ExpenseDao`: acceso a gastos.
+- Otros DAOs y repositorios gestionan perfil, metas, presupuestos, logros y otras entidades.
+
+La capa de repositorios centraliza el acceso a datos y, en el caso de los gastos, también dispara la sincronización con la nube tras cambios.
+
+---
+
+## Sincronización con Firebase
+
+La sincronización con Firebase ya está integrada en el proyecto.
+
+### Piezas relevantes
+
+- `CloudSyncRepository`
+  - gestiona la autenticación;
+  - usa inicio de sesión anónimo si no hay usuario activo;
+  - sube datos locales a Firestore.
+
+- `CloudSyncWorker`
+  - ejecuta la sincronización en segundo plano con WorkManager;
+  - reintenta la tarea cuando la red no está disponible.
+
+- `ExpenseRepository`
+  - tras insertar, actualizar o eliminar un gasto, programa una sincronización inmediata.
+
+### Flujo esperado
+
+1. El usuario crea, modifica o elimina un gasto.
+2. El repositorio local actualiza la base de datos.
+3. Se programa una sincronización con `CloudSyncRepository`.
+4. WorkManager ejecuta la tarea cuando hay red disponible.
+5. Firebase Auth / Firestore reciben los datos sincronizados.
+
+> Nota: la infraestructura base ya existe; conviene revisar reintentos, consistencia de datos y sincronización de entidades adicionales.
+
+---
+
+## Estructura general del proyecto
+
+```text
+app/
+├── src/main/
+│   ├── java/asunfdiez/com/equilibra/
+│   │   ├── activities/
+│   │   ├── adapters/
+│   │   ├── controllers/
+│   │   ├── database/
+│   │   ├── models/
+│   │   ├── repositories/
+│   │   ├── utils/
+│   │   ├── viewmodels/
+│   │   ├── views/
+│   │   └── workers/
+│   ├── res/
+│   │   ├── layout/
+│   │   ├── drawable/
+│   │   ├── values/
+│   │   └── xml/
+│   └── AndroidManifest.xml
+├── build.gradle.kts
+└── google-services.json
+```
+
+---
+
+## Pantallas principales
+
+La app incluye pantallas para:
+
+- splash / inicio;
+- onboarding;
+- dashboard principal;
+- añadir y listar gastos;
+- análisis financiero;
+- logros;
+- perfil y configuración;
+- ajustes de presupuesto, apariencia y notificaciones;
+- intervención suave.
+
+---
+
+## Configuración de Firebase
+
+La configuración actual del proyecto incluye:
+
+- `google-services.json` en la carpeta `app/`;
+- plugin `com.google.gms.google-services` en Gradle;
+- dependencias de Firebase Auth, Firestore y Analytics;
+- uso de Firebase para la sincronización remota.
+
+---
+
+## Cómo trabajar con el proyecto
+
+### Requisitos
+
+- Android Studio con soporte para Java 21 y Android Gradle Plugin.
+- SDK Android suficiente para la configuración del proyecto.
+- Acceso a la configuración de Firebase correspondiente.
+
+### Revisión recomendada
+
+1. validar la coherencia de datos locales y remotos;
+2. revisar el comportamiento de reintentos cuando cambia la red;
+3. comprobar sincronización de perfil, presupuesto y metas;
+4. revisar concurrencia y errores de UI asociados a llamadas asíncronas.
+
+---
+
+## Resumen rápido
+
+- La app sigue siendo una aplicación Android Java con Room.
+- Ya existe una capa de sincronización con Firebase.
+- `CloudSyncRepository` y `CloudSyncWorker` forman la base del sistema de nube.
+- `ExpenseRepository` dispara la sincronización al editar gastos.
+
+<!--
 
 ├── activities/                    # Activities de la aplicación
 │   ├── SplashActivity.java
@@ -457,7 +622,7 @@ saveExpenseDirectly()
 
 ---
 
-## 🎯 SISTEMA DE CONSEJOS DIARIOS (FASE 1 ✅ COMPLETADA)
+## 🎯 SISTEMA DE CONSEJOS DIARIOS 
 
 ### Descripción
 Sistema que muestra un consejo financiero diferente cada día. Los usuarios verán:
@@ -468,7 +633,7 @@ Sistema que muestra un consejo financiero diferente cada día. Los usuarios ver�
 ### Archivos
 1. **`strings_advice.xml`** - 25 consejos mejorados
 2. **`AdviceManager.java`** - Lógica de rotación diaria
-3. **`AdviceViewModel.java`** - ViewModel centralizado (FASE 2)
+3. **`AdviceViewModel.java`** - ViewModel centralizado 
 
 ### Integración en UI
 Data Binding automático via `AdviceViewModel`:
@@ -481,59 +646,6 @@ Data Binding automático via `AdviceViewModel`:
 
 ---
 
-## 🔧 ARQUITECTURA MEJORADA (FASE 2 ✅ COMPLETADA)
-
-### Cambios implementados
-
-**Separación de Responsabilidades:**
-- **AdviceViewModel** - Manejo centralizado de consejos
-- **MainViewModel** - Lógica financiera e intervención
-- **MainActivity** - Solo UI, sin lógica de negocio
-
-**Data Binding Reactivo:**
-```
-AdviceViewModel
-  ├─ getDailyAdvice() ← Transformations.map(userProfile)
-  ├─ getQuickAction() ← Transformations.map(userProfile)
-  └─ getUserProfile()
-
-MainActivity
-  ├─ Instancia AdviceViewModel
-  ├─ Vinculado al binding sin setVariable() manual
-  └─ UI actualiza automáticamente
-```
-
-**Beneficios:**
-- ✅ Código más limpio: Eliminados setVariable() manuales
-- ✅ MVVM mejorado: ViewModels con responsabilidades claras
-- ✅ Testeable: Lógica aislada y fácil de probar
-- ✅ Mantenible: Cambios en un ViewModel no afectan otros
-
-### Archivos modificados (FASE 2)
-- **AdviceViewModel.java** (NUEVO) - ViewModel especializado
-- **MainViewModel.java** - Refactorizado (removida lógica de consejos)
-- **MainActivity.java** - Simplificado (eliminados setVariable manuales)
-- **activity_main.xml** - Incluye adviceViewModel
-- **beginner_user.xml** - Usa adviceViewModel.dailyAdvice
-
-### Tests unitarios agregados
-- **AdviceManagerTest.java** - 11 tests de rotación diaria
-- **AdviceViewModelTest.java** - 7 tests de LiveData reactivos
-
----
-
-## Próximos objetivos
-
-1. ✅ FASE 1: Consejos diarios
-2. ✅ FASE 2: Mejoras de arquitectura MVVM
-3. ⏳ **FASE 3:** Notificaciones diarias y Gamificación
-   - [ ] WorkManager para notificaciones (8:00 AM)
-   - [ ] Sistema de logros con desbloqueo automático
-   - [ ] Rachas (streak) de días
-   - [ ] Animaciones de desbloqueo
-4. ⏳ FASE 4: Análisis financiero avanzado
-5. ⏳ FASE 5: Funcionalidades especializadas
-6. ⏳ FASE 6: Publicación
 
 ## Dependencias importantes
 
@@ -542,6 +654,4 @@ MainActivity
 - DataBinding 
 - Room
 
-
-
-
+-->
