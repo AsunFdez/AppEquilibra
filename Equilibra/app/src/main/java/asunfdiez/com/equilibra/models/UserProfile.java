@@ -53,7 +53,10 @@ public class UserProfile {
     private long updatedAt;
 
     // Ingresos mensuales declarados
-    private double monthlyIncome;
+    private Double monthlyIncome;
+
+    // Día del mes para el ingreso automático
+    private Integer incomeDay;
 
     // Niveles declarados de conocimiento y hábitos financieros (1-10)
     private int financialKnowledge;
@@ -172,12 +175,20 @@ public class UserProfile {
         updatedAt = a_updatedAt;
     }
 
-    public double getMonthlyIncome() {
+    public Double getMonthlyIncome() {
         return monthlyIncome;
     }
 
-    public void setMonthlyIncome(double a_monthlyIncome) {
+    public void setMonthlyIncome(Double a_monthlyIncome) {
         monthlyIncome = a_monthlyIncome;
+    }
+
+    public Integer getIncomeDay() {
+        return incomeDay;
+    }
+
+    public void setIncomeDay(Integer incomeDay) {
+        this.incomeDay = incomeDay;
     }
 
     public int getFinancialKnowledge() {
@@ -267,6 +278,7 @@ public class UserProfile {
                 ", createdAt=" + createdAt +
                 ", updatedAt=" + updatedAt +
                 ", monthlyIncome=" + monthlyIncome +
+                ", incomeDay=" + incomeDay +
                 ", financialKnowledge=" + financialKnowledge +
                 ", budgetExperience=" + budgetExperience +
                 ", savingsHabit=" + savingsHabit +
@@ -282,7 +294,8 @@ public class UserProfile {
         if (o == null || getClass() != o.getClass()) return false;
         UserProfile that = (UserProfile) o;
         return id == that.id &&
-                Double.compare(that.monthlyIncome, monthlyIncome) == 0 &&
+                createdAt == that.createdAt &&
+                updatedAt == that.updatedAt &&
                 financialKnowledge == that.financialKnowledge &&
                 budgetExperience == that.budgetExperience &&
                 savingsHabit == that.savingsHabit &&
@@ -294,16 +307,19 @@ public class UserProfile {
                 lastConnectionTimestamp == that.lastConnectionTimestamp &&
                 java.util.Objects.equals(name, that.name) &&
                 java.util.Objects.equals(email, that.email) &&
+                java.util.Objects.equals(photoUrl, that.photoUrl) &&
                 java.util.Objects.equals(phone, that.phone) &&
                 java.util.Objects.equals(passwordHash, that.passwordHash) &&
                 java.util.Objects.equals(emotionalState, that.emotionalState) &&
                 java.util.Objects.equals(mainConcernId, that.mainConcernId) &&
                 java.util.Objects.equals(mainConcern, that.mainConcern) &&
-                java.util.Objects.equals(timeAvailable, that.timeAvailable);
+                java.util.Objects.equals(timeAvailable, that.timeAvailable) &&
+                java.util.Objects.equals(monthlyIncome, that.monthlyIncome) &&
+                java.util.Objects.equals(incomeDay, that.incomeDay);
     }
 
     @Override
     public int hashCode() {
-        return java.util.Objects.hash(id, name, email, phone, passwordHash, emotionalState, mainConcernId, mainConcern, timeAvailable, monthlyIncome, financialKnowledge, budgetExperience, savingsHabit, dayCount, weekProgress, weekGoal, weekCount, lastResetTimestamp, lastConnectionTimestamp);
+        return java.util.Objects.hash(id, name, email, photoUrl, phone, passwordHash, emotionalState, mainConcernId, mainConcern, timeAvailable, createdAt, updatedAt, monthlyIncome, incomeDay, financialKnowledge, budgetExperience, savingsHabit, dayCount, weekProgress, weekGoal, weekCount, lastResetTimestamp, lastConnectionTimestamp);
     }
 }

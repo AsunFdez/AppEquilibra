@@ -209,7 +209,9 @@ public class AnalysisViewModel extends AndroidViewModel {
             // Si el totalIncome es 0, intentar usar el ingreso mensual del perfil
             if (totalIncome == 0) {
                 UserProfile profile = userProfileController.getUserProfileSync();
-                if (profile != null) totalIncome = profile.getMonthlyIncome();
+                if (profile != null && profile.getMonthlyIncome() != null) {
+                    totalIncome = profile.getMonthlyIncome();
+                }
                 if (weekly) totalIncome = totalIncome /4;
             }
 

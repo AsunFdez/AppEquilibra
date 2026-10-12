@@ -29,33 +29,22 @@
     <string name="master_description">Alcanza 3 meses sin exceder tu presupuesto</string>
 
     <!-- Logros por días seguidos -->
-    <string name="one_week_title">1 semana</string>
+    <string name="one_week_title">Racha de hierro</string>
     <string name="one_week_description">Registra gastos 7 días seguidos</string>
-    <string name="one_month_title">1 mes</string>
+    <string name="one_month_title">Constante</string>
     <string name="one_month_description">Registra gastos 30 días seguidos</string>
     <string name="hundred_days_title">Imparable</string>
     <string name="hundred_days_description">Registra gastos 100 días seguidos</string>
 
     <!--Logros de presupuesto -->
-    <string name="under_budget_week_title">Control Semanal</string>
+    <string name="create_budget_title">Buenos comienzos</string>
+    <string name="create_budget_description">Activar un presupuesto</string>
+    <string name="under_budget_week_title">Semana perfecta</string>
     <string name="under_budget_week_description">Mantente bajo presupuesto 1 semana</string>
-    <string name="under_budget_month_title">Control Mensual</string>
+    <string name="under_budget_month_title">Mes perfecto</string>
     <string name="under_budget_month_description">Mantente bajo presupuesto 1 mes</string>
-
-
-    <!--  Logros de categorías -->
-    <string name="category_explorer_title">Explorador</string>
-    <string name="category_explorer_description">Usa 5 categorías diferentes</string>
-    <string name="category_master_title">Maestro</string>
-    <string name="category_master_description">Usa 10 categorías diferentes</string>
-
-    <!--  Logros de ahorro -->
-    <string name="saver_50_title">Ahorrador Principiante</string>
-    <string name="saver_50_description">Ahorra 50€ en total</string>
-    <string name="saver_100_title">Ahorrador Avanzado</string>
-    <string name="saver_100_description">Ahorra 100€ en total</string>
-    <string name="saver_500_title">Maestro del Ahorro</string>
-    <string name="saver_500_description">Ahorra 500€ en total</string>
+    <string name="under_budget_3_month_title">Maestro del Ahorro</string>
+    <string name="under_budget_3_month_description">Mantente bajo presupuesto 3 meses</string>
 
 
     <!-- Pantalla principal -->

@@ -50,6 +50,14 @@ public class CloudSyncController {
      * Programa una sincronización inmediata.
      */
     public void syncNow() {
-        syncRepository.scheduleImmediateSync();
+        syncNow(null);
+    }
+
+    /**
+     * Programa una sincronización inmediata con un callback.
+     * @param callback Callback que se ejecutará al finalizar la sincronización.
+     */
+    public void syncNow(CloudSyncRepository.OnSyncCompleteListener callback) {
+        syncRepository.scheduleImmediateSync(callback);
     }
 }

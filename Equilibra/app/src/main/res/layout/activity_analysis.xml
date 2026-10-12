@@ -47,6 +47,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="36dp"
                     android:layout_marginStart="16dp"
+                    android:layout_alignParentEnd="true"
                     android:layout_toEndOf="@id/btnBack"
                     android:text="@string/analysis"
                     android:textColor="@android:color/white"
@@ -92,11 +93,11 @@
                     android:layout_height="wrap_content"
                     android:layout_below="@id/tvTitle"
                     android:layout_marginTop="16dp"
+                    android:layout_alignParentEnd="true"
                     android:layout_centerHorizontal="true"
                     android:background="@drawable/bg_spinner_translucent"
                     android:paddingHorizontal="8dp"
                     android:paddingVertical="4dp"
-                    android:gravity="center_vertical"
                     android:orientation="horizontal">
 
                     <TextView

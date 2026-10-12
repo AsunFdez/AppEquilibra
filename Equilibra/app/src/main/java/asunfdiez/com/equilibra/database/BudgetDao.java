@@ -65,6 +65,13 @@ public interface BudgetDao {
     Budget getAnyBudgetSync();
 
     /**
+     * Obtiene todos los presupuestos de forma síncrona
+     */
+    @Query("SELECT * FROM " + Constants.TABLE_BUDGETS +
+            " ORDER BY updatedAt DESC")
+    java.util.List<Budget> getAllBudgetsSync();
+
+    /**
      * Obtiene todos los presupuestos
      */
     @Query("SELECT * FROM " + Constants.TABLE_BUDGETS +

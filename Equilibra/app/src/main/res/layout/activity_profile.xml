@@ -83,25 +83,34 @@
 
                 </RelativeLayout>
 
-
-                <!-- Sección de Firebase Login en Google-->
-                <asunfdiez.com.equilibra.views.FeatureCard
-                    android:id="@+id/cardGoogle"
+                <com.google.android.material.button.MaterialButton
+                    style="@style/Equilibra.Button.Primary"
+                    android:id="@+id/btnEditProfile"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="8dp"
-                    android:clickable="true"
-                    android:focusable="true"
-                    app:cardBackgroundColor="@color/primary_lightest"
-                    app:cardIconCircle="@drawable/circle_background_white"
-                    app:cardIcon='@{viewModel.firebaseAuthenticated ? @drawable/ic_cloud : @drawable/ic_cloud_off }'
-                    app:cardIconTint="@color/primary"
-                    app:cardTitle='@{viewModel.firebaseAuthenticated ? @string/profile_firebase_connected(viewModel.firebaseEmail) : @string/profile_firebase_disconnected}'
-                    app:cardDescription='@{viewModel.firebaseAuthenticated ? null : context.getString(R.string.google_settings_desc)}'
-                    app:cardFormattedSyncTime='@{viewModel.firebaseAuthenticated ? viewModel.lastSyncTime : -1L}'
-                    app:cardRightIconTint="@color/primary"
-                    app:showRightIcon="true"
+                    android:text="@{viewModel.hasProfile ? @string/profile_edition : @string/profile_create}"
+                    app:icon="@drawable/ic_edit"
+                    app:iconGravity="textStart"
+                    app:iconTint="@android:color/white"
+                    app:iconPadding="12dp"
+                    app:iconSize="24dp"
+                    app:rippleColor="@android:color/white"
                     android:visibility="@{viewModel.editMode ? View.GONE : View.VISIBLE}"/>
+
+                <com.google.android.material.button.MaterialButton
+                    style="@style/Equilibra.Button.Primary"
+                    android:id="@+id/btnGoogleProfile"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/profile_google"
+                    app:icon="@drawable/ic_google"
+                    app:iconGravity="textStart"
+                    app:iconPadding="12dp"
+                    app:iconSize="24dp"
+                    app:rippleColor="@android:color/white"
+                    app:iconTint="@null"
+                    android:visibility="@{viewModel.firebaseAuthenticated ? View.VISIBLE : View.GONE}"/>
+
 
                 <!-- Información del perfil -->
                 <LinearLayout
@@ -109,7 +118,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
-                    android:padding="16dp">
+                    android:padding="16dp"
+                    android:visibility="@{viewModel.editMode ? View.VISIBLE : (viewModel.hasProfile ? View.VISIBLE : View.GONE)}" >
 
                     <TextView
                         android:id="@+id/tvProfileName"
@@ -119,10 +129,7 @@
                         android:textSize="24sp"
                         android:textColor="@color/text_primary"
                         android:layout_gravity="center_horizontal"
-                        android:layout_marginBottom="4dp"
-                        android:visibility="@{viewModel.hasProfile ? View.VISIBLE : View.GONE}"
-                        />
-
+                        android:layout_marginBottom="4dp" />
 
                     <TextView
                         android:id="@+id/tvProfileEmail"
@@ -134,33 +141,6 @@
                         android:layout_gravity="center_horizontal"
                         android:visibility="@{viewModel.hasProfile ? View.VISIBLE : View.GONE}" />
 
-                    <com.google.android.material.button.MaterialButton
-                        style="@style/Equilibra.Button.Primary"
-                        android:id="@+id/btnEditProfile"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="@{viewModel.hasProfile ? @string/profile_edition : @string/profile_create}"
-                        app:icon="@drawable/ic_edit"
-                        app:iconGravity="textStart"
-                        app:iconTint="@android:color/white"
-                        app:iconPadding="12dp"
-                        app:iconSize="24dp"
-                        app:rippleColor="@android:color/white"
-                        android:visibility="@{viewModel.editMode ? View.GONE : View.VISIBLE}"/>
-
-                    <com.google.android.material.button.MaterialButton
-                        style="@style/Equilibra.Button.Primary"
-                        android:id="@+id/btnGoogleProfile"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="@string/profile_google"
-                        app:icon="@drawable/ic_google"
-                        app:iconGravity="textStart"
-                        app:iconPadding="12dp"
-                        app:iconSize="24dp"
-                        app:rippleColor="@android:color/white"
-                        app:iconTint="@null"
-                        android:visibility="@{viewModel.firebaseAuthenticated ? View.VISIBLE : View.GONE}"/>
 
                     <!-- Formulario de edición -->
                     <TextView
@@ -267,6 +247,30 @@
 
                     </com.google.android.material.textfield.TextInputLayout>
 
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="16dp"
+                        app:boxBackgroundColor="@android:color/white"
+                        app:boxStrokeColor="@color/primary"
+                        style="@style/InputField">
+
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/etIncomeDay"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            app:etIntegerValue ="@={user.incomeDay}"
+                            android:textColor="@color/text_primary"
+                            android:hint="@string/profile_day_income"
+                            android:inputType="number"
+                            android:focusable="@{viewModel.editMode}"
+                            android:focusableInTouchMode="@{viewModel.editMode}"
+                            android:clickable="@{viewModel.editMode}"
+                            android:cursorVisible="@{viewModel.editMode}"
+                            style="@style/InputField.EditText"/>
+
+                    </com.google.android.material.textfield.TextInputLayout>
+
 
                     <!-- Botón guardar (oculto por defecto) -->
                     <com.google.android.material.button.MaterialButton
@@ -279,6 +283,7 @@
 
                     <!-- Zona de peligro -->
                     <TextView
+                        id="@+id/tvDangerZone"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/profile_danger_zone"
@@ -300,6 +305,25 @@
 
 
                 </LinearLayout>
+
+                <!-- Sección de Firebase Login en Google-->
+                <asunfdiez.com.equilibra.views.FeatureCard
+                    android:id="@+id/cardGoogle"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="8dp"
+                    android:clickable="true"
+                    android:focusable="true"
+                    app:cardBackgroundColor="@color/primary_lightest"
+                    app:cardIconCircle="@drawable/circle_background_white"
+                    app:cardIcon='@{viewModel.firebaseAuthenticated ? @drawable/ic_cloud : @drawable/ic_cloud_off }'
+                    app:cardIconTint="@color/primary"
+                    app:cardTitle='@{viewModel.firebaseAuthenticated ? @string/profile_firebase_connected(viewModel.firebaseEmail) : @string/profile_firebase_disconnected}'
+                    app:cardDescription='@{viewModel.firebaseAuthenticated ? null : context.getString(R.string.google_settings_desc)}'
+                    app:cardFormattedSyncTime='@{viewModel.firebaseAuthenticated ? viewModel.lastSyncTime : -1L}'
+                    app:cardRightIconTint="@color/primary"
+                    app:showRightIcon="true"
+                    />
 
             </LinearLayout>
 

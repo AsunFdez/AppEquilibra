@@ -3,10 +3,10 @@
 top to bottom direction
 actor "Usuario analítico" as Analyst
 package "App Equilibra" {
-  usecase "Acceder a Vista Análisis" as UC1
-  usecase "Ver PieChart (por categoría)" as UC2
-  usecase "Ver BarChart (comparativa diaria)" as UC3
-  usecase "Ver progreso hacia objetivo y proyecciones" as UC4
+  usecase "Acceder a Vista Análisis\nSemanal o Mensual \nGastos Totales y Ahorro estimado" as UC1
+  usecase "Ver PieChart \n(por categoría)" as UC2
+  usecase "Ver BarChart \n(comparativa diaria/mensual)" as UC3
+  usecase "Ver Análisis comparativo" as UC4
 }
 
 Analyst --> UC1
@@ -25,8 +25,8 @@ note bottom of UC3
 end note
 
 note bottom of UC4
-  Ej: "80% completado" y proyecciones
-  para fin de mes
+  Gastos y Ahorro estimado comparativo
+  para periodo actual vs. dos periodos anteriores
 end note
 @enduml
 
@@ -35,9 +35,12 @@ end note
 start
 :Usuario abre menú de navegación;
 :Selecciona "Vista Análisis";
-:App renderiza PieChart (fugas por categoría);
-:Usuario revisa y puede alternar a BarChart;
-:BarChart muestra comparativa diaria;
-:Pantalla muestra progreso a objetivo y proyecciones;
+:App muestra "Gastos Totales" y "Ahorro Estimado" semanal;
+:App renderiza PieChart (por categoría) 
+y BarChart (comparativa diaria);
+:Usuario puede alternar entre vista semanal y mensual;
+:Usuario puede acceder a análisis comparativo;
+:Pantalla muestra Gastos Totales y Ahorro Estimado 
+para periodo actual y dos periodos anteriores;
 stop
 @enduml

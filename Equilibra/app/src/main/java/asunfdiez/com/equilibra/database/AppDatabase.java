@@ -9,6 +9,8 @@ import androidx.room.RoomDatabase;
 import androidx.room.TypeConverters;
 import androidx.sqlite.db.SupportSQLiteDatabase;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
@@ -33,12 +35,16 @@ import asunfdiez.com.equilibra.utils.Constants;
  * Clase principal de la base de datos de la aplicación utilizando Room.
  * 
  * <p>Define todas las entidades que componen el esquema de persistencia local y 
- * proporciona los métodos abstractos para acceder a sus respectivos DAOs. Implementa 
+ * proporciona los métodos abstractos para acceder a sus respectivos DAO. Implementa
  * el patrón Singleton para garantizar una única instancia de la base de datos y 
- * gestiona la inicialización de datos semilla (categorías, logros, etc.) en la 
+ * gestiona la inicialización de datos (categorías, logros, etc.) en la
  * primera ejecución.</p>
  */
-@Database(entities = { Achievement.class, Budget.class, Challenge.class, DailyAnalysis.class, Expense.class, ExpenseCategory.class, InterventionLog.class, SavingGoal.class, Streak.class, UserProfile.class, Alternative.class }, version = Constants.DATABASE_VERSION, exportSchema = false)
+@Database(
+        entities = { Achievement.class, Budget.class, Challenge.class, DailyAnalysis.class, Expense.class, ExpenseCategory.class, InterventionLog.class, SavingGoal.class, Streak.class, UserProfile.class, Alternative.class },
+        version = Constants.DATABASE_VERSION,
+        exportSchema = true
+)
 @TypeConverters({Converters.class})
 public abstract class AppDatabase extends RoomDatabase {
 
@@ -46,7 +52,7 @@ public abstract class AppDatabase extends RoomDatabase {
     private static volatile AppDatabase INSTANCE;
     private static Context mContext;
 
-    // Métodos de acceso a los Objetos de Acceso a Datos (DAOs)
+    // Métodos de acceso a los Objetos de Acceso a Datos (DAO)
     public abstract UserProfileDao userProfileDao();
     public abstract SavingGoalDao savingGoalDao();
     public abstract ExpenseDao expenseDao();
@@ -67,8 +73,6 @@ public abstract class AppDatabase extends RoomDatabase {
     /**
      * Obtiene la instancia única de la base de datos
      */
-
-
     public static AppDatabase getInstance(Context context) {
 
         if (INSTANCE == null) {
@@ -97,16 +101,14 @@ public abstract class AppDatabase extends RoomDatabase {
     public static void initialConfiguration() {
         // Usamos un Executor para no bloquear el hilo principal
         Executors.newSingleThreadExecutor().execute(AppDatabase::insertInitialCategories);
-
         Executors.newSingleThreadExecutor().execute(AppDatabase::insertInitialAchievements);
-
         Executors.newSingleThreadExecutor().execute(AppDatabase::insertInitialAlternatives);
+        Executors.newSingleThreadExecutor().execute(AppDatabase::insertInitialStreaks);
     }
 
     /**
      * Borrar la base de datos
      */
-
     private static void deleteDatabase() {
         if (INSTANCE != null) {
             INSTANCE.clearAllTables();
@@ -140,11 +142,41 @@ public abstract class AppDatabase extends RoomDatabase {
         dao.insertListOfCategories(categories);
     }
 
-    public static void initInitalStreaks() {
-        //TODO
-        List <Streak> streaks = new ArrayList<>();
+    /**
+     * Inserta las rachas iniciales por defecto en la base de datos
+     */
+    public static void insertInitialStreaks() {
         StreakDao dao = INSTANCE.streakDao();
-        streaks.add ( new Streak ());
+        UserProfile user = INSTANCE.userProfileDao().getUserProfileSync();
+        long userId = (user != null) ? user.getId() : 1;
+
+        String today = LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+
+        List<Streak> streaks = new ArrayList<>();
+
+        // Racha de registro de gastos
+        Streak recordingStreak = new Streak();
+        recordingStreak.setUserId(userId);
+        recordingStreak.setType(Streak.TYPE_RECORDING);
+        recordingStreak.setConsecutiveDays(0);
+        recordingStreak.setStartDate(today);
+        recordingStreak.setLastActivityDate(today);
+        recordingStreak.setMaxStreakRecord(0);
+        recordingStreak.setActive(true);
+
+        // Racha de cumplimiento de presupuesto
+        Streak budgetStreak = new Streak();
+        budgetStreak.setUserId(userId);
+        budgetStreak.setType(Streak.TYPE_BUDGET);
+        budgetStreak.setConsecutiveDays(0);
+        budgetStreak.setStartDate(today);
+        budgetStreak.setLastActivityDate(today);
+        budgetStreak.setMaxStreakRecord(0);
+        budgetStreak.setActive(true);
+
+        streaks.add(recordingStreak);
+        streaks.add(budgetStreak);
+
         dao.insertListOfStreak(streaks);
     }
 
@@ -186,7 +218,7 @@ public abstract class AppDatabase extends RoomDatabase {
                 R.color.primary,
                 R.drawable.ic_achievement_centurion));
         achievements.add(new Achievement(
-                mContext.getString(R.string.legend_description),
+                mContext.getString(R.string.legend_title),
                 mContext.getString(R.string.legend_description),
                 50,
                 Constants.ACHIEVEMENT_500_EXPENSES,
@@ -205,8 +237,8 @@ public abstract class AppDatabase extends RoomDatabase {
                 R.drawable.ic_achievement_week));
 
         achievements.add(new Achievement(
-                mContext.getString(R.string.one_week_title),
-                mContext.getString(R.string.one_week_description),
+                mContext.getString(R.string.one_month_title),
+                mContext.getString(R.string.one_month_description),
                 100,
                 Constants.ACHIEVEMENT_MONTH_STREAK,
                 false,
@@ -224,6 +256,14 @@ public abstract class AppDatabase extends RoomDatabase {
 
         // Presupuesto
         achievements.add(new Achievement(
+                mContext.getString(R.string.create_budget_title),
+                mContext.getString(R.string.create_budget_description),
+                10,
+                Constants.ACHIEVEMENT_UNDER_BUDGET_WEEK,
+                false,
+                R.color.primary,
+                R.drawable.ic_achievement_saver_advanced));
+        achievements.add(new Achievement(
                 mContext.getString(R.string.under_budget_week_title),
                 mContext.getString(R.string.under_budget_week_description),
                 40,
@@ -234,62 +274,21 @@ public abstract class AppDatabase extends RoomDatabase {
 
         achievements.add(new Achievement(
                 mContext.getString(R.string.under_budget_month_title),
-                mContext.getString(R.string.under_budget_week_description),
+                mContext.getString(R.string.under_budget_month_description),
                 150,
                 Constants.ACHIEVEMENT_UNDER_BUDGET_MONTH,
                 false,
                 R.color.secondary,
                 R.drawable.ic_achievement_budget_month));
 
-        // Logros de categorías
         achievements.add(new Achievement(
-                mContext.getString(R.string.category_explorer_title),
-                mContext.getString(R.string.category_explorer_description),
-                25,
-                Constants.ACHIEVEMENT_CATEGORY_EXPLORER,
-                false,
-                R.color.primary,
-                R.drawable.ic_achievement_explorer));
-
-        achievements.add(new Achievement(
-                mContext.getString(R.string.category_master_title),
-                mContext.getString(R.string.category_master_description),
-                75,
-                Constants.ACHIEVEMENT_CATEGORY_MASTER,
+                mContext.getString(R.string.under_budget_3_month_title),
+                mContext.getString(R.string.under_budget_3_month_description),
+                150,
+                Constants.ACHIEVEMENT_UNDER_BUDGET_MONTH,
                 false,
                 R.color.secondary,
-                R.drawable.ic_ach_star));
-
-        // Ahorro
-        achievements.add(new Achievement(
-                mContext.getString(R.string.saver_50_title),
-                mContext.getString(R.string.saver_50_description),
-                50,
-                Constants.ACHIEVEMENT_SAVER_50,
-                false,
-                R.color.primary,
-                R.drawable.ic_achievement_saver_beginner
-        ));
-
-        achievements.add(new Achievement(
-                mContext.getString(R.string.saver_100_title),
-                mContext.getString(R.string.saver_100_description),
-                100,
-                Constants.ACHIEVEMENT_SAVER_100,
-                false,
-                R.color.secondary,
-                R.drawable.ic_achievement_saver_advanced
-        ));
-
-        achievements.add(new Achievement(
-                mContext.getString(R.string.saver_500_title),
-                mContext.getString(R.string.saver_500_description),
-                250,
-                Constants.ACHIEVEMENT_SAVER_500,
-                false,
-                R.color.accent,
-                R.drawable.ic_achievement_saver_master
-        ));
+                R.drawable.ic_achievement_saver_master));
 
         dao.insertListOfAchievements(achievements);
     }

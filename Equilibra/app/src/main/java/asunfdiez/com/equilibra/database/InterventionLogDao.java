@@ -1,5 +1,6 @@
 package asunfdiez.com.equilibra.database;
 
+import androidx.lifecycle.LiveData;
 import androidx.room.Dao;
 import androidx.room.Delete;
 import androidx.room.Insert;
@@ -44,7 +45,21 @@ public interface InterventionLogDao {
     @Query ("SELECT * FROM "+ Constants.TABLE_INTERVENTION_LOG+" WHERE "+Constants.COLUMN_INTERVENTION_USER_ID +"= :userId ORDER BY "+Constants.COLUMN_INTERVENTION_TIMESTAMP+" DESC LIMIT :limit")
     public List<InterventionLog> getRecentInterventions(long userId, int limit);
 
+    @Query("SELECT EXISTS(SELECT 1 FROM " + Constants.TABLE_INTERVENTION_LOG + ")")
+    LiveData<Boolean> observeHasAnyInterventionLog();
 
+    @Query("SELECT * FROM " + Constants.TABLE_INTERVENTION_LOG
+            + " ORDER BY " + Constants.COLUMN_INTERVENTION_TIMESTAMP + " DESC")
+    LiveData<List<InterventionLog>> observeAllInterventionLogs();
+
+    @Query("SELECT EXISTS(SELECT 1 FROM " + Constants.TABLE_INTERVENTION_LOG
+            + " WHERE " + Constants.COLUMN_INTERVENTION_USER_ID + " = :userId)")
+    LiveData<Boolean> observeHasLogsForUser(long userId);
+
+    @Query("SELECT * FROM " + Constants.TABLE_INTERVENTION_LOG
+            + " WHERE " + Constants.COLUMN_INTERVENTION_USER_ID + " = :userId"
+            + " ORDER BY " + Constants.COLUMN_INTERVENTION_TIMESTAMP + " DESC")
+    LiveData<List<InterventionLog>> observeByUserId(long userId);
 
 
 }

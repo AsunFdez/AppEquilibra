@@ -63,6 +63,7 @@
     <string name="profile_email">Correo electrónico</string>
     <string name="profile_phone">Teléfono (opcional)</string>
     <string name="profile_monthly_income">Ingreso mensual</string>
+    <string name="profile_day_income">Día de ingreso mensual</string>
 
     <string name="save_changes">Guardar cambios</string>
     <string name="change_password">Cambiar contraseña</string>
@@ -80,6 +81,9 @@
     <string name="error_invalid_email">Email inválido</string>
     <string name="error_income_required">El ingreso mensual es obligatorio</string>
     <string name="error_income_invalid">El ingreso debe ser mayor a 0</string>
+    <string name="error_income_day_required">El día de ingreso mensual es obligatorio</string>
+    <string name="error_income_day_invalid">El día de ingreso debe estar entre 1 y 31</string>
+
 
     <!-- Cloud Sync / Firebase Section -->
     <string name="profile_cloud_sync">Sincronización en la Nube</string>
@@ -94,6 +98,9 @@
     <string name="error_login_failed">Fallo al iniciar sesión</string>
     <string name="success_login">Sesión iniciada correctamente</string>
     <string name="success_logout">Sesión cerrada</string>
+    <string name="sync_success">Sincronización finalizada correctamente</string>
+    <string name="sync_error">Error al sincronizar datos</string>
+    <string name="sync_not_authenticated">Inicia sesión para sincronizar con la nube</string>
 
 
     <!-- Common -->
@@ -163,7 +170,7 @@
 
     <string name="expense">Gasto</string>
     <string name="income">Ingreso</string>
-
+    <string name="interventions">Intervenciones</string>
 
 
 </resources>

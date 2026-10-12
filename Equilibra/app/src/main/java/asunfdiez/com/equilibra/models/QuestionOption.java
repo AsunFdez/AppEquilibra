@@ -1,6 +1,9 @@
 package asunfdiez.com.equilibra.models;
 
 import android.content.Context;
+import androidx.annotation.Keep;
+import com.google.firebase.firestore.PropertyName;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -14,20 +17,36 @@ import asunfdiez.com.equilibra.utils.Constants;
  * preferencias, misiones o motivaciones del usuario a través de una lista de 
  * opciones seleccionables.</p>
  */
-public class QuestionOption {
+@Keep
+public class QuestionOption implements Serializable {
     // Identificador único de la opción
-    private final String id;
+    @PropertyName("id")
+    public String id;
     
     // Texto que se muestra al usuario
-    private final String text;
+    @PropertyName("text")
+    public String text;
+
+    /**
+     * Constructor vacío requerido para la serialización de Firebase Firestore.
+     */
+    public QuestionOption() {
+    }
 
     public QuestionOption(String id, String text) {
         this.id = id;
         this.text = text;
     }
 
-    public String id() { return id; }
-    public String text() { return text; }
+    @PropertyName("id")
+    public String getId() { return id; }
+    @PropertyName("id")
+    public void setId(String id) { this.id = id; }
+
+    @PropertyName("text")
+    public String getText() { return text; }
+    @PropertyName("text")
+    public void setText(String text) { this.text = text; }
 
     /**
      * Devuelve la lista de las 3 preguntas predefinidas

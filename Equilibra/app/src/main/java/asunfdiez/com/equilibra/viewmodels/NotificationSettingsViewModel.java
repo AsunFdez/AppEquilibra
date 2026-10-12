@@ -8,6 +8,7 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
 import asunfdiez.com.equilibra.R;
+import asunfdiez.com.equilibra.utils.NotificationManager;
 import asunfdiez.com.equilibra.utils.SharedPrefsManager;
 
 /**
@@ -69,15 +70,19 @@ public class NotificationSettingsViewModel extends AndroidViewModel {
      */
     public void setNotificationsEnabled(boolean enabled) {
         prefsManager.setNotificationsEnabled(enabled);
-        if (!enabled) {
-            disableAll();
-        } else {
+
+        if (enabled) {
+            NotificationManager.scheduleDailyNotifications(getApplication());
             enableAll();
+        } else {
+            NotificationManager.cancelDailyNotifications(getApplication());
+            disableAll();
         }
 
-        statusMessage.setValue(enabled ?
-                getApplication().getString(R.string.enabled_all_notification) :
-                getApplication().getString(R.string.disabled_all_notification));
+        statusMessage.setValue(enabled
+                ? getApplication().getString(R.string.enabled_all_notification)
+                : getApplication().getString(R.string.disabled_all_notification));
+
     }
 
 
@@ -85,11 +90,17 @@ public class NotificationSettingsViewModel extends AndroidViewModel {
      * Habilita o deshabilita notificaciones de presupuesto
      */
     public void setBudgetNotifications(boolean enabled) {
-
         prefsManager.setBudgetNotifications(enabled);
-        statusMessage.setValue(enabled ?
-            getApplication().getString(R.string.budget_notifications_enabled) :
-            getApplication().getString(R.string.budget_notifications_disabled));
+
+        if (!prefsManager.getNotificationsEnabled().getValue()) {
+            NotificationManager.cancelDailyNotifications(getApplication());
+            return;
+        }
+
+        statusMessage.setValue(enabled
+                ? getApplication().getString(R.string.budget_notifications_enabled)
+                : getApplication().getString(R.string.budget_notifications_disabled));
+
     }
 
     /**
@@ -98,6 +109,10 @@ public class NotificationSettingsViewModel extends AndroidViewModel {
     public void setAchievementNotifications(boolean enabled) {
 
         prefsManager.setAchievementNotifications(enabled);
+        if (!prefsManager.getNotificationsEnabled().getValue()) {
+            NotificationManager.cancelDailyNotifications(getApplication());
+            return;
+        }
         statusMessage.setValue(enabled ?
                 getApplication().getString(R.string.achievement_notifications_enabled) :
                 getApplication().getString(R.string.achievement_notifications_disabled));
@@ -107,9 +122,9 @@ public class NotificationSettingsViewModel extends AndroidViewModel {
      * Activa todas las notificaciones
      */
     public void enableAll() {
-        prefsManager.setNotificationsEnabled(true);
-        prefsManager.setBudgetNotifications(true);
-        prefsManager.setAchievementNotifications(true);
+        setNotificationsEnabled(true);
+        setBudgetNotifications(true);
+        setAchievementNotifications(true);
         statusMessage.setValue(getApplication().getString(R.string.enabled_all_notification));
     }
 
@@ -117,9 +132,9 @@ public class NotificationSettingsViewModel extends AndroidViewModel {
      * Desactiva todas las notificaciones
      */
     public void disableAll() {
-        prefsManager.setNotificationsEnabled(false);
-        prefsManager.setBudgetNotifications(false);
-        prefsManager.setAchievementNotifications(false);
+        setNotificationsEnabled(false);
+        setBudgetNotifications(false);
+        setAchievementNotifications(false);
         statusMessage.setValue(getApplication().getString(R.string.disabled_all_notification));
     }
 }

@@ -53,6 +53,12 @@ public class ExpenseRepository {
         });
     }
 
+    public long insertExpenseSync(Expense expense) {
+        long id = expenseDao.insertExpense(expense);
+        new CloudSyncRepository(context).scheduleImmediateSync();
+        return id;
+    }
+
     /**
      * Actualiza un gasto en la base de datos
      * @param expense Gasto a actualizar
@@ -132,6 +138,10 @@ public class ExpenseRepository {
      */
     public List<ExpenseWithCategory> getExpensesWithCategoryInRange(long startTime, long endTime) {
         return expenseDao.getExpensesWithCategoryInRange(startTime, endTime);
+    }
+
+    public ExpenseWithCategory getExpenseWithCategoryById(long expenseId) {
+        return expenseDao.getExpenseWithCategoryById(expenseId);
     }
 
     /**
@@ -406,6 +416,15 @@ public class ExpenseRepository {
      */
     public List<Expense> getExpensesLastNDaysSync(int days) {
         return expenseDao.getExpensesLastNDaysSync(days);
+    }
+
+    /**
+     * Verifica si ya existe un ingreso automático para el mes actual
+     */
+    public boolean hasAutoIncomeThisMonth(String description) {
+        long start = DateUtils.getStartOfMonth();
+        long end = DateUtils.getEndOfMonth();
+        return expenseDao.countAutoIncomeInRange(description, start, end) > 0;
     }
 
     /**

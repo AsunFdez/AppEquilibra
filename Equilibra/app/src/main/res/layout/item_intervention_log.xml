@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+        <import type="android.view.View" />
+        <import type="asunfdiez.com.equilibra.utils.DateUtils" />
+        <variable
+            name="interventionLog"
+            type="asunfdiez.com.equilibra.models.InterventionLog" />
+    </data>
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/cardInterventionLog"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="8dp"
+        app:cardCornerRadius="12dp"
+        app:cardElevation="2dp"
+        app:cardBackgroundColor="@color/background_card">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="16dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical">
+
+                <TextView
+                    android:id="@+id/tvTimestamp"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@{DateUtils.formatDateTime(interventionLog.timestamp)}"
+                    android:textColor="@color/primary_dark"
+                    android:textSize="16sp"
+                    android:textStyle="bold" />
+
+                <!-- Botón Borrar -->
+                <ImageView
+                    android:id="@+id/imgDelete"
+                    android:layout_width="28dp"
+                    android:layout_height="28dp"
+                    android:src="@drawable/ic_delete"
+                    app:tint="@color/error"
+                    android:background="?attr/selectableItemBackgroundBorderless" />
+
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/tvMessage"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:text="@{interventionLog.message}"
+                android:textColor="@color/secondary_dark"
+                android:textSize="16sp"
+                android:visibility="@{interventionLog.message != null &amp;&amp; !interventionLog.message.empty ? View.VISIBLE : View.GONE}"
+                 />
+
+            <TextView
+                android:id="@+id/tvImpactOnGoal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="6dp"
+                android:text="@{interventionLog.impactOnGoal}"
+                android:textColor="@color/accent_dark"
+                android:textSize="14sp"
+                android:visibility="@{interventionLog.impactOnGoal != null &amp;&amp; !interventionLog.impactOnGoal.empty ? View.VISIBLE : View.GONE}"
+                 />
+
+            <TextView
+                android:id="@+id/tvAlternativeSuggestion"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="6dp"
+                android:text="@{interventionLog.alternativeSuggestion}"
+                android:textColor="@color/gray_600"
+                android:textSize="13sp"
+                android:visibility="@{interventionLog.alternativeSuggestion != null &amp;&amp; !interventionLog.alternativeSuggestion.empty ? View.VISIBLE : View.GONE}"
+                 />
+
+        </LinearLayout>
+
+    </androidx.cardview.widget.CardView>
+</layout>

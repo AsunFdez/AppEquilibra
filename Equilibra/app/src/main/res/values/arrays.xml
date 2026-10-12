@@ -4,22 +4,28 @@
     <!-- Monedas -->
     <string-array name="currencies">
         <item>EUR (€) - Euro</item>
+        <!--
         <item>USD ($) - Dólar Americano</item>
         <item>GBP (£) - Libra Esterlina</item>
+        -->
     </string-array>
 
     <string-array name="currency_codes">
         <item>EUR</item>
-        <item>USD</item>
-        <item>GBP</item>
+    <!--
+   <item>USD</item>
+   <item>GBP</item>
+    -->
     </string-array>
 
-    <!-- Idiomas -->
+<!-- Idiomas -->
     <string-array name="languages">
         <item>Español</item>
+        <!--
         <item>English</item>
         <item>Français</item>
         <item>Deutsch</item>
+        -->
     </string-array>
 
 </resources>

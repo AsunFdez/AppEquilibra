@@ -35,7 +35,7 @@ public interface ExpenseDao {
      * Registra un nuevo gasto o ingreso.
      */
     @Insert (onConflict = OnConflictStrategy.REPLACE)
-    void insertExpense (Expense expense);
+    long insertExpense (Expense expense);
     
     /**
      * Elimina un registro de transacción específico.
@@ -191,6 +191,12 @@ public interface ExpenseDao {
             " ORDER BY e." + Constants.COLUMN_EXPENSE_TIMESTAMP + " DESC")
     List<ExpenseWithCategory> getExpensesWithCategoryInRange(long startTime, long endTime);
 
+    @Query("SELECT e.*, c.name as categoryName, c.iconResId as categoryIconResId, c.color as categoryColor " +
+            "FROM " + Constants.TABLE_EXPENSES + " e " +
+            "LEFT JOIN " + Constants.TABLE_CATEGORIES + " c ON e." + Constants.COLUMN_EXPENSE_CATEGORY + " = c.id " +
+            "WHERE e.id = :expenseId")
+    ExpenseWithCategory getExpenseWithCategoryById(long expenseId);
+
 
     /**
      * Obtiene gastos de un mes específico.
@@ -211,6 +217,13 @@ public interface ExpenseDao {
             " ORDER BY " + Constants.COLUMN_EXPENSE_TIMESTAMP + " DESC")
     List<Expense> getExpensesLastNDaysSync(int days);
 
-
+    /**
+     * Verifica si ya existe un ingreso automático para el mes actual
+     */
+    @Query("SELECT COUNT(*) FROM " + Constants.TABLE_EXPENSES +
+            " WHERE " + Constants.COLUMN_EXPENSE_TYPE + " = '" + Constants.TYPE_INCOME + "'" +
+            " AND " + Constants.COLUMN_EXPENSE_DESCRIPTION + " = :description" +
+            " AND " + Constants.COLUMN_EXPENSE_TIMESTAMP + " BETWEEN :startTime AND :endTime")
+    int countAutoIncomeInRange(String description, long startTime, long endTime);
 
 }

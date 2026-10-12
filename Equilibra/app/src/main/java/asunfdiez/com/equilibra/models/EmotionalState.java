@@ -2,6 +2,9 @@ package asunfdiez.com.equilibra.models;
 
 import android.content.Context;
 import androidx.annotation.NonNull;
+import androidx.annotation.Keep;
+import com.google.firebase.firestore.PropertyName;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -14,18 +17,29 @@ import asunfdiez.com.equilibra.R;
  * y un mensaje de validación o consejo específico para ese estado emocional. 
  * Se utiliza para personalizar la experiencia desde el onboarding.</p>
  */
-public class EmotionalState {
+@Keep
+public class EmotionalState implements Serializable {
     // Identificador único del estado emocional (ej. "happy", "stressed")
-    private final String id;
+    @PropertyName("id")
+    public String id;
     
     // Texto descriptivo del sentimiento
-    private final String text;
+    @PropertyName("text")
+    public String text;
     
     // Representación visual (emoji)
-    private final String emoji;
+    @PropertyName("emoji")
+    public String emoji;
     
     // Mensaje de respuesta o validación asociado al estado
-    private final String validation;
+    @PropertyName("validation")
+    public String validation;
+
+    /**
+     * Constructor vacío requerido para la serialización de Firebase Firestore.
+     */
+    public EmotionalState() {
+    }
 
     public EmotionalState(String id, String text, String emoji, String validation) {
         this.id = id;
@@ -34,10 +48,25 @@ public class EmotionalState {
         this.validation = validation;
     }
 
-    public String id() { return id; }
-    public String text() { return text; }
-    public String emoji() { return emoji; }
-    public String validation() { return validation; }
+    @PropertyName("id")
+    public String getId() { return id; }
+    @PropertyName("id")
+    public void setId(String id) { this.id = id; }
+
+    @PropertyName("text")
+    public String getText() { return text; }
+    @PropertyName("text")
+    public void setText(String text) { this.text = text; }
+
+    @PropertyName("emoji")
+    public String getEmoji() { return emoji; }
+    @PropertyName("emoji")
+    public void setEmoji(String emoji) { this.emoji = emoji; }
+
+    @PropertyName("validation")
+    public String getValidation() { return validation; }
+    @PropertyName("validation")
+    public void setValidation(String validation) { this.validation = validation; }
 
     /**
      * Devuelve la lista de las 4 emociones predefinidas
@@ -70,7 +99,7 @@ public class EmotionalState {
 
     public static EmotionalState getById(Context context, String id) {
         return getDefaultEmotions(context).stream()
-                .filter(e -> e.id().equals(id))
+                .filter(e -> e.getId().equals(id))
                 .findFirst()
                 .orElse(null);
     }

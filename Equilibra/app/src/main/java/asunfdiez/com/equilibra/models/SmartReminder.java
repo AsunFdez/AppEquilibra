@@ -7,7 +7,7 @@ import java.util.List;
  * 
  * <p>Esta clase encapsula la información sobre comportamientos de gasto repetitivos 
  * identificados por el sistema, ofreciendo mensajes personalizados y sugerencias 
- * de ahorro basadas en la frecuencia y el monto acumulado en una categoría.</p>
+ * de ahorro basadas en la frecuencia y el importe acumulado en una categoría.</p>
  */
 public class SmartReminder {
 

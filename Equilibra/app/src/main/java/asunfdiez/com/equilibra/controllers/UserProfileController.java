@@ -121,10 +121,11 @@ public class UserProfileController {
             AppDatabase database = AppDatabase.getInstance(context);
             database.clearAllTables();
             prefsManager.resetAll();
-            // Recrear datos estáticos (categorías, logros, alternativas) de forma síncrona en este hilo de fondo
+            // Recrear datos estáticos (categorías, logros, alternativas, rachas) de forma síncrona en este hilo de fondo
             AppDatabase.insertInitialCategories();
             AppDatabase.insertInitialAchievements();
             AppDatabase.insertInitialAlternatives();
+            AppDatabase.insertInitialStreaks();
             Log.d(TAG, "Usuario borrado");
             if (onComplete != null) {
                 new Handler(Looper.getMainLooper()).post(onComplete);
@@ -194,7 +195,7 @@ public class UserProfileController {
             advices.add(Advice.getCompleteBudget(context));
         }
         // Caso 2: Sin ingresos → Acción: Configurar presupuesto, Meta: Registrar primer gasto
-        else if (user.getMonthlyIncome() <= 0) {
+        else if (user.getMonthlyIncome() == null || user.getMonthlyIncome() <= 0) {
             advices.add(Advice.getCompleteBudget(context));
             advices.add(Advice.getRegisterExpenseToday(context));
         }
@@ -369,7 +370,20 @@ public class UserProfileController {
      * Sincroniza los datos actuales con la nube.
      */
     public void syncNow() {
-        syncController.syncNow();
+        syncNow(null);
+    }
+
+    /**
+     * Sincroniza los datos actuales con la nube con un callback.
+     * @param callback Callback que se ejecutará al finalizar la sincronización.
+     */
+    public void syncNow(CloudSyncRepository.OnSyncCompleteListener callback) {
+        if (syncController.isFirebaseAuthenticated()) {
+            syncController.syncNow(callback);
+        } else {
+            Log.d(TAG, "No se puede sincronizar sin estar autenticado en Firebase");
+            if (callback != null) callback.onComplete(false);
+        }
     }
 
     // --- Métodos de Google Sign-In Unificados ---
@@ -409,5 +423,23 @@ public class UserProfileController {
             Log.e(TAG, "Tipo de credencial no esperado");
             if (listener != null) listener.onFailure(new Exception("Invalid credential type"));
         }
+    }
+
+    /**
+     * Obtiene los datos de perfil del usuario de Google conectado.
+     * @return Un objeto UserProfile con los datos de Google o null si no está conectado.
+     */
+    public UserProfile getGoogleAccountData() {
+        com.google.firebase.auth.FirebaseUser firebaseUser = com.google.firebase.auth.FirebaseAuth.getInstance().getCurrentUser();
+        if (firebaseUser != null) {
+            UserProfile googleProfile = new UserProfile();
+            googleProfile.setName(firebaseUser.getDisplayName());
+            googleProfile.setEmail(firebaseUser.getEmail());
+            if (firebaseUser.getPhotoUrl() != null) {
+                googleProfile.setPhotoUrl(firebaseUser.getPhotoUrl().toString());
+            }
+            return googleProfile;
+        }
+        return null;
     }
 }

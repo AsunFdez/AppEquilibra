@@ -53,4 +53,7 @@ public interface StreakDao {
 
     @Query("SELECT * FROM " + Constants.TABLE_STREAK + " WHERE userId = :userId")
     LiveData<List<Streak>> getUserStreaks(long userId);
+
+    @Query("SELECT * FROM " + Constants.TABLE_STREAK)
+    List<Streak> getAllStreaks();
 }

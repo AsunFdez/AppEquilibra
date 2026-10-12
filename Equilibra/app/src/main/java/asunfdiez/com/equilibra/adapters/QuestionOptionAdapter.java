@@ -71,10 +71,10 @@ public class QuestionOptionAdapter {
                     false
             );
 
-            binding.optionText.setText(option.text());
+            binding.optionText.setText(option.getText());
 
-            final String optionId = option.id();
-            final String optionTextValue = option.text();
+            final String optionId = option.getId();
+            final String optionTextValue = option.getText();
 
             binding.getRoot().setOnClickListener(v -> {
                 if (listener != null) {

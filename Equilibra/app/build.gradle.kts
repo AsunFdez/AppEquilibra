@@ -15,6 +15,13 @@ android {
         versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+
+        // Configuración para exportar esquemas de Room
+        javaCompileOptions {
+            annotationProcessorOptions {
+                arguments["room.schemaLocation"] = "$projectDir/schemas"
+            }
+        }
     }
 
     buildTypes {
@@ -41,6 +48,7 @@ android {
 }
 
 dependencies {
+    implementation(libs.activity.ktx)
     // AndroidX Core
     implementation(libs.appcompat)
     implementation(libs.constraintlayout)

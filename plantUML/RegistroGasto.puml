@@ -18,7 +18,7 @@ UC2 --> UC4 : confirmar
 UC3 --> UC4 : tras intervención
 
 note right of UC3
-  Ejemplos: "¿Este café te acerca\na tu viaje?" o cambiar color del presupuesto
+  Ejemplos: "¿Este gasto te acerca a tu viaje?"
 end note
 @enduml
 

@@ -112,7 +112,9 @@ public class MainViewModel extends AndroidViewModel {
             // Si el totalIncome es 0, intentar usar el ingreso mensual del perfil
             if (totalIncome == 0) {
                 UserProfile profile = userProfileController.getUserProfileSync();
-                if (profile != null) totalIncome = profile.getMonthlyIncome();
+                if (profile != null && profile.getMonthlyIncome() != null) {
+                    totalIncome = profile.getMonthlyIncome();
+                }
             }
 
             double savings = analyticsController.calculateSavings(totalIncome, totalExpenses);
@@ -276,7 +278,7 @@ public class MainViewModel extends AndroidViewModel {
 
             // Si el ingreso mensual del perfil es mayor que las transacciones de ingreso, lo usamos como base
             UserProfile profile = userProfileController.getUserProfileSync();
-            if (income == 0 && profile != null) {
+            if (income == 0 && profile != null && profile.getMonthlyIncome() != null) {
                 income = profile.getMonthlyIncome();
             }
 

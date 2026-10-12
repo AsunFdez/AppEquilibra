@@ -6,13 +6,18 @@ import android.os.Looper;
 
 import androidx.annotation.Nullable;
 import androidx.lifecycle.LiveData;
+import androidx.work.ExistingPeriodicWorkPolicy;
+import androidx.work.PeriodicWorkRequest;
+import androidx.work.WorkManager;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 
 import asunfdiez.com.equilibra.database.AppDatabase;
 import asunfdiez.com.equilibra.database.UserProfileDao;
 import asunfdiez.com.equilibra.models.UserProfile;
+import asunfdiez.com.equilibra.workers.AutoIncomeWorker;
 
 /**
  * Repositorio central para la gestión del perfil de usuario único.
@@ -32,12 +37,15 @@ public class UserProfileRepository {
     
     // Handler para comunicación con el hilo principal
     private final Handler mainHandler;
+
+    private final CloudSyncRepository syncRepository;
     
     public UserProfileRepository(Context context) {
         this.context = context;
         this.userProfileDao = AppDatabase.getInstance(context).userProfileDao();
         this.executorService = Executors.newSingleThreadExecutor();
         this.mainHandler = new Handler(Looper.getMainLooper());
+        this.syncRepository = new CloudSyncRepository(context);
     }
 
     /**
@@ -62,10 +70,42 @@ public class UserProfileRepository {
     public void updateProfile(UserProfile profile, @Nullable Runnable onComplete) {
         executorService.execute(() -> {
             userProfileDao.insertOrUpdate(profile);
+            syncRepository.scheduleImmediateSync();
+            
+            // Programar el ingreso automático si está configurado
+            if (profile.getMonthlyIncome() != null && profile.getIncomeDay() != null) {
+                scheduleAutoIncomeWorker();
+            } else {
+                cancelAutoIncomeWorker();
+            }
+            
             if (onComplete != null) {
                 mainHandler.post(onComplete);
             }
         });
+    }
+
+    /**
+     * Programa la tarea periódica para el ingreso automático.
+     */
+    private void scheduleAutoIncomeWorker() {
+        PeriodicWorkRequest workRequest = new PeriodicWorkRequest.Builder(
+                AutoIncomeWorker.class, 1, TimeUnit.DAYS)
+                .addTag("auto_income_work")
+                .build();
+
+        WorkManager.getInstance(context).enqueueUniquePeriodicWork(
+                "auto_income_work",
+                ExistingPeriodicWorkPolicy.KEEP,
+                workRequest
+        );
+    }
+
+    /**
+     * Cancela la tarea periódica del ingreso automático.
+     */
+    private void cancelAutoIncomeWorker() {
+        WorkManager.getInstance(context).cancelUniqueWork("auto_income_work");
     }
 
 

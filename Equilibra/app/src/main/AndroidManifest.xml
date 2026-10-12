@@ -2,6 +2,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
 
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+
     <application
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
@@ -14,11 +16,9 @@
         <activity
             android:name=".activities.AboutActivity"
             android:exported="false" />
-
         <activity
             android:name=".activities.AddExpenseActivity"
-            android:windowSoftInputMode="stateVisible|adjustResize">
-        </activity>
+            android:windowSoftInputMode="stateVisible|adjustResize"></activity>
         <activity
             android:name=".activities.AppearanceSettingsActivity"
             android:exported="false" />
@@ -64,6 +64,10 @@
         <activity
             android:name=".activities.OnboardingActivity"
             android:exported="false" />
+        <activity
+            android:name=".activities.InterventionHistoryActivity"
+            android:exported="false"
+            android:windowSoftInputMode="adjustResize" />
     </application>
 
 </manifest>

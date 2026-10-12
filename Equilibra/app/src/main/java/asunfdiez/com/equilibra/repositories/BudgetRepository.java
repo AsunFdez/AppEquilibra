@@ -33,6 +33,9 @@ public class BudgetRepository {
     // Presupuesto actualmente activo observado mediante LiveData
     private final LiveData<Budget> activeBudget;
 
+    // Repositorio de sincronización en la nube
+    private final CloudSyncRepository syncRepository;
+
     /**
      * Constructor
      */
@@ -43,6 +46,8 @@ public class BudgetRepository {
 
         // Obtener el presupuesto activo o el último disponible como LiveData
         this.activeBudget = budgetDao.getActiveOrLastBudget();
+
+        this.syncRepository = new CloudSyncRepository(context);
 
         // Inicialización asíncrona de datos por defecto si es necesario
         initializeDefaultBudgetIfNeeded();
@@ -77,6 +82,7 @@ public class BudgetRepository {
 
                 long id = budgetDao.insert(budget);
                 Log.d(TAG, "Budget saved with ID: " + id);
+                syncRepository.scheduleImmediateSync();
 
             } catch (Exception e) {
                 Log.e(TAG, "Error saving budget: " + e.getMessage(), e);
@@ -100,6 +106,7 @@ public class BudgetRepository {
                 budget.setUpdatedAt(System.currentTimeMillis());
                 budgetDao.update(budget);
                 Log.d(TAG, "Budget updated");
+                syncRepository.scheduleImmediateSync();
             } catch (Exception e) {
                 Log.e(TAG, "Error updating budget: " + e.getMessage(), e);
             }

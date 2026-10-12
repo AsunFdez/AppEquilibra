@@ -1,4 +1,4 @@
-package asunfdiez.com.equilibra.controllers;
+package asunfdiez.com.equilibra.workers;
 
 import android.content.Context;
 import android.app.NotificationManager;

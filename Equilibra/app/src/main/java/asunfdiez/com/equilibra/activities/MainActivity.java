@@ -28,6 +28,7 @@ import asunfdiez.com.equilibra.utils.BottomNavigationHandler;
 import asunfdiez.com.equilibra.utils.Constants;
 import asunfdiez.com.equilibra.viewmodels.AdviceViewModel;
 import asunfdiez.com.equilibra.viewmodels.GamificationViewModel;
+import asunfdiez.com.equilibra.viewmodels.InterventionHistoryViewModel;
 import asunfdiez.com.equilibra.viewmodels.MainViewModel;
 
 /**
@@ -43,6 +44,8 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationH
     private MainViewModel viewModel;
     private AdviceViewModel adviceViewModel;
     private GamificationViewModel gamificationViewModel;
+
+    private InterventionHistoryViewModel interventionHistoryViewModel;
     
     // Controlador de presupuesto para chequeos diarios
     private BudgetController budgetController;
@@ -76,6 +79,7 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationH
         viewModel = new ViewModelProvider(this).get(MainViewModel.class);
         adviceViewModel = new ViewModelProvider(this).get(AdviceViewModel.class);
         gamificationViewModel = new ViewModelProvider(this).get(GamificationViewModel.class);
+        interventionHistoryViewModel = new ViewModelProvider(this).get(InterventionHistoryViewModel.class);
 
         // Pasar ViewModels al Data Binding
         binding.setViewModel(viewModel);
@@ -108,6 +112,11 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationH
                 handleUserProfileUpdate(user);
             }
         });
+
+        // Observar si hay registros de intervenciónes para mostrar notificación
+        interventionHistoryViewModel.getHasLogs().observe(this, hasLogs ->
+                binding.headerSection.notificationButton.setVisibility(
+                        Boolean.TRUE.equals(hasLogs) ? View.VISIBLE : View.GONE));
 
         // Observar el tipo de vista desde SharedPreferences (vía ViewModel)
         viewModel.getCurrentView().observe(this, viewType -> {
@@ -273,9 +282,10 @@ private void setupCommonListeners() {
     // View All Expenses
     binding.viewAllExpensesCard.setOnClickListener(v -> navigateTo(ExpenseListActivity.class));
 
-    binding.headerSection.notificationButton.setOnClickListener(v -> {
-        // TODO: Show notifications
-    });
+    // Notification Button
+    binding.headerSection.notificationButton.setOnClickListener(
+            v -> navigateTo(InterventionHistoryActivity.class)
+    );
 
     // Avatar Button
     binding.headerSection.avatarButton.setOnClickListener(v -> navigateTo(ProfileActivity.class));

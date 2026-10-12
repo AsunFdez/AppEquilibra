@@ -728,5 +728,33 @@ public class AnimationHelper {
         }
     }
 
+    /**
+     * Inicia una rotación infinita en una vista (para carga o sincronización)
+     * @param view Vista a rotar
+     */
+    public static void startRotationAnimation(View view) {
+        if (view == null) return;
+        ObjectAnimator rotate = ObjectAnimator.ofFloat(view, "rotation", 0f, 360f);
+        rotate.setDuration(1000);
+        rotate.setRepeatCount(ObjectAnimator.INFINITE);
+        rotate.setInterpolator(new android.view.animation.LinearInterpolator());
+        rotate.start();
+        view.setTag(R.id.btnCloud, rotate); // Guardar el animator para poder pararlo
+    }
+
+    /**
+     * Detiene la rotación infinita en una vista
+     * @param view Vista a detener
+     */
+    public static void stopRotationAnimation(View view) {
+        if (view == null) return;
+        Object animator = view.getTag(R.id.btnCloud);
+        if (animator instanceof ObjectAnimator) {
+            ((ObjectAnimator) animator).cancel();
+        }
+        view.setRotation(0f);
+        view.setTag(R.id.btnCloud, null);
+    }
+
 
 }

@@ -124,8 +124,11 @@ public class AppearanceSettingsActivity extends AppCompatActivity {
                 ViewGroup.LayoutParams.MATCH_PARENT,
                 ViewGroup.LayoutParams.WRAP_CONTENT));
 
-        String[] themes = {"light", "dark", "auto"};
-        String[] themeNames = {getString(R.string.theme_light), getString(R.string.theme_dark), getString(R.string.theme_auto)};
+        //String[] themes = {"light", "dark", "auto"};
+        //String[] themeNames = {getString(R.string.theme_light), getString(R.string.theme_dark), getString(R.string.theme_auto)};
+
+        String[] themes = {"light"};
+        String[] themeNames = {getString(R.string.theme_light)};
 
         for (int i = 0; i < themes.length; i++) {
             final String themeValue = themes[i];

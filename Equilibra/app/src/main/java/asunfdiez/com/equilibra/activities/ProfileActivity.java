@@ -137,13 +137,11 @@ public class ProfileActivity extends AppCompatActivity {
             showDeleteAccountDialog();
         });
 
-
         binding.btnGoogleProfile.setOnClickListener(v -> {
             AnimationHelper.scaleUp(v);
+            // Solo intentamos recoger datos si ya estamos autenticados en Firebase/Google
             if (Boolean.TRUE.equals(viewModel.getFirebaseAuthenticated().getValue())) {
-                String name = viewModel.getUserProfile().getValue() != null ? viewModel.getUserProfile().getValue().getName() : "";
-                String email = viewModel.getFirebaseEmail().getValue();
-                viewModel.syncProfileWithGoogle(name, email, null);
+                viewModel.fetchAndSyncGoogleData();
             } else {
                 showMessage("Inicia sesión en Google primero");
             }

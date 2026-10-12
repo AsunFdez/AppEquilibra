@@ -17,6 +17,7 @@ import java.util.Map;
 import java.util.concurrent.Executors;
 
 import asunfdiez.com.equilibra.controllers.ExpenseController;
+import asunfdiez.com.equilibra.controllers.UserProfileController;
 import asunfdiez.com.equilibra.models.Expense;
 import asunfdiez.com.equilibra.models.ExpenseWithCategory;
 
@@ -31,6 +32,7 @@ public class ExpenseListViewModel extends AndroidViewModel {
 
     // Controlador para operaciones CRUD y consultas de gastos
     private final ExpenseController controller;
+    private final UserProfileController userProfileController;;
     
     // Lista de gastos enriquecidos con su categoría para mostrar en la UI
     private final MutableLiveData<List<ExpenseWithCategory>> expenses = new MutableLiveData<>(new ArrayList<>());
@@ -56,6 +58,10 @@ public class ExpenseListViewModel extends AndroidViewModel {
     // Tipo de transacción a visualizar: true para gastos, false para ingresos
     private final MutableLiveData<Boolean> isExpenseMode = new MutableLiveData<>(true);
 
+    // Estado de sincronización
+    private final MutableLiveData<Boolean> isSyncing = new MutableLiveData<>(false);
+    private final MutableLiveData<String> syncMessage = new MutableLiveData<>(null);
+
     /**
      *Constructor
      * @param application
@@ -63,6 +69,7 @@ public class ExpenseListViewModel extends AndroidViewModel {
     public ExpenseListViewModel(@NonNull Application application) {
         super(application);
         controller = new ExpenseController(application);
+        userProfileController = new UserProfileController(application);
         updateMonthYear();
         loadData();
     }
@@ -274,5 +281,35 @@ public class ExpenseListViewModel extends AndroidViewModel {
         SimpleDateFormat sdf = new SimpleDateFormat("MMMM 'de' yyyy", new Locale("es", "ES"));
         String monthYear = sdf.format(currentMonthCalendar.getTime());
         return monthYear.substring(0, 1).toUpperCase() + monthYear.substring(1);
+    }
+
+    public LiveData<Boolean> getIsSyncing() {
+        return isSyncing;
+    }
+
+    public LiveData<String> getSyncMessage() {
+        return syncMessage;
+    }
+
+    public void clearSyncMessage() {
+        syncMessage.setValue(null);
+    }
+
+    public void syncExpenses() {
+        if (Boolean.TRUE.equals(isSyncing.getValue())) return;
+
+        isSyncing.setValue(true);
+        userProfileController.syncNow(success -> {
+            isSyncing.postValue(false);
+            if (success) {
+                syncMessage.postValue(getApplication().getString(asunfdiez.com.equilibra.R.string.sync_success));
+            } else {
+                if (!userProfileController.isFirebaseAuthenticated()) {
+                    syncMessage.postValue(getApplication().getString(asunfdiez.com.equilibra.R.string.sync_not_authenticated));
+                } else {
+                    syncMessage.postValue(getApplication().getString(asunfdiez.com.equilibra.R.string.sync_error));
+                }
+            }
+        });
     }
 }

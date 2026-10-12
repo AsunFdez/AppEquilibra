@@ -219,7 +219,7 @@
                                 android:id="@+id/emotionEmoji"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="@{user.emotionalState.emoji()}"
+                                android:text="@{user.emotionalState.emoji}"
                                 android:textSize="28sp" />
 
                             <TextView
@@ -227,7 +227,7 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_marginStart="8dp"
-                                android:text="@{user.emotionalState.text()}"
+                                android:text="@{user.emotionalState.text}"
                                 android:textColor="@color/gray_800"
                                 android:textSize="16sp"
                                 android:textStyle="bold" />

@@ -159,7 +159,7 @@ public class ProfileViewModel extends AndroidViewModel {
 
         if (user == null) return;
 
-        boolean isValid = validateInput(user.getName(), user.getEmail(), String.valueOf(user.getMonthlyIncome()));
+        boolean isValid = validateInput(user.getName(), user.getEmail(), String.valueOf( user.getMonthlyIncome()), String.valueOf(user.getIncomeDay()) );
         if (!isValid ) return;
 
         try {
@@ -172,7 +172,7 @@ public class ProfileViewModel extends AndroidViewModel {
         }
 
     }
-    private boolean validateInput(String name, String email, String incomeStr) {
+    private boolean validateInput(String name, String email, String incomeStr, String incomeDayStr) {
         if (name == null || name.isEmpty()) {
             errorMessage.setValue(getApplication().getString(R.string.error_name_required));
             return false;
@@ -183,19 +183,25 @@ public class ProfileViewModel extends AndroidViewModel {
             return false;
         }
 
-        if (incomeStr == null || incomeStr.isEmpty()) {
-            errorMessage.setValue(getApplication().getString(R.string.error_income_required));
-            return false;
-        }
-
         try {
             double income = Double.parseDouble(incomeStr);
-            if (income <= 0) {
+            if (income < 0) {
                 errorMessage.setValue(getApplication().getString(R.string.error_income_invalid));
                 return false;
             }
         } catch (NumberFormatException e) {
             errorMessage.setValue(getApplication().getString(R.string.error_income_invalid));
+            return false;
+        }
+
+        try {
+            int incomeDay = Integer.parseInt(incomeDayStr);
+            if (incomeDay < 1 || incomeDay > 31) {
+                errorMessage.setValue(getApplication().getString(R.string.error_income_day_invalid));
+                return false;
+            }
+        } catch (NumberFormatException e) {
+            errorMessage.setValue(getApplication().getString(R.string.error_income_day_invalid));
             return false;
         }
 
@@ -246,5 +252,14 @@ public class ProfileViewModel extends AndroidViewModel {
     public void refreshAuthState() {
         firebaseAuthenticated.setValue(userProfileController.isFirebaseAuthenticated());
         firebaseEmail.setValue(userProfileController.getFirebaseUserEmail());
+    }
+
+    public void fetchAndSyncGoogleData() {
+        UserProfile googleData = userProfileController.getGoogleAccountData();
+        if (googleData != null) {
+            syncProfileWithGoogle(googleData.getName(), googleData.getEmail(), googleData.getPhotoUrl());
+        } else {
+            errorMessage.setValue("No hay ninguna sesión de Google activa");
+        }
     }
 }

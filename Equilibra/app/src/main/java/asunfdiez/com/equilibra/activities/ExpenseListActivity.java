@@ -12,6 +12,8 @@ import androidx.databinding.DataBindingUtil;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
+import com.google.android.material.snackbar.Snackbar;
+
 import asunfdiez.com.equilibra.R;
 import asunfdiez.com.equilibra.adapters.CalendarAdapter;
 import asunfdiez.com.equilibra.adapters.ExpenseAdapter;
@@ -84,6 +86,8 @@ public class ExpenseListActivity extends AppCompatActivity implements ExpenseAda
     private void setupListeners() {
         binding.btnBack.setOnClickListener(v -> finish());
 
+        binding.btnCloud.setOnClickListener(v -> viewModel.syncExpenses());
+
         binding.toggleType.addOnButtonCheckedListener((group, checkedId, isChecked) -> {
             if (isChecked) {
                 viewModel.setIsExpenseMode(checkedId == R.id.btnExpense);
@@ -118,6 +122,21 @@ public class ExpenseListActivity extends AppCompatActivity implements ExpenseAda
                 java.util.Calendar cal = java.util.Calendar.getInstance();
                 cal.setTimeInMillis(timestamp);
                 calendarAdapter.setSelectedDay(cal.get(java.util.Calendar.DAY_OF_MONTH));
+            }
+        });
+
+        viewModel.getIsSyncing().observe(this, isSyncing -> {
+            if (isSyncing) {
+                AnimationHelper.startRotationAnimation(binding.btnCloud);
+            } else {
+                AnimationHelper.stopRotationAnimation(binding.btnCloud);
+            }
+        });
+
+        viewModel.getSyncMessage().observe(this, message -> {
+            if (message != null) {
+                Snackbar.make(binding.getRoot(), message, Snackbar.LENGTH_LONG).show();
+                viewModel.clearSyncMessage();
             }
         });
     }
@@ -172,6 +191,7 @@ public class ExpenseListActivity extends AppCompatActivity implements ExpenseAda
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        AnimationHelper.stopRotationAnimation(binding.btnCloud);
         handler.removeCallbacksAndMessages(null);
     }
 

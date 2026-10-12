@@ -20,10 +20,12 @@ import java.util.concurrent.Executors;
 
 import asunfdiez.com.equilibra.R;
 import asunfdiez.com.equilibra.controllers.ExpenseController;
-import asunfdiez.com.equilibra.utils.Constants;
 import asunfdiez.com.equilibra.models.Expense;
 import asunfdiez.com.equilibra.models.ExpenseCategory;
+import asunfdiez.com.equilibra.models.InterventionLog;
 import asunfdiez.com.equilibra.models.SmartReminder;
+import asunfdiez.com.equilibra.models.UserProfile;
+import asunfdiez.com.equilibra.utils.Constants;
 
 /**
  * ViewModel que gestiona el estado y la lógica para la creación de nuevos gastos.
@@ -54,6 +56,7 @@ public class AddExpenseViewModel extends AndroidViewModel {
 
     // ID del gasto actual (si se está editando uno existente)
     private long currentExpenseId = 0;
+
 
     // Tipo de transacción: true para gasto, false para ingreso
     private MutableLiveData<Boolean> isExpense = new MutableLiveData<>(true);
@@ -251,15 +254,50 @@ public class AddExpenseViewModel extends AndroidViewModel {
                         return;
                     }
 
+                    long userId = 0L;
+                    UserProfile currentUser = new asunfdiez.com.equilibra.repositories.UserProfileRepository(getApplication())
+                            .getUserProfileSync();
+                    if (currentUser != null) {
+                        userId = currentUser.getId();
+                    }
+
                     // Verificar si es un gasto importante (muy alto)
                     if (expenseController.isImportantExpense(amountValue)) {
+                        Expense expense = new Expense();
+                        expense.setId(currentExpenseId);
+                        expense.setType(isExpenseValue != null && isExpenseValue ? Constants.TYPE_EXPENSE : Constants.TYPE_INCOME);
+                        expense.setAmount(amountValue);
+                        expense.setCategory(category != null ? category.getId() : 0);
+                        expense.setDescription(description.getValue() != null ? description.getValue() : "");
+
+                        SimpleDateFormat sdfDate = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
+                        SimpleDateFormat sdfTime = new SimpleDateFormat("HH:mm", Locale.getDefault());
+                        Calendar calendar = selectedDateTime.getValue();
+                        expense.setDate(sdfDate.format((calendar != null) ? calendar.getTime() : Calendar.getInstance().getTime()));
+                        expense.setTime(sdfTime.format((calendar != null) ? calendar.getTime() : Calendar.getInstance().getTime()));
+                        expense.setTimestamp((calendar != null) ? calendar.getTimeInMillis() : System.currentTimeMillis());
+
+                        long expenseId = expenseController.insertExpenseSync(expense);
+                        currentExpenseId = expenseId;
+
                         String impact = expenseController.calculateGoalImpact(amountValue);
                         List<String> alts = expenseController.generateAlternatives(
                                 category.getId(), amountValue, description.getValue()
                         );
+                        InterventionLog interventionLog = expenseController.buildImportantExpenseLog(
+                                userId,
+                                expenseId,
+                                amountValue,
+                                category,
+                                description.getValue()
+                        );
+                        expenseController.saveInterventionLog(interventionLog);
+
                         goalImpact.postValue(impact);
                         alternatives.postValue(alts);
                         showImportantExpense.postValue(true);
+
+
                         return;
                     }
 
@@ -268,7 +306,30 @@ public class AddExpenseViewModel extends AndroidViewModel {
                             category.getId(), amountValue
                     );
                     if (reminder != null) {
+                        Expense expense = new Expense();
+                        expense.setId(currentExpenseId);
+                        expense.setType(isExpenseValue != null && isExpenseValue ? Constants.TYPE_EXPENSE : Constants.TYPE_INCOME);
+                        expense.setAmount(amountValue);
+                        expense.setCategory(category != null ? category.getId() : 0);
+                        expense.setDescription(description.getValue() != null ? description.getValue() : "");
+
+                        SimpleDateFormat sdfDate = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
+                        SimpleDateFormat sdfTime = new SimpleDateFormat("HH:mm", Locale.getDefault());
+                        Calendar calendar = selectedDateTime.getValue();
+                        expense.setDate(sdfDate.format((calendar != null) ? calendar.getTime() : Calendar.getInstance().getTime()));
+                        expense.setTime(sdfTime.format((calendar != null) ? calendar.getTime() : Calendar.getInstance().getTime()));
+                        expense.setTimestamp((calendar != null) ? calendar.getTimeInMillis() : System.currentTimeMillis());
+
+                        long expenseId = expenseController.insertExpenseSync(expense);
+                        currentExpenseId = expenseId;
+
                         showSmartReminder.postValue(reminder);
+                        InterventionLog interventionLog = expenseController.buildSmartReminderLog(
+                                userId,
+                                expenseId,
+                                reminder
+                        );
+                        expenseController.saveInterventionLog(interventionLog);
                         return;
                     }
 

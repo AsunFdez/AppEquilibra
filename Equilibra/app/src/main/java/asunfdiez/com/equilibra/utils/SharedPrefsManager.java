@@ -64,11 +64,10 @@ public final class SharedPrefsManager {
      */
     public static synchronized SharedPrefsManager getInstance(Context context) {
         if (instance == null) {
-            instance = new SharedPrefsManager(context);
+            instance = new SharedPrefsManager(context.getApplicationContext());
         }
         return instance;
     }
-
 
 
     // ==================== ONBOARDING ====================
@@ -76,19 +75,10 @@ public final class SharedPrefsManager {
      * Verifica si el onboarding está completo
      */
     public boolean isOnboardingComplete() {
-        if (!sharedPreferences.contains(Constants.KEY_ONBOARDING_COMPLETE)) {
-            return false;
-        }
         return sharedPreferences.getBoolean(Constants.KEY_ONBOARDING_COMPLETE, false);
-
     }
 
-
-
     public long getOnboardingCompletedAt() {
-        if (!sharedPreferences.contains(Constants.KEY_ONBOARDING_COMPLETED_AT)) {
-            return 0L;
-        }
         return sharedPreferences.getLong(Constants.KEY_ONBOARDING_COMPLETED_AT, 0L);
     }
 
@@ -97,7 +87,6 @@ public final class SharedPrefsManager {
      */
     public void setOnboardingComplete(boolean complete) {
         editor.putBoolean(Constants.KEY_ONBOARDING_COMPLETE, complete).apply();
-        // Sincronizamos el LiveData para que la UI reaccione
         onboardingCompleted.setValue(complete);
     }
 
@@ -121,7 +110,7 @@ public final class SharedPrefsManager {
      */
     public void markInterventionSeenToday() {
         long now = System.currentTimeMillis();
-        sharedPreferences.edit().putLong(Constants.KEY_INTERVENTION_LAST_SEEN, now).apply();
+        editor.putLong(Constants.KEY_INTERVENTION_LAST_SEEN, now).apply();
     }
 
     /**
@@ -140,31 +129,16 @@ public final class SharedPrefsManager {
     //--- CONFIGURACIÓN
 
     public void setCurrencySymbol(String symbol) {
-        sharedPreferences.edit()
-                .putString(Constants.KEY_CURRENCY_SYMBOL, symbol)
-                .apply();
+        editor.putString(Constants.KEY_CURRENCY_SYMBOL, symbol).apply();
     }
 
     public String getCurrencySymbol() {
-        return sharedPreferences.getString(Constants.KEY_CURRENCY_SYMBOL, "$");
+        return sharedPreferences.getString(Constants.KEY_CURRENCY_SYMBOL, "€");
     }
-
-    public void setThemeMode(String mode) {
-        sharedPreferences.edit()
-                .putString(Constants.KEY_THEME_MODE, mode)
-                .apply();
-    }
-
-    public String getThemeMode() {
-        return sharedPreferences.getString(Constants.KEY_THEME_MODE, "light");
-    }
-
 
     //--- GAMIFICACIÓN
     public void setTotalXP(int xp) {
-        sharedPreferences.edit()
-                .putInt(Constants.KEY_TOTAL_XP, xp)
-                .apply();
+        editor.putInt(Constants.KEY_TOTAL_XP, xp).apply();
     }
 
     public int getTotalXP() {
@@ -172,14 +146,11 @@ public final class SharedPrefsManager {
     }
 
     public void addXP(int xp) {
-        int currentXP = getTotalXP();
-        setTotalXP(currentXP + xp);
+        setTotalXP(getTotalXP() + xp);
     }
 
     public void setCurrentMission(String mission) {
-        sharedPreferences.edit()
-                .putString(Constants.KEY_CURRENT_MISSION, mission)
-                .apply();
+        editor.putString(Constants.KEY_CURRENT_MISSION, mission).apply();
     }
 
     public String getCurrentMission() {
@@ -187,9 +158,7 @@ public final class SharedPrefsManager {
     }
 
     public void setMissionsCompleted(int count) {
-        sharedPreferences.edit()
-                .putInt(Constants.KEY_MISSIONS_COMPLETED, count)
-                .apply();
+        editor.putInt(Constants.KEY_MISSIONS_COMPLETED, count).apply();
     }
 
     public int getMissionsCompleted() {
@@ -197,26 +166,21 @@ public final class SharedPrefsManager {
     }
 
     public void incrementMissionsCompleted() {
-        int current = getMissionsCompleted();
-        setMissionsCompleted(current + 1);
+        setMissionsCompleted(getMissionsCompleted() + 1);
     }
 
     //--- UTILIDADES
 
     /**
      * Limpia solo los datos de onboarding
-     * Permite al usuario volver a hacer el onboarding
      */
     public void resetOnboarding() {
-        sharedPreferences.edit()
-                .remove(Constants.KEY_ONBOARDING_COMPLETE)
-                .remove(Constants.KEY_ONBOARDING_COMPLETED_AT)
-                .apply();
+        editor.remove(Constants.KEY_ONBOARDING_COMPLETE)
+              .remove(Constants.KEY_ONBOARDING_COMPLETED_AT)
+              .apply();
+        onboardingCompleted.setValue(false);
     }
 
-    /**
-     * Obtiene el SharedPreferences
-     */
     public SharedPreferences getSharedPreferences() {
         return sharedPreferences;
     }
@@ -298,21 +262,13 @@ public final class SharedPrefsManager {
         lastSyncTime.postValue(timestamp);
     }
 
-    // ========== MÉTODOS AUXILIARES ==========
-
     /**
      * Limpia todas las preferencias (excepto onboarding)
      */
     public void clearAll() {
-        boolean onboarding = sharedPreferences.getBoolean(
-                Constants.KEY_ONBOARDING_COMPLETE, false);
-
+        boolean onboarding = isOnboardingComplete();
         editor.clear().apply();
-
-        // Restaurar onboarding
-        editor.putBoolean(Constants.KEY_ONBOARDING_COMPLETE, onboarding).apply();
-
-        // Recargar valores
+        setOnboardingComplete(onboarding);
         loadInitialValues();
     }
 
@@ -320,23 +276,14 @@ public final class SharedPrefsManager {
      * Reset completo (incluye onboarding)
      */
     public void resetAll() {
-        sharedPreferences.edit().clear().commit(); // commit() para que sea inmediato en este caso
+        editor.clear().commit();
         loadInitialValues();
     }
 
     /**
-     * Exporta todas las preferencias como String
+     * Exporta todas las preferencias como un String
      */
     public String exportPreferences() {
-        StringBuilder sb = new StringBuilder();
-        sb.append("Onboarding: ").append(onboardingCompleted.getValue()).append("\n");
-        sb.append("Budget Notifications: ").append(budgetNotifications.getValue()).append("\n");
-        sb.append("View mode: ").append(viewMode.getValue()).append("\n");
-        sb.append("Notifications: ").append(notificationsEnabled.getValue()).append("\n");
-        sb.append("Theme: ").append(theme.getValue()).append("\n");
-        sb.append("Language: ").append(language.getValue()).append("\n");
-        return sb.toString();
+        return sharedPreferences.getAll().toString();
     }
-
-
 }

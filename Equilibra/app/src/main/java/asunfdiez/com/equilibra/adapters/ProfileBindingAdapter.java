@@ -93,7 +93,13 @@ public class ProfileBindingAdapter {
     }
 
     @BindingAdapter("etMonthlyIncome")
-    public static void setMonthlyIncome(TextView view, double income) {
+    public static void setMonthlyIncome(TextView view, Double income) {
+        if (income == null) {
+            if (!view.getText().toString().isEmpty()) {
+                view.setText("");
+            }
+            return;
+        }
         // Evitar bucles infinitos y saltos del cursor comprobando si el valor ha cambiado realmente
         String currentText = view.getText().toString();
         try {
@@ -105,16 +111,59 @@ public class ProfileBindingAdapter {
     }
 
     @InverseBindingAdapter(attribute = "etMonthlyIncome")
-    public static double getMonthlyIncome(TextView view) {
+    public static Double getMonthlyIncome(TextView view) {
+        String s = view.getText().toString();
+        if (s.isEmpty()) return null;
         try {
-            return Double.parseDouble(view.getText().toString());
+            return Double.parseDouble(s);
         } catch (NumberFormatException e) {
-            return 0.0;
+            return null;
         }
     }
 
     @BindingAdapter("etMonthlyIncomeAttrChanged")
     public static void setMonthlyIncomeListener(TextView view, final InverseBindingListener listener) {
+        if (listener != null) {
+            view.addTextChangedListener(new TextWatcher() {
+                @Override public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+                @Override public void onTextChanged(CharSequence s, int start, int count, int after) {}
+                @Override public void afterTextChanged(Editable s) {
+                    listener.onChange();
+                }
+            });
+        }
+    }
+
+    @BindingAdapter("etIntegerValue")
+    public static void setIntegerValue(TextView view, Integer value) {
+        if (value == null) {
+            if (!view.getText().toString().isEmpty()) {
+                view.setText("");
+            }
+            return;
+        }
+        String currentText = view.getText().toString();
+        try {
+            int currentVal = Integer.parseInt(currentText);
+            if (currentVal == value) return;
+        } catch (NumberFormatException ignored) {}
+
+        view.setText(String.valueOf(value));
+    }
+
+    @InverseBindingAdapter(attribute = "etIntegerValue")
+    public static Integer getIntegerValue(TextView view) {
+        String s = view.getText().toString();
+        if (s.isEmpty()) return null;
+        try {
+            return Integer.parseInt(s);
+        } catch (NumberFormatException e) {
+            return null;
+        }
+    }
+
+    @BindingAdapter("etIntegerValueAttrChanged")
+    public static void setIntegerValueListener(TextView view, final InverseBindingListener listener) {
         if (listener != null) {
             view.addTextChangedListener(new TextWatcher() {
                 @Override public void beforeTextChanged(CharSequence s, int start, int count, int after) {}

@@ -22,6 +22,7 @@ import asunfdiez.com.equilibra.models.CategoryAnalysis;
 import asunfdiez.com.equilibra.models.Expense;
 import asunfdiez.com.equilibra.models.ExpenseCategory;
 import asunfdiez.com.equilibra.models.ExpenseWithCategory;
+import asunfdiez.com.equilibra.models.InterventionLog;
 import asunfdiez.com.equilibra.models.SavingGoal;
 import asunfdiez.com.equilibra.models.SmartReminder;
 import asunfdiez.com.equilibra.models.UserProfile;
@@ -30,6 +31,7 @@ import asunfdiez.com.equilibra.repositories.AlternativeRepository;
 import asunfdiez.com.equilibra.repositories.BudgetRepository;
 import asunfdiez.com.equilibra.repositories.ExpenseCategoryRepository;
 import asunfdiez.com.equilibra.repositories.ExpenseRepository;
+import asunfdiez.com.equilibra.repositories.InterventionLogRepository;
 import asunfdiez.com.equilibra.repositories.SavingGoalRepository;
 import asunfdiez.com.equilibra.repositories.UserProfileRepository;
 
@@ -52,6 +54,9 @@ public class ExpenseController {
     private final AlternativeRepository alternativeRepository;
     private final AchievementRepository achievementRepository;
     private final StreakController streakController;
+    private final InterventionLogRepository interventionLogRepository;
+
+
     private final Context context;
 
     private final ExecutorService executor = Executors.newSingleThreadExecutor();
@@ -67,6 +72,7 @@ public class ExpenseController {
         this.alternativeRepository = new AlternativeRepository(context);
         this.achievementRepository = new AchievementRepository(context);
         this.streakController = new StreakController(context);
+        this.interventionLogRepository = new InterventionLogRepository(context);
         this.mainHandler = new Handler(Looper.getMainLooper());
     }
 
@@ -85,6 +91,14 @@ public class ExpenseController {
             }
             checkAchievements();
         });
+    }
+
+    public long insertExpenseSync(Expense expense) {
+        long id = expenseRepository.insertExpenseSync(expense);
+        if (expense.isExpense()) {
+            userProfileRepository.incrementWeekProgress();
+        }
+        return id;
     }
 
     /**
@@ -113,6 +127,10 @@ public class ExpenseController {
      */
     public Expense getExpenseById(long expenseId) {
         return expenseRepository.getExpenseById(expenseId);
+    }
+
+    public ExpenseWithCategory getExpenseWithCategoryById(long expenseId) {
+        return expenseRepository.getExpenseWithCategoryById(expenseId);
     }
 
     /**
@@ -422,7 +440,6 @@ public class ExpenseController {
             String patternMsg = String.format(context.getString(R.string.expense_pattern),
                     weekCount + 1, categoryName, weekTotal + amount);
             reminder.setPatternMessage(patternMsg);
-
             return reminder;
         }
 
@@ -463,7 +480,7 @@ public class ExpenseController {
      * @return número de semanas
      */
     public int getWeeksUnderBudget() {
-        //TODO implementar con Budget
+
         double monthlyBudget = userProfileRepository.getUserMonthlyIncome();
         double weeklyBudgetLimit = monthlyBudget / 4.0;
 
@@ -559,5 +576,40 @@ public class ExpenseController {
 
     public double getCategoryExpensesThisMonth(long topCategoryId) {
         return expenseRepository.getCategoryExpensesThisMonth(topCategoryId);
+    }
+
+    public InterventionLog buildImportantExpenseLog(long userId, long expenseId,
+                                                    double amountValue,
+                                                    ExpenseCategory category,
+                                                    String description) {
+        String impact = calculateGoalImpact(amountValue);
+        List<String> alternatives = generateAlternatives(category.getId(), amountValue, description);
+
+        String message = "Gasto importante detectado: " + amountValue + " €";
+        String alternativeText = alternatives == null || alternatives.isEmpty()
+                ? ""
+                : String.join(" | ", alternatives);
+
+        return new InterventionLog(
+                userId,
+                expenseId,
+                "important_expense",
+                message,
+                impact,
+                alternativeText
+        );
+    }
+
+    public InterventionLog buildSmartReminderLog(long userId, long expenseId, SmartReminder reminder) {
+        if (reminder == null) {
+            return null;
+        }
+
+        return new InterventionLog(userId, expenseId, reminder);
+    }
+
+    public void saveInterventionLog(InterventionLog log) {
+        if (log == null) return;
+        interventionLogRepository.insertInterventionLog(log);
     }
 }

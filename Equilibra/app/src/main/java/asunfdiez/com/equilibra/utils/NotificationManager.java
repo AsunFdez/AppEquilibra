@@ -10,7 +10,7 @@ import androidx.work.WorkManager;
 import java.util.Calendar;
 import java.util.concurrent.TimeUnit;
 
-import asunfdiez.com.equilibra.controllers.NotificationWorker;
+import asunfdiez.com.equilibra.workers.NotificationWorker;
 
 /**
  * Gestor encargado de la programación y administración de notificaciones del sistema.

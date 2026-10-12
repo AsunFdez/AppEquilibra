@@ -37,10 +37,22 @@ public class CloudSyncWorker extends ListenableWorker {
                 @Override
                 public void onSuccess(String uid) {
                     Log.d(TAG, "Autenticado con éxito. Iniciando sincronización para UID: " + uid);
-                    syncRepository.syncExpensesSync(uid);
-                    // Actualizar marca de tiempo de sincronización exitosa
-                    SharedPrefsManager.getInstance(getApplicationContext()).setLastSyncTime(System.currentTimeMillis());
-                    completer.set(Result.success());
+                    
+                    // Ejecutar la sincronización en un hilo secundario para evitar IllegalStateException (Room)
+                    new java.util.concurrent.ScheduledThreadPoolExecutor(1).execute(() -> {
+                        try {
+                            // Sincronizar todos los datos (gastos, presupuestos, rachas, perfil)
+                            syncRepository.syncAll(uid);
+                            // Actualizar marca de tiempo de sincronización exitosa
+                            SharedPrefsManager.getInstance(getApplicationContext()).setLastSyncTime(System.currentTimeMillis());
+                            completer.set(Result.success());
+                        } catch (Exception e) {
+                            Log.e(TAG, "Error durante la sincronización síncrona", e);
+                            // Devolvemos failure para que la UI sepa que ha terminado (aunque sea con error)
+                            // y se detenga la animación. WorkManager no reintentará automáticamente.
+                            completer.set(Result.failure());
+                        }
+                    });
                 }
 
                 @Override

@@ -2,6 +2,7 @@ package asunfdiez.com.equilibra.models;
 
 import androidx.annotation.NonNull;
 import androidx.room.Entity;
+import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
 
 import asunfdiez.com.equilibra.utils.Constants;
@@ -20,7 +21,7 @@ public class InterventionLog {
     @PrimaryKey(autoGenerate = true)
     @NonNull
     private long id;
-    
+
     // ID del usuario que recibió la intervención
     private long userId;
     
@@ -40,8 +41,42 @@ public class InterventionLog {
     private String alternativeSuggestion;
     private long timestamp;
 
-    // Constructor vacío
+    // Constructor vacío para Room
     public InterventionLog() {
+    }
+
+    @Ignore
+    public InterventionLog(long userId, long expenseId, String interventionType,
+                           String message, String impactOnGoal, String alternativeSuggestion) {
+        this.userId = userId;
+        this.expenseId = expenseId;
+        this.interventionType = interventionType;
+        this.message = message;
+        this.impactOnGoal = impactOnGoal;
+        this.alternativeSuggestion = alternativeSuggestion;
+        this.timestamp = System.currentTimeMillis();
+    }
+
+    @Ignore
+    public InterventionLog(long userId, long expenseId, SmartReminder reminder) {
+        this.userId = userId;
+        this.expenseId = expenseId;
+        this.interventionType = "smart_reminder";
+        this.message = reminder != null ? reminder.getPatternMessage() : "";
+        this.impactOnGoal = reminder != null ? "Patrón detectado en " + reminder.getCategory() : "";
+        this.alternativeSuggestion = reminder != null && reminder.getSuggestions() != null
+                ? String.join(" | ", reminder.getSuggestions())
+                : "";
+        this.timestamp = System.currentTimeMillis();
+    }
+
+    @Ignore
+    public InterventionLog(long userId, long expenseId, String interventionType, String message) {
+        this.userId = userId;
+        this.expenseId = expenseId;
+        this.interventionType = interventionType;
+        this.message = message;
+        this.timestamp = System.currentTimeMillis();
     }
 
     // Getters y Setters

@@ -59,7 +59,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="24dp"
-                    android:text="@{viewModel.selectedEmotion.emoji()}"
+                    android:text="@{viewModel.selectedEmotion.emoji}"
                     android:textSize="64sp" />
 
                 <TextView
@@ -68,7 +68,7 @@
                     android:layout_height="wrap_content"
                     android:gravity="center"
                     android:lineSpacingMultiplier="1.3"
-                    android:text="@{viewModel.selectedEmotion.validation()}"
+                    android:text="@{viewModel.selectedEmotion.validation}"
                     android:textColor="@color/gray_700"
                     android:textSize="18sp" />
             </LinearLayout>

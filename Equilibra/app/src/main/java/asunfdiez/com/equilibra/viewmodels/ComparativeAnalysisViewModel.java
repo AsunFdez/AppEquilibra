@@ -153,7 +153,7 @@ public class ComparativeAnalysisViewModel extends AndroidViewModel {
 
         if (totalIncome == 0) {
             UserProfile profile = userProfileController.getUserProfileSync();
-            if (profile != null) {
+            if (profile != null && profile.getMonthlyIncome() != null) {
                 totalIncome = profile.getMonthlyIncome();
                 if (weekly) totalIncome /= 4.0;
             }

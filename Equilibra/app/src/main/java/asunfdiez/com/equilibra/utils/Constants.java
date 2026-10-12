@@ -42,11 +42,11 @@ public final class Constants {
 
 
     // Control de Intervenciones
-    public static final String KEY_INTERVENTION_LAST_SEEN = "interventionLastSeen";
+    public static final String KEY_INTERVENTION_LAST_SEEN = "intervention_last_seen";
 
 
     // Ajustes Generales
-    public static final String KEY_CURRENCY_SYMBOL = "currencySymbol";
+    public static final String KEY_CURRENCY_SYMBOL = "currency_symbol";
     public static final String KEY_THEME_MODE = "themeMode";
 
     // Gamificación
@@ -95,12 +95,14 @@ public final class Constants {
     // ========================================
     public static final String DATABASE_NAME = "equilibra.db";
     public static final int DATABASE_VERSION = 3;
+    public static final int DATABASE_PREVIOUS_VERSION = 2;
 
     //Tabla UserProfile
     public static final String TABLE_USER_PROFILE = "user_profile";
     public static final String COLUMN_USER_WEEK_PROGRESS = "weekProgress";
     public static final String COLUMN_USER_DAY_COUNT = "dayCount";
     public static final String COLUMN_USER_MONTHLY_INCOME = "monthlyIncome";
+    public static final String COLUMN_USER_INCOME_DAY = "incomeDay";
     public static final String COLUMN_USER_NAME = "name";
 
 
@@ -111,6 +113,7 @@ public final class Constants {
     // Tipos de transacción
     public static final String TYPE_EXPENSE = "expense";
     public static final String TYPE_INCOME = "income";
+    public static final String AUTO_INCOME_DESCRIPTION = "Ingreso Mensual Automático";
     public static final String COLUMN_EXPENSE_AMOUNT = "amount";
     public static final String COLUMN_EXPENSE_CATEGORY = "category";
     public static final String COLUMN_EXPENSE_DESCRIPTION = "description";
