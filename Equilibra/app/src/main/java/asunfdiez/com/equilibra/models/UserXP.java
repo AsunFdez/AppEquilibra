@@ -2,6 +2,8 @@ package asunfdiez.com.equilibra.models;
 
 import androidx.annotation.NonNull;
 import androidx.room.Entity;
+import androidx.room.ForeignKey;
+import androidx.room.Index;
 import androidx.room.PrimaryKey;
 
 import asunfdiez.com.equilibra.utils.Constants;
@@ -13,7 +15,16 @@ import asunfdiez.com.equilibra.utils.Constants;
  * alcanzado y los requisitos para el siguiente nivel. Es el núcleo que permite 
  * visualizar el avance del usuario en el sistema de recompensas.</p>
  */
-@Entity(tableName = Constants.TABLE_USER_XP)
+@Entity(
+        tableName = Constants.TABLE_USER_XP,
+        foreignKeys = @ForeignKey(
+                entity = UserProfile.class,
+                parentColumns = "id",
+                childColumns = "userId",
+                onDelete = ForeignKey.CASCADE
+        ),
+        indices = {@Index("userId")}
+)
 public class UserXP {
 
     @PrimaryKey(autoGenerate = true)

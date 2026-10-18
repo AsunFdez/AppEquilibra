@@ -1,12 +1,15 @@
 package asunfdiez.com.equilibra.database;
 
 import android.content.Context;
+import android.database.Cursor;
+import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.room.Database;
 import androidx.room.Room;
 import androidx.room.RoomDatabase;
 import androidx.room.TypeConverters;
+import androidx.room.migration.Migration;
 import androidx.sqlite.db.SupportSQLiteDatabase;
 
 import java.time.LocalDate;
@@ -15,20 +18,20 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Random;
+import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 import asunfdiez.com.equilibra.R;
 import asunfdiez.com.equilibra.models.Achievement;
 import asunfdiez.com.equilibra.models.Alternative;
 import asunfdiez.com.equilibra.models.Budget;
-import asunfdiez.com.equilibra.models.Challenge;
-import asunfdiez.com.equilibra.models.DailyAnalysis;
 import asunfdiez.com.equilibra.models.Expense;
 import asunfdiez.com.equilibra.models.ExpenseCategory;
 import asunfdiez.com.equilibra.models.InterventionLog;
 import asunfdiez.com.equilibra.models.SavingGoal;
 import asunfdiez.com.equilibra.models.Streak;
 import asunfdiez.com.equilibra.models.UserProfile;
+import asunfdiez.com.equilibra.models.UserXP;
 import asunfdiez.com.equilibra.utils.Constants;
 
 /**
@@ -37,20 +40,79 @@ import asunfdiez.com.equilibra.utils.Constants;
  * <p>Define todas las entidades que componen el esquema de persistencia local y 
  * proporciona los métodos abstractos para acceder a sus respectivos DAO. Implementa
  * el patrón Singleton para garantizar una única instancia de la base de datos y 
- * gestiona la inicialización de datos (categorías, logros, etc.) en la
+ * gestiona la inicialización de datos de configuración (categorías, logros, alternativas, rachas) en la
  * primera ejecución.</p>
  */
 @Database(
-        entities = { Achievement.class, Budget.class, Challenge.class, DailyAnalysis.class, Expense.class, ExpenseCategory.class, InterventionLog.class, SavingGoal.class, Streak.class, UserProfile.class, Alternative.class },
+        entities = { Achievement.class, Alternative.class,
+                    Budget.class,
+                    Expense.class, ExpenseCategory.class,
+                    InterventionLog.class,
+                    SavingGoal.class, Streak.class,
+                    UserProfile.class, UserXP.class },
         version = Constants.DATABASE_VERSION,
         exportSchema = true
 )
 @TypeConverters({Converters.class})
 public abstract class AppDatabase extends RoomDatabase {
 
+
+    static final Migration MIGRATION_12_13 = new Migration(12, 13) {
+        @Override
+        public void migrate(@NonNull SupportSQLiteDatabase database) {
+            database.execSQL(
+                    "CREATE TABLE alternatives_new (" +
+                            "id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, " +
+                            "categoryId INTEGER NOT NULL, " +
+                            "descriptionKeyword TEXT, " +
+                            "suggestion TEXT, " +
+                            "savingsPercentage REAL NOT NULL, " +
+                            "FOREIGN KEY(categoryId) REFERENCES categories(id) " +
+                            "ON UPDATE NO ACTION ON DELETE CASCADE)");
+            database.execSQL(
+                    "INSERT INTO alternatives_new " +
+                            "(id, categoryId, descriptionKeyword, suggestion, savingsPercentage) " +
+                            "SELECT a.id, c.id, a.descriptionKeyword, a.suggestion, " +
+                            "a.savingsPercentage FROM alternatives a " +
+                            "JOIN categories c ON c.name = a.category");
+
+            if (countRows(database, "alternatives") != countRows(database, "alternatives_new")) {
+                throw new IllegalStateException(
+                        "Cannot migrate alternatives: some category names do not match categories");
+            }
+
+            database.execSQL("DROP TABLE alternatives");
+            database.execSQL("ALTER TABLE alternatives_new RENAME TO alternatives");
+            database.execSQL(
+                    "CREATE INDEX index_alternatives_categoryId ON alternatives(categoryId)");
+            database.execSQL(
+                    "CREATE UNIQUE INDEX index_alternatives_suggestion " +
+                            "ON alternatives(suggestion)");
+        }
+    };
+
+    static final Migration MIGRATION_13_14 = new Migration(13, 14) {
+        @Override
+        public void migrate(@NonNull SupportSQLiteDatabase database) {
+            database.execSQL("DROP TABLE IF EXISTS daily_analysis");
+            database.execSQL("DROP TABLE IF EXISTS challenges");
+        }
+    };
+
+    private static long countRows(SupportSQLiteDatabase database, String tableName) {
+        try (Cursor cursor = database.query("SELECT COUNT(*) FROM " + tableName)) {
+            if (cursor.moveToFirst()) {
+                return cursor.getLong(0);
+            }
+        }
+        throw new IllegalStateException("Cannot count rows in " + tableName);
+    }
+
     // Instancia única de la base de datos (Patrón Singleton)
     private static volatile AppDatabase INSTANCE;
     private static Context mContext;
+    private static final ExecutorService INITIALIZATION_EXECUTOR =
+            Executors.newSingleThreadExecutor();
 
     // Métodos de acceso a los Objetos de Acceso a Datos (DAO)
     public abstract UserProfileDao userProfileDao();
@@ -60,12 +122,9 @@ public abstract class AppDatabase extends RoomDatabase {
     public abstract AchievementDao achievementDao();
     public abstract AlternativeDao alternativeDao();
     public abstract StreakDao streakDao();
-
-    public abstract ChallengeDao challengeDao();
+    public abstract UserXPDao userXPDao();
 
     public abstract BudgetDao budgetDao();
-
-    public abstract DailyAnalysisDao dailyAnalysisDao();
 
     public abstract InterventionLogDao interventionLogDao();
 
@@ -81,29 +140,62 @@ public abstract class AppDatabase extends RoomDatabase {
                     mContext = context.getApplicationContext();
                     INSTANCE = Room.databaseBuilder(context.getApplicationContext(),
                                     AppDatabase.class, Constants.DATABASE_NAME)
-                            .addCallback(sRoomDatabaseCallback)
+                            .addMigrations(MIGRATION_12_13, MIGRATION_13_14)
                             .fallbackToDestructiveMigration()
                             .build();
+                    ensureInitialDataSync(context);
                 }
             }
         }
         return INSTANCE;
     }
 
-    private final static RoomDatabase.Callback sRoomDatabaseCallback = new RoomDatabase.Callback() {
-        @Override
-        public void onCreate(@NonNull SupportSQLiteDatabase db) {
-            super.onCreate(db);
-            initialConfiguration();
-        }
-    };
+    public static void ensureInitialDataSync(Context context) {
+        try {
+            if (INSTANCE == null) return;
+            Context ctx = context.getApplicationContext();
+            mContext = ctx;
 
-    public static void initialConfiguration() {
-        // Usamos un Executor para no bloquear el hilo principal
-        Executors.newSingleThreadExecutor().execute(AppDatabase::insertInitialCategories);
-        Executors.newSingleThreadExecutor().execute(AppDatabase::insertInitialAchievements);
-        Executors.newSingleThreadExecutor().execute(AppDatabase::insertInitialAlternatives);
-        Executors.newSingleThreadExecutor().execute(AppDatabase::insertInitialStreaks);
+            // Drop legacy tables if they exist
+            INSTANCE.query("DROP TABLE IF EXISTS daily_analysis", null).close();
+            INSTANCE.query("DROP TABLE IF EXISTS challenges", null).close();
+
+            // 1. User Profile
+            UserProfile profile = INSTANCE.userProfileDao().getUserProfileSync();
+            if (profile == null) {
+                profile = new UserProfile();
+                profile.setId(1);
+                INSTANCE.userProfileDao().insertOrUpdate(profile);
+                Log.d("AppDatabase", "Initial UserProfile created synchronously");
+            }
+
+            // 2. Categories
+            if (INSTANCE.expenseCategoryDao().getCategories().isEmpty()) {
+                insertInitialCategories();
+                Log.d("AppDatabase", "Initial Categories inserted synchronously");
+            }
+
+            // 3. Achievements
+            if (INSTANCE.achievementDao().getAchievementCountSync() == 0) {
+                insertInitialAchievements();
+                Log.d("AppDatabase", "Initial Achievements inserted synchronously");
+            }
+
+            // 4. Alternatives
+            if (INSTANCE.alternativeDao().getAllAlternatives().isEmpty()) {
+                insertInitialAlternatives();
+                Log.d("AppDatabase", "Initial Alternatives inserted synchronously");
+            }
+
+            // 5. Streaks
+            UserProfile currentUser = INSTANCE.userProfileDao().getUserProfileSync();
+            if (currentUser != null && INSTANCE.streakDao().getAllStreaks().isEmpty()) {
+                insertInitialStreaks();
+                Log.d("AppDatabase", "Initial Streaks inserted synchronously");
+            }
+        } catch (Exception e) {
+            Log.e("AppDatabase", "Error in ensureInitialDataSync: " + e.getMessage(), e);
+        }
     }
 
     /**
@@ -148,7 +240,11 @@ public abstract class AppDatabase extends RoomDatabase {
     public static void insertInitialStreaks() {
         StreakDao dao = INSTANCE.streakDao();
         UserProfile user = INSTANCE.userProfileDao().getUserProfileSync();
-        long userId = (user != null) ? user.getId() : 1;
+        if (user == null) {
+            Log.i("AppDatabase", "Skipping initial streaks until a user profile exists");
+            return;
+        }
+        long userId = user.getId();
 
         String today = LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
 
@@ -186,6 +282,14 @@ public abstract class AppDatabase extends RoomDatabase {
     public static void insertInitialAchievements() {
         List<Achievement> achievements = new ArrayList<>();
         AchievementDao dao = INSTANCE.achievementDao();
+        UserProfile user = INSTANCE.userProfileDao().getUserProfileSync();
+        if (user == null) {
+            Log.i("AppDatabase", "Skipping initial achievements until a user profile exists");
+            return;
+        }
+        if (dao.getAchievementCountSync() > 0) {
+            return;
+        }
 
         // Logros de registro de gasto
         achievements.add(new Achievement(
@@ -204,8 +308,8 @@ public abstract class AppDatabase extends RoomDatabase {
                 R.color.secondary,
                 R.drawable.ic_achievement_beginner));
         achievements.add(new Achievement(
-                mContext.getString(R.string.constant_title),
-                mContext.getString(R.string.constant_description),
+                mContext.getString(R.string.disciplined_title),
+                mContext.getString(R.string.disciplined_description),
                 20, Constants.ACHIEVEMENT_50_EXPENSES,
                 false,
                 R.color.accent,
@@ -259,7 +363,7 @@ public abstract class AppDatabase extends RoomDatabase {
                 mContext.getString(R.string.create_budget_title),
                 mContext.getString(R.string.create_budget_description),
                 10,
-                Constants.ACHIEVEMENT_UNDER_BUDGET_WEEK,
+                Constants.ACHIEVEMENT_CREATE_BUDGET,
                 false,
                 R.color.primary,
                 R.drawable.ic_achievement_saver_advanced));
@@ -290,6 +394,9 @@ public abstract class AppDatabase extends RoomDatabase {
                 R.color.secondary,
                 R.drawable.ic_achievement_saver_master));
 
+        for (Achievement achievement : achievements) {
+            achievement.setUserId(user.getId());
+        }
         dao.insertListOfAchievements(achievements);
     }
 
@@ -298,35 +405,56 @@ public abstract class AppDatabase extends RoomDatabase {
      */
     public static void insertInitialAlternatives() {
         AlternativeDao dao = INSTANCE.alternativeDao();
+        ExpenseCategoryDao categoryDao = INSTANCE.expenseCategoryDao();
+        if (categoryDao.getCategories().isEmpty()) {
+            insertInitialCategories();
+        }
+
+        long clothesCategoryId = requireCategoryId(categoryDao, "ic_cat_shirt");
+        long leisureCategoryId = requireCategoryId(categoryDao, "ic_cat_gamepad_2");
+        long foodCategoryId = requireCategoryId(categoryDao, "ic_cat_food");
+        long transportCategoryId = requireCategoryId(categoryDao, "ic_cat_transport");
         List<Alternative> alternatives = new ArrayList<>();
 
         // Ropa
-        alternatives.add(new Alternative(mContext.getString(R.string.category_clothes), "", mContext.getString(R.string.alternative_clothes_1), 0.5));
-        alternatives.add(new Alternative(mContext.getString(R.string.category_clothes), "", mContext.getString(R.string.alternative_clothes_2), 0.3));
-        alternatives.add(new Alternative(mContext.getString(R.string.category_clothes), mContext.getString(R.string.description_clothes_1), mContext.getString(R.string.alternative_clothes_3), 0.4));
+        alternatives.add(new Alternative(clothesCategoryId, "", mContext.getString(R.string.alternative_clothes_1), 0.5));
+        alternatives.add(new Alternative(clothesCategoryId, "", mContext.getString(R.string.alternative_clothes_2), 0.3));
+        alternatives.add(new Alternative(clothesCategoryId, mContext.getString(R.string.description_clothes_1), mContext.getString(R.string.alternative_clothes_3), 0.4));
 
         // Ocio
-        alternatives.add(new Alternative(mContext.getString(R.string.category_leisure), "", mContext.getString(R.string.alternative_leisure_1), 1.0));
-        alternatives.add(new Alternative(mContext.getString(R.string.category_leisure), mContext.getString(R.string.description_leisure_1), mContext.getString(R.string.alternative_leisure_2), 0.4));
-        alternatives.add(new Alternative(mContext.getString(R.string.category_leisure), mContext.getString(R.string.description_leisure_2), mContext.getString(R.string.alternative_leisure_3), 0.7));
+        alternatives.add(new Alternative(leisureCategoryId, "", mContext.getString(R.string.alternative_leisure_1), 1.0));
+        alternatives.add(new Alternative(leisureCategoryId, mContext.getString(R.string.description_leisure_1), mContext.getString(R.string.alternative_leisure_2), 0.4));
+        alternatives.add(new Alternative(leisureCategoryId, mContext.getString(R.string.description_leisure_2), mContext.getString(R.string.alternative_leisure_3), 0.7));
 
         // Comida
-        alternatives.add(new Alternative(mContext.getString(R.string.category_food), mContext.getString(R.string.description_food_1), mContext.getString(R.string.alternative_food_1), 0.9));
-        alternatives.add(new Alternative(mContext.getString(R.string.category_food), mContext.getString(R.string.description_food_1), mContext.getString(R.string.alternative_food_2), 0.7));
-        alternatives.add(new Alternative(mContext.getString(R.string.category_food), mContext.getString(R.string.description_food_2), mContext.getString(R.string.alternative_food_3),  0.3));
+        alternatives.add(new Alternative(foodCategoryId, mContext.getString(R.string.description_food_1), mContext.getString(R.string.alternative_food_1), 0.9));
+        alternatives.add(new Alternative(foodCategoryId, mContext.getString(R.string.description_food_1), mContext.getString(R.string.alternative_food_2), 0.7));
+        alternatives.add(new Alternative(foodCategoryId, mContext.getString(R.string.description_food_2), mContext.getString(R.string.alternative_food_3),  0.3));
 
         // Transporte
-        alternatives.add(new Alternative(mContext.getString(R.string.category_transport), "", mContext.getString(R.string.alternative_transport_1), 0.6));
-        alternatives.add(new Alternative(mContext.getString(R.string.category_transport), "", mContext.getString(R.string.alternative_transport_2), 0.6));
-        alternatives.add(new Alternative(mContext.getString(R.string.category_transport), "", mContext.getString(R.string.alternative_transport_4), 0.6));
-        alternatives.add(new Alternative(mContext.getString(R.string.category_transport), mContext.getString(R.string.description_transport_1), mContext.getString(R.string.alternative_transport_3), 0.8));
+        alternatives.add(new Alternative(transportCategoryId, "", mContext.getString(R.string.alternative_transport_1), 0.6));
+        alternatives.add(new Alternative(transportCategoryId, "", mContext.getString(R.string.alternative_transport_2), 0.6));
+        alternatives.add(new Alternative(transportCategoryId, "", mContext.getString(R.string.alternative_transport_4), 0.6));
+        alternatives.add(new Alternative(transportCategoryId, mContext.getString(R.string.description_transport_1), mContext.getString(R.string.alternative_transport_3), 0.8));
 
         dao.insertListOfAlternatives(alternatives);
+    }
+
+    private static long requireCategoryId(ExpenseCategoryDao categoryDao, String iconName) {
+        Long categoryId = categoryDao.getCategoryIdByIconName(iconName);
+        if (categoryId == null) {
+            throw new IllegalStateException("Missing expense category with icon " + iconName);
+        }
+        return categoryId;
     }
 
     public static void dummyData() {
         ExpenseDao dao = INSTANCE.expenseDao();
         List<Expense> expenses = new ArrayList<>();
+        UserProfile profile = INSTANCE.userProfileDao().getUserProfileSync();
+        if (profile == null) {
+            throw new IllegalStateException("Cannot create sample expenses without a user profile");
+        }
         
         int year = Calendar.getInstance().get(Calendar.YEAR);
         String y = String.valueOf(year);
@@ -397,6 +525,9 @@ public abstract class AppDatabase extends RoomDatabase {
         expenses.add(new Expense("expense",getRandom(10., 30.) , 5, "Cine", "08" + mStr + y));
         expenses.add(new Expense("expense",getRandom(15., 25.) , 1, "Pizza", "10" + mStr + y));
 
+        for (Expense expense : expenses) {
+            expense.setUserId(profile.getId());
+        }
         dao.deleteAll();
         dao.insertListOfExpenses(expenses);
     }

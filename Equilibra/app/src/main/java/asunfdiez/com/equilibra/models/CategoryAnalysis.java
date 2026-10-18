@@ -5,7 +5,7 @@ import androidx.room.Ignore;
 /**
  * Clase que representa el resultado de un análisis financiero agrupado por categoría.
  * 
- * <p>Proporciona información consolidada sobre el monto total gastado, el número de 
+ * <p>Proporciona información consolidada sobre el importe total gastado, el número de
  * transacciones realizadas y el porcentaje que representa esta categoría sobre el 
  * total de gastos. Se utiliza principalmente para alimentar los gráficos de análisis.</p>
  */
@@ -16,7 +16,7 @@ public class CategoryAnalysis {
     // Nombre de la categoría analizada
     private String category;
     
-    // Suma total de los montos de los gastos en esta categoría
+    // Suma total de los importes de los gastos en esta categoría
     private double amount;
     
     // Cantidad total de registros (gastos) en esta categoría

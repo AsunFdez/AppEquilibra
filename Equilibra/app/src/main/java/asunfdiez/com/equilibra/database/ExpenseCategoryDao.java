@@ -46,6 +46,9 @@ public interface ExpenseCategoryDao {
     @Query("SELECT " + Constants.COLUMN_CATEGORY_NAME + " FROM " + Constants.TABLE_CATEGORIES + " WHERE " + Constants.COLUMN_CATEGORY_ID + " = :id")
     String getCategoryNameById(long id);
 
+    @Query("SELECT " + Constants.COLUMN_CATEGORY_ID + " FROM " + Constants.TABLE_CATEGORIES + " WHERE iconName = :iconName")
+    Long getCategoryIdByIconName(String iconName);
+
     @Query("DELETE FROM " + Constants.TABLE_CATEGORIES)
     void deleteAll();
 

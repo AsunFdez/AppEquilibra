@@ -3,7 +3,6 @@ package asunfdiez.com.equilibra.database;
 import androidx.lifecycle.LiveData;
 import androidx.room.Dao;
 import androidx.room.Insert;
-import androidx.room.OnConflictStrategy;
 import androidx.room.Query;
 import androidx.room.Update;
 
@@ -23,7 +22,7 @@ public interface BudgetDao {
     /**
      * Inserta un nuevo registro de presupuesto. Si ya existe uno con el mismo ID, lo reemplaza.
      */
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    @Insert
     long insert(Budget budget);
 
     /**
@@ -38,6 +37,7 @@ public interface BudgetDao {
      * Obtiene el presupuesto activo si existe (solo debe haber uno) o el último editado si no hay activo.
      */
     @Query("SELECT * FROM " + Constants.TABLE_BUDGETS +
+            " WHERE userId = (SELECT id FROM " + Constants.TABLE_USER_PROFILE + " LIMIT 1)" +
             " ORDER BY enabled DESC, updatedAt DESC LIMIT 1")
     LiveData<Budget> getActiveOrLastBudget();
 
@@ -45,6 +45,7 @@ public interface BudgetDao {
      * Obtiene el presupuesto activo o el último de forma síncrona
      */
     @Query("SELECT * FROM " + Constants.TABLE_BUDGETS +
+            " WHERE userId = (SELECT id FROM " + Constants.TABLE_USER_PROFILE + " LIMIT 1)" +
             " ORDER BY enabled DESC, updatedAt DESC LIMIT 1")
     Budget getActiveOrLastBudgetSync();
 
@@ -52,22 +53,28 @@ public interface BudgetDao {
      * Obtiene el presupuesto activo de forma síncrona
      */
     @Query("SELECT * FROM " + Constants.TABLE_BUDGETS +
-            " WHERE enabled = 1 LIMIT 1")
+            " WHERE userId = (SELECT id FROM " + Constants.TABLE_USER_PROFILE + " LIMIT 1)" +
+            " AND enabled = 1 LIMIT 1")
     Budget getActiveBudgetSync();
 
-    @Query("SELECT * FROM " + Constants.TABLE_BUDGETS + " WHERE id = :id")
+    @Query("SELECT * FROM " + Constants.TABLE_BUDGETS +
+            " WHERE id = :id" +
+            " AND userId = (SELECT id FROM " + Constants.TABLE_USER_PROFILE + " LIMIT 1)")
     Budget getBudgetById(long id);
 
     /**
      * Obtiene el último presupuesto editado (sea activo o no)
      */
-    @Query("SELECT * FROM " + Constants.TABLE_BUDGETS + " ORDER BY updatedAt DESC LIMIT 1")
+    @Query("SELECT * FROM " + Constants.TABLE_BUDGETS +
+            " WHERE userId = (SELECT id FROM " + Constants.TABLE_USER_PROFILE + " LIMIT 1)" +
+            " ORDER BY updatedAt DESC LIMIT 1")
     Budget getAnyBudgetSync();
 
     /**
      * Obtiene todos los presupuestos de forma síncrona
      */
     @Query("SELECT * FROM " + Constants.TABLE_BUDGETS +
+            " WHERE userId = (SELECT id FROM " + Constants.TABLE_USER_PROFILE + " LIMIT 1)" +
             " ORDER BY updatedAt DESC")
     java.util.List<Budget> getAllBudgetsSync();
 
@@ -75,6 +82,7 @@ public interface BudgetDao {
      * Obtiene todos los presupuestos
      */
     @Query("SELECT * FROM " + Constants.TABLE_BUDGETS +
+            " WHERE userId = (SELECT id FROM " + Constants.TABLE_USER_PROFILE + " LIMIT 1)" +
             " ORDER BY updatedAt DESC")
     LiveData<java.util.List<Budget>> getAllBudgets();
 
@@ -82,26 +90,30 @@ public interface BudgetDao {
     /**
      * Desactiva todos los presupuestos
      */
-    @Query("UPDATE " + Constants.TABLE_BUDGETS + " SET enabled = 0")
+    @Query("UPDATE " + Constants.TABLE_BUDGETS + " SET enabled = 0" +
+            " WHERE userId = (SELECT id FROM " + Constants.TABLE_USER_PROFILE + " LIMIT 1)")
     void deactivateAll();
 
     /**
      * Elimina todos los presupuestos
      */
-    @Query("DELETE FROM " + Constants.TABLE_BUDGETS)
+    @Query("DELETE FROM " + Constants.TABLE_BUDGETS +
+            " WHERE userId = (SELECT id FROM " + Constants.TABLE_USER_PROFILE + " LIMIT 1)")
     void deleteAll();
 
     /**
      * Cuenta los presupuestos activos
      */
     @Query("SELECT COUNT(*) FROM " + Constants.TABLE_BUDGETS +
-            " WHERE enabled = 1")
+            " WHERE userId = (SELECT id FROM " + Constants.TABLE_USER_PROFILE + " LIMIT 1)" +
+            " AND enabled = 1")
     int countActive();
 
     /**
      * Cuenta los presupuestos
      */
-    @Query("SELECT COUNT(*) FROM " + Constants.TABLE_BUDGETS )
+    @Query("SELECT COUNT(*) FROM " + Constants.TABLE_BUDGETS +
+            " WHERE userId = (SELECT id FROM " + Constants.TABLE_USER_PROFILE + " LIMIT 1)")
     int countBudgets();
 
 }

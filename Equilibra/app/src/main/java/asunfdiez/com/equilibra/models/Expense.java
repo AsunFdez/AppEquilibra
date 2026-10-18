@@ -4,7 +4,10 @@ import android.icu.text.SimpleDateFormat;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.room.Entity;
+import androidx.room.ForeignKey;
+import androidx.room.Index;
 import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
 
@@ -15,25 +18,45 @@ import asunfdiez.com.equilibra.utils.Constants;
 /**
  * Modelo de datos que representa una transacción financiera individual.
  * 
- * <p>Almacena la información de un gasto o ingreso, incluyendo el monto, la categoría 
+ * <p>Almacena la información de un gasto o ingreso, incluyendo el importe, la categoría
  * a la que pertenece, una descripción opcional y la fecha y hora de la transacción. 
  * Esta entidad es el núcleo de la persistencia financiera en la base de datos Room.</p>
  */
-@Entity(tableName = Constants.TABLE_EXPENSES)
+@Entity(
+        tableName = Constants.TABLE_EXPENSES,
+        foreignKeys = {
+                @ForeignKey(
+                        entity = UserProfile.class,
+                        parentColumns = "id",
+                        childColumns = "userId",
+                        onDelete = ForeignKey.CASCADE
+                ),
+                @ForeignKey(
+                        entity = ExpenseCategory.class,
+                        parentColumns = "id",
+                        childColumns = "category",
+                        onDelete = ForeignKey.SET_NULL
+                )
+        },
+        indices = {@Index("userId"), @Index("category")}
+)
 public class Expense {
 
     @PrimaryKey (autoGenerate = true)
     @NonNull
     private long id;
+
+    private long userId;
     
     // Tipo de transacción: "expense" (gasto) o "income" (ingreso)
     private String type; 
     
-    // Monto numérico de la transacción
+    // Importe numérico de la transacción
     private double amount;
     
-    // ID de la categoría asociada (FK)
-    private long category;
+    // ID de la categoría asociada
+    @Nullable
+    private Long category;
     
     // Nota adicional sobre el gasto
     private String description;
@@ -57,7 +80,7 @@ public class Expense {
     public Expense(String type, double amount, int category, String description, String date)  {
         this.type = type;
         this.amount = amount;
-        this.category = category;
+        this.category = (long) category;
         this.description = description;
         this.date = date;
         SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
@@ -79,6 +102,14 @@ public class Expense {
         this.id = id;
     }
 
+    public long getUserId() {
+        return userId;
+    }
+
+    public void setUserId(long userId) {
+        this.userId = userId;
+    }
+
     public String getType() {
         return type;
     }
@@ -95,11 +126,12 @@ public class Expense {
         this.amount = amount;
     }
 
-    public long getCategory() {
+    @Nullable
+    public Long getCategory() {
         return category;
     }
 
-    public void setCategory(long category) {
+    public void setCategory(@Nullable Long category) {
         this.category = category;
     }
 
@@ -172,6 +204,7 @@ public class Expense {
     public String toString() {
         return "Expense{" +
                 "id=" + id +
+                ", userId=" + userId +
                 ", type='" + type + '\'' +
                 ", amount=" + amount +
                 ", category='" + category + '\'' +

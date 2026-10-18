@@ -11,7 +11,7 @@ import java.util.concurrent.Executors;
 import asunfdiez.com.equilibra.database.AppDatabase;
 import asunfdiez.com.equilibra.database.BudgetDao;
 import asunfdiez.com.equilibra.models.Budget;
-import asunfdiez.com.equilibra.utils.Constants;
+import asunfdiez.com.equilibra.models.UserProfile;
 
 /**
  * Repositorio encargado de la persistencia y gestión de los presupuestos del usuario.
@@ -26,6 +26,7 @@ public class BudgetRepository {
 
     // DAO para el acceso a la tabla de presupuestos
     private final BudgetDao budgetDao;
+    private final AppDatabase database;
     
     // Executor para realizar operaciones de base de datos fuera del hilo principal
     private final ExecutorService executorService;
@@ -41,6 +42,7 @@ public class BudgetRepository {
      */
     public BudgetRepository(Context context) {
         AppDatabase database = AppDatabase.getInstance(context);
+        this.database = database;
         this.budgetDao = database.budgetDao();
         this.executorService = Executors.newSingleThreadExecutor();
 
@@ -48,9 +50,6 @@ public class BudgetRepository {
         this.activeBudget = budgetDao.getActiveOrLastBudget();
 
         this.syncRepository = new CloudSyncRepository(context);
-
-        // Inicialización asíncrona de datos por defecto si es necesario
-        initializeDefaultBudgetIfNeeded();
     }
 
     /**
@@ -76,6 +75,7 @@ public class BudgetRepository {
     public void saveBudget(Budget budget) {
         executorService.execute(() -> {
             try {
+                budget.setUserId(requireUserProfileId());
                 // Desactivar todos los presupuestos anteriores
                 budgetDao.deactivateAll();
                 budget.setUpdatedAt(System.currentTimeMillis());
@@ -97,9 +97,14 @@ public class BudgetRepository {
     public void updateBudget(Budget budget) {
         executorService.execute(() -> {
             try {
-                Budget current = budgetDao.getActiveBudgetSync();
+                budget.setUserId(requireUserProfileId());
+                Budget current = budgetDao.getBudgetById(budget.getId());
+                if (current == null) {
+                    Log.w(TAG, "Cannot update a budget that does not belong to the current user");
+                    return;
+                }
                 // Si los valores son idénticos, no actualizamos
-                if (current != null && isSameBudget(current, budget)) {
+                if (isSameBudget(current, budget)) {
                     return;
                 }
                 budgetDao.deactivateAll();
@@ -124,7 +129,16 @@ public class BudgetRepository {
                 Math.abs(b1.getWeeklyBudget() - b2.getWeeklyBudget()) < 0.01 &&
                 Math.abs(b1.getDailyBudget() - b2.getDailyBudget()) < 0.01 &&
                 b1.isEnabled() == b2.isEnabled() &&
+                b1.getUserId() == b2.getUserId() &&
                 (b1.getCurrency() != null && b1.getCurrency().equals(b2.getCurrency()));
+    }
+
+    private long requireUserProfileId() {
+        UserProfile profile = database.userProfileDao().getUserProfileSync();
+        if (profile == null) {
+            throw new IllegalStateException("Cannot save a budget without a user profile");
+        }
+        return profile.getId();
     }
 
 
@@ -198,32 +212,6 @@ public class BudgetRepository {
         });
     }
 
-
-    /**
-     * Inicializa un presupuesto por defecto si no existe ninguno
-     */
-    private void initializeDefaultBudgetIfNeeded() {
-        executorService.execute(() -> {
-            try {
-                int budgetCount = budgetDao.countBudgets();
-                if (budgetCount > 0) return;
-
-                // Crear presupuesto por defecto
-                Budget defaultBudget = new Budget();
-                defaultBudget.setMonthlyBudget(Constants.DEFAULT_MONTHLY_BUDGET);
-                defaultBudget.calculateWeeklyFromMonthly();
-                defaultBudget.calculateDailyFromMonthly();
-                defaultBudget.setCurrency(Constants.CURRENCY_EUR);
-                defaultBudget.setEnabled(true);
-
-                budgetDao.insert(defaultBudget);
-                Log.d(TAG, "Default budget initialized");
-
-            } catch (Exception e) {
-                Log.e(TAG, "Error initializing default budget: " + e.getMessage(), e);
-            }
-        });
-    }
 
     /**
      * Cierra el executor service

@@ -120,7 +120,8 @@ public class AddExpenseViewModel extends AndroidViewModel {
                     List<ExpenseCategory> categoryList = categories.getValue();
                     if (categoryList != null) {
                         for (ExpenseCategory cat : categoryList) {
-                            if (cat.getId() == expense.getCategory()) {
+                            if (expense.getCategory() != null &&
+                                    cat.getId() == expense.getCategory()) {
                                 cat.setSelected(true);
                                 selectedCategory.setValue(cat);
                                 break;
@@ -267,7 +268,7 @@ public class AddExpenseViewModel extends AndroidViewModel {
                         expense.setId(currentExpenseId);
                         expense.setType(isExpenseValue != null && isExpenseValue ? Constants.TYPE_EXPENSE : Constants.TYPE_INCOME);
                         expense.setAmount(amountValue);
-                        expense.setCategory(category != null ? category.getId() : 0);
+                        expense.setCategory(category != null ? category.getId() : null);
                         expense.setDescription(description.getValue() != null ? description.getValue() : "");
 
                         SimpleDateFormat sdfDate = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
@@ -310,7 +311,7 @@ public class AddExpenseViewModel extends AndroidViewModel {
                         expense.setId(currentExpenseId);
                         expense.setType(isExpenseValue != null && isExpenseValue ? Constants.TYPE_EXPENSE : Constants.TYPE_INCOME);
                         expense.setAmount(amountValue);
-                        expense.setCategory(category != null ? category.getId() : 0);
+                        expense.setCategory(category != null ? category.getId() : null);
                         expense.setDescription(description.getValue() != null ? description.getValue() : "");
 
                         SimpleDateFormat sdfDate = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
@@ -444,7 +445,7 @@ public class AddExpenseViewModel extends AndroidViewModel {
             expense.setId(currentExpenseId);
             expense.setType(isExpenseValue != null && isExpenseValue ? Constants.TYPE_EXPENSE : Constants.TYPE_INCOME);
             expense.setAmount(amountValue);
-            expense.setCategory( category != null ? category.getId() : 0 );
+            expense.setCategory(category != null ? category.getId() : null);
             expense.setDescription(desc != null ? desc : "");
 
             SimpleDateFormat sdfDate = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
@@ -460,12 +461,6 @@ public class AddExpenseViewModel extends AndroidViewModel {
         } catch (NumberFormatException e) {
             errorMessage.setValue(getApplication().getString(R.string.invalid_input_number));
         }
-
-        checkAchievements();
-    }
-
-    private void checkAchievements () {
-        executor.execute(expenseController::checkAchievements);
     }
 
     @Override

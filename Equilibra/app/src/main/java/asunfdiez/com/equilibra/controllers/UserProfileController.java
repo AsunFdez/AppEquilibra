@@ -98,6 +98,7 @@ public class UserProfileController {
             executor.execute(() -> {
                 UserProfile savedUser = userRepository.getUserProfileSync();
                 if (savedUser != null) {
+                    AppDatabase.insertInitialAchievements();
                     streakController.initializeDefaultStreaks(savedUser.getId());
                 }
                 

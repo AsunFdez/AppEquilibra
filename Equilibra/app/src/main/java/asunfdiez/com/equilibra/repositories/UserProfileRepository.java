@@ -169,6 +169,13 @@ public class UserProfileRepository {
         executorService.execute(userProfileDao::incrementWeekProgress);
     }
 
+    public void addXp(int amount) {
+        executorService.execute(() -> {
+            userProfileDao.addXp(amount);
+            syncRepository.scheduleImmediateSync();
+        });
+    }
+
     public double getUserMonthlyIncome() {
         return userProfileDao.getUserMonthlyIncome();
     }

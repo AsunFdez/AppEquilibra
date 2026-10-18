@@ -1,0 +1,35 @@
+@startuml AppEquilibra_SharedPreferences
+
+title Almacenamiento local de preferencias - AppEquilibra
+
+skinparam classAttributeIconSize 0
+
+class "SharedPreferences\nEquilibraPrefs" as EquilibraPrefs <<key-value>> {
+  --
+  notifications_enabled : BOOLEAN = true
+  budget_notifications : BOOLEAN = true
+  achievement_notifications : BOOLEAN = true
+  view : STRING = "beginner"
+  language : STRING = "es"
+  dark_mode : BOOLEAN = false
+  --
+  onboardingComplete : BOOLEAN = false
+  onboardingCompletedAt : LONG = 0
+  last_sync_time : LONG = 0
+  intervention_last_seen : LONG = 0
+  --
+  currency_symbol : STRING = "€"
+}
+
+note right of EquilibraPrefs
+  Almacenamiento clave-valor Android,
+  creado con Context.MODE_PRIVATE.
+
+  Los defaults se aplican al leer si
+  una clave aún no existe.
+
+
+end note
+
+
+@enduml

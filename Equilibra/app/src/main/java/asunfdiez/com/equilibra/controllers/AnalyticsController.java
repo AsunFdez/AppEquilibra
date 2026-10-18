@@ -4,13 +4,12 @@ import android.app.Application;
 import android.content.Context;
 
 import androidx.annotation.NonNull;
-import java.time.LocalDate;
-import java.time.YearMonth;
-import java.util.*;
 
 import java.time.LocalDate;
+import java.time.YearMonth;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -68,11 +67,11 @@ public class AnalyticsController {
     }
 
     /**
-     * Calcula el monto de ahorros (ingresos - gastos).
+     * Calcula el importe de ahorros (ingresos - gastos).
      * 
      * @param totalIncome Ingreso total del período
      * @param totalExpenses Gastos totales del período
-     * @return Monto ahorrado (mínimo 0)
+     * @return Importe ahorrado (mínimo 0)
      */
     public double calculateSavings(double totalIncome, double totalExpenses) {
         return Math.max(0, totalIncome - totalExpenses);
@@ -82,7 +81,7 @@ public class AnalyticsController {
      * Calcula la tasa de ahorro como porcentaje del ingreso.
      * 
      * @param totalIncome Ingreso total del período
-     * @param savings Monto ahorrado
+     * @param savings Importe ahorrado
      * @return Porcentaje de ahorro (0-100), o 0 si el ingreso es 0
      */
     public double calculateSavingsRate(double totalIncome, double savings) {
@@ -154,7 +153,7 @@ public class AnalyticsController {
      * @param startTime Timestamp inicial
      * @param endTime Timestamp final
      * @param limit Número máximo de categorías a retornar
-     * @return Lista de análisis por categoría (ordenada por monto descendente)
+     * @return Lista de análisis por categoría (ordenada por importe descendente)
      */
     public List<CategoryAnalysis> getTopCategoriesAnalysis(long startTime, long endTime, int limit) {
         return expenseRepository.getTopCategoriesAnalysis(startTime, endTime, limit);

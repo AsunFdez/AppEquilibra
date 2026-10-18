@@ -90,16 +90,6 @@ entity "Streak" as Str {
     lastActivityDate : long
 }
 
-entity "DailyAnalysis" as Analysis {
-    * id : long (PK)
-    --
-    userId : long (FK)
-    date : String
-    emotionalState : String (JSON)
-    spendingScore : int
-    notes : String
-}
-
 entity "InterventionLog" as Log {
     * id : long (PK)
     --
@@ -107,17 +97,6 @@ entity "InterventionLog" as Log {
     timestamp : long
     type : String
     messageId : String
-}
-
-entity "Challenge" as Chal {
-    * id : long (PK)
-    --
-    userId : long (FK)
-    title : String
-    description : String
-    startDate : long
-    endDate : long
-    completed : boolean
 }
 
 entity "Alternative" as Alt {

@@ -186,7 +186,7 @@ public class BudgetSettingsViewModel extends AndroidViewModel {
     // ========== VALIDACIÓN ==========
 
     /**
-     * Valida que un monto sea válido
+     * Valida que un importe sea válido
      */
     public boolean isValidAmount(String amountStr) {
         try {

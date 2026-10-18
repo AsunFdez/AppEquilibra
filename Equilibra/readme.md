@@ -2,7 +2,7 @@
 
 ## Estado actual del proyecto
 
-Este documento refleja el estado observado del proyecto a fecha de 2026-06-17.
+Este documento refleja el estado observado del proyecto a fecha de 2026-10-18.
 La aplicación es un proyecto Android nativo en Java con Gradle Kotlin DSL y utiliza una arquitectura basada en actividades, view models, repositorios y Room para el almacenamiento local.
 
 Además, el proyecto ya incluye integración con Firebase para autenticación y sincronización de datos, así como un flujo de sincronización en segundo plano mediante WorkManager.
@@ -31,7 +31,7 @@ Equilibra es una app para el seguimiento financiero personal y el bienestar econ
 - **Controllers**: lógica de negocio específica.
 - **Repositories**: acceso a datos locales y sincronización remota.
 - **Database / Room**: persistencia local mediante `AppDatabase` y DAOs.
-- **Workers**: operaciones en segundo plano para sincronización.
+- **Workers**: operaciones en segundo plano para sincronización con la nube.
 
 ### Tecnologías principales
 
@@ -84,8 +84,6 @@ La sincronización con Firebase ya está integrada en el proyecto.
 4. WorkManager ejecuta la tarea cuando hay red disponible.
 5. Firebase Auth / Firestore reciben los datos sincronizados.
 
-> Nota: la infraestructura base ya existe; conviene revisar reintentos, consistencia de datos y sincronización de entidades adicionales.
-
 ---
 
 ## Estructura general del proyecto
@@ -116,6 +114,7 @@ app/
 
 ---
 
+
 ## Pantallas principales
 
 La app incluye pantallas para:
@@ -128,7 +127,7 @@ La app incluye pantallas para:
 - logros;
 - perfil y configuración;
 - ajustes de presupuesto, apariencia y notificaciones;
-- intervención suave.
+- lista de intervenciones.
 
 ---
 
@@ -151,24 +150,21 @@ La configuración actual del proyecto incluye:
 - SDK Android suficiente para la configuración del proyecto.
 - Acceso a la configuración de Firebase correspondiente.
 
-### Revisión recomendada
-
-1. validar la coherencia de datos locales y remotos;
-2. revisar el comportamiento de reintentos cuando cambia la red;
-3. comprobar sincronización de perfil, presupuesto y metas;
-4. revisar concurrencia y errores de UI asociados a llamadas asíncronas.
 
 ---
 
 ## Resumen rápido
 
-- La app sigue siendo una aplicación Android Java con Room.
-- Ya existe una capa de sincronización con Firebase.
+- La app es una aplicación Android Java con persistencia local Room.
+- Existe una capa de sincronización con Firebase.
 - `CloudSyncRepository` y `CloudSyncWorker` forman la base del sistema de nube.
-- `ExpenseRepository` dispara la sincronización al editar gastos.
+- `ExpenseRepository` dispara la sincronización con la nube al editar gastos.
 
-<!--
+---
 
+## 📂 Esquema Clases Java
+
+```text
 ├── activities/                    # Activities de la aplicación
 │   ├── SplashActivity.java
 │   ├── OnboardingActivity.java
@@ -209,14 +205,14 @@ La configuración actual del proyecto incluye:
 │   ├── ExpenseDAO.java
 │   ├── BudgetDAO.java
 │   └── AchievementDAO.java
-├── repositories/                  # para obtener datos
+├── repositories/                  # Para obtener datos
 ├── utils/                         # Utilidades y helpers
 │   ├── SharedPrefsManager.java
 │   ├── DateUtils.java
 │   ├── CurrencyUtils.java
 │   ├── ValidationUtils.java
 │   ├── AnimationUtils.java
-│   └── Constants.java
+│   ├── Constants.java
 │   ├── InputValidator.java
 │   ├── DatePickerHelper.java
 │   └── SavingGoalValidator.java
@@ -227,9 +223,9 @@ La configuración actual del proyecto incluye:
     └── WaveLoadingView.java
 ```
 
-## Estructura de Recursos
+## 🎨 Estructura de Recursos
 
-```
+```text
 res/
 ├── anim/                          # Animaciones XML
 │   ├── fade_in.xml
@@ -263,57 +259,78 @@ res/
 │   ├── item_achievement.xml
 │   └── component_*.xml (componentes reutilizables)
 │
-├── values/
-│   ├── colors.xml
-│   ├── strings.xml
-│   ├── dimens.xml
-│   ├── styles.xml
-│   └── themes.xml
-│
-└── 
+└── values/
+    ├── colors.xml
+    ├── strings.xml
+    ├── dimens.xml
+    ├── styles.xml
+    └── themes.xml
+```
 
-## FLUJO DE NAVEGACIÓN
+## 🗺️ FLUJO DE NAVEGACIÓN
 
-SplashActivity
-    ├── OnboardingActivity (si no completado)
-    │       └── MainActivity (al finalizar)
-    │
-    └── MainActivity (si completado)
-            ├── AddExpenseActivity
-            │       └── volver a MainActivity
-            │
-            ├── SoftInterventionActivity
-            │       ├── volver a MainActivity
-            │       └── AnalysisActivity
-            │
-            ├── AnalysisActivity
-            │       └── volver a MainActivity
-            │
-            └── AchievementsActivity
-                    └── volver a MainActivity
+```mermaid
+graph TD
+    Splash[SplashActivity] -->|Primera vez| Onboarding[OnboardingActivity]
+    Splash -->|Usuario registrado| Main[MainActivity]
 
-## Flujo de Funcionamiento añadir gasto
+    Onboarding --> Main
 
-### Usuario ingresa importe y categoría. Presiona "Añadir Gasto"**
+    Main --> AddExpense[AddExpenseActivity]
+    Main --> ExpenseList[ExpenseListActivity]
+    Main --> Analysis[AnalysisActivity]
+    Main --> Achievements[AchievementsActivity]
+    Main --> Settings[SettingsActivity]
+    Main --> Profile[ProfileActivity]
 
-AddExpenseActivity 
-    ↓
-btnSaveExpense.click() → viewModel.saveExpense()
-    ↓
-Repository.isImportantExpense(amount)?
-    ├─ SÍ → showImportantExpenseDialog()
-    └─ NO ↓
-Repository.detectExpensePattern(category)?
-    ├─ SÍ → showSmartReminderDialog()
-    └─ NO ↓
-Repository.shouldShowConfirmation(amount)?
-    ├─ SÍ → showConfirmExpenseDialog()
-    └─ NO ↓
-saveExpenseDirectly()
+    Analysis --> ComparativeAnalysis[ComparativeAnalysisActivity]
+
+    Settings --> Budget[BudgetSettingsActivity]
+    Settings --> NotificationSettings[NotificationSettingsActivity]
+    Settings --> AppearanceSettings[AppearanceSettingsActivity]
+    Settings --> About[AboutActivity]
+    Settings --> Google[Google Sign-In]
+
+    Main -->|Gasto elevado| SoftIntervention[SoftInterventionActivity]
+    SoftIntervention --> InterventionHistory[InterventionHistoryActivity]
+
+    style Splash fill:#f9d,stroke:#333,stroke-width:2px
+    style Main fill:#bbf,stroke:#333,stroke-width:2px
+    style SoftIntervention fill:#ffd166,stroke:#333,stroke-width:2px
+
+```
+
+
+## ⚡ Flujo de Funcionamiento: Añadir Gasto
+
+### El usuario ingresa el importe y la categoría, y presiona "Añadir Gasto"
+
+```mermaid
+graph TD
+    Start([AddExpenseActivity]) --> Click[btnSaveExpense.click]
+    Click --> VM[viewModel.saveExpense]
+    VM --> Q1{¿Es gasto importante?<br>isImportantExpense}
+    
+    Q1 -->|Sí| D1[showImportantExpenseDialog]
+    Q1 -->|No| Q2{¿Detecta patrón de gasto?<br>detectExpensePattern}
+    D1 -->D4[expenseController.generateAlternatives]
+    D4 -->D3[showConfirmExpenseDialog]
+    
+    Q2 -->|Sí| D2[showSmartReminderDialog]
+    D2 -->D3[showConfirmExpenseDialog]
+    Q2 -->|No| Q3{¿Debe mostrar confirmación?<br>shouldShowConfirmation}
+    
+    Q3 -->|Sí| D3[showConfirmExpenseDialog]
+    Q3 -->|No| Save[saveExpenseDirectly]
+
+    D3 -->|Sí| Save[saveExpenseDirectly]
+```
+
+
 
 ## LISTADO DE ARCHIVOS
 
-### **1. ACTIVITIES (7 archivos)**
+### **1. ACTIVITIES **
 
 #### SplashActivity.java
 - **Ubicación:** `/SplashActivity.java`
@@ -350,7 +367,7 @@ saveExpenseDirectly()
 - **Propósito:** Formulario para añadir gastos/ingresos
 - **Características:**
   - RadioGroup para seleccionar tipo (gasto/ingreso)
-  - Campos: monto, descripción, categoría, fecha
+  - Campos: importe, descripción, categoría, fecha
   - AutoCompleteTextView con categorías predefinidas
   - DatePicker para selección de fecha
   - Validación en tiempo real
@@ -370,10 +387,10 @@ saveExpenseDirectly()
 - **Ubicación:** `/AnalysisActivity.java`
 - **Propósito:** Análisis financiero con estadísticas
 - **Características:**
-  - Totales de ingresos, gastos y balance del mes
+  - Totales de ingresos, gastos y balance semanal/mensual
   - Gráficos de barras por categoría
   - 3 insights personalizados
-  - Comparación con mes anterior
+  - Comparación con periodos anteriores
   - Promedio de gasto diario
   - Animaciones de barras y números
 
@@ -387,8 +404,97 @@ saveExpenseDirectly()
   - Logros bloqueados/desbloqueados con visual diferenciado
   - Total de puntos acumulados
 
+#### SettingsActivity.java
+- **Ubicación:** `/SettingsActivity.java`
+- **Propósito:** Pantalla principal de configuración de la aplicación.
+- **Características:**
+  - Centro de ajustes con acceso a perfil, presupuesto, notificaciones, apariencia y “Acerca de”
+  - Integración con Google Sign-In mediante Credential Manager
+  - Gestión de limpieza y reinicio de datos
+  - Navegación rápida desde la barra inferior
+  - Animaciones de entrada en las tarjetas de configuración
 
-### **2. CONTROLLERS (3 archivos)**
+#### ProfileActivity.java
+- **Ubicación:** `/ProfileActivity.java`
+- **Propósito:** Gestión del perfil del usuario.
+- **Características:**
+  - Visualización de datos personales del usuario
+  - Edición del nombre y perfil
+  - Sincronización con cuenta de Google
+  - Posibilidad de cerrar sesión o eliminar cuenta
+  - Observación del estado de autenticación y mensajes de éxito/error
+
+#### ExpenseListActivity.java
+- **Ubicación:** `/ExpenseListActivity.java`
+- **Propósito:** Historial de gastos y movimientos del usuario.
+- **Características:**
+  - Lista detallada de gastos e ingresos
+  - Filtro por fecha mediante calendario
+  - Vista de importe total y agrupación mensual
+  - Sincronización con la nube
+  - Edición y eliminación de registros desde el detalle
+  - Navegación con bottom navigation
+
+#### ComparativeAnalysisActivity.java
+- **Ubicación:** `/ComparativeAnalysisActivity.java`
+- **Propósito:** Comparativa de datos financieros por periodo.
+- **Características:**
+  - Análisis comparativo por semanas o periodos seleccionados
+  - Selector de periodo con spinner
+  - RecyclerView para mostrar estados comparativos
+  - Visualización de evolución financiera respecto a otros intervalos
+
+#### BudgetSettingsActivity.java
+- **Ubicación:** `/BudgetSettingsActivity.java`
+- **Propósito:** Configuración del presupuesto mensual y seguimiento financiero.
+- **Características:**
+  - Edición de presupuesto mensual, semanal y diario
+  - Activación/desactivación del presupuesto
+  - Selector de moneda
+  - Validación automática de cantidades
+  - Persistencia del presupuesto en base de datos/local storage
+
+#### AppearanceSettingsActivity.java
+- **Ubicación:** `/AppearanceSettingsActivity.java`
+- **Propósito:** Personalización visual de la experiencia de usuario.
+- **Características:**
+  - Selección del nivel de experiencia visual (principiante, intermedio, avanzado)
+  - Cambio de tema
+  - Cambio de idioma
+  - Menús emergentes tipo selector con animaciones
+  - Persistencia de preferencias del usuario
+
+#### NotificationSettingsActivity.java
+- **Ubicación:** `/NotificationSettingsActivity.java`
+- **Propósito:** Configuración de alertas y recordatorios.
+- **Características:**
+  - Activación/desactivación de notificaciones generales
+  - Notificaciones de presupuesto
+  - Notificaciones de logros
+  - Gestión de mensajes de estado mediante ViewModel
+
+#### InterventionHistoryActivity.java
+- **Ubicación:** `/InterventionHistoryActivity.java`
+- **Propósito:** Historial de intervenciones suaves aplicadas al usuario.
+- **Características:**
+  - Listado de intervenciones registradas
+  - Visualización de detalles asociados a cada gasto
+  - Eliminación de registros de intervención
+  - Navegación rápida desde la barra inferior
+
+#### AboutActivity.java
+- **Ubicación:** `/AboutActivity.java`
+- **Propósito:** Información general y soporte de la aplicación.
+- **Características:**
+  - Muestra la versión actual de la app
+  - Enlace a GitHub del proyecto
+  - Contacto por correo de soporte
+  - Licencias de librerías Open Source
+  - Opción para compartir la app y valorarla en la tienda
+  
+
+
+### **2. CONTROLLERS **
 
 #### ExpenseController.java
 - **Ubicación:** `/ExpenseController.java`
@@ -420,130 +526,500 @@ saveExpenseDirectly()
 
 #### AchievementController.java
 - **Ubicación:** `/AchievementController.java`
-- **Propósito:** Sistema de logros y niveles
+- **Propósito:** Sistema de logros, progresión y gamificación del usuario.
 - **Métodos principales:**
-  - `getAllAchievements()` - Lista de 10 logros
-  - `unlockAchievement(key)` - Desbloquea logro
-  - `checkAndUnlockAchievements()` - Verifica y desbloquea automáticamente
-  - `getTotalPoints()` - Suma total de puntos
-  - `getUserLevel()` - Nivel actual (5 niveles)
-  - `getProgressToNextLevel()` - Porcentaje de progreso
-- **Logros definidos:**
-  1. Primer Paso (10 pts)
-  2. Una Semana Fuerte (50 pts)
-  3. Seguimiento Activo (25 pts)
-  4. Mes Completo (100 pts)
-  5. Equilibrio Financiero (75 pts)
-  6-8. Metas de ahorro (50-150 pts)
-  9. Consciente (60 pts)
-  10. Maestro del Presupuesto (200 pts)
+  - `getAllAchievements()` / `getAllAchievementsSync()` - Obtiene todos los logros
+  - `getUnlockedAchievements()` - Logros desbloqueados
+  - `getLockedAchievements()` - Logros pendientes
+  - `getTotalPoints()` / `getTotalPointsSync()` - Puntos totales acumulados
+  - `getUserLevel()` - Nivel actual del usuario
+  - `getProgressToNextLevel()` - Progreso hacia el siguiente nivel
+  - `checkAndUnlockAchievements()` - Verifica automáticamente qué logros se deben desbloquear
+  - `unlockAchievement()` - Desbloquea un logro manualmente
+  - `getRecentUnlocked()` - Recupera logros recientes
+- **Lógica:**
+  - Valida logros según número de gastos registrados
+  - Comprueba rachas de uso diario y semanal
+  - Revisa si el usuario cumple objetivos de presupuesto
+  - Evalúa categorías utilizadas
+  - Calcula ahorro acumulado para desbloquear logros de ahorro
+  - Ejecuta la comprobación en segundo plano mediante un executor
+  - Notifica con LiveData cuando un logro se desbloquea
+- **Logros principales:**
+  1. Primer gasto
+  2. 10 gastos registrados
+  3. 50 gastos registrados
+  4. 100 gastos registrados
+  5. 500 gastos registrados
+  6. Racha semanal
+  7. Racha mensual
+  8. Racha de 100 días
+  9. Crear presupuesto
+  10. Mantenerse por debajo del presupuesto semanal
+  11. Mantenerse por debajo del presupuesto mensual
 
+#### UserProfileController.java
+- **Ubicación:** `/UserProfileController.java`
+- **Propósito:** Controlador principal del perfil del usuario.
+- **Funcionalidad:**
+  - Gestiona el usuario actual y sus datos de perfil
+  - Actualiza la información del perfil y sincroniza cambios
+  - Elimina el usuario y reinicia datos si es necesario
+  - Evalúa el bienestar financiero del usuario
+  - Genera consejos personalizados según el estado del perfil
+  - Devuelve recomendaciones rápidas para completar perfil o presupuesto
 
-### **3. MODELS (5 archivos)**
+#### BudgetController.java
+- **Ubicación:** `/BudgetController.java`
+- **Propósito:** Controlador de presupuesto y seguimiento financiero.
+- **Métodos principales:**
+  - `saveBudget()` - Guarda un presupuesto
+  - `updateBudget()` - Actualiza el presupuesto existente
+  - `getActiveBudget()` - Recupera el presupuesto activo
+  - `updateCurrency()` - Cambia la moneda del presupuesto
+  - `setBudgetEnabled()` - Activa o desactiva el presupuesto
+  - `checkDailyBudgetStreak()` - Verifica si el usuario mantiene racha de presupuesto
+  - `recordBudgetDay()` - Registra el cumplimiento del presupuesto diario
 
-####  Expense.java
+#### AnalyticsController.java
+- **Ubicación:** `/AnalyticsController.java`
+- **Propósito:** Controlador de análisis financiero y estadísticas.
+- **Métodos principales:**
+  - `getTotalExpensesInRange()` - Total de gastos en un rango
+  - `getTotalIncomeInRange()` - Total de ingresos en un rango
+  - `calculateSavings()` - Calcula ahorro neto
+  - `calculateSavingsRate()` - Calcula porcentaje de ahorro
+  - `getAverageExpense()` - Gasto medio
+  - `getMaxExpense()` - Máximo gasto registrado
+  - `getWeeklyExpenses()` - Gastos agrupados por días de la semana
+  - `getMonthlyExpenses()` - Gastos agrupados por días del mes
+  - `getTopCategoriesAnalysis()` - Análisis por categoría
+  - `getGroupedCategoriesAnalysis()` - Análisis por categoría con agrupación de “Resto”
+  - `calculateTrend()` - Calcula tendencia comparativa entre periodos
+
+#### CloudSyncController.java
+- **Ubicación:** `/CloudSyncController.java`
+- **Propósito:** Controlador de sincronización con la nube y autenticación Firebase/Google.
+- **Métodos principales:**
+  - `login()` - Inicia sesión con Google en Firebase
+  - `logout()` - Cierra sesión
+  - `getFirebaseUserEmail()` - Obtiene el email del usuario autenticado
+  - `isFirebaseAuthenticated()` - Comprueba si está autenticado
+  - `syncNow()` - Ejecuta una sincronización inmediata
+
+#### StreakController.java
+- **Ubicación:** `/StreakController.java`
+- **Propósito:** Controlador de rachas y seguimiento de hábitos.
+- **Métodos principales:**
+  - `getStreakByType()` - Obtiene la racha de un tipo concreto
+  - `getStreakByTypeSync()` - Versión síncrona
+  - `updateStreak()` - Actualiza una racha
+  - `recordActivity()` - Registra actividad del usuario
+  - `decrementActivity()` - Descuenta actividad si se elimina un gasto
+  - `recordBudgetDay()` - Registra día cumplido de presupuesto
+  - `resetWeeklyStreaks()` - Reinicia rachas semanales
+  - `ensureStreaksExist()` - Verifica que existan rachas básicas
+  - `initializeDefaultStreaks()` - Inicializa las rachas por defecto
+
+### **3. MODELS (20 archivos)**
+
+#### Expense.java
 - **Ubicación:** `/Expense.java`
-- **Atributos:**
+- **Propósito:** Representa una transacción financiera (gasto o ingreso).
+- **Atributos principales:**
   - `id` (long)
+  - `userId` (long)
   - `type` (String: "expense" o "income")
   - `amount` (double)
+  - `category` (Long)
   - `description` (String)
-  - `category` (String)
-  - `date` (String: dd/MM/yyyy)
+  - `date` (String)
+  - `time` (String)
   - `timestamp` (long)
+  - `isRecurring` (boolean)
+  - `patternCount` (int)
   - `notes` (String)
-- **Métodos:** getters, setters, `isExpense()`, `isIncome()`
+- **Métodos principales:** getters, setters, `isExpense()`, `getFormattedDateTime()`
 
-####  UserProfile.java
+#### UserProfile.java
 - **Ubicación:** `/UserProfile.java`
-- **Atributos:**
-  - `emotionalState` (String)
-  - `mainConcern` (String)
-  - `timeAvailable` (String)
-  - `savingGoal` (String)
-  - `savingAmount` (double)
-  - `savingDate` (String)
-  - `createdAt` (long)
-- **Propósito:** Almacena datos del onboarding
+- **Propósito:** Almacena el perfil del usuario y su configuración financiera.
+- **Atributos principales:**
+  - `id`
+  - `name`
+  - `email`
+  - `photoUrl`
+  - `phone`
+  - `passwordHash`
+  - `emotionalState`
+  - `mainConcern`
+  - `mainConcernId`
+  - `timeAvailable`
+  - `monthlyIncome`
+  - `incomeDay`
+  - `financialKnowledge`
+  - `budgetExperience`
+  - `savingsHabit`
+  - `dayCount`
+  - `weekProgress`
+  - `weekGoal`
+  - `weekCount`
+  - `lastConnectionTimestamp`
+  - `xp`
+- **Propósito:** Controla el onboarding, datos del usuario y estado global de progreso
+
+#### Budget.java
+- **Ubicación:** `/Budget.java`
+- **Propósito:** Define el presupuesto del usuario.
+- **Atributos principales:**
+  - `id`
+  - `userId`
+  - `monthlyBudget`
+  - `weeklyBudget`
+  - `dailyBudget`
+  - `currency`
+  - `enabled`
+  - `createdAt`
+  - `updatedAt`
+- **Métodos principales:** `calculateWeeklyFromMonthly()`, `calculateDailyFromMonthly()`, `getCurrencySymbol()`
 
 #### Achievement.java
 - **Ubicación:** `/Achievement.java`
-- **Atributos:**
-  - `id` (int)
-  - `title` (String)
-  - `description` (String)
-  - `points` (int)
-  - `key` (String)
-  - `unlocked` (boolean)
-  - `unlockedAt` (long)
-- **Propósito:** Representa un logro gamificado
+- **Propósito:** Representa un logro del sistema de gamificación.
+- **Atributos principales:**
+  - `id`
+  - `userId`
+  - `title`
+  - `description`
+  - `points`
+  - `key`
+  - `unlocked`
+  - `unlockedAt`
+  - `categoryColor`
+  - `iconRes`
+- **Propósito:** Permite registrar logros, XP y estado de desbloqueo
+
+#### Streak.java
+- **Ubicación:** `/Streak.java`
+- **Propósito:** Controla rachas de uso o hábitos del usuario.
+- **Atributos principales:**
+  - `id`
+  - `userId`
+  - `type`
+  - `consecutiveDays`
+  - `startDate`
+  - `lastActivityDate`
+  - `maxStreakRecord`
+  - `isActive`
+- **Tipos principales:**
+  - `TYPE_RECORDING`
+  - `TYPE_BUDGET`
+- **Métodos principales:** `recordActivity()`, `incrementCounter()`, `decrementCounter()`, `reset()`
+
+#### SavingGoal.java
+- **Ubicación:** `/SavingGoal.java`
+- **Propósito:** Meta de ahorro del usuario.
+- **Atributos principales:**
+  - `id`
+  - `userId`
+  - `name`
+  - `targetAmount`
+  - `currentAmount`
+  - `deadline`
+  - `monthlySavingAmount`
+  - `completed`
+  - `monthsRemaining`
+- **Métodos principales:** `getProgressPercentage()`, `getRemainingAmount()`
 
 #### InterventionMessage.java
 - **Ubicación:** `/InterventionMessage.java`
-- **Atributos:**
-  - `title` (String)
-  - `message` (String)
+- **Propósito:** Mensaje de intervención suave mostrado al usuario.
+- **Atributos principales:**
+  - `title`
+  - `message`
   - `tips` (String[3])
-  - `severity` (String: "low", "medium", "high")
-- **Propósito:** Mensaje de intervención suave personalizado
+  - `severity` ("low", "medium", "high")
+- **Propósito:** Presenta alertas personalizadas con sugerencias y consejos
+
+#### InterventionLog.java
+- **Ubicación:** `/InterventionLog.java`
+- **Propósito:** Historial de intervenciones por parte de la app.
+- **Atributos principales:**
+  - `id`
+  - `userId`
+  - `expenseId`
+  - `interventionType`
+  - `message`
+  - `impactOnGoal`
+  - `alternativeSuggestion`
+  - `timestamp`
+- **Propósito:** Permite auditar los avisos y recordatorios enviados al usuario
 
 #### CategoryAnalysis.java
 - **Ubicación:** `/CategoryAnalysis.java`
-- **Atributos:**
-  - `category` (String)
-  - `amount` (double)
-  - `count` (int)
-  - `percentage` (double)
-- **Propósito:** Datos para gráficos de categorías
+- **Propósito:** Resultado de análisis financiero agrupado por categoría.
+- **Atributos principales:**
+  - `categoryId`
+  - `category`
+  - `amount`
+  - `count`
+  - `percentage`
+  - `averageAmount`
+  - `highestAmount`
+  - `lowestAmount`
+- **Propósito:** Se usa para gráficos y análisis de gastos por categoría
+
+#### ExpenseCategory.java
+- **Ubicación:** `/ExpenseCategory.java`
+- **Propósito:** Categoría base para clasificar los gastos.
+- **Atributos principales:**
+  - `id`
+  - `name`
+  - `iconResId`
+  - `iconName`
+  - `color`
+  - `isSelected`
+- **Propósito:** Permite organizar gastos por tipo (comida, transporte, ocio, etc.)
+
+#### ExpenseWithCategory.java
+- **Ubicación:** `/ExpenseWithCategory.java`
+- **Propósito:** Modelo combinado de gasto y categoría para la UI.
+- **Atributos principales:**
+  - `Expense expense`
+  - `ExpenseCategory category`
+- **Propósito:** Facilita la presentación de gastos junto a su categoría en listas y detalles
+
+#### Alternative.java
+- **Ubicación:** `/Alternative.java`
+- **Propósito:** Sugerencia de ahorro alternativa.
+- **Atributos principales:**
+  - `id`
+  - `categoryId`
+  - `descriptionKeyword`
+  - `suggestion`
+  - `savingsPercentage`
+- **Propósito:** Genera recomendaciones para reducir gastos repetidos
+
+#### Advice.java
+- **Ubicación:** `/Advice.java`
+- **Propósito:** Consejo financiero reutilizable en la UI.
+- **Atributos principales:**
+  - `title`
+  - `description`
+- **Métodos estáticos:** `getWelcome()`, `getRegisterExpenseToday()`, `getCompleteUserProfile()`, `getCompleteBudget()`, `getQuickAction()`
+
+#### SmartReminder.java
+- **Ubicación:** `/SmartReminder.java`
+- **Propósito:** Recordatorio inteligente basado en patrones de gasto.
+- **Atributos principales:**
+  - `category`
+  - `occurrenceCount`
+  - `totalAmount`
+  - `timeFrame`
+  - `suggestions`
+  - `patternMessage`
+- **Propósito:** Detecta patrones repetidos y ofrece ayudas para cambiar hábitos
+
+#### AnalysisState.java
+- **Ubicación:** `/AnalysisState.java`
+- **Propósito:** Estado visual de la pantalla de análisis financiero.
+- **Características:**
+  - Agrupación de datos para gráficos y KPIs
+  - Soporta visualización del estado actual del análisis
+
+#### ComparativeAnalysisState.java
+- **Ubicación:** `/ComparativeAnalysisState.java`
+- **Propósito:** Estado para la comparación de periodos financieros.
+- **Características:**
+  - Se usa para comparar datos actuales con periodos anteriores
+  - Facilita el cálculo de tendencias y variaciones
+
+#### FinancialData.java
+- **Ubicación:** `/FinancialData.java`
+- **Propósito:** Modelo auxiliar con información financiera agregada.
+- **Características:**
+  - Utilizado para consolidar ingresos, gastos y ahorro en pantallas de resumen
+
+#### EmotionalState.java
+- **Ubicación:** `/EmotionalState.java`
+- **Propósito:** Representa el estado emocional detectado en el onboarding.
+- **Uso:** Ayuda a personalizar la experiencia y los consejos del usuario
+
+#### QuestionOption.java
+- **Ubicación:** `/QuestionOption.java`
+- **Propósito:** Opción de respuesta dentro del cuestionario inicial.
+- **Atributos principales:**
+  - `id`
+  - `text`
+  - `value`
+  - `selected`
+- **Propósito:** Soporta dinámicamente las preguntas del onboarding
+
+#### UserXP.java
+- **Ubicación:** `/UserXP.java`
+- **Propósito:** Modelo de experiencia acumulada del usuario.
+- **Atributos principales:**
+  - `userId`
+  - `xp`
+  - `level`
+  - `lastUpdated`
+- **Propósito:** Complementa la lógica de gamificación y progresión
 
 
-### **4. ADAPTERS (2 archivos)**
+### **4. ADAPTERS **
 
-####  ExpenseAdapter.java
+### **4. ADAPTERS**
+
+#### ExpenseAdapter.java
 - **Ubicación:** `/ExpenseAdapter.java`
-- **Propósito:** Adapter para RecyclerView de gastos
+- **Propósito:** Adapter para la lista de gastos e ingresos.
 - **Características:**
-  - ViewHolder pattern
-  - Formato de moneda (NumberFormat)
-  - Colores diferentes para gastos (rojo) e ingresos (verde)
-  - Click listeners para item y botón eliminar
-  - Animaciones de lista
+  - Renderiza cada transacción con su categoría asociada
+  - Formatea importes con moneda local
+  - Soporta acciones de click, editar y eliminar
+  - Se integra con `RecyclerView`
+  - Muestra ingresos en verde y gastos en rojo
 
-####  AchievementAdapter.java
+#### AchievementAdapter.java
 - **Ubicación:** `/AchievementAdapter.java`
-- **Propósito:** Adapter para RecyclerView de logros (Grid)
+- **Propósito:** Adapter para la lista completa de logros.
 - **Características:**
-  - ViewHolder pattern
-  - Visual diferente para logros bloqueados/desbloqueados
-  - Opacity 0.5 para bloqueados
-  - Iconos personalizados por tipo de logro
-  - Grid layout (2 columnas)
+  - Muestra cada logro con título, descripción, puntos y estado
+  - Soporta clics sobre cada logro
+  - Permite distinguir logros bloqueados y desbloqueados
+  - Se usa en la pantalla de logros principal
 
-
-### **5. DATABASE (1 archivo)**
-
-#### ✅ DatabaseHelper.java
-- **Ubicación:** `/DatabaseHelper.java`
-- **Propósito:** Gestor de base de datos SQLite
+#### InterventionLogAdapter.java
+- **Ubicación:** `/InterventionLogAdapter.java`
+- **Propósito:** Adapter para el historial de intervenciones.
 - **Características:**
-  - Singleton pattern
-  - Una tabla: `expenses`
-  - **CRUD completo:**
-    - CREATE: `insertExpense()`
-    - READ: `getAllExpenses()`, `getExpenseById()`, etc.
-    - UPDATE: `updateExpense()`
-    - DELETE: `deleteExpense()`
-  - **Consultas de análisis:**
-    - Totales por mes
-    - Análisis por categoría
-    - Promedio diario
-    - Gastos de últimos N días
-  - **Versión:** 1
-  - **Nombre DB:** equilibra.db
+  - Lista alertas y mensajes generados por la app
+  - Permite acceder al detalle de la intervención
+  - Soporta eliminación de registros desde la UI
 
+#### CalendarAdapter.java
+- **Ubicación:** `/CalendarAdapter.java`
+- **Propósito:** Adapter para el calendario mensual de gastos.
+- **Características:**
+  - Muestra días del mes con visualización de calendario
+  - Resalta días con gastos registrados
+  - Permite seleccionar un día para filtrar transacciones
+  - Incluye indicadores visuales de actividad
+
+#### ComparativeAnalysisAdapter.java
+- **Ubicación:** `/ComparativeAnalysisAdapter.java`
+- **Propósito:** Adapter para la comparación de periodos financieros.
+- **Características:**
+  - Renderiza estados comparativos de ingresos/gastos
+  - Soporta listas dinámicas para análisis por periodo
+  - Se utiliza en `ComparativeAnalysisActivity`
+
+#### CategoryAdapter.java
+- **Ubicación:** `/CategoryAdapter.java`
+- **Propósito:** Adapter para la selección de categorías en la UI.
+- **Características:**
+  - Presenta categorías en formato de cuadrícula
+  - Permite seleccionar la categoría al añadir un gasto
+  - Aplica estilos visuales según el estado activo/inactivo
+
+#### QuestionOptionAdapter.java
+- **Ubicación:** `/QuestionOptionAdapter.java`
+- **Propósito:** Adapter para opciones de respuesta del onboarding.
+- **Características:**
+  - Genera dinámicamente tarjetas de respuesta
+  - Se usa para cuestionarios con múltiples opciones
+  - Notifica la opción seleccionada al listener
+  - No es un `RecyclerView`, sino un adaptador para `LinearLayout`
+
+#### CategoryLegendAdapter.java
+- **Ubicación:** `/CategoryLegendAdapter.java`
+- **Propósito:** Adapter para la leyenda del análisis por categorías.
+- **Características:**
+  - Muestra las categorías con su color, porcentaje y importe
+  - Se integra con los gráficos de análisis
+  - Ayuda a interpretar la información visual del dashboard
+
+#### AchievementMiniAdapter.java
+- **Ubicación:** `/AchievementMiniAdapter.java`
+- **Propósito:** Vista compacta de los logros más relevantes.
+- **Características:**
+  - Diseño más pequeño que el adapter principal
+  - Se usa en paneles o resúmenes rápidos
+  - Muestra logros destacados o recientes
+
+#### StreakBindingAdapter.java
+- **Ubicación:** `/StreakBindingAdapter.java`
+- **Propósito:** Adapter de binding para mostrar rachas en XML.
+- **Características:**
+  - Añade lógica de UI para rachas de actividad
+  - Se integra con `DataBinding`
+  - Permite mostrar estados visuales de streaks sin lógica en la Activity
+
+#### ProfileBindingAdapter.java
+- **Ubicación:** `/ProfileBindingAdapter.java`
+- **Propósito:** Adapter de binding para el perfil de usuario.
+- **Características:**
+  - Carga y formatea información del usuario
+  - Especializado en la visualización del perfil y su avatar
+  - Se usa en layouts con Data Binding
+
+#### ChartBindingAdapter.java
+- **Ubicación:** `/ChartBindingAdapter.java`
+- **Propósito:** Adapter de binding para gráficos.
+- **Características:**
+  - Vincula datos analíticos con componentes de visualización
+  - Facilita la representación de barras o gráficos de tendencia
+  - Se usa para alimentar la parte visual del análisis financiero
+
+### **5. DATABASE **
+
+### **5. DATABASE **
+
+#### AppDatabase.java
+- **Ubicación:** `/database/AppDatabase.java`
+- **Tecnología:** Room Database (SQLite local)
+- **Base de datos:** `equilibra.db`
+- **Versión:** `14`
+- **Propósito:** Centraliza toda la persistencia local de la aplicación y define las entidades y DAOs principales.
+- **Características:**
+  - Patrón Singleton para una única instancia global
+  - Inicializa datos básicos de categorías, logros, alternativas y rachas al primer arranque
+  - Usa `TypeConverters` para convertir tipos no nativos
+
+
+#### Entidades principales
+- **UserProfile** - Perfil del usuario y configuración personal
+- **Expense** - Gastos e ingresos registrados por el usuario
+- **ExpenseCategory** - Categorías de clasificación financiera
+- **Budget** - Presupuesto mensual/semanal/diario
+- **Achievement** - Logros gamificados
+- **Streak** - Rachas de uso y hábitos
+- **SavingGoal** - Metas de ahorro
+- **InterventionLog** - Historial de intervenciones y alertas
+- **Alternative** - Sugerencias de ahorro alternativas
+- **UserXP** - Experiencia del usuario
+
+#### DAOs (Data Access Objects)
+- **UserProfileDao.java** - Gestión del perfil del usuario
+- **ExpenseDao.java** - CRUD y consultas de gastos/ingresos
+- **ExpenseCategoryDao.java** - Gestión de categorías
+- **BudgetDao.java** - Gestión del presupuesto
+- **AchievementDao.java** - Gestión de logros y estados de desbloqueo
+- **AlternativeDao.java** - Consulta y gestión de alternativas de ahorro
+- **SavingGoalDao.java** - Gestión de metas de ahorro
+- **StreakDao.java** - Consultas y actualización de rachas
+- **InterventionLogDao.java** - Historial de intervenciones
+- **UserXPDao.java** - Gestión de experiencia/XP del usuario
+
+#### Funcionalidad actual
+- Persistencia local con Room en vez de `SQLiteOpenHelper`
+- Relaciones con claves foráneas para perfil, categorías, presupuestos y logros
+- Índices para búsquedas eficientes y unicidad de elementos clave
+- Separación clara entre entidades, DAO y lógica de negocio
+- Preparado para sincronización con la nube y recuperación de datos del usuario
 ---
 
-### **6. UTILS (3 archivos)**
+### **6. UTILS **
 
 ####  SharedPrefsManager.java
 - **Ubicación:** `/SharedPrefsManager.java`
@@ -589,7 +1065,7 @@ saveExpenseDirectly()
   - Formatos de fecha
   - Request codes e intent extras
 
-#### AdviceManager.java ⭐ NUEVO
+#### AdviceManager.java
 - **Ubicación:** `/AdviceManager.java`
 - **Propósito:** Gestor de consejos financieros diarios rotatorios
 - **Características:**
@@ -610,15 +1086,121 @@ saveExpenseDirectly()
   - Usa módulo 25 para obtener índice cíclico
   - Garantiza que ciclo completo = 25 días (un mes)
 
-## Estado actual frente a las recomendaciones de Android Studio
+### **6. UTILS **
 
-- Lenguaje: Java
-- Arquitectura actual: principalmente Activities con lógica de UI y negocio mezclada
-- Persistencia: `SharedPreferences` a través de `SharedPrefsManager` y SQLite
-- ViewBinding/DataBinding: implementado
-- MVVM: implementado
-- Room/SQLite: implementado
-- LifecycleObserver: implementado
+#### Constants.java
+- **Ubicación:** `/utils/Constants.java`
+- **Propósito:** Centraliza todas las constantes globales de la app.
+- **Incluye:**
+  - Formatos de fecha y hora
+  - Claves de SharedPreferences
+  - Nombres de tablas y versión de la base de datos
+  - Constantes de notificaciones, UI y gamificación
+  - Identificadores de logros y tipos de transacción
+
+#### SharedPrefsManager.java
+- **Ubicación:** `/utils/SharedPrefsManager.java`
+- **Propósito:** Gestor central de preferencias compartidas.
+- **Características:**
+  - Patrón Singleton
+  - Persistencia de onboarding, idioma, tema y notificaciones
+  - Control de intervención diaria
+  - GESTIÓN de XP, misión actual y contador de misiones completadas
+  - Exposición de LiveData para reaccionar a cambios de configuración
+
+#### AnimationHelper.java
+- **Ubicación:** `/utils/AnimationHelper.java`
+- **Propósito:** Utilidades reutilizables para animaciones visuales.
+- **Características:**
+  - Animaciones de entrada/salida
+  - Escala, translación, alpha y bounce
+  - Animaciones para cards, FAB, logros y pantallas de onboarding
+  - Efectos para progreso de UI y celebraciones
+
+#### DateUtils.java
+- **Ubicación:** `/utils/DateUtils.java`
+- **Propósito:** Formateo y cálculo de fechas.
+- **Métodos principales:**
+  - `formatDate()`
+  - `formatTime()`
+  - `formatDateTime()`
+  - `getStartOfMonth()`
+  - `getEndOfMonth()`
+  - `isNewDay()`
+  - `isNewWeek()`
+- **Uso:** Manejo de fechas en gastos, presupuestos y rachas
+
+#### DatePickerHelper.java
+- **Ubicación:** `/utils/DatePickerHelper.java`
+- **Propósito:** Simplifica la selección de fecha y hora con diálogos nativos.
+- **Características:**
+  - `DatePickerDialog`
+  - `TimePickerDialog`
+  - Formatea resultados directamente en `TextInputEditText`
+  - Permite callback al seleccionar una fecha/hora
+
+#### ValidationHelper.java
+- **Ubicación:** `/utils/ValidationHelper.java`
+- **Propósito:** Valida entradas comunes del usuario.
+- **Validaciones disponibles:**
+  - Email
+  - Teléfono
+  - Contraseña
+  - Nombre
+  - Números positivos y no negativos
+  - Longitudes mínimas/máximas
+  - Texto alfanumérico y alfabético
+
+#### InputValidator.java
+- **Ubicación:** `/utils/InputValidator.java`
+- **Propósito:** Valida campos clave de formularios.
+- **Métodos:**
+  - `isValidGoal()`
+  - `isValidAmount()`
+  - `isValidSavingGoalInputs()`
+
+#### SavingGoalValidator.java
+- **Ubicación:** `/utils/SavingGoalValidator.java`
+- **Propósito:** Valida metas de ahorro en tiempo real.
+- **Características:**
+  - Uso de `TextWatcher`
+  - Habilita/deshabilita botón de envío
+  - Revisa nombre y cantidad al mismo tiempo
+
+#### AdviceManager.java
+- **Ubicación:** `/utils/AdviceManager.java`
+- **Propósito:** Selección rotativa de consejos financieros diarios.
+- **Características:**
+  - Genera un consejo diferente por día
+  - Soporta índice fijo o aleatorio
+  - Usa recursos de `strings.xml`
+  - Ayuda a mantener motivación y educación financiera
+
+#### NotificationManager.java
+- **Ubicación:** `/utils/NotificationManager.java`
+- **Propósito:** Programación de notificaciones con WorkManager.
+- **Características:**
+  - Notificaciones diarias de consejos
+  - Programación automática en hora fija
+  - Soporte para cancelar y comprobar si están activas
+
+#### BottomNavigationHandler.java
+- **Ubicación:** `/utils/BottomNavigationHandler.java`
+- **Propósito:** Interfaz para la navegación de la barra inferior.
+- **Métodos:**
+  - `onHomeClick()`
+  - `onAnalysisClick()`
+  - `onAddExpenseClick()`
+  - `onAchievementsClick()`
+  - `onSettingsClick()`
+
+#### AchievementUnlockHelper.java
+- **Ubicación:** `/utils/AchievementUnlockHelper.java`
+- **Propósito:** Muestra diálogos de celebración al desbloquear logros.
+- **Características:**
+  - Diálogo animado con icono y puntos
+  - Efectos de brillo y animaciones
+  - Feedback visual al alcanzar metas
 
 ---
 
@@ -649,9 +1231,20 @@ Data Binding automático via `AdviceViewModel`:
 
 ## Dependencias importantes
 
-- AndroidX AppCompat
-- Material Components
-- DataBinding 
-- Room
+- AndroidX AppCompat: soporte base de la UI Android moderna.
+- Material Components: componentes visuales y diseño Material 3.
+- DataBinding / ViewBinding: enlace de vistas y datos en Activities y layouts.
+- Lifecycle: ViewModel, LiveData, runtime y gestión del ciclo de vida de la app.
+- Room: persistencia local con SQLite orientada a modelos.
+- WorkManager: tareas periódicas y recordatorios programados.
+- RecyclerView y CardView: listas dinámicas y tarjetas visuales.
+- ConstraintLayout: maquetación flexible y moderna.
+- Gson: serialización y deserialización JSON.
+- Firebase Auth, Analytics y Firestore: autenticación, analítica y almacenamiento en nube.
+- Google Sign-In + Credential Manager: acceso seguro a cuentas de Google.
+- MPAndroidChart: gráficos y visualización de análisis financieros.
+- Glide: carga y gestión de imágenes de perfil.
+- Google Play Services Auth: integración con autenticación de Google.
+- JUnit y AndroidX Test: soporte para pruebas unitarias y de UI.
 
 -->

@@ -15,7 +15,6 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 import asunfdiez.com.equilibra.R;
-import asunfdiez.com.equilibra.models.Achievement;
 import asunfdiez.com.equilibra.models.Alternative;
 import asunfdiez.com.equilibra.models.Budget;
 import asunfdiez.com.equilibra.models.CategoryAnalysis;
@@ -26,7 +25,6 @@ import asunfdiez.com.equilibra.models.InterventionLog;
 import asunfdiez.com.equilibra.models.SavingGoal;
 import asunfdiez.com.equilibra.models.SmartReminder;
 import asunfdiez.com.equilibra.models.UserProfile;
-import asunfdiez.com.equilibra.repositories.AchievementRepository;
 import asunfdiez.com.equilibra.repositories.AlternativeRepository;
 import asunfdiez.com.equilibra.repositories.BudgetRepository;
 import asunfdiez.com.equilibra.repositories.ExpenseCategoryRepository;
@@ -52,7 +50,6 @@ public class ExpenseController {
     private final UserProfileRepository userProfileRepository;
     private final SavingGoalRepository savingGoalRepository;
     private final AlternativeRepository alternativeRepository;
-    private final AchievementRepository achievementRepository;
     private final StreakController streakController;
     private final InterventionLogRepository interventionLogRepository;
 
@@ -70,7 +67,6 @@ public class ExpenseController {
         this.userProfileRepository = new UserProfileRepository(context);
         this.savingGoalRepository = new SavingGoalRepository(context);
         this.alternativeRepository = new AlternativeRepository(context);
-        this.achievementRepository = new AchievementRepository(context);
         this.streakController = new StreakController(context);
         this.interventionLogRepository = new InterventionLogRepository(context);
         this.mainHandler = new Handler(Looper.getMainLooper());
@@ -83,11 +79,11 @@ public class ExpenseController {
     public void saveExpense(Expense expense) {
         executor.execute(()-> {
             if (expense.getId() == 0) {
-                expenseRepository.insertExpense(expense);
+                expenseRepository.insertExpenseSync(expense);
                 // Incrementar el contador de la semana solo si es nuevo
                 userProfileRepository.incrementWeekProgress();
             } else {
-                expenseRepository.updateExpenses(expense);
+                expenseRepository.updateExpensesSync(expense);
             }
             checkAchievements();
         });
@@ -336,11 +332,11 @@ public class ExpenseController {
      */
     public List<String> generateAlternatives(long categoryId, double amount, String description) {
         List<String> suggestions = new ArrayList<>();
-        String categoryName = expenseCategoryRepository.getCategoryNameById(categoryId);
-        if (categoryName == null) categoryName = "";
-
         // 1. Buscar en la base de datos alternativas por categoría y descripción
-        List<Alternative> dbAlternatives = alternativeRepository.getAlternativesByCategoryAndDescription(categoryName, description);
+        List<Alternative> dbAlternatives = alternativeRepository.getAlternativesByCategoryAndDescription(categoryId, description);
+        if (dbAlternatives == null) {
+
+        }
 
         if (dbAlternatives != null && !dbAlternatives.isEmpty()) {
             for (Alternative alt : dbAlternatives) {
@@ -364,30 +360,10 @@ public class ExpenseController {
 
     /**
      * Comprueba si se ha desbloqueado un logro
-     * 1. Primer registro de gasto
-     * 2. Gastos durante 7 días seguidos
      */
     public void checkAchievements() {
-        int expenseCount = expenseRepository.getExpenseCount();
-        UserProfile profile = userProfileRepository.getUserProfileSync();
-        if (profile == null) return;
-        int dayCount = profile.getDayCount();
-        //registrar el primer gasto
-        if (expenseCount >= 1) {
-            Achievement achievement = achievementRepository.getAchievementByTitle(context.getString(R.string.first_step_title));
-            if (achievement != null && !achievement.isUnlocked()) {
-                achievement.setUnlocked(true);
-                achievementRepository.updateAchievement(achievement);
-            }
-        }
-        //registrar gastos durante 7 dias seguidos
-        if (dayCount >= 7 && expenseCount >= 7) {
-            Achievement achievement = achievementRepository.getAchievementByTitle(context.getString(R.string.constant_title));
-            if (achievement != null && !achievement.isUnlocked()) {
-                achievement.setUnlocked(true);
-                achievementRepository.updateAchievement(achievement);
-            }
-        }
+        AchievementController achievementCtrl = new AchievementController(context);
+        achievementCtrl.checkAndUnlockAchievements();
     }
 
     /**
@@ -557,6 +533,18 @@ public class ExpenseController {
      * Mostrará confirmación si el gasto representa más del 10% del presupuesto semanal
      */
     public boolean shouldShowConfirmation(double amount) {
+        Budget activeBudget = budgetRepository.getActiveBudgetSync();
+        double monthlyIncomeProfile = userProfileRepository.getUserMonthlyIncome();
+        double totalIncomeThisMonth = getTotalIncomeThisMonth();
+
+        boolean hasBudgetOrIncome = (activeBudget != null && activeBudget.isEnabled() && (activeBudget.getMonthlyBudget() > 0 || activeBudget.getWeeklyBudget() > 0)) ||
+                monthlyIncomeProfile > 0 ||
+                totalIncomeThisMonth > 0;
+
+        if (!hasBudgetOrIncome) {
+            return false;
+        }
+
         int percentage = calculateBudgetPercentage(amount);
         return percentage >= 10;
     }

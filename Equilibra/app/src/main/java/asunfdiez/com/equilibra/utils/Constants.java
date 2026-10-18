@@ -94,8 +94,8 @@ public final class Constants {
     // DATABASE CONSTANTS
     // ========================================
     public static final String DATABASE_NAME = "equilibra.db";
-    public static final int DATABASE_VERSION = 3;
-    public static final int DATABASE_PREVIOUS_VERSION = 2;
+    public static final int DATABASE_VERSION = 14;
+    public static final int DATABASE_PREVIOUS_VERSION = 13;
 
     //Tabla UserProfile
     public static final String TABLE_USER_PROFILE = "user_profile";
@@ -183,20 +183,6 @@ public final class Constants {
     public static final String COLUMN_STREAK_MAX_RECORD = "maxStreakRecord";
     public static final String COLUMN_STREAK_IS_ACTIVE = "isActive";
 
-    // Tabla Challenges
-    public static final String TABLE_CHALLENGES = "challenges";
-    public static final String COLUMN_CHALLENGE_ID = "id";
-    public static final String COLUMN_CHALLENGE_USER_ID = "userId";
-    public static final String COLUMN_CHALLENGE_TITLE = "title";
-    public static final String COLUMN_CHALLENGE_DESCRIPTION = "description";
-    public static final String COLUMN_CHALLENGE_CATEGORY = "category";
-    public static final String COLUMN_CHALLENGE_TARGET_AMOUNT = "targetAmount";
-    public static final String COLUMN_CHALLENGE_CURRENT_AMOUNT = "currentAmount";
-    public static final String COLUMN_CHALLENGE_START_DATE = "startDate";
-    public static final String COLUMN_CHALLENGE_END_DATE = "endDate";
-    public static final String COLUMN_CHALLENGE_COMPLETED = "completed";
-    public static final String COLUMN_CHALLENGE_XP_REWARD = "xpReward";
-
     // Tabla Intervention Log
     public static final String TABLE_INTERVENTION_LOG = "intervention_log";
     public static final String COLUMN_INTERVENTION_ID = "id";
@@ -208,21 +194,10 @@ public final class Constants {
     public static final String COLUMN_INTERVENTION_ALTERNATIVE_SUGGESTION = "alternativeSuggestion";
     public static final String COLUMN_INTERVENTION_TIMESTAMP = "timestamp";
 
-    // Tabla Daily Analysis
-    public static final String TABLE_DAILY_ANALYSIS = "daily_analysis";
-    public static final String COLUMN_DAILY_ANALYSIS_ID = "id";
-    public static final String COLUMN_DAILY_ANALYSIS_USER_ID = "userId";
-    public static final String COLUMN_DAILY_ANALYSIS_DATE = "analysisDate";
-    public static final String COLUMN_DAILY_ANALYSIS_TOTAL_SPENT = "totalSpent";
-    public static final String COLUMN_DAILY_ANALYSIS_TOTAL_INCOME = "totalIncome";
-    public static final String COLUMN_DAILY_ANALYSIS_NET_BALANCE = "netBalance";
-    public static final String COLUMN_DAILY_ANALYSIS_CATEGORY_BREAKDOWN = "categoryBreakdown";
-    public static final String COLUMN_DAILY_ANALYSIS_ANOMALY_DETECTED = "anomalyDetected";
-
     // Tabla Alternatives
     public static final String TABLE_ALTERNATIVES = "alternatives";
     public static final String COLUMN_ALTERNATIVE_ID = "id";
-    public static final String COLUMN_ALTERNATIVE_CATEGORY = "category";
+    public static final String COLUMN_ALTERNATIVE_CATEGORY_ID = "categoryId";
     public static final String COLUMN_ALTERNATIVE_KEYWORD = "descriptionKeyword";
     public static final String COLUMN_ALTERNATIVE_SUGGESTION = "suggestion";
     public static final String COLUMN_ALTERNATIVE_SAVINGS = "savingsPercentage";
@@ -247,6 +222,7 @@ public final class Constants {
     public static final String ACHIEVEMENT_100_DAYS_STREAK = "100_days_streak";
 
     // Presupuesto
+    public static final String ACHIEVEMENT_CREATE_BUDGET = "create_budget";
     public static final String ACHIEVEMENT_UNDER_BUDGET_WEEK = "under_budget_week";
     public static final String ACHIEVEMENT_UNDER_BUDGET_MONTH = "under_budget_month";
 

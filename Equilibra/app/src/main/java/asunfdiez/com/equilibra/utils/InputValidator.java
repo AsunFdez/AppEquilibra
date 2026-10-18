@@ -4,11 +4,11 @@ package asunfdiez.com.equilibra.utils;
  * Clase de utilidad para la validación de entradas de usuario en formularios.
  * 
  * <p>Proporciona métodos estáticos para verificar la integridad y corrección 
- * de datos como nombres de metas, montos numéricos y otros campos de texto 
+ * de datos como nombres de metas, importes numéricos y otros campos de texto
  * antes de ser procesados o guardados en la base de datos.</p>
  */
 public final class InputValidator {
-    // Monto mínimo aceptable para transacciones o metas
+    // Importe mínimo aceptable para transacciones o metas
     private static final double MIN_AMOUNT = 0.01;
 
     private InputValidator() {
@@ -23,7 +23,7 @@ public final class InputValidator {
     }
 
     /**
-     * Verifica si una cadena de texto representa un monto numérico válido y mayor al mínimo.
+     * Verifica si una cadena de texto representa un importe numérico válido y mayor al mínimo.
      */
     public static boolean isValidAmount(String amount) {
         if (amount == null || amount.trim().isEmpty()) {

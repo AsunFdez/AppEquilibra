@@ -13,9 +13,11 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 import asunfdiez.com.equilibra.models.Achievement;
+import asunfdiez.com.equilibra.models.Budget;
 import asunfdiez.com.equilibra.models.Expense;
 import asunfdiez.com.equilibra.models.UserProfile;
 import asunfdiez.com.equilibra.repositories.AchievementRepository;
+import asunfdiez.com.equilibra.repositories.BudgetRepository;
 import asunfdiez.com.equilibra.repositories.ExpenseRepository;
 import asunfdiez.com.equilibra.repositories.UserProfileRepository;
 import asunfdiez.com.equilibra.utils.Constants;
@@ -36,6 +38,7 @@ public class AchievementController {
     private final AchievementRepository achievementRepository;
     private final UserProfileRepository userProfileRepository;
     private final ExpenseRepository expenseRepository;
+    private final BudgetRepository budgetRepository;
 
 
     // Executor para ejecutar lógica de verificación pesada en segundo plano
@@ -45,6 +48,7 @@ public class AchievementController {
         this.achievementRepository = new AchievementRepository(context);
         this.userProfileRepository = new UserProfileRepository(context);
         this.expenseRepository = new ExpenseRepository(context);
+        this.budgetRepository = new BudgetRepository(context);
     }
 
     /**
@@ -185,13 +189,18 @@ public class AchievementController {
      * Logros relacionados con presupuesto
      */
     private void checkBudgetAchievements() {
-        int weeksUnderBudget = userProfileRepository.getWeeksUnderBudget();
+        Budget activeBudget = budgetRepository.getActiveBudgetSync();
+        if (activeBudget != null && activeBudget.isEnabled()) {
+            unlockAchievementIfNotUnlocked(Constants.ACHIEVEMENT_CREATE_BUDGET);
 
-        if (weeksUnderBudget >= 1) {
-            unlockAchievementIfNotUnlocked(Constants.ACHIEVEMENT_UNDER_BUDGET_WEEK);
-        }
-        if (weeksUnderBudget >= 4) {
-            unlockAchievementIfNotUnlocked(Constants.ACHIEVEMENT_UNDER_BUDGET_MONTH);
+            int weeksUnderBudget = userProfileRepository.getWeeksUnderBudget();
+
+            if (weeksUnderBudget >= 1) {
+                unlockAchievementIfNotUnlocked(Constants.ACHIEVEMENT_UNDER_BUDGET_WEEK);
+            }
+            if (weeksUnderBudget >= 4) {
+                unlockAchievementIfNotUnlocked(Constants.ACHIEVEMENT_UNDER_BUDGET_MONTH);
+            }
         }
     }
 

@@ -2,6 +2,8 @@ package asunfdiez.com.equilibra.models;
 
 import androidx.annotation.NonNull;
 import androidx.room.Entity;
+import androidx.room.ForeignKey;
+import androidx.room.Index;
 import androidx.room.PrimaryKey;
 
 import asunfdiez.com.equilibra.utils.Constants;
@@ -14,14 +16,23 @@ import asunfdiez.com.equilibra.utils.Constants;
  * potencial mediante un porcentaje.</p>
  */
 @Entity(tableName = Constants.TABLE_ALTERNATIVES,
-        indices = {@androidx.room.Index(value = {"suggestion"}, unique = true)})
+        foreignKeys = @ForeignKey(
+                entity = ExpenseCategory.class,
+                parentColumns = "id",
+                childColumns = "categoryId",
+                onDelete = ForeignKey.CASCADE
+        ),
+        indices = {
+                @Index(value = {"categoryId"}),
+                @Index(value = {"suggestion"}, unique = true)
+        })
 public class Alternative {
     @PrimaryKey(autoGenerate = true)
     @NonNull
     private long id;
     
-    // Categoría de gasto a la que se aplica la alternativa
-    private String category;
+    // ID de la categoría a la que se aplica la alternativa
+    private long categoryId;
     
     // Palabra clave utilizada para identificar el gasto relacionado
     private String descriptionKeyword; 
@@ -32,8 +43,8 @@ public class Alternative {
     // Porcentaje estimado que el usuario podría ahorrar al seguir esta sugerencia
     private double savingsPercentage;
 
-    public Alternative(String category, String descriptionKeyword, String suggestion, double savingsPercentage) {
-        this.category = category;
+    public Alternative(long categoryId, String descriptionKeyword, String suggestion, double savingsPercentage) {
+        this.categoryId = categoryId;
         this.descriptionKeyword = descriptionKeyword;
         this.suggestion = suggestion;
         this.savingsPercentage = savingsPercentage;
@@ -47,12 +58,12 @@ public class Alternative {
         this.id = id;
     }
 
-    public String getCategory() {
-        return category;
+    public long getCategoryId() {
+        return categoryId;
     }
 
-    public void setCategory(String category) {
-        this.category = category;
+    public void setCategoryId(long categoryId) {
+        this.categoryId = categoryId;
     }
 
     public String getDescriptionKeyword() {

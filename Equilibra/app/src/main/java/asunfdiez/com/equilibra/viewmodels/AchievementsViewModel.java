@@ -15,6 +15,8 @@ import java.util.List;
 import asunfdiez.com.equilibra.R;
 import asunfdiez.com.equilibra.controllers.AchievementController;
 import asunfdiez.com.equilibra.models.Achievement;
+import asunfdiez.com.equilibra.models.UserProfile;
+import asunfdiez.com.equilibra.repositories.UserProfileRepository;
 
 /**
  * ViewModel encargado de la gestión de datos para la pantalla de logros.
@@ -82,7 +84,23 @@ public class AchievementsViewModel extends AndroidViewModel {
         this.allAchievements = controller.getAllAchievements();
         this.unlockedAchievements = controller.getUnlockedAchievements();
         this.lockedAchievements = controller.getLockedAchievements();
-        this.totalPoints = controller.getTotalPoints();
+        
+        UserProfileRepository userProfileRepo = new UserProfileRepository(application);
+        LiveData<Integer> achPoints = controller.getTotalPoints();
+        LiveData<UserProfile> userProfileLiveData = userProfileRepo.getUserProfile();
+
+        MediatorLiveData<Integer> combinedPoints = new MediatorLiveData<>();
+        Runnable updatePoints = () -> {
+            Integer ach = achPoints.getValue();
+            UserProfile profile = userProfileLiveData.getValue();
+            int a = ach != null ? ach : 0;
+            int x = profile != null ? profile.getXp() : 0;
+            combinedPoints.setValue(a + x);
+        };
+        combinedPoints.addSource(achPoints, p -> updatePoints.run());
+        combinedPoints.addSource(userProfileLiveData, p -> updatePoints.run());
+        this.totalPoints = combinedPoints;
+
         this.unlockedCount = controller.getUnlockedCount();
         this.totalAchievements = controller.getTotalAchievements();
         this.maxPossiblePoints = controller.getMaxPossiblePoints();
@@ -276,6 +294,25 @@ public class AchievementsViewModel extends AndroidViewModel {
         return Transformations.map(totalPoints, points -> {
             if (points == null) points = 0;
             return points + " pts";
+        });
+    }
+
+    /**
+     * LiveData transformado para mostrar el nombre del nivel del usuario según XP (puntos totales)
+     * 0-500 XP: Ahorrador Novato
+     * 501-2000 XP: Guardián del Tesoro
+     * >2000 XP: Maestro Equilibra
+     */
+    public LiveData<String> getUserLevelName() {
+        return Transformations.map(totalPoints, points -> {
+            int p = points != null ? points : 0;
+            if (p <= 500) {
+                return getApplication().getString(R.string.level_novice);
+            } else if (p <= 2000) {
+                return getApplication().getString(R.string.level_guardian);
+            } else {
+                return getApplication().getString(R.string.level_master);
+            }
         });
     }
 

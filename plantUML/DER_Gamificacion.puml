@@ -15,82 +15,62 @@ title Diagrama Entidad-Relación - AppEquilibra- TABLAS DE GAMIFICACIÓN
 TABLENAME(UserProfile) {
 }
 
-TABLENAME(Category) {
-}
-
 TABLENAME(Achievement) {
-    <b>PK: _id</b> : INTEGER
+    <b>PK: id</b> : INTEGER (autogenerado)
     --
+    <b>FK: userId</b> : INTEGER
     title : TEXT
     description : TEXT
-    xp : INTEGER
-    icon : TEXT
-    unlocked : INTEGER (0/1)
-    date_unlocked : LONG
+    points : INTEGER
+    key : TEXT
+    unlocked : INTEGER (boolean)
+    unlockedAt : INTEGER
+    categoryColor : INTEGER
+    iconRes : INTEGER
 }
 
 TABLENAME(UserXP) {
-    <b>PK: id</b> : INTEGER
+    <b>PK: id</b> : INTEGER (autogenerado)
     --
     <b>FK: userId</b> : INTEGER
     totalXP : INTEGER
     currentLevel : INTEGER
     xpForNextLevel : INTEGER
     achievementsUnlocked : INTEGER
-    lastXPEarnedAt : LONG
+    lastXPEarnedAt : INTEGER
 }
 
 TABLENAME(Streak) {
-    <b>PK: id</b> : INTEGER
+    <b>PK: id</b> : INTEGER (autogenerado)
     --
     <b>FK: userId</b> : INTEGER
     consecutiveDays : INTEGER
-    startDate : TEXT (DATE)
-    lastActivityDate : TEXT (DATE)
+    type : TEXT
+    startDate : TEXT (yyyy-MM-dd)
+    lastActivityDate : TEXT (yyyy-MM-dd)
     maxStreakRecord : INTEGER
-    isActive : INTEGER (0/1)
+    isActive : INTEGER (boolean)
 }
 
-TABLENAME(Challenge) {
-    <b>PK: id</b> : INTEGER
-    --
-    <b>FK: userId</b> : INTEGER
-    title : TEXT
-    description : TEXT
-    category : TEXT
-    targetAmount : REAL
-    currentAmount : REAL
-    startDate : TEXT (DATE)
-    endDate : TEXT (DATE)
-    completed : INTEGER (0/1)
-    xpReward : INTEGER
-}
-
-
-UserProfile "1" -- "*" UserXP : tiene
-UserProfile "1" -- "*" Streak : genera
-UserProfile "1" -- "*" Challenge : participa
-Achievement "*" -- "*" UserXP : desbloquea
-Challenge  ..>  Category : puede estar enfocada a
-
+UserProfile "1" -- "0..*" UserXP : userId
+UserProfile "1" -- "0..*" Streak : userId
+UserProfile "1" -- "0..*" Achievement : userId
 
 note bottom of Achievement
-    Logro desbloqueado por el usuario
-    Otorga experiencia (XP)
+  Logros que el usuario tiene que desbloquear
+  Se definen en el primer inicio de la app y se desbloquean
+  al cumplir ciertos criterios.
+  Otorgan experiencia
 end note
 
 note bottom of UserXP
   Seguimiento de progreso gamificado
-  Experiencia y logros desbloqueados
+  Experiencia y nivel actual del usuario
 end note
 
 note bottom of Streak
-  Contabilidad de días de uso consecutivos
+  Contabilidad de días de uso consecutivos (rachas)
   Para fomentar el hábito
+  Se definen dos: registro de gastos
+  y cumplimiento de presupuesto
 end note
-
-note bottom of Challenge
-  Desafíos semanales/mensuales
-  Cálculo de cumplimiento
-end note
-

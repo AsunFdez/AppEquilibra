@@ -2,6 +2,8 @@ package asunfdiez.com.equilibra.models;
 
 import androidx.annotation.NonNull;
 import androidx.room.Entity;
+import androidx.room.ForeignKey;
+import androidx.room.Index;
 import androidx.room.PrimaryKey;
 
 import asunfdiez.com.equilibra.utils.Constants;
@@ -13,12 +15,23 @@ import asunfdiez.com.equilibra.utils.Constants;
  * y la moneda de preferencia. Esta entidad es fundamental para el seguimiento 
  * del estado financiero y la generación de alertas de gasto.</p>
  */
-@Entity (tableName = Constants.TABLE_BUDGETS)
+@Entity(
+        tableName = Constants.TABLE_BUDGETS,
+        foreignKeys = @ForeignKey(
+                entity = UserProfile.class,
+                parentColumns = "id",
+                childColumns = "userId",
+                onDelete = ForeignKey.CASCADE
+        ),
+        indices = {@Index("userId")}
+)
 public class Budget {
 
     @PrimaryKey(autoGenerate = true)
     @NonNull
     private long id;
+
+    private long userId;
 
     // Límite de gasto mensual establecido
     private double monthlyBudget;
@@ -57,6 +70,14 @@ public class Budget {
 
     public void setId(long id) {
         this.id = id;
+    }
+
+    public long getUserId() {
+        return userId;
+    }
+
+    public void setUserId(long userId) {
+        this.userId = userId;
     }
 
     public double getMonthlyBudget() {
@@ -156,6 +177,7 @@ public class Budget {
     public String toString() {
         return "Budget{" +
                 "id=" + id +
+                ", userId=" + userId +
                 ", monthlyBudget=" + monthlyBudget +
                 ", weeklyBudget=" + weeklyBudget +
                 ", dailyBudget=" + dailyBudget +

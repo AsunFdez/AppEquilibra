@@ -1,0 +1,65 @@
+@startuml
+' Diagrama de Casos de Uso - Registro de Gasto e Historial de Intervenciones
+top to bottom direction
+actor "Usuario registrado" as User
+
+package "App Equilibra" {
+  usecase "Abrir Home" as UC0
+  usecase "Pulsar botón '+'" as UC1
+  usecase "Introducir importe,\ndescripción y categoría" as UC2
+  usecase "Mostrar intervención suave\n(educativa/visual)" as UC3
+  usecase "Registrar InterventionLog\nen la base de datos" as UC5
+  usecase "Confirmar gasto (sumar XP\ny actualizar racha)" as UC4
+  usecase "Consultar historial\nde intervenciones" as UC6
+}
+
+User --> UC0
+User --> UC1
+UC1 --> UC2
+UC2 --> UC3 : si se muestra intervención
+UC3 ..> UC5 : <<include>>
+UC2 --> UC4 : confirmar
+UC3 --> UC4 : tras la intervención
+User --> UC6
+
+note right of UC3
+  Ejemplo:
+  "¿Este gasto te acerca a tu viaje?"
+end note
+
+note right of UC6
+  La campanita aparece cuando existe
+  al menos un InterventionLog del usuario.
+  Permite abrir el historial desde Home
+  y consultarlo posteriormente en cualquier momento.
+  El historial muestra solo registros de ese usuario.
+end note
+
+UC5 ..> UC6 : deja el registro disponible para consulta
+@enduml
+
+@startuml
+' Diagrama de Actividad - Registro de Gasto
+start
+:Desde Home, pulsa '+';
+:Introducir importe,\ndescripción y categoría;
+
+if (¿Se debe mostrar una intervención?) then (sí)
+  :Mostrar intervención educativa;
+  :Registrar InterventionLog del usuario en Room;
+  :Actualizar estado de la campanita;
+else (no)
+endif
+
+:Usuario confirma gasto;
+:Sistema suma XP;
+:Sistema actualiza racha diaria;
+
+note right
+  Después de guardar un InterventionLog,
+  el usuario puede abrir el historial desde Home
+  en cualquier momento mientras tenga registros.
+end note
+
+stop
+@enduml

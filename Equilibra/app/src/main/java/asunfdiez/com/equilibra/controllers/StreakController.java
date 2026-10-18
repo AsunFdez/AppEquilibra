@@ -61,6 +61,7 @@ public class StreakController {
                     if (streak != null) {
                         streak.incrementCounter();
                         streakRepository.updateStreak(streak);
+                        userProfileRepository.addXp(10);
                         Log.d("StreakController", "Recording streak incremented: " + streak.getConsecutiveDays());
                     }
                 }
@@ -104,6 +105,7 @@ public class StreakController {
                     if (streak != null) {
                         streak.recordActivity();
                         streakRepository.updateStreak(streak);
+                        userProfileRepository.addXp(100);
                         Log.d("StreakController", "Budget streak updated: " + streak.getConsecutiveDays() + " days");
                     }
                 }

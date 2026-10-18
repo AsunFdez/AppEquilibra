@@ -27,12 +27,17 @@ public class AlternativeRepository {
      * Recupera una lista de alternativas de ahorro que coincidan con la categoría 
      * y palabras clave de la descripción de un gasto.
      * 
-     * @param categoryName Nombre de la categoría del gasto analizado.
+     * @param categoryId ID de la categoría del gasto analizado.
      * @param description Descripción del gasto para buscar palabras clave.
      * @return Lista de alternativas aplicables encontradas.
      */
-    public List<Alternative> getAlternativesByCategoryAndDescription(String categoryName, String description) {
-        return alternativeDao.getAlternativesByCategoryAndDescription(categoryName, description);
+    public List<Alternative> getAlternativesByCategoryAndDescription(long categoryId, String description) {
+        List<Alternative> alternativas = alternativeDao.getAlternativesByCategoryAndDescription(categoryId, description);
+        if (alternativas.isEmpty()) {
+            AppDatabase.insertInitialAlternatives();
+            alternativas = alternativeDao.getAlternativesByCategoryAndDescription(categoryId, description);
+        }
+        return alternativas;
     }
 
 }

@@ -17,7 +17,7 @@ public class FinancialData {
     // Porcentaje del presupuesto consumido
     public final double percentage;
     
-    // Monto gastado en la categoría principal
+    // Importe gastado en la categoría principal
     public final double topCategoryAmount;
     
     // Nombre de la categoría donde más se ha gastado

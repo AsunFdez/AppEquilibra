@@ -124,21 +124,6 @@ TABLENAME(Streak) {
     isActive : INTEGER (0/1)
 }
 
-TABLENAME(Challenge) {
-    <b>PK: id</b> : INTEGER
-    --
-    <b>FK: userId</b> : INTEGER
-    title : TEXT
-    description : TEXT
-    category : TEXT
-    targetAmount : REAL
-    currentAmount : REAL
-    startDate : TEXT (DATE)
-    endDate : TEXT (DATE)
-    completed : INTEGER (0/1)
-    xpReward : INTEGER
-}
-
 ' ============================================================
 ' TABLAS DE INTERVENCIONES Y ANÁLISIS
 ' ============================================================
@@ -164,18 +149,6 @@ TABLENAME(EmotionalState) {
     spendingThatDay : REAL
 }
 
-TABLENAME(DailyAnalysis) {
-    <b>PK: id</b> : INTEGER
-    --
-    <b>FK: userId</b> : INTEGER
-    analysisDate : TEXT (DATE)
-    totalSpent : REAL
-    totalIncome : REAL
-    netBalance : REAL
-    categoryBreakdown : TEXT (JSON)
-    anomalyDetected : INTEGER (0/1)
-}
-
 ' ============================================================
 ' RELACIONES
 ' ============================================================
@@ -185,10 +158,8 @@ UserProfile "1" -- "*" Expense : registra
 UserProfile "1" -- "*" Budget : crea
 UserProfile "1" -- "*" UserXP : tiene
 UserProfile "1" -- "*" Streak : tracks
-UserProfile "1" -- "*" Challenge : participa
 UserProfile "1" -- "*" InterventionLog : recibe
 UserProfile "1" -- "*" EmotionalState : registra
-UserProfile "1" -- "*" DailyAnalysis : genera
 
 Category "1" -- "*" Expense : clasifica
 Category "1" -- "*" Budget : limita
@@ -196,8 +167,6 @@ Category "1" -- "*" Budget : limita
 Expense "*" -- "1" SavingGoal : impacts
 
 Achievement "*" -- "*" UserXP : desbloquea
-
-Challenge "*" -- "*" Category : targets
 
 Expense "1" -- "*" InterventionLog : lanza
 
@@ -231,19 +200,9 @@ note right of Streak
   Para fomentar el hábito
 end note
 
-note right of Challenge
-  Desafíos semanales/mensuales
-  Cálculo de cumplimiento
-end note
-
 note right of InterventionLog
   Registro de intervenciones inteligentes
   Sugerencias de ahorro
-end note
-
-note right of DailyAnalysis
-  Análisis diario de gastos
-  Detección de anomalías
 end note
 
 @enduml

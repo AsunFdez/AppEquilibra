@@ -169,7 +169,7 @@ public class SoftInterventionViewModel extends AndroidViewModel {
                 analyses.add(analysis);
             }
 
-            // Ordenar por monto total descendente
+            // Ordenar por importe total descendente
             analyses.sort((a, b) -> Double.compare(b.getTotalAmount(), a.getTotalAmount()));
 
             categoryAnalysis.postValue(analyses);

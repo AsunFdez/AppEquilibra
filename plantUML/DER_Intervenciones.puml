@@ -1,0 +1,71 @@
+@startuml AppEquilibra_ERD
+
+!define TABLENAME(x) class x << (T, #FFCCCC) >>
+!define PRIMARY_KEY(x) <b>PK:</b> x
+!define FOREIGN_KEY(x) <b>FK:</b> x
+
+title Diagrama Entidad-Relación - AppEquilibra - Intervenciones 
+' Configuración de los diagramas
+'skinparam backgroundColor #FEFEFE
+'skinparam ClassBorderColor #000000
+
+
+' ============================================================
+' TABLAS DE INTERVENCIONES
+' ============================================================
+
+TABLENAME(UserProfile) {
+    <b>PK: id</b> : LONG
+}
+
+TABLENAME(Expense) {
+    <b>PK: id</b> : LONG
+    --
+    <b>FK: userId</b> : LONG
+    <b>FK: category</b> : LONG?
+    type : TEXT
+    amount : REAL
+    description : TEXT
+}
+
+TABLENAME(InterventionLog) {
+    <b>PK: id</b> : LONG
+    --
+    userId : LONG
+    expenseId : LONG
+    interventionType : TEXT
+    message : TEXT
+    impactOnGoal : TEXT
+    alternativeSuggestion : TEXT
+    timestamp : LONG
+}
+
+TABLENAME(ExpenseCategory) {
+    <b>PK: id</b> : LONG
+    --
+    name : TEXT
+}
+
+TABLENAME(Alternative) {
+    <b>PK: id</b> : LONG
+    --
+    <b>FK: categoryId</b> : LONG
+    descriptionKeyword : TEXT
+    suggestion : TEXT
+    savingsPercentage : REAL
+}
+
+UserProfile "1" -- "*" InterventionLog : recibe
+
+Expense "1" -- "*" InterventionLog : lanza
+
+UserProfile "1" -- "*" Expense : registra
+
+ExpenseCategory "1" -- "*" Expense : clasifica
+
+ExpenseCategory "1" -- "*" Alternative : ofrece
+
+note bottom of InterventionLog
+  Registro de intervenciones inteligentes
+  Sugerencias de ahorro
+end note

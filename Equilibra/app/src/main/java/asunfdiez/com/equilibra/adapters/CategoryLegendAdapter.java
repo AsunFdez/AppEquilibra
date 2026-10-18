@@ -17,7 +17,7 @@ import asunfdiez.com.equilibra.models.CategoryAnalysis;
  * Adaptador para mostrar la leyenda explicativa de los gráficos de análisis por categoría.
  * 
  * <p>Muestra una lista de categorías con sus respectivos colores, porcentajes de gasto 
- * y montos totales, ayudando al usuario a interpretar la información visual 
+ * e importes totales, ayudando al usuario a interpretar la información visual
  * presentada en los gráficos circulares o de barras.</p>
  */
 public class CategoryLegendAdapter extends RecyclerView.Adapter<CategoryLegendAdapter.ViewHolder> {

@@ -39,7 +39,11 @@ public class AchievementRepository {
     private final LiveData<Integer> maxPossiblePoints;
 
     // LiveData para notificar el desbloqueo de un nuevo logro en tiempo real
-    public final MutableLiveData<Achievement> newlyUnlockedAchievement = new MutableLiveData<>();
+    public static final MutableLiveData<Achievement> newlyUnlockedAchievement = new MutableLiveData<>();
+
+    public static void consumeNewlyUnlockedAchievement() {
+        newlyUnlockedAchievement.setValue(null);
+    }
 
 
     /**

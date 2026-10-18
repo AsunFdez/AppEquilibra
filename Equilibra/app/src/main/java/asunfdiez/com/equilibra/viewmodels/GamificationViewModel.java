@@ -17,6 +17,7 @@ import asunfdiez.com.equilibra.controllers.UserProfileController;
 import asunfdiez.com.equilibra.models.Achievement;
 import asunfdiez.com.equilibra.models.Streak;
 import asunfdiez.com.equilibra.models.UserProfile;
+import asunfdiez.com.equilibra.repositories.AchievementRepository;
 
 /**
  * ViewModel centralizado para la gestión de todo el sistema de gamificación.
@@ -47,6 +48,7 @@ public class GamificationViewModel extends AndroidViewModel {
      * Event: Logro desbloqueado (para mostrar animación)
      */
     private final MutableLiveData<Achievement> _achievementUnlocked = new MutableLiveData<>();
+    private final MediatorLiveData<Achievement> achievementUnlocked = new MediatorLiveData<>();
 
     /**
      * Rachas del usuario
@@ -126,8 +128,13 @@ public class GamificationViewModel extends AndroidViewModel {
         // Obtener logros recientes (últimos 4)
         this.recentUnlockedAchievements = achievementController.getRecentUnlocked(4);
 
+        // Configurar fuentes para logros desbloqueados
+        achievementUnlocked.addSource(achievementController.getNewlyUnlockedAchievement(), achievementUnlocked::setValue);
+        achievementUnlocked.addSource(_achievementUnlocked, achievementUnlocked::setValue);
+
         // Cargar datos iniciales
         loadAchievements();
+        userProfile.observeForever(profile -> loadAchievements());
     }
 
     private Integer previousRecDays = null;
@@ -190,9 +197,11 @@ public class GamificationViewModel extends AndroidViewModel {
                 List<Achievement> achievements = achievementController.getAllAchievementsSync();
                 _allAchievements.postValue(achievements);
 
-                // Calcular puntos totales
+                // Calcular puntos totales (Logros + XP de perfil)
                 int totalPoints = achievementController.getTotalPointsSync();
-                _totalPoints.postValue(totalPoints);
+                UserProfile profile = userProfileController.getUserProfileSync();
+                int profileXp = profile != null ? profile.getXp() : 0;
+                _totalPoints.postValue(totalPoints + profileXp);
 
                 // Obtener nivel
                 String level = achievementController.getUserLevel();
@@ -205,7 +214,7 @@ public class GamificationViewModel extends AndroidViewModel {
             } catch (Exception e) {
                 android.util.Log.e("GamificationVM", "Error loading achievements", e);
             }
-        }).start();
+        });
     }
 
     /**
@@ -288,7 +297,7 @@ public class GamificationViewModel extends AndroidViewModel {
     }
 
     public LiveData<Achievement> getAchievementUnlocked() {
-        return _achievementUnlocked;
+        return achievementUnlocked;
     }
 
     public LiveData<Streak> getRecordingStreak() {
@@ -317,5 +326,11 @@ public class GamificationViewModel extends AndroidViewModel {
 
     public void consumeStreakMilestoneEvent() {
         _streakMilestoneReached.postValue(null);
+    }
+
+    public void consumeAchievementUnlockedEvent() {
+        achievementUnlocked.setValue(null);
+        _achievementUnlocked.setValue(null);
+        AchievementRepository.consumeNewlyUnlockedAchievement();
     }
 }

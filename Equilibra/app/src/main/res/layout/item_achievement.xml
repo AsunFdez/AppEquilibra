@@ -15,9 +15,11 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="8dp"
-        app:cardCornerRadius="12dp"
-        app:cardElevation="1dp"
-        app:cardBackgroundColor="@color/cardview_light_background">
+        app:cardCornerRadius="16dp"
+        app:cardElevation="3dp"
+        app:cardBackgroundColor="@color/background_card"
+        app:strokeWidth="1.5dp"
+        app:strokeColor="@{achievement.unlocked ? achievement.categoryColor : @android:color/transparent}">
 
         <RelativeLayout
             android:layout_width="match_parent"
@@ -28,35 +30,50 @@
                 android:layout_height="wrap_content"
                 android:gravity="center"
                 android:orientation="vertical"
-                android:padding="20dp">
+                android:padding="16dp">
 
                 <!-- Icono Circular -->
                 <FrameLayout
                     android:id="@+id/iconBackground"
-                    android:layout_width="70dp"
-                    android:layout_height="70dp"
+                    android:layout_width="64dp"
+                    android:layout_height="64dp"
                     android:background="@drawable/circle_white"
-                    app:customBackgroundTint="@{achievement.unlocked ? @color/white : @color/achievement_locked_bg}">
+                    app:customBackgroundTint="@{achievement.unlocked ? achievement.categoryColor : @color/achievement_locked_bg}">
 
                     <ImageView
                         android:id="@+id/ivAchievementIcon"
-                        android:layout_width="40dp"
-                        android:layout_height="40dp"
+                        android:layout_width="36dp"
+                        android:layout_height="36dp"
                         android:layout_gravity="center"
-                        android:alpha="@{achievement.unlocked ? 1.0f : 0.6f}"
+                        android:alpha="@{achievement.unlocked ? 1.0f : 0.5f}"
                         app:imageResource="@{achievement.iconRes}"
-                        app:tint="@{achievement.categoryColor}" />
+                        app:tint="@{achievement.unlocked ? @android:color/white : @color/text_secondary}" />
 
                 </FrameLayout>
+
+                <!-- Puntos Badge -->
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:background="@drawable/button_translucent"
+                    android:paddingHorizontal="8dp"
+                    android:paddingVertical="2dp"
+                    android:text='@{"+" + achievement.points + " pts"}'
+                    android:textColor="@android:color/white"
+                    android:textSize="11sp"
+                    android:textStyle="bold"
+                    app:customBackgroundTint="@{achievement.categoryColor}"
+                    tools:text="+30 pts" />
 
                 <TextView
                     android:id="@+id/tvAchievementTitle"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="16dp"
+                    android:layout_marginTop="8dp"
                     android:text="@{achievement.title}"
                     android:textColor="@color/text_primary"
-                    android:textSize="16sp"
+                    android:textSize="15sp"
                     android:textStyle="bold"
                     android:textAlignment="center"
                     tools:text="Primera vez" />
@@ -65,27 +82,26 @@
                     android:id="@+id/tvAchievementDescription"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp"
+                    android:layout_marginTop="4dp"
                     android:text="@{achievement.description}"
                     android:textColor="@color/text_secondary"
                     android:textSize="12sp"
                     android:textAlignment="center"
                     android:lineSpacingExtra="2dp"
-                    tools:text="Primer gasto\nregistrado" />
-
+                    tools:text="Primer gasto registrado" />
 
                 <!-- Badge de Estado -->
                 <com.google.android.material.chip.Chip
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="16dp"
+                    android:layout_marginTop="12dp"
                     android:clickable="false"
                     android:text="@{achievement.unlocked ? @string/status_unlocked : @string/status_locked}"
                     android:textColor="@{achievement.unlocked ? @color/success : @color/text_secondary}"
-                    android:textSize="12sp"
+                    android:textSize="11sp"
                     app:chipBackgroundColor="@{achievement.unlocked ? @color/primary_lighter : @color/gray_200}"
                     app:chipIcon="@{achievement.unlocked ? @drawable/ic_check_small : @drawable/ic_achievement_locked}"
-                    app:chipIconSize="20dp"
+                    app:chipIconSize="16dp"
                     app:chipIconTint="@{achievement.unlocked ? @color/success : @color/text_secondary}"
                     app:shapeAppearanceOverlay="@style/ShapeAppearance.MaterialComponents.SmallComponent"
                     tools:text="Desbloqueado" />

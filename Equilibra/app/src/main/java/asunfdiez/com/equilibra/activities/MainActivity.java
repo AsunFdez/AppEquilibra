@@ -167,6 +167,7 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationH
         gamificationViewModel.getAchievementUnlocked().observe(this, achievement -> {
             if (achievement != null) {
                 AchievementUnlockHelper.showUnlockDialog(MainActivity.this, achievement, null);
+                gamificationViewModel.consumeAchievementUnlockedEvent();
             }
         });
 

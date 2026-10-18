@@ -2,6 +2,8 @@ package asunfdiez.com.equilibra.models;
 
 import androidx.annotation.NonNull;
 import androidx.room.Entity;
+import androidx.room.ForeignKey;
+import androidx.room.Index;
 import androidx.room.PrimaryKey;
 
 import java.time.LocalDate;
@@ -16,7 +18,16 @@ import asunfdiez.com.equilibra.utils.Constants;
  * aplicación (por ejemplo, registrando gastos). Se utiliza para incentivar la 
  * constancia mediante el sistema de gamificación.</p>
  */
-@Entity(tableName = Constants.TABLE_STREAK)
+@Entity(
+        tableName = Constants.TABLE_STREAK,
+        foreignKeys = @ForeignKey(
+                entity = UserProfile.class,
+                parentColumns = "id",
+                childColumns = "userId",
+                onDelete = ForeignKey.CASCADE
+        ),
+        indices = {@Index("userId")}
+)
 public class Streak {
 
     @PrimaryKey (autoGenerate = true)

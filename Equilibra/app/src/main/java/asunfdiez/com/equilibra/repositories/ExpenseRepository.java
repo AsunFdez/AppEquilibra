@@ -1,6 +1,7 @@
 package asunfdiez.com.equilibra.repositories;
 
 import android.content.Context;
+import android.util.Log;
 
 import java.util.Calendar;
 import java.util.List;
@@ -13,6 +14,7 @@ import asunfdiez.com.equilibra.database.ExpenseDao;
 import asunfdiez.com.equilibra.models.CategoryAnalysis;
 import asunfdiez.com.equilibra.models.Expense;
 import asunfdiez.com.equilibra.models.ExpenseWithCategory;
+import asunfdiez.com.equilibra.models.UserProfile;
 import asunfdiez.com.equilibra.utils.Constants;
 import asunfdiez.com.equilibra.utils.DateUtils;
 
@@ -25,8 +27,11 @@ import asunfdiez.com.equilibra.utils.DateUtils;
  * categoría utilizados en los informes financieros.</p>
  */
 public class ExpenseRepository {
+    private static final String TAG = "ExpenseRepository";
+
     // DAO para la ejecución de consultas sobre la entidad Expense
     private final ExpenseDao expenseDao;
+    private final AppDatabase database;
 
     private final Context context;
 
@@ -39,7 +44,8 @@ public class ExpenseRepository {
      */
     public ExpenseRepository(Context context) {
         this.context = context;
-        this.expenseDao = AppDatabase.getInstance(context).expenseDao();
+        this.database = AppDatabase.getInstance(context);
+        this.expenseDao = database.expenseDao();
     }
 
     /**
@@ -48,12 +54,28 @@ public class ExpenseRepository {
      */
     public void insertExpense(Expense expense) {
         executor.execute(() -> {
-            expenseDao.insertExpense(expense);
-            new CloudSyncRepository(context).scheduleImmediateSync();
+            try {
+                expense.setUserId(requireUserProfileId());
+                validateCategory(expense);
+                expenseDao.insertExpense(expense);
+                new CloudSyncRepository(context).scheduleImmediateSync();
+            } catch (RuntimeException e) {
+                Log.e(TAG, "Error inserting expense for the current user", e);
+            }
         });
     }
 
+    /**
+     * Registra una nueva transacción en la base de datos de forma persistente.
+     * El guardado se ejecuta de forma síncrona dentro del hilo de trabajo principal.
+     * Es necesario para poder invocar posteriormente checkAchievements()
+     * que comprueba si se ha desbloqueado un logro.
+     * @param expense Gasto a insertar
+     * @return ID del gasto insertado
+     */
     public long insertExpenseSync(Expense expense) {
+        expense.setUserId(requireUserProfileId());
+        validateCategory(expense);
         long id = expenseDao.insertExpense(expense);
         new CloudSyncRepository(context).scheduleImmediateSync();
         return id;
@@ -65,9 +87,25 @@ public class ExpenseRepository {
      */
     public void updateExpenses(Expense expense) {
         executor.execute(() -> {
-            expenseDao.updateExpenses(expense);
-            new CloudSyncRepository(context).scheduleImmediateSync();
+            try {
+                updateExpensesSync(expense);
+            } catch (RuntimeException e) {
+                Log.e(TAG, "Error updating expense for the current user", e);
+            }
         });
+    }
+
+    public void updateExpensesSync(Expense expense) {
+        long userId = requireUserProfileId();
+        Expense existing = expenseDao.getExpenseById(expense.getId());
+        if (existing == null || existing.getUserId() != userId) {
+            Log.w(TAG, "Cannot update an expense that does not belong to the current user");
+            return;
+        }
+        expense.setUserId(userId);
+        validateCategory(expense);
+        expenseDao.updateExpenses(expense);
+        new CloudSyncRepository(context).scheduleImmediateSync();
     }
 
     /**
@@ -76,7 +114,7 @@ public class ExpenseRepository {
      */
     public void deleteExpense(Expense expense) {
         executor.execute(() -> {
-            expenseDao.deleteExpense(expense);
+            expenseDao.deleteExpense(expense.getId());
             new CloudSyncRepository(context).scheduleImmediateSync();
         });
     }
@@ -85,6 +123,20 @@ public class ExpenseRepository {
      */
     public void deleteAll() {
         executor.execute(() -> expenseDao.deleteAll());
+    }
+
+    private long requireUserProfileId() {
+        UserProfile profile = database.userProfileDao().getUserProfileSync();
+        if (profile == null) {
+            throw new IllegalStateException("Cannot save an expense without a user profile");
+        }
+        return profile.getId();
+    }
+
+    private void validateCategory(Expense expense) {
+        if (expense.isExpense() && expense.getCategory() == null) {
+            throw new IllegalArgumentException("An expense must reference a category");
+        }
     }
 
     /**

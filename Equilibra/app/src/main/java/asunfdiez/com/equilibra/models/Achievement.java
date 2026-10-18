@@ -2,7 +2,9 @@ package asunfdiez.com.equilibra.models;
 
 import androidx.annotation.NonNull;
 import androidx.room.Entity;
+import androidx.room.ForeignKey;
 import androidx.room.Ignore;
+import androidx.room.Index;
 import androidx.room.PrimaryKey;
 
 import asunfdiez.com.equilibra.utils.Constants;
@@ -15,12 +17,19 @@ import asunfdiez.com.equilibra.utils.Constants;
  * de logros en la base de datos.</p>
  */
 @Entity(tableName = Constants.TABLE_ACHIEVEMENTS,
-        indices = {@androidx.room.Index(value = {"title"}, unique = true)})
+        foreignKeys = @ForeignKey(
+                entity = UserProfile.class,
+                parentColumns = "id",
+                childColumns = "userId",
+                onDelete = ForeignKey.CASCADE),
+        indices = {@Index(value = {"userId", "title"}, unique = true)})
 public class Achievement {
 
     @PrimaryKey (autoGenerate = true)
     @NonNull
     private long id;
+
+    private long userId;
     
     // Título del logro
     private String title;
@@ -73,6 +82,14 @@ public class Achievement {
 
     public void setId(long id) {
         this.id = id;
+    }
+
+    public long getUserId() {
+        return userId;
+    }
+
+    public void setUserId(long userId) {
+        this.userId = userId;
     }
 
     public String getTitle() {
@@ -146,6 +163,7 @@ public class Achievement {
     public String toString() {
         return "Achievement{" +
                 "id=" + id +
+                ", userId=" + userId +
                 ", title='" + title + '\'' +
                 ", description='" + description + '\'' +
                 ", points=" + points +

@@ -5,61 +5,64 @@
 !define FOREIGN_KEY(x) <b>FK:</b> x
 
 title Diagrama Entidad-Relación - AppEquilibra - Tablas Perfil de Usuario
-' Configuración de los diagramas
-'skinparam backgroundColor #FEFEFE
-'skinparam ClassBorderColor #000000
 
 ' ============================================================
 ' TABLAS DE USUARIO Y PERFIL
 ' ============================================================
 
 TABLENAME(UserProfile) {
-    <b>PK: id</b> : INTEGER
+    <b>PK: id</b> : INTEGER (fijo: 1)
     --
     name : TEXT
     email : TEXT
+    photoUrl : TEXT
     phone : TEXT
     passwordHash : TEXT
-    level : TEXT (beginner, intermediate, advanced)
-    monthlyIncome : REAL
-    savingsPlan : TEXT
-    emotionalState : TEXT
+    emotionalState : TEXT (JSON)
     mainConcernId : TEXT
     mainConcern : TEXT
-    timeAvailable : TEXT (2, 5, 15 min)
-    currentView : TEXT
-    dayCount : INTEGER
-    weekProgress : INTEGER
-    weekGoal : INTEGER
+    timeAvailable : TEXT
+    monthlyIncome : REAL (nullable)
+    incomeDay : INTEGER (nullable)
     financialKnowledge : INTEGER
     budgetExperience : INTEGER
     savingsHabit : INTEGER
-    createdAt : LONG
-    updatedAt : LONG
+    createdAt : INTEGER
+    updatedAt : INTEGER
+    dayCount : INTEGER
+    weekProgress : INTEGER
+    weekGoal : INTEGER
+    weekCount : INTEGER
+    lastResetTimestamp : INTEGER
+    lastConnectionTimestamp : INTEGER
+    xp : INTEGER
 }
 
 TABLENAME(SavingGoal) {
-    <b>PK: id</b> : INTEGER
+    <b>PK: id</b> : INTEGER (autogenerado)
     --
-    <b>FK: userId</b> : INTEGER
+    userId : INTEGER (relación lógica)
     name : TEXT
     targetAmount : REAL
     currentAmount : REAL
-    deadline : TEXT (DATE)
-    createdAt : LONG
-    updatedAt : LONG
+    deadline : TEXT (yyyy-MM-dd)
+    createdAt : INTEGER
+    updatedAt : INTEGER
     completed : INTEGER (0/1)
+    monthlySavingAmount : REAL
+    monthsRemaining : INTEGER
 }
 
-UserProfile "1" -- "1" SavingGoal : fija
+UserProfile "1" -- "0..*" SavingGoal : userId
 
 
 note right of UserProfile
-  Almacena información completa del usuario
-  incluyendo perfil, nivel y configuración
+  Almacena información del perfil del usuario.
+
 end note
 
 note right of SavingGoal
   Objetivo de ahorro del usuario
-  Solo está activo un objetivo a la vez
+  Puede haber varias metas de ahorro 
+  pero solo una activa. 
 end note

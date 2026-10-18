@@ -17,50 +17,63 @@ title Diagrama Entidad-Relación - AppEquilibra - TABLAS DE TRANSACCIONES FINANC
 TABLENAME(UserProfile) {
 }
 
-TABLENAME(Category) {
-    <b>PK: id</b> : INTEGER
+TABLENAME(ExpenseCategory) {
+    <b>PK: id</b> : INTEGER (autogenerado)
     --
     name : TEXT (UNIQUE)
-    icon : TEXT
+    iconResId : INTEGER
+    iconName : TEXT
     color : TEXT
-    createdAt : LONG
+    isSelected : INTEGER (boolean)
 }
 
 TABLENAME(Expense) {
-    <b>PK: _id</b> : INTEGER
+    <b>PK: id</b> : INTEGER (autogenerado)
     --
+    <b>FK: userId</b> : INTEGER
     type : TEXT (expense/income)
     amount : REAL
-    <b>FK: category</b> : TEXT
+    <b>FK: category</b> : INTEGER (nullable, id de ExpenseCategory)
     description : TEXT
-    notes : TEXT
     date : TEXT (dd/MM/yyyy)
-    timestamp : LONG
+    time : TEXT
+    timestamp : INTEGER
+    isRecurring : INTEGER (boolean)
+    patternCount : INTEGER
+    notes : TEXT
 }
 
 TABLENAME(Budget) {
-    <b>PK: _id</b> : INTEGER
+    <b>PK: id</b> : INTEGER (autogenerado)
     --
-    <b>FK: category</b> : TEXT
-    amount : REAL
-    period : TEXT (monthly)
-    month : INTEGER
-    year : INTEGER
-    UNIQUE: (category, month, year)
+    <b>FK: userId</b> : INTEGER
+    monthlyBudget : REAL
+    weeklyBudget : REAL
+    dailyBudget : REAL
+    currency : TEXT
+    enabled : INTEGER (boolean)
+    createdAt : INTEGER
+    updatedAt : INTEGER
 }
 
-UserProfile "1" -- "*" Expense : registra
-UserProfile "1" -- "*" Budget : crea
-Category "1" -- "*" Expense : clasifica
-Category "1" -- "*" Budget : limita
+ExpenseCategory "0..1" -- "0..*" Expense : category
+UserProfile "1" -- "0..*" Expense : userId
+UserProfile "1" -- "0..*" Budget : userId
 
 
 note bottom of Expense
-  Registro de todas las transacciones
-  (gastos e ingresos)
+  Registro de gastos e ingresos.
+  La categoría es opcional para ingresos; eliminar una categoría
+  conserva la transacción y deja category a null.
+  Cada transacción pertenece a un perfil de usuario.
 end note
 
 note bottom of Budget
-  Límite de gasto mensual por categoría
-  Facilita monitoreo de cumplimiento
+  Límites globales diario, semanal y mensual,
+  con moneda y estado de activación.
+  Cada presupuesto pertenece a un perfil de usuario.
+end note
+
+note bottom of ExpenseCategory
+  name tiene índice único.
 end note

@@ -3,10 +3,8 @@ package asunfdiez.com.equilibra.utils;
 import android.os.Handler;
 import android.text.Editable;
 import android.text.TextWatcher;
+
 import com.google.android.material.button.MaterialButton;
-
-import androidx.cardview.widget.CardView;
-
 import com.google.android.material.textfield.TextInputEditText;
 
 /**
@@ -17,7 +15,7 @@ import com.google.android.material.textfield.TextInputEditText;
  * el usuario ingrese datos válidos antes de continuar.</p>
  */
 public class SavingGoalValidator {
-    // Campos de entrada para el nombre y el monto de la meta
+    // Campos de entrada para el nombre y el importe de la meta
     private final TextInputEditText goalInput;
     private final TextInputEditText amountInput;
     
