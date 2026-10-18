@@ -30,6 +30,7 @@ public class NotificationSettingsViewModel extends AndroidViewModel {
 
     // Mensaje de estado para informar al usuario sobre cambios realizados
     private final MutableLiveData<String> statusMessage = new MutableLiveData<>();
+    private final MutableLiveData<Void> requestPermissionEvent = new MutableLiveData<>();
 
     /**
      * Constructor
@@ -63,20 +64,30 @@ public class NotificationSettingsViewModel extends AndroidViewModel {
         return statusMessage;
     }
 
+    public LiveData<Void> getRequestPermissionEvent() {
+        return requestPermissionEvent;
+    }
+
     // ========== MÉTODOS DE ACCIÓN ==========
 
     /**
      * Habilita o deshabilita todas las notificaciones
      */
     public void setNotificationsEnabled(boolean enabled) {
+        if (enabled && android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.TIRAMISU) {
+            int perm = androidx.core.content.ContextCompat.checkSelfPermission(getApplication(), android.Manifest.permission.POST_NOTIFICATIONS);
+            if (perm != android.content.pm.PackageManager.PERMISSION_GRANTED) {
+                requestPermissionEvent.setValue(null);
+                return;
+            }
+        }
+
         prefsManager.setNotificationsEnabled(enabled);
 
         if (enabled) {
             NotificationManager.scheduleDailyNotifications(getApplication());
-            enableAll();
         } else {
             NotificationManager.cancelDailyNotifications(getApplication());
-            disableAll();
         }
 
         statusMessage.setValue(enabled
@@ -92,7 +103,8 @@ public class NotificationSettingsViewModel extends AndroidViewModel {
     public void setBudgetNotifications(boolean enabled) {
         prefsManager.setBudgetNotifications(enabled);
 
-        if (!prefsManager.getNotificationsEnabled().getValue()) {
+        Boolean notificationsEnabledVal = prefsManager.getNotificationsEnabled().getValue();
+        if (notificationsEnabledVal != null && !notificationsEnabledVal) {
             NotificationManager.cancelDailyNotifications(getApplication());
             return;
         }
@@ -109,7 +121,8 @@ public class NotificationSettingsViewModel extends AndroidViewModel {
     public void setAchievementNotifications(boolean enabled) {
 
         prefsManager.setAchievementNotifications(enabled);
-        if (!prefsManager.getNotificationsEnabled().getValue()) {
+        Boolean notificationsEnabledVal = prefsManager.getNotificationsEnabled().getValue();
+        if (notificationsEnabledVal != null && !notificationsEnabledVal) {
             NotificationManager.cancelDailyNotifications(getApplication());
             return;
         }
@@ -122,9 +135,10 @@ public class NotificationSettingsViewModel extends AndroidViewModel {
      * Activa todas las notificaciones
      */
     public void enableAll() {
-        setNotificationsEnabled(true);
-        setBudgetNotifications(true);
-        setAchievementNotifications(true);
+        prefsManager.setNotificationsEnabled(true);
+        prefsManager.setBudgetNotifications(true);
+        prefsManager.setAchievementNotifications(true);
+        NotificationManager.scheduleDailyNotifications(getApplication());
         statusMessage.setValue(getApplication().getString(R.string.enabled_all_notification));
     }
 
@@ -132,9 +146,10 @@ public class NotificationSettingsViewModel extends AndroidViewModel {
      * Desactiva todas las notificaciones
      */
     public void disableAll() {
-        setNotificationsEnabled(false);
-        setBudgetNotifications(false);
-        setAchievementNotifications(false);
+        prefsManager.setNotificationsEnabled(false);
+        prefsManager.setBudgetNotifications(false);
+        prefsManager.setAchievementNotifications(false);
+        NotificationManager.cancelDailyNotifications(getApplication());
         statusMessage.setValue(getApplication().getString(R.string.disabled_all_notification));
     }
 }

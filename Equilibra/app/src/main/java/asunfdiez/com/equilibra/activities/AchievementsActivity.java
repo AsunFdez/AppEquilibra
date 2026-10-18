@@ -21,10 +21,19 @@ import asunfdiez.com.equilibra.adapters.AchievementAdapter;
 import asunfdiez.com.equilibra.databinding.ActivityAchievementsBinding;
 import asunfdiez.com.equilibra.databinding.BottomNavigationBinding;
 import asunfdiez.com.equilibra.models.Achievement;
+import asunfdiez.com.equilibra.models.UserProfile;
+import asunfdiez.com.equilibra.models.XPAuditLog;
+import asunfdiez.com.equilibra.repositories.UserProfileRepository;
+import asunfdiez.com.equilibra.repositories.XPAuditLogRepository;
 import asunfdiez.com.equilibra.utils.AnimationHelper;
 import asunfdiez.com.equilibra.utils.BottomNavigationHandler;
 import asunfdiez.com.equilibra.utils.Constants;
 import asunfdiez.com.equilibra.viewmodels.AchievementsViewModel;
+
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.List;
+import java.util.Locale;
 
 /**
  * Actividad que gestiona los logros del usuario y el progreso de gamificación.
@@ -171,6 +180,44 @@ public class AchievementsActivity extends AppCompatActivity implements Achieveme
                     R.string.checking_achievements,
                     Snackbar.LENGTH_SHORT).show();
         });
+
+        binding.tvUserLevel.setOnClickListener(v -> showXpAuditDialog());
+    }
+
+    private void showXpAuditDialog() {
+        new Thread(() -> {
+            XPAuditLogRepository repo = new XPAuditLogRepository(this);
+            UserProfileRepository userRepo = new UserProfileRepository(this);
+            UserProfile profile = userRepo.getUserProfileSync();
+            if (profile == null) return;
+            List<XPAuditLog> logs = repo.getLogsSync(profile.getId());
+
+            runOnUiThread(() -> {
+                if (logs == null || logs.isEmpty()) {
+                    new MaterialAlertDialogBuilder(this)
+                            .setTitle("Auditoría de XP")
+                            .setMessage("No hay registros de XP aún.")
+                            .setPositiveButton(R.string.ok, null)
+                            .show();
+                    return;
+                }
+
+                StringBuilder sb = new StringBuilder();
+                SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm", Locale.getDefault());
+                for (XPAuditLog log : logs) {
+                    String dateStr = sdf.format(new Date(log.getTimestamp()));
+                    sb.append("• +").append(log.getXpAmount()).append(" XP\n")
+                      .append("  ").append(log.getDescription()).append("\n")
+                      .append("  [").append(dateStr).append("]\n\n");
+                }
+
+                new MaterialAlertDialogBuilder(this)
+                        .setTitle("⭐ Auditoría de XP")
+                        .setMessage(sb.toString().trim())
+                        .setPositiveButton(R.string.ok, null)
+                        .show();
+            });
+        }).start();
     }
 
     /**

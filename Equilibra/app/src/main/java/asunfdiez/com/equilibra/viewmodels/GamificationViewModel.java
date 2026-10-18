@@ -17,7 +17,9 @@ import asunfdiez.com.equilibra.controllers.UserProfileController;
 import asunfdiez.com.equilibra.models.Achievement;
 import asunfdiez.com.equilibra.models.Streak;
 import asunfdiez.com.equilibra.models.UserProfile;
+import asunfdiez.com.equilibra.models.UserXP;
 import asunfdiez.com.equilibra.repositories.AchievementRepository;
+import asunfdiez.com.equilibra.repositories.UserXPRepository;
 
 /**
  * ViewModel centralizado para la gestión de todo el sistema de gamificación.
@@ -135,6 +137,16 @@ public class GamificationViewModel extends AndroidViewModel {
         // Cargar datos iniciales
         loadAchievements();
         userProfile.observeForever(profile -> loadAchievements());
+
+        UserXPRepository userXPRepo = new UserXPRepository(application);
+        LiveData<UserXP> userXpLiveData = userXPRepo.getUserXPAsync(1);
+        userXpLiveData.observeForever(userXP -> {
+            if (userXP != null) {
+                _totalPoints.postValue(userXP.getTotalXP());
+                _userLevel.postValue("Nivel " + userXP.getCurrentLevel());
+                _levelProgress.postValue((int) userXP.getLevelProgress());
+            }
+        });
     }
 
     private Integer previousRecDays = null;
@@ -196,25 +208,10 @@ public class GamificationViewModel extends AndroidViewModel {
             try {
                 List<Achievement> achievements = achievementController.getAllAchievementsSync();
                 _allAchievements.postValue(achievements);
-
-                // Calcular puntos totales (Logros + XP de perfil)
-                int totalPoints = achievementController.getTotalPointsSync();
-                UserProfile profile = userProfileController.getUserProfileSync();
-                int profileXp = profile != null ? profile.getXp() : 0;
-                _totalPoints.postValue(totalPoints + profileXp);
-
-                // Obtener nivel
-                String level = achievementController.getUserLevel();
-                _userLevel.postValue(level);
-
-                // Obtener progreso hacia siguiente nivel
-                int progress = achievementController.getProgressToNextLevel();
-                _levelProgress.postValue(progress);
-
             } catch (Exception e) {
                 android.util.Log.e("GamificationVM", "Error loading achievements", e);
             }
-        });
+        }).start();
     }
 
     /**

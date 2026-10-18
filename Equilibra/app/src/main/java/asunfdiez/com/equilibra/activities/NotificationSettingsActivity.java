@@ -102,6 +102,30 @@ public class NotificationSettingsActivity extends AppCompatActivity {
                 Snackbar.make(binding.getRoot(), message, Snackbar.LENGTH_SHORT).show();
             }
         });
+
+        // Observar evento de solicitud de permisos
+        viewModel.getRequestPermissionEvent().observe(this, unused -> {
+            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.TIRAMISU) {
+                androidx.core.app.ActivityCompat.requestPermissions(
+                        this,
+                        new String[]{android.Manifest.permission.POST_NOTIFICATIONS},
+                        1001
+                );
+            }
+        });
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (requestCode == 1001) {
+            if (grantResults.length > 0 && grantResults[0] == android.content.pm.PackageManager.PERMISSION_GRANTED) {
+                viewModel.setNotificationsEnabled(true);
+            } else {
+                Snackbar.make(binding.getRoot(), "Se necesitan permisos para mostrar notificaciones", Snackbar.LENGTH_SHORT).show();
+                viewModel.setNotificationsEnabled(false);
+            }
+        }
     }
 
     @Override

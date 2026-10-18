@@ -127,6 +127,7 @@ public class UserProfileController {
             AppDatabase.insertInitialAchievements();
             AppDatabase.insertInitialAlternatives();
             AppDatabase.insertInitialStreaks();
+            AppDatabase.insertInitialUserXP();
             Log.d(TAG, "Usuario borrado");
             if (onComplete != null) {
                 new Handler(Looper.getMainLooper()).post(onComplete);

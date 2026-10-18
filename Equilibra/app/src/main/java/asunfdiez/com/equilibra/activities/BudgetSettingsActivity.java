@@ -21,7 +21,9 @@ import asunfdiez.com.equilibra.R;
 import asunfdiez.com.equilibra.databinding.ActivityBudgetSettingsBinding;
 import asunfdiez.com.equilibra.databinding.ItemSelectorPopupBinding;
 import asunfdiez.com.equilibra.models.Budget;
+import asunfdiez.com.equilibra.utils.AchievementUnlockHelper;
 import asunfdiez.com.equilibra.viewmodels.BudgetSettingsViewModel;
+import asunfdiez.com.equilibra.viewmodels.GamificationViewModel;
 
 /**
  * Actividad para la configuración y gestión de presupuestos financieros.
@@ -62,6 +64,14 @@ public class BudgetSettingsActivity extends AppCompatActivity {
         setupTextWatchers();
         setupListeners();
         setupObservers();
+
+        GamificationViewModel gamificationViewModel = new ViewModelProvider(this).get(GamificationViewModel.class);
+        gamificationViewModel.getAchievementUnlocked().observe(this, achievement -> {
+            if (achievement != null) {
+                AchievementUnlockHelper.showUnlockDialog(BudgetSettingsActivity.this, achievement, null);
+                gamificationViewModel.consumeAchievementUnlockedEvent();
+            }
+        });
 
         // El botón de guardado se gestiona vía LiveData en el layout
 

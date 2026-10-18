@@ -94,8 +94,8 @@ public final class Constants {
     // DATABASE CONSTANTS
     // ========================================
     public static final String DATABASE_NAME = "equilibra.db";
-    public static final int DATABASE_VERSION = 14;
-    public static final int DATABASE_PREVIOUS_VERSION = 13;
+    public static final int DATABASE_VERSION = 15;
+    public static final int DATABASE_PREVIOUS_VERSION = 14;
 
     //Tabla UserProfile
     public static final String TABLE_USER_PROFILE = "user_profile";

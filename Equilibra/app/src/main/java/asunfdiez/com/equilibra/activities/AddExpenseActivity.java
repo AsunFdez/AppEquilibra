@@ -27,6 +27,7 @@ import asunfdiez.com.equilibra.databinding.DialogSmartReminderBinding;
 import asunfdiez.com.equilibra.models.SmartReminder;
 import asunfdiez.com.equilibra.utils.AnimationHelper;
 import asunfdiez.com.equilibra.utils.DatePickerHelper;
+import asunfdiez.com.equilibra.utils.AchievementUnlockHelper;
 import asunfdiez.com.equilibra.viewmodels.AddExpenseViewModel;
 import asunfdiez.com.equilibra.viewmodels.GamificationViewModel;
 
@@ -249,6 +250,13 @@ public class AddExpenseActivity extends AppCompatActivity {
      * Configura los observadores de LiveData
      */
     private void setupObservers() {
+        gamificationViewModel.getAchievementUnlocked().observe(this, achievement -> {
+            if (achievement != null) {
+                AchievementUnlockHelper.showUnlockDialog(AddExpenseActivity.this, achievement, null);
+                gamificationViewModel.consumeAchievementUnlockedEvent();
+            }
+        });
+
         // Observar cuando se guarda el gasto
         viewModel.getExpenseSaved().observe(this, saved -> {
             if (saved != null && saved) {

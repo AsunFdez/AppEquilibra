@@ -13,6 +13,7 @@ import androidx.lifecycle.ViewModelProvider;
 import asunfdiez.com.equilibra.R;
 import asunfdiez.com.equilibra.databinding.ActivitySplashBinding;
 import asunfdiez.com.equilibra.utils.AnimationHelper;
+import asunfdiez.com.equilibra.utils.NotificationManager;
 import asunfdiez.com.equilibra.utils.SharedPrefsManager;
 import asunfdiez.com.equilibra.viewmodels.SplashViewModel;
 
@@ -45,6 +46,9 @@ public class SplashActivity extends AppCompatActivity {
         setContentView(binding.getRoot());
 
         prefsManager = SharedPrefsManager.getInstance(this);
+        if (prefsManager.isNotificationsEnabled()) {
+            NotificationManager.scheduleDailyNotifications(getApplicationContext());
+        }
         viewModel = new ViewModelProvider(this).get(SplashViewModel.class);
         // Hide system UI for full screen
         getWindow().getDecorView().setSystemUiVisibility(

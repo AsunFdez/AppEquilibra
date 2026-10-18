@@ -72,8 +72,6 @@ public class UserProfile {
     // Marcas de tiempo para control de reinicios y última conexión
     private long lastResetTimestamp = System.currentTimeMillis();
     private long lastConnectionTimestamp = System.currentTimeMillis();
-    private int xp = 0;
-
 
     public UserProfile() {
         this.createdAt = System.currentTimeMillis();
@@ -262,14 +260,6 @@ public class UserProfile {
 
     public void setLastConnectionTimestamp(long lastConnectionTimestamp) {
         this.lastConnectionTimestamp = lastConnectionTimestamp;
-    }
-
-    public int getXp() {
-        return xp;
-    }
-
-    public void setXp(int xp) {
-        this.xp = xp;
     }
 
     @Override

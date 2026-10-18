@@ -9,6 +9,7 @@ import asunfdiez.com.equilibra.models.Streak;
 import asunfdiez.com.equilibra.models.UserProfile;
 import asunfdiez.com.equilibra.repositories.StreakRepository;
 import asunfdiez.com.equilibra.repositories.UserProfileRepository;
+import asunfdiez.com.equilibra.repositories.UserXPRepository;
 
 /**
  * Controlador de racha de usuarios.
@@ -21,10 +22,12 @@ public class StreakController {
 
     private final StreakRepository streakRepository;
     private final UserProfileRepository userProfileRepository;
+    private final UserXPRepository userXPRepository;
 
     public StreakController(Context context) {
         this.streakRepository = new StreakRepository(context);
         this.userProfileRepository = new UserProfileRepository(context);
+        this.userXPRepository = new UserXPRepository(context);
     }
 
     /**
@@ -61,7 +64,7 @@ public class StreakController {
                     if (streak != null) {
                         streak.incrementCounter();
                         streakRepository.updateStreak(streak);
-                        userProfileRepository.addXp(10);
+                        userXPRepository.addXp(user.getId(), 10, "Registro diario de actividad");
                         Log.d("StreakController", "Recording streak incremented: " + streak.getConsecutiveDays());
                     }
                 }
@@ -105,7 +108,7 @@ public class StreakController {
                     if (streak != null) {
                         streak.recordActivity();
                         streakRepository.updateStreak(streak);
-                        userProfileRepository.addXp(100);
+                        userXPRepository.addXp(user.getId(), 100, "Cierre de semana bajo presupuesto");
                         Log.d("StreakController", "Budget streak updated: " + streak.getConsecutiveDays() + " days");
                     }
                 }

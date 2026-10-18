@@ -1,7 +1,6 @@
 package asunfdiez.com.equilibra.database;
 
 import android.content.Context;
-import android.database.Cursor;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
@@ -32,6 +31,7 @@ import asunfdiez.com.equilibra.models.SavingGoal;
 import asunfdiez.com.equilibra.models.Streak;
 import asunfdiez.com.equilibra.models.UserProfile;
 import asunfdiez.com.equilibra.models.UserXP;
+import asunfdiez.com.equilibra.models.XPAuditLog;
 import asunfdiez.com.equilibra.utils.Constants;
 
 /**
@@ -49,70 +49,34 @@ import asunfdiez.com.equilibra.utils.Constants;
                     Expense.class, ExpenseCategory.class,
                     InterventionLog.class,
                     SavingGoal.class, Streak.class,
-                    UserProfile.class, UserXP.class },
+                    UserProfile.class, UserXP.class, XPAuditLog.class },
         version = Constants.DATABASE_VERSION,
         exportSchema = true
 )
 @TypeConverters({Converters.class})
 public abstract class AppDatabase extends RoomDatabase {
 
-
-    static final Migration MIGRATION_12_13 = new Migration(12, 13) {
+    static final Migration MIGRATION_14_15 = new Migration(14, 15) {
         @Override
         public void migrate(@NonNull SupportSQLiteDatabase database) {
             database.execSQL(
-                    "CREATE TABLE alternatives_new (" +
+                    "CREATE TABLE IF NOT EXISTS xp_audit_log (" +
                             "id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, " +
-                            "categoryId INTEGER NOT NULL, " +
-                            "descriptionKeyword TEXT, " +
-                            "suggestion TEXT, " +
-                            "savingsPercentage REAL NOT NULL, " +
-                            "FOREIGN KEY(categoryId) REFERENCES categories(id) " +
+                            "userId INTEGER NOT NULL, " +
+                            "xpAmount INTEGER NOT NULL, " +
+                            "description TEXT, " +
+                            "timestamp INTEGER NOT NULL, " +
+                            "FOREIGN KEY(userId) REFERENCES user_profile(id) " +
                             "ON UPDATE NO ACTION ON DELETE CASCADE)");
-            database.execSQL(
-                    "INSERT INTO alternatives_new " +
-                            "(id, categoryId, descriptionKeyword, suggestion, savingsPercentage) " +
-                            "SELECT a.id, c.id, a.descriptionKeyword, a.suggestion, " +
-                            "a.savingsPercentage FROM alternatives a " +
-                            "JOIN categories c ON c.name = a.category");
-
-            if (countRows(database, "alternatives") != countRows(database, "alternatives_new")) {
-                throw new IllegalStateException(
-                        "Cannot migrate alternatives: some category names do not match categories");
-            }
-
-            database.execSQL("DROP TABLE alternatives");
-            database.execSQL("ALTER TABLE alternatives_new RENAME TO alternatives");
-            database.execSQL(
-                    "CREATE INDEX index_alternatives_categoryId ON alternatives(categoryId)");
-            database.execSQL(
-                    "CREATE UNIQUE INDEX index_alternatives_suggestion " +
-                            "ON alternatives(suggestion)");
+            database.execSQL("CREATE INDEX index_xp_audit_log_userId ON xp_audit_log(userId)");
         }
     };
 
-    static final Migration MIGRATION_13_14 = new Migration(13, 14) {
-        @Override
-        public void migrate(@NonNull SupportSQLiteDatabase database) {
-            database.execSQL("DROP TABLE IF EXISTS daily_analysis");
-            database.execSQL("DROP TABLE IF EXISTS challenges");
-        }
-    };
-
-    private static long countRows(SupportSQLiteDatabase database, String tableName) {
-        try (Cursor cursor = database.query("SELECT COUNT(*) FROM " + tableName)) {
-            if (cursor.moveToFirst()) {
-                return cursor.getLong(0);
-            }
-        }
-        throw new IllegalStateException("Cannot count rows in " + tableName);
-    }
 
     // Instancia única de la base de datos (Patrón Singleton)
     private static volatile AppDatabase INSTANCE;
     private static Context mContext;
-    private static final ExecutorService INITIALIZATION_EXECUTOR =
-            Executors.newSingleThreadExecutor();
+    private static final ExecutorService INITIALIZATION_EXECUTOR = Executors.newSingleThreadExecutor();
 
     // Métodos de acceso a los Objetos de Acceso a Datos (DAO)
     public abstract UserProfileDao userProfileDao();
@@ -128,6 +92,8 @@ public abstract class AppDatabase extends RoomDatabase {
 
     public abstract InterventionLogDao interventionLogDao();
 
+    public abstract XPAuditLogDao xpAuditLogDao();
+
 
     /**
      * Obtiene la instancia única de la base de datos
@@ -140,7 +106,8 @@ public abstract class AppDatabase extends RoomDatabase {
                     mContext = context.getApplicationContext();
                     INSTANCE = Room.databaseBuilder(context.getApplicationContext(),
                                     AppDatabase.class, Constants.DATABASE_NAME)
-                            .addMigrations(MIGRATION_12_13, MIGRATION_13_14)
+                            .addMigrations(MIGRATION_14_15)
+                            .allowMainThreadQueries()
                             .fallbackToDestructiveMigration()
                             .build();
                     ensureInitialDataSync(context);
@@ -169,25 +136,32 @@ public abstract class AppDatabase extends RoomDatabase {
                 Log.d("AppDatabase", "Initial UserProfile created synchronously");
             }
 
-            // 2. Categories
+            // 2. User XP
+            UserXP userXP = INSTANCE.userXPDao().getUserXPByUserId(profile.getId());
+            if (userXP == null) {
+                insertInitialUserXP();
+                Log.d("AppDatabase", "Initial UserXP created synchronously");
+            }
+
+            // 3. Categories
             if (INSTANCE.expenseCategoryDao().getCategories().isEmpty()) {
                 insertInitialCategories();
                 Log.d("AppDatabase", "Initial Categories inserted synchronously");
             }
 
-            // 3. Achievements
+            // 4. Achievements
             if (INSTANCE.achievementDao().getAchievementCountSync() == 0) {
                 insertInitialAchievements();
                 Log.d("AppDatabase", "Initial Achievements inserted synchronously");
             }
 
-            // 4. Alternatives
+            // 5. Alternatives
             if (INSTANCE.alternativeDao().getAllAlternatives().isEmpty()) {
                 insertInitialAlternatives();
                 Log.d("AppDatabase", "Initial Alternatives inserted synchronously");
             }
 
-            // 5. Streaks
+            // 6. Streaks
             UserProfile currentUser = INSTANCE.userProfileDao().getUserProfileSync();
             if (currentUser != null && INSTANCE.streakDao().getAllStreaks().isEmpty()) {
                 insertInitialStreaks();
@@ -197,6 +171,7 @@ public abstract class AppDatabase extends RoomDatabase {
             Log.e("AppDatabase", "Error in ensureInitialDataSync: " + e.getMessage(), e);
         }
     }
+
 
     /**
      * Borrar la base de datos
@@ -274,6 +249,23 @@ public abstract class AppDatabase extends RoomDatabase {
         streaks.add(budgetStreak);
 
         dao.insertListOfStreak(streaks);
+    }
+
+    public static void insertInitialUserXP() {
+        UserProfile profile = INSTANCE.userProfileDao().getUserProfileSync();
+        if (profile == null) {
+            Log.i("AppDatabase", "Skipping initial user XP until a user profile exists");
+            return;
+        }
+        UserXP userXP;
+        userXP = new UserXP();
+        userXP.setUserId(profile.getId());
+        userXP.setTotalXP(0);
+        userXP.setCurrentLevel(1);
+        userXP.setXpForNextLevel(100);
+        userXP.setAchievementsUnlocked(0);
+        userXP.setLastXPEarnedAt(System.currentTimeMillis());
+        INSTANCE.userXPDao().insertUserXP(userXP);
     }
 
     /**

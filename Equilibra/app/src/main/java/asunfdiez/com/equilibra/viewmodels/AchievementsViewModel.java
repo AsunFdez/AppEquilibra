@@ -15,8 +15,8 @@ import java.util.List;
 import asunfdiez.com.equilibra.R;
 import asunfdiez.com.equilibra.controllers.AchievementController;
 import asunfdiez.com.equilibra.models.Achievement;
-import asunfdiez.com.equilibra.models.UserProfile;
-import asunfdiez.com.equilibra.repositories.UserProfileRepository;
+import asunfdiez.com.equilibra.models.UserXP;
+import asunfdiez.com.equilibra.repositories.UserXPRepository;
 
 /**
  * ViewModel encargado de la gestión de datos para la pantalla de logros.
@@ -85,21 +85,13 @@ public class AchievementsViewModel extends AndroidViewModel {
         this.unlockedAchievements = controller.getUnlockedAchievements();
         this.lockedAchievements = controller.getLockedAchievements();
         
-        UserProfileRepository userProfileRepo = new UserProfileRepository(application);
-        LiveData<Integer> achPoints = controller.getTotalPoints();
-        LiveData<UserProfile> userProfileLiveData = userProfileRepo.getUserProfile();
-
-        MediatorLiveData<Integer> combinedPoints = new MediatorLiveData<>();
-        Runnable updatePoints = () -> {
-            Integer ach = achPoints.getValue();
-            UserProfile profile = userProfileLiveData.getValue();
-            int a = ach != null ? ach : 0;
-            int x = profile != null ? profile.getXp() : 0;
-            combinedPoints.setValue(a + x);
-        };
-        combinedPoints.addSource(achPoints, p -> updatePoints.run());
-        combinedPoints.addSource(userProfileLiveData, p -> updatePoints.run());
-        this.totalPoints = combinedPoints;
+        UserXPRepository userXPRepo = new UserXPRepository(application);
+        LiveData<UserXP> userXpLiveData = userXPRepo.getUserXPAsync(1);
+        MediatorLiveData<Integer> xpLiveData = new MediatorLiveData<>();
+        xpLiveData.addSource(userXpLiveData, userXP -> {
+            xpLiveData.setValue(userXP != null ? userXP.getTotalXP() : 0);
+        });
+        this.totalPoints = xpLiveData;
 
         this.unlockedCount = controller.getUnlockedCount();
         this.totalAchievements = controller.getTotalAchievements();

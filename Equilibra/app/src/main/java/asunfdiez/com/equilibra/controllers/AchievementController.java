@@ -20,7 +20,9 @@ import asunfdiez.com.equilibra.repositories.AchievementRepository;
 import asunfdiez.com.equilibra.repositories.BudgetRepository;
 import asunfdiez.com.equilibra.repositories.ExpenseRepository;
 import asunfdiez.com.equilibra.repositories.UserProfileRepository;
+import asunfdiez.com.equilibra.repositories.UserXPRepository;
 import asunfdiez.com.equilibra.utils.Constants;
+import asunfdiez.com.equilibra.utils.NotificationManager;
 
 /**
  * Controlador de lógica de negocio encargado de la gestión de los logros del usuario.
@@ -39,12 +41,14 @@ public class AchievementController {
     private final UserProfileRepository userProfileRepository;
     private final ExpenseRepository expenseRepository;
     private final BudgetRepository budgetRepository;
+    private final Context context;
 
 
     // Executor para ejecutar lógica de verificación pesada en segundo plano
     private final ExecutorService executorService = Executors.newSingleThreadExecutor();
 
     public AchievementController(Context context) {
+        this.context = context;
         this.achievementRepository = new AchievementRepository(context);
         this.userProfileRepository = new UserProfileRepository(context);
         this.expenseRepository = new ExpenseRepository(context);
@@ -193,13 +197,16 @@ public class AchievementController {
         if (activeBudget != null && activeBudget.isEnabled()) {
             unlockAchievementIfNotUnlocked(Constants.ACHIEVEMENT_CREATE_BUDGET);
 
-            int weeksUnderBudget = userProfileRepository.getWeeksUnderBudget();
+            UserProfile profile = userProfileRepository.getUserProfileSync();
+            if (profile != null && profile.getDayCount() >= 7) {
+                int weeksUnderBudget = userProfileRepository.getWeeksUnderBudget();
 
-            if (weeksUnderBudget >= 1) {
-                unlockAchievementIfNotUnlocked(Constants.ACHIEVEMENT_UNDER_BUDGET_WEEK);
-            }
-            if (weeksUnderBudget >= 4) {
-                unlockAchievementIfNotUnlocked(Constants.ACHIEVEMENT_UNDER_BUDGET_MONTH);
+                if (weeksUnderBudget >= 1) {
+                    unlockAchievementIfNotUnlocked(Constants.ACHIEVEMENT_UNDER_BUDGET_WEEK);
+                }
+                if (weeksUnderBudget >= 4 && profile.getDayCount() >= 30) {
+                    unlockAchievementIfNotUnlocked(Constants.ACHIEVEMENT_UNDER_BUDGET_MONTH);
+                }
             }
         }
     }
@@ -280,6 +287,15 @@ public class AchievementController {
                     Achievement achievement = achievementRepository.getAchievementByKey(achievementKey);
                     if (achievement != null) {
                         achievementRepository.newlyUnlockedAchievement.postValue(achievement);
+
+                        UserProfile user = userProfileRepository.getUserProfileSync();
+                        if (user != null) {
+                            new UserXPRepository(context).addXp(user.getId(), achievement.getPoints(), "Logro desbloqueado: " + achievement.getTitle());
+                            new UserXPRepository(context).incrementAchievementsUnlocked(user.getId());
+                        }
+
+                        NotificationManager.sendAchievementNotification(context, achievement);
+
                         Log.d(TAG, "Achievement unlocked: " + achievementKey);
                     }
                 }

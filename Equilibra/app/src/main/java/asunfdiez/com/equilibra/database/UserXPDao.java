@@ -38,5 +38,8 @@ public interface UserXPDao {
     @Query("SELECT * FROM "+ Constants.TABLE_USER_XP+" WHERE userId = :userId")
     UserXP getUserXPByUserId(long userId);
 
+    @Query("SELECT * FROM "+ Constants.TABLE_USER_XP+" WHERE userId = :userId LIMIT 1")
+    androidx.lifecycle.LiveData<UserXP> getUserXPAsync(long userId);
+
 
 }

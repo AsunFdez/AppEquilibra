@@ -35,7 +35,6 @@ TABLENAME(UserProfile) {
     weekCount : INTEGER
     lastResetTimestamp : INTEGER
     lastConnectionTimestamp : INTEGER
-    xp : INTEGER
 }
 
 TABLENAME(SavingGoal) {

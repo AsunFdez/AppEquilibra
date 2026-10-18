@@ -165,62 +165,159 @@ La configuración actual del proyecto incluye:
 ## 📂 Esquema Clases Java
 
 ```text
-├── activities/                    # Activities de la aplicación
-│   ├── SplashActivity.java
-│   ├── OnboardingActivity.java
-│   ├── IntermediateUserActivity.java
-│   ├── AdvancedUserActivity.java
-│   ├── MainActivity.java
-│   ├── AddExpenseActivity.java
-│   ├── SoftInterventionActivity.java
-│   ├── AnalysisActivity.java
-│   └── AchievementsActivity.java
-│
-├── controllers/                   # Lógica de negocio
-│   ├── ExpenseController.java
-│   ├── BudgetController.java
-│   ├── AchievementController.java
-│   ├── AnalyticsController.java
-│   └── OnboardingController.java
-│
-├── models/                        # Modelos de datos
-│   ├── Expense.java
-│   ├── Budget.java
-│   ├── Achievement.java
-│   ├── UserProfile.java
-│   ├── EmotionalState.java
-│   ├── QuestionOption.java
-│   ├── Category.java
-│   └── Mission.java
-│
-├── adapters/                      # Adapters para RecyclerView
-│   ├── QuestionOptionAdapter.java
-│   ├── ExpenseAdapter.java
-│   ├── CategoryAdapter.java
-│   ├── AchievementAdapter.java
-│   └── OnboardingPagerAdapter.java
-│
-├── database/                      # SQLite Database
-│   ├── DatabaseHelper.java
-│   ├── ExpenseDAO.java
-│   ├── BudgetDAO.java
-│   └── AchievementDAO.java
-├── repositories/                  # Para obtener datos
-├── utils/                         # Utilidades y helpers
-│   ├── SharedPrefsManager.java
-│   ├── DateUtils.java
-│   ├── CurrencyUtils.java
-│   ├── ValidationUtils.java
-│   ├── AnimationUtils.java
-│   ├── Constants.java
-│   ├── InputValidator.java
-│   ├── DatePickerHelper.java
-│   └── SavingGoalValidator.java
-└── views/                         # Custom Views
-    ├── FeatureCard.java
-    ├── CircularProgressView.java
-    ├── CategoryIconView.java
-    └── WaveLoadingView.java
+app/
+├── src/
+│   ├── main/
+│   │   ├── java/
+│   │   │   └── asunfdiez/com/equilibra/
+│   │   │       ├── activities/
+│   │   │       │   ├── SplashActivity.java
+│   │   │       │   ├── OnboardingActivity.java
+│   │   │       │   ├── MainActivity.java
+│   │   │       │   ├── AddExpenseActivity.java
+│   │   │       │   ├── ExpenseListActivity.java
+│   │   │       │   ├── AnalysisActivity.java
+│   │   │       │   ├── ComparativeAnalysisActivity.java
+│   │   │       │   ├── AchievementsActivity.java
+│   │   │       │   ├── SoftInterventionActivity.java
+│   │   │       │   ├── InterventionHistoryActivity.java
+│   │   │       │   ├── SettingsActivity.java
+│   │   │       │   ├── ProfileActivity.java
+│   │   │       │   ├── BudgetSettingsActivity.java
+│   │   │       │   ├── AppearanceSettingsActivity.java
+│   │   │       │   ├── NotificationSettingsActivity.java
+│   │   │       │   ├── AboutActivity.java
+│   │   │       │   └── ...
+│   │   │       │
+│   │   │       ├── viewmodels/
+│   │   │       │   ├── SplashViewModel.java
+│   │   │       │   ├── OnboardingViewModel.java
+│   │   │       │   ├── MainViewModel.java
+│   │   │       │   ├── AddExpenseViewModel.java
+│   │   │       │   ├── ExpenseListViewModel.java
+│   │   │       │   ├── AnalysisViewModel.java
+│   │   │       │   ├── ComparativeAnalysisViewModel.java
+│   │   │       │   ├── SettingsViewModel.java
+│   │   │       │   ├── ProfileViewModel.java
+│   │   │       │   ├── BudgetSettingsViewModel.java
+│   │   │       │   ├── AppearanceSettingsViewModel.java
+│   │   │       │   ├── NotificationSettingsViewModel.java
+│   │   │       │   ├── AdviceViewModel.java
+│   │   │       │   ├── GamificationViewModel.java
+│   │   │       │   ├── AchievementsViewModel.java
+│   │   │       │   ├── SoftInterventionViewModel.java
+│   │   │       │   ├── InterventionHistoryViewModel.java
+│   │   │       │   └── ...
+│   │   │       │
+│   │   │       ├── controllers/
+│   │   │       │   ├── ExpenseController.java
+│   │   │       │   ├── BudgetController.java
+│   │   │       │   ├── AchievementController.java
+│   │   │       │   ├── AnalyticsController.java
+│   │   │       │   ├── UserProfileController.java
+│   │   │       │   ├── CloudSyncController.java
+│   │   │       │   ├── StreakController.java
+│   │   │       │   ├── WellbeingController.java
+│   │   │       │   ├── ExpenseViewHolder.java
+│   │   │       │   ├── AchievementViewHolder.java
+│   │   │       │   ├── InterventionLogViewHolder.java
+│   │   │       │   └── ...
+│   │   │       │
+│   │   │       ├── repositories/
+│   │   │       │   ├── ExpenseRepository.java
+│   │   │       │   ├── BudgetRepository.java
+│   │   │       │   ├── AchievementRepository.java
+│   │   │       │   ├── UserProfileRepository.java
+│   │   │       │   ├── ExpenseCategoryRepository.java
+│   │   │       │   ├── AlternativeRepository.java
+│   │   │       │   ├── SavingGoalRepository.java
+│   │   │       │   ├── StreakRepository.java
+│   │   │       │   ├── InterventionLogRepository.java
+│   │   │       │   ├── CloudSyncRepository.java
+│   │   │       │   └── ...
+│   │   │       │
+│   │   │       ├── models/
+│   │   │       │   ├── Expense.java
+│   │   │       │   ├── ExpenseCategory.java
+│   │   │       │   ├── ExpenseWithCategory.java
+│   │   │       │   ├── UserProfile.java
+│   │   │       │   ├── Budget.java
+│   │   │       │   ├── Achievement.java
+│   │   │       │   ├── Streak.java
+│   │   │       │   ├── SavingGoal.java
+│   │   │       │   ├── InterventionLog.java
+│   │   │       │   ├── InterventionMessage.java
+│   │   │       │   ├── Alternative.java
+│   │   │       │   ├── Advice.java
+│   │   │       │   ├── SmartReminder.java
+│   │   │       │   ├── CategoryAnalysis.java
+│   │   │       │   ├── AnalysisState.java
+│   │   │       │   ├── ComparativeAnalysisState.java
+│   │   │       │   ├── FinancialData.java
+│   │   │       │   ├── EmotionalState.java
+│   │   │       │   ├── QuestionOption.java
+│   │   │       │   ├── UserXP.java
+│   │   │       │   └── ...
+│   │   │       │
+│   │   │       ├── adapters/
+│   │   │       │   ├── ExpenseAdapter.java
+│   │   │       │   ├── AchievementAdapter.java
+│   │   │       │   ├── AchievementMiniAdapter.java
+│   │   │       │   ├── CalendarAdapter.java
+│   │   │       │   ├── CategoryAdapter.java
+│   │   │       │   ├── CategoryLegendAdapter.java
+│   │   │       │   ├── ComparativeAnalysisAdapter.java
+│   │   │       │   ├── InterventionLogAdapter.java
+│   │   │       │   ├── QuestionOptionAdapter.java
+│   │   │       │   ├── ProfileBindingAdapter.java
+│   │   │       │   ├── StreakBindingAdapter.java
+│   │   │       │   ├── ChartBindingAdapter.java
+│   │   │       │   ├── BindingAdapters.java
+│   │   │       │   ├── GamificationBindingAdapters.java
+│   │   │       │   └── ...
+│   │   │       │
+│   │   │       ├── database/
+│   │   │       │   ├── AppDatabase.java
+│   │   │       │   ├── UserProfileDao.java
+│   │   │       │   ├── ExpenseDao.java
+│   │   │       │   ├── ExpenseCategoryDao.java
+│   │   │       │   ├── BudgetDao.java
+│   │   │       │   ├── AchievementDao.java
+│   │   │       │   ├── AlternativeDao.java
+│   │   │       │   ├── SavingGoalDao.java
+│   │   │       │   ├── StreakDao.java
+│   │   │       │   ├── InterventionLogDao.java
+│   │   │       │   ├── UserXPDao.java
+│   │   │       │   ├── Converters.java
+│   │   │       │   └── ...
+│   │   │       │
+│   │   │       ├── utils/
+│   │   │       │   ├── Constants.java
+│   │   │       │   ├── SharedPrefsManager.java
+│   │   │       │   ├── DateUtils.java
+│   │   │       │   ├── DatePickerHelper.java
+│   │   │       │   ├── ValidationHelper.java
+│   │   │       │   ├── InputValidator.java
+│   │   │       │   ├── SavingGoalValidator.java
+│   │   │       │   ├── AdviceManager.java
+│   │   │       │   ├── NotificationManager.java
+│   │   │       │   ├── AnimationHelper.java
+│   │   │       │   ├── BottomNavigationHandler.java
+│   │   │       │   ├── AchievementUnlockHelper.java
+│   │   │       │   └── ...
+│   │   │       │
+│   │   │       ├── workers/
+│   │   │       │   ├── CloudSyncWorker.java
+│   │   │       │   ├── AutoIncomeWorker.java
+│   │   │       │   ├── NotificationWorker.java
+│   │   │       │   └── ...
+│   │   │       │
+│   │   │       ├── views/
+│   │   │       │   ├── FeatureCard.java
+│   │   │       │   ├── SelectorView.java
+│   │   │       │   └── ...
+│   │   │       │
+│   │   │       └── ...
 ```
 
 ## 🎨 Estructura de Recursos

@@ -194,6 +194,10 @@ public final class SharedPrefsManager {
         return notificationsEnabled;
     }
 
+    public boolean isNotificationsEnabled() {
+        return sharedPreferences.getBoolean(Constants.PREF_NOTIFICATIONS_ENABLED, true);
+    }
+
     public LiveData<Boolean> getBudgetNotifications() {
         return budgetNotifications;
     }
