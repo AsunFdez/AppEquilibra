@@ -21,11 +21,14 @@ import asunfdiez.com.equilibra.controllers.WellbeingController;
 import asunfdiez.com.equilibra.databinding.ActivityMainBinding;
 import asunfdiez.com.equilibra.databinding.BottomNavigationBinding;
 import asunfdiez.com.equilibra.models.Advice;
+import asunfdiez.com.equilibra.models.Achievement;
 import asunfdiez.com.equilibra.models.UserProfile;
+import asunfdiez.com.equilibra.repositories.AchievementRepository;
 import asunfdiez.com.equilibra.utils.AchievementUnlockHelper;
 import asunfdiez.com.equilibra.utils.AnimationHelper;
 import asunfdiez.com.equilibra.utils.BottomNavigationHandler;
 import asunfdiez.com.equilibra.utils.Constants;
+import asunfdiez.com.equilibra.utils.SharedPrefsManager;
 import asunfdiez.com.equilibra.viewmodels.AdviceViewModel;
 import asunfdiez.com.equilibra.viewmodels.GamificationViewModel;
 import asunfdiez.com.equilibra.viewmodels.InterventionHistoryViewModel;
@@ -353,6 +356,7 @@ private void navigateTo(Class<?> activityClass) {
 @Override
 protected void onResume() {
     super.onResume();
+    checkPendingAchievement();
     // Refrescar datos a través del ViewModel (dispara checkWellbeing en 2º plano)
     if (viewModel != null) {
         viewModel.refreshData();
@@ -360,6 +364,23 @@ protected void onResume() {
         if (budgetController != null) {
             budgetController.checkDailyBudgetStreak();
         }
+    }
+}
+
+private void checkPendingAchievement() {
+    SharedPrefsManager prefsManager = SharedPrefsManager.getInstance(this);
+    String pendingKey = prefsManager.getPendingAchievementKey();
+    if (pendingKey != null && !pendingKey.isEmpty()) {
+        prefsManager.setPendingAchievementKey(null); // Consumir
+        new Thread(() -> {
+            AchievementRepository repo = new AchievementRepository(this);
+            Achievement achievement = repo.getAchievementByKey(pendingKey);
+            if (achievement != null) {
+                runOnUiThread(() -> {
+                    AchievementUnlockHelper.showUnlockDialog(MainActivity.this, achievement, null);
+                });
+            }
+        }).start();
     }
 }
 

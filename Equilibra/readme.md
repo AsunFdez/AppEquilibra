@@ -2,7 +2,7 @@
 
 ## Estado actual del proyecto
 
-Este documento refleja el estado observado del proyecto a fecha de 2026-10-18.
+Este documento refleja el estado observado del proyecto a fecha de 2026-11-07.
 La aplicación es un proyecto Android nativo en Java con Gradle Kotlin DSL y utiliza una arquitectura basada en actividades, view models, repositorios y Room para el almacenamiento local.
 
 Además, el proyecto ya incluye integración con Firebase para autenticación y sincronización de datos, así como un flujo de sincronización en segundo plano mediante WorkManager.
@@ -1325,6 +1325,9 @@ Data Binding automático via `AdviceViewModel`:
 
 ---
 
+## Testing de Base de Datos Room:
+◦ Para el uso de bases de datos en memoria (Room.inMemoryDatabaseBuilder) se han creado pruebas instrumentadas en la carpeta androidTest.
+◦ Los casos de prueba actuales para ExpenseDao son: inserción individual, inserción en lote, actualización, eliminación y filtrado por rangos de fecha.
 
 ## Dependencias importantes
 

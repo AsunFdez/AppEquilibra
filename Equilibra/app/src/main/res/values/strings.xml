@@ -6,7 +6,7 @@
 
     <string name="splash_loading_profile">Cargando perfil de usuario…</string>
     <string name="splash_waiting_user">Esperando perfil de usuario...</string>
-    <string name="splash_user_loaded">Bienvenido de nuevo.</string>
+    <string name="splash_user_loaded">Bienvenido</string>
 
     <string name="money_bag_emoji">💰</string>
     <string name="stars_emoji">✨</string>

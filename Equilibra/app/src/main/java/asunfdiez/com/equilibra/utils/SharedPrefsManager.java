@@ -266,6 +266,14 @@ public final class SharedPrefsManager {
         lastSyncTime.postValue(timestamp);
     }
 
+    public void setPendingAchievementKey(String key) {
+        sharedPreferences.edit().putString("pending_achievement_key", key).apply();
+    }
+
+    public String getPendingAchievementKey() {
+        return sharedPreferences.getString("pending_achievement_key", null);
+    }
+
     /**
      * Limpia todas las preferencias (excepto onboarding)
      */

@@ -23,6 +23,7 @@ import asunfdiez.com.equilibra.repositories.UserProfileRepository;
 import asunfdiez.com.equilibra.repositories.UserXPRepository;
 import asunfdiez.com.equilibra.utils.Constants;
 import asunfdiez.com.equilibra.utils.NotificationManager;
+import asunfdiez.com.equilibra.utils.SharedPrefsManager;
 
 /**
  * Controlador de lógica de negocio encargado de la gestión de los logros del usuario.
@@ -287,6 +288,7 @@ public class AchievementController {
                     Achievement achievement = achievementRepository.getAchievementByKey(achievementKey);
                     if (achievement != null) {
                         achievementRepository.newlyUnlockedAchievement.postValue(achievement);
+                        SharedPrefsManager.getInstance(context).setPendingAchievementKey(achievement.getKey());
 
                         UserProfile user = userProfileRepository.getUserProfileSync();
                         if (user != null) {
