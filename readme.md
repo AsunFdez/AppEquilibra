@@ -2,7 +2,7 @@
 
 ## Estado actual del proyecto
 
-Este documento refleja el estado observado del proyecto a fecha de 2026-10-18.
+Este documento refleja el estado observado del proyecto a fecha de 2026-11-07.
 La aplicación es un proyecto Android nativo en Java con Gradle Kotlin DSL y utiliza una arquitectura basada en actividades, view models, repositorios y Room para el almacenamiento local.
 
 Además, el proyecto ya incluye integración con Firebase para autenticación y sincronización de datos, así como un flujo de sincronización en segundo plano mediante WorkManager.
@@ -1325,6 +1325,14 @@ Data Binding automático via `AdviceViewModel`:
 
 ---
 
+## Testing
+### Pruebas Unitarias (src/test): Reservadas para pruebas puras de JVM que no dependen de Android SDK o contexto (ej. lógica de negocio pura con JUnit y Mockito).
+
+### Pruebas Instrumentadas (src/androidTest): Para pruebas que requieren componentes de Android, contexto, base de datos Room, o el corredor @RunWith(AndroidJUnit4.class) (ej. AboutActivityTest, AdviceManagerTest, AdviceViewModelTest, ExpenseDatabaseTest).
+Para el test de base de datos se utilizan bases de datos en memoria y pruebas de integración.
+Los casos de prueba actuales incluyen:
+- Inserción individual, inserción en lote, actualización, eliminación y filtrado por rangos de fecha (`ExpenseDatabaseTest`).
+- Poblar datos históricos y de análisis mediante el test específico `testPopulateDummyData()`, el cual inserta gastos simulados de los últimos 12 meses y actualiza progresivamente los logros, niveles de XP y rachas en consecuencia.
 
 ## Dependencias importantes
 
@@ -1343,5 +1351,13 @@ Data Binding automático via `AdviceViewModel`:
 - Glide: carga y gestión de imágenes de perfil.
 - Google Play Services Auth: integración con autenticación de Google.
 - JUnit y AndroidX Test: soporte para pruebas unitarias y de UI.
+
+## Copias de seguridad (Exportación e Importación con Gson)
+- **`DatabaseBackupHelper` y `DatabaseBackupDto`**: Permiten exportar e importar la base de datos completa de Room en formato JSON utilizando **Gson**.
+- **Respaldo integral**: Incluye perfiles, metas, gastos, categorías, logros, alternativas, rachas, XP, presupuestos e historiales de intervención y auditoría dentro de transacciones seguras de Room.
+- **Gestión robusta de claves foráneas**: Durante la importación, se desactivan temporalmente las restricciones de claves foráneas (`PRAGMA foreign_keys = OFF`) y se aplica un orden de borrado e inserción basado en la jerarquía de dependencias para evitar excepciones de restricciones (`SQLiteConstraintException`).
+
+## Otros
+- Compatibilidad de Vibración y Sensores: Se asegura el uso de VibrationEffect.createOneShot con un minSdk = 26 para evitar errores de tipo NoSuchMethodError en dispositivos con versiones anteriores a Android 10 (API 29)
 
 -->
