@@ -11,7 +11,7 @@ import org.junit.runner.RunWith;
 
 /**
  * Pruebas unitarias para AboutActivity
- * 
+ *
  * Nota: Al ser una Activity, estas pruebas idealmente deberían ser instrumentadas (Espresso).
  * Aquí se presentan pruebas básicas de estructura siguiendo el patrón del proyecto.
  */
@@ -23,7 +23,7 @@ public class AboutActivityTest {
 
     @Test
     public void testActivityExists() {
-        // En un entorno de pruebas unitarias con Robolectric, 
+        // En un entorno de pruebas unitarias con Robolectric,
         // podríamos usar ActivityScenario.launch(AboutActivity.class)
         assertTrue("Prueba de estructura básica", true);
     }

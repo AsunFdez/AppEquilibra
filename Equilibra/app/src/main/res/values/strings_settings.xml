@@ -42,6 +42,29 @@
     <string name="clear">Limpiar</string>
     <string name="reset">Resetear</string>
 
+    <string name="section_data_management">Gestión de Datos (CSV - JSON)</string>
+    <string name="export_csv">Exportar Gastos a CSV</string>
+    <string name="import_csv">Importar Gastos desde CSV</string>
+    <string name="export_success">Gastos exportados correctamente</string>
+    <string name="import_success">Gastos importados correctamente (%1$d registros)</string>
+    <string name="export_error">Error al exportar gastos</string>
+    <string name="import_error">Error al importar gastos</string>
+
+    <string name="generate_dummy_csv">Generar Datos Dummy y CSV</string>
+    <string name="generate_dummy_csv_title">¿Generar datos de prueba y CSV?</string>
+    <string name="generate_dummy_csv_message">Se guardarán los gastos históricos en la base de datos de la app y se creará el archivo CSV en la carpeta shared_prefs sin desinstalar la app.</string>
+    <string name="dummy_csv_generated">¡Datos guardados y CSV generado en shared_prefs!</string>
+
+    <string name="export_db_json">Exportar Base de Datos (JSON)</string>
+    <string name="import_db_json">Importar Base de Datos (JSON)</string>
+    <string name="export_db_success">Base de datos exportada correctamente</string>
+    <string name="export_db_error">Error al exportar la base de datos</string>
+    <string name="import_db_success">Base de datos restaurada correctamente</string>
+    <string name="import_db_error">Error al restaurar la base de datos</string>
+    <string name="import_db_confirm_title">¿Restaurar base de datos?</string>
+    <string name="import_db_confirm_message">Se sobrescribirán todos los datos actuales de la aplicación con los del archivo seleccionado. Esta acción no se puede deshacer y reiniciará la app.</string>
+    <string name="restore">Restaurar</string>
+
     <!-- ========== PROFILE SETTINGS ========== -->
     <string name="personal_info">Información Personal</string>
     <string name="name">Nombre</string>

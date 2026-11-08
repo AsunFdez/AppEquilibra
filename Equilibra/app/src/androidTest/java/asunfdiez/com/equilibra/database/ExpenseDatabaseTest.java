@@ -163,4 +163,45 @@ public class ExpenseDatabaseTest {
         assertNotNull(all);
         assertEquals("Debe haber 3 gastos insertados", 3, all.size());
     }
+
+    @Test
+    public void testPopulateDummyData() {
+        Context context = ApplicationProvider.getApplicationContext();
+        AppDatabase db = AppDatabase.getInstance(context);
+        
+        // Ejecutar la función dummyData() explícitamente mediante este test concreto
+        AppDatabase.dummyData();
+
+        List<Expense> allExpenses = db.expenseDao().getAllExpenses();
+        assertNotNull("Los gastos dummy no deben ser nulos", allExpenses);
+        assertTrue("Debe haberse poblado una cantidad significativa de gastos históricos para análisis", allExpenses.size() > 10);
+
+        // Crear y guardar el archivo CSV en la ubicación de SharedPreferences
+        try {
+            java.io.File sharedPrefsDir = new java.io.File(context.getApplicationInfo().dataDir, "shared_prefs");
+            if (!sharedPrefsDir.exists()) {
+                sharedPrefsDir.mkdirs();
+            }
+            java.io.File csvFile = new java.io.File(sharedPrefsDir, "equilibra_dummy_expenses.csv");
+            
+            try (java.io.FileWriter writer = new java.io.FileWriter(csvFile, java.nio.charset.StandardCharsets.UTF_8)) {
+                writer.write("type,amount,category,description,date,time,timestamp\n");
+                for (Expense e : allExpenses) {
+                    writer.write(String.format(java.util.Locale.US, "%s,%.2f,%d,\"%s\",%s,%s,%d\n",
+                            e.getType() != null ? e.getType() : "expense",
+                            e.getAmount(),
+                            e.getCategory() != null ? e.getCategory() : 1L,
+                            e.getDescription() != null ? e.getDescription().replace("\"", "\"\"") : "",
+                            e.getDate() != null ? e.getDate() : "",
+                            e.getTime() != null ? e.getTime() : "12:00",
+                            e.getTimestamp()
+                    ));
+                }
+                writer.flush();
+            }
+            android.util.Log.d("ExpenseDatabaseTest", "Dummy CSV created at SharedPreferences dir: " + csvFile.getAbsolutePath());
+        } catch (Exception e) {
+            android.util.Log.e("ExpenseDatabaseTest", "Error creating dummy CSV file", e);
+        }
+    }
 }

@@ -707,8 +707,8 @@ public class AnimationHelper {
         if (vibrator != null && vibrator.hasVibrator()) {
             if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
                 try {
-                    android.os.VibrationEffect effect = android.os.VibrationEffect.createPredefined(
-                        android.os.VibrationEffect.DEFAULT_AMPLITUDE);
+                    android.os.VibrationEffect effect = android.os.VibrationEffect.createOneShot(
+                            50, android.os.VibrationEffect.DEFAULT_AMPLITUDE);
                     vibrator.vibrate(effect);
                 } catch (Exception e) {
                     Log.e("AnimationHelper", "Error creating vibration effect", e);

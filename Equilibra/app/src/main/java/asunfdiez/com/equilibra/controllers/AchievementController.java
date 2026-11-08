@@ -71,24 +71,6 @@ public class AchievementController {
         return achievementRepository.getTotalPointsSync();
     }
 
-    public String getUserLevel() {
-        int points = getTotalPointsSync();
-        if (points >= 1000) return "Maestro";
-        if (points >= 500) return "Experto";
-        if (points >= 200) return "Avanzado";
-        if (points >= 50) return "Iniciado";
-        return "Principiante";
-    }
-
-    public int getProgressToNextLevel() {
-        int points = getTotalPointsSync();
-        if (points >= 1000) return 100;
-        if (points >= 500) return (points - 500) * 100 / 500;
-        if (points >= 200) return (points - 200) * 100 / 300;
-        if (points >= 50) return (points - 50) * 100 / 150;
-        return points * 100 / 50;
-    }
-
 
     public LiveData<List<Achievement>> getUnlockedAchievements() {
         return achievementRepository.getUnlockedAchievements();
@@ -154,7 +136,7 @@ public class AchievementController {
      */
     private void checkExpenseCountAchievements() {
         int totalExpenses = expenseRepository.getTotalExpenseCount();
-        if (totalExpenses == 1) {
+        if (totalExpenses >= 1) {
             unlockAchievementIfNotUnlocked(Constants.ACHIEVEMENT_FIRST_EXPENSE);
         }
         if (totalExpenses >= 10) {

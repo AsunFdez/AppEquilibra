@@ -155,4 +155,9 @@ public interface AchievementDao {
     @Query("SELECT COUNT(*) FROM " + Constants.TABLE_ACHIEVEMENTS +
             " WHERE userId = (SELECT id FROM " + Constants.TABLE_USER_PROFILE + " LIMIT 1)")
     int getAchievementCountSync();
+
+    @Query("SELECT COUNT(*) FROM " + Constants.TABLE_ACHIEVEMENTS +
+            " WHERE userId = (SELECT id FROM " + Constants.TABLE_USER_PROFILE + " LIMIT 1) " +
+            "AND unlocked = 1")
+    int getUnlockedCountSync();
 }

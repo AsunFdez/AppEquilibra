@@ -125,7 +125,7 @@ public class AdviceViewModelTest {
     @Test
     public void testViewModelInstanciation() {
         AdviceViewModel viewModel2 = new AdviceViewModel(application);
-        
+
         // No son la misma instancia (cada constructor crea una nueva)
         // pero ambas contienen los LiveData correctamente
         assertNotNull("ViewModel 1 debe tener dailyAdvice", viewModel.getDailyAdvice());

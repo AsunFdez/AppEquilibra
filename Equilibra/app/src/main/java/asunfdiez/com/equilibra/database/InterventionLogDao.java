@@ -61,5 +61,7 @@ public interface InterventionLogDao {
             + " ORDER BY " + Constants.COLUMN_INTERVENTION_TIMESTAMP + " DESC")
     LiveData<List<InterventionLog>> observeByUserId(long userId);
 
+    @Query("SELECT * FROM " + Constants.TABLE_INTERVENTION_LOG)
+    List<InterventionLog> getAllInterventionLogsSync();
 
 }

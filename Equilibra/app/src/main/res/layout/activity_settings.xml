@@ -224,7 +224,65 @@
                     android:id="@+id/btnResetApp"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="@string/reset_app" />
+                    android:text="@string/reset_app"
+                    android:layout_marginBottom="16dp" />
+
+                <!-- Sección: Gestión de Datos -->
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/section_data_management"
+                    android:textStyle="bold"
+                    android:textSize="14sp"
+                    android:textColor="@color/primary"
+                    android:layout_marginBottom="8dp"
+                    android:layout_marginTop="8dp" />
+
+                <!-- Botón: Exportar CSV -->
+                <com.google.android.material.button.MaterialButton
+                    style="@style/Equilibra.Button.Primary"
+                    android:id="@+id/btnExportCsv"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/export_csv"
+                    android:layout_marginBottom="8dp" />
+
+                <!-- Botón: Importar CSV -->
+                <com.google.android.material.button.MaterialButton
+                    style="@style/Equilibra.Button.Primary"
+                    android:id="@+id/btnImportCsv"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/import_csv"
+                    android:layout_marginBottom="8dp" />
+
+                <!-- Botón: Generar Dummy y CSV -->
+                <com.google.android.material.button.MaterialButton
+                    style="@style/Widget.Material3.Button.OutlinedButton"
+                    android:id="@+id/btnGenerateDummyCsv"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:visibility="gone"
+                    android:text="@string/generate_dummy_csv"
+                    android:layout_marginBottom="8dp" />
+
+                <!-- Botón: Exportar Base de Datos JSON -->
+                <com.google.android.material.button.MaterialButton
+                    style="@style/Equilibra.Button.Primary"
+                    android:id="@+id/btnExportDatabaseJson"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/export_db_json"
+                    android:layout_marginBottom="8dp" />
+
+                <!-- Botón: Importar Base de Datos JSON -->
+                <com.google.android.material.button.MaterialButton
+                    style="@style/Equilibra.Button.Primary"
+                    android:id="@+id/btnImportDatabaseJson"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/import_db_json"
+                    android:layout_marginBottom="8dp" />
 
             </LinearLayout>
 

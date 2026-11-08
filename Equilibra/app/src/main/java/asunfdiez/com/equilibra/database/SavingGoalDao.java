@@ -7,6 +7,8 @@ import androidx.room.OnConflictStrategy;
 import androidx.room.Query;
 import androidx.room.Update;
 
+import java.util.List;
+
 import asunfdiez.com.equilibra.models.SavingGoal;
 import asunfdiez.com.equilibra.utils.Constants;
 
@@ -41,6 +43,7 @@ public interface SavingGoalDao {
     @Query("SELECT * FROM "+ Constants.TABLE_SAVING_GOALS+" WHERE userId = :userId and completed = 0 LIMIT 1")
     SavingGoal getFirstSavingGoalActiveByUserId(long userId);
 
-
+    @Query("SELECT * FROM " + Constants.TABLE_SAVING_GOALS)
+    List<SavingGoal> getAllSavingGoalsSync();
 
 }

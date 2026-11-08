@@ -66,6 +66,10 @@ public interface ExpenseDao {
             " ORDER BY " + Constants.COLUMN_EXPENSE_TIMESTAMP + " DESC")
     List<Expense> getAllExpenses();
 
+    @Query("SELECT * FROM " + Constants.TABLE_EXPENSES +
+            " ORDER BY " + Constants.COLUMN_EXPENSE_TIMESTAMP + " DESC")
+    List<Expense> getAllExpensesSync();
+
     /**
      * Recupera todas las transacciones como LiveData para observación reactiva.
      */

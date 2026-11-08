@@ -7,6 +7,8 @@ import androidx.room.OnConflictStrategy;
 import androidx.room.Query;
 import androidx.room.Update;
 
+import java.util.List;
+
 import asunfdiez.com.equilibra.models.UserXP;
 import asunfdiez.com.equilibra.utils.Constants;
 
@@ -34,6 +36,12 @@ public interface UserXPDao {
 
     @Delete
     void deleteUserXP(UserXP userXP);
+
+    @Query("DELETE FROM " + Constants.TABLE_USER_XP)
+    void deleteAll();
+
+    @Query("SELECT * FROM " + Constants.TABLE_USER_XP)
+    List<UserXP> getAllUserXpSync();
 
     @Query("SELECT * FROM "+ Constants.TABLE_USER_XP+" WHERE userId = :userId")
     UserXP getUserXPByUserId(long userId);

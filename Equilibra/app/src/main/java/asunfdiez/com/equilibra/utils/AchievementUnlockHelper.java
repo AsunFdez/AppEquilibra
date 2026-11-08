@@ -174,8 +174,8 @@ public class AchievementUnlockHelper {
             // Por ahora, solo usar vibración si está disponible
 
             if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
-                android.os.VibrationEffect effect = android.os.VibrationEffect.createPredefined(
-                        android.os.VibrationEffect.DEFAULT_AMPLITUDE
+                android.os.VibrationEffect effect = android.os.VibrationEffect.createOneShot(
+                        50, android.os.VibrationEffect.DEFAULT_AMPLITUDE
                 );
                 android.os.Vibrator vibrator = (android.os.Vibrator)
                         context.getSystemService(Context.VIBRATOR_SERVICE);

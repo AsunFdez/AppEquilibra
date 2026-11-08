@@ -16,11 +16,13 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
+import java.util.Locale;
 import java.util.Random;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 import asunfdiez.com.equilibra.R;
+import asunfdiez.com.equilibra.controllers.AchievementController;
 import asunfdiez.com.equilibra.models.Achievement;
 import asunfdiez.com.equilibra.models.Alternative;
 import asunfdiez.com.equilibra.models.Budget;
@@ -442,92 +444,211 @@ public abstract class AppDatabase extends RoomDatabase {
 
     public static void dummyData() {
         ExpenseDao dao = INSTANCE.expenseDao();
-        List<Expense> expenses = new ArrayList<>();
-        UserProfile profile = INSTANCE.userProfileDao().getUserProfileSync();
+        ExpenseCategoryDao categoryDao = INSTANCE.expenseCategoryDao();
+        UserProfileDao userDao = INSTANCE.userProfileDao();
+        StreakDao streakDao = INSTANCE.streakDao();
+        UserXPDao xpDao = INSTANCE.userXPDao();
+
+        UserProfile profile = userDao.getUserProfileSync();
         if (profile == null) {
-            throw new IllegalStateException("Cannot create sample expenses without a user profile");
+            profile = new UserProfile();
+            profile.setId(1);
         }
-        
-        int year = Calendar.getInstance().get(Calendar.YEAR);
-        String y = String.valueOf(year);
+        profile.setDayCount(365); // 12 meses de actividad simulada
+        userDao.insertOrUpdate(profile);
+        profile = userDao.getUserProfileSync();
 
-        expenses.add(new Expense("expense",getRandom(45., 120.) , 1, "supermercado", "10/01/" + y));
-        expenses.add(new Expense("expense",getRandom(45., 120.), 1, "supermercado", "17/01/" + y));
-        expenses.add(new Expense("expense",getRandom(45., 120.), 1, "supermercado", "24/01/" + y));
-        expenses.add(new Expense("expense",getRandom(45., 120.), 1, "supermercado", "31/01/" + y));
-        expenses.add(new Expense("expense",getRandom(45., 120.), 1, "supermercado", "07/02/" + y));
-        expenses.add(new Expense("expense",getRandom(45., 120.), 1, "supermercado", "14/02/" + y));
-        expenses.add(new Expense("expense",getRandom(45., 120.), 1, "supermercado", "21/02/" + y));
-        expenses.add(new Expense("expense",getRandom(45., 120.), 1, "supermercado", "28/02/" + y));
-        expenses.add(new Expense("expense",getRandom(45., 120.), 1, "supermercado", "07/03/" + y));
-        expenses.add(new Expense("expense",getRandom(45., 120.), 1, "supermercado", "14/03/" + y));
-        expenses.add(new Expense("expense",getRandom(45., 120.), 1, "supermercado", "21/03/" + y));
-        expenses.add(new Expense("expense",getRandom(45., 120.), 1, "supermercado", "28/03/" + y));
-        expenses.add(new Expense("expense",getRandom(45., 120.), 1, "supermercado", "04/04/" + y));
-
-        expenses.add(new Expense("expense",getRandom(30., 80.) , 5, "cena amigos", "10/01/" + y));
-        expenses.add(new Expense("expense",getRandom(30., 80.), 5, "cena amigos", "17/01/" + y));
-        expenses.add(new Expense("expense",getRandom(30., 80.), 5, "cena amigos", "24/01/" + y));
-        expenses.add(new Expense("expense",getRandom(30., 80.), 5, "cena amigos", "31/01/" + y));
-        expenses.add(new Expense("expense",getRandom(30., 80.), 5, "cena amigos", "07/02/" + y));
-        expenses.add(new Expense("expense",getRandom(30., 80.), 5, "cena amigos", "14/02/" + y));
-        expenses.add(new Expense("expense",getRandom(30., 80.), 5, "cena amigos", "21/02/" + y));
-        expenses.add(new Expense("expense",getRandom(30., 80.), 5, "cena amigos", "28/02/" + y));
-        expenses.add(new Expense("expense",getRandom(30., 80.), 5, "cena amigos", "07/03/" + y));
-        expenses.add(new Expense("expense",getRandom(30., 80.), 5, "cena amigos", "14/03/" + y));
-        expenses.add(new Expense("expense",getRandom(30., 80.), 5, "cena amigos", "21/03/" + y));
-        expenses.add(new Expense("expense",getRandom(30., 80.), 5, "cena amigos", "28/03/" + y));
-        expenses.add(new Expense("expense",getRandom(30., 80.), 5, "cena amigos", "04/04/" + y));
-
-        expenses.add(new Expense("expense",getRandom(2., 3.) , 1, "café", "01/01/" + y));
-        expenses.add(new Expense("expense",getRandom(2., 3.), 1, "café", "07/01/" + y));
-        expenses.add(new Expense("expense",getRandom(2., 3.), 1, "café", "14/01/" + y));
-        expenses.add(new Expense("expense",getRandom(2., 3.), 1, "café", "21/01/" + y));
-        expenses.add(new Expense("expense",getRandom(2., 3.), 1, "café", "05/02/" + y));
-        expenses.add(new Expense("expense",getRandom(2., 3.), 1, "café", "04/02/" + y));
-        expenses.add(new Expense("expense",getRandom(2., 3.), 1, "café", "11/02/" + y));
-        expenses.add(new Expense("expense",getRandom(2., 3.), 1, "café", "18/02/" + y));
-        expenses.add(new Expense("expense",getRandom(2., 3.), 1, "café", "17/03/" + y));
-        expenses.add(new Expense("expense",getRandom(2., 3.), 1, "café", "04/03/" + y));
-        expenses.add(new Expense("expense",getRandom(2., 3.), 1, "café", "01/03/" + y));
-        expenses.add(new Expense("expense",getRandom(2., 3.), 1, "café", "08/03/" + y));
-        expenses.add(new Expense("expense",getRandom(2., 3.), 1, "café", "04/04/" + y));
-
-
-        expenses.add(new Expense("expense",getRandom(20., 50.) , 10, "camisa", "01/01/" + y));
-        expenses.add(new Expense("expense",getRandom(20., 50.), 10, "pantalón", "17/02/" + y));
-        expenses.add(new Expense("expense",getRandom(20., 50.), 10, "vestido", "24/03/" + y));
-        expenses.add(new Expense("expense",getRandom(20., 50.), 10, "calcetines", "01/04/" + y));
-
-        expenses.add(new Expense("expense",500 , 3, "alquiler", "01/01/" + y));
-        expenses.add(new Expense("expense",500 , 3, "alquiler", "01/02/" + y));
-        expenses.add(new Expense("expense",500 , 3, "alquiler", "01/03/" + y));
-        expenses.add(new Expense("expense",500 , 3, "alquiler", "01/04/" + y));
-
-        expenses.add(new Expense("expense",getRandom(40., 70.) , 3, "luz", "10/01/" + y));
-        expenses.add(new Expense("expense",getRandom(40., 70.) , 3, "luz", "12/02/" + y));
-        expenses.add(new Expense("expense",getRandom(70., 170.) , 3, "calefacción", "15/01/" + y));
-        expenses.add(new Expense("expense",getRandom(70., 170.) , 3, "calefacción", "15/04/" + y));
-
-        // Gastos para el mes actual para que se vean en el dashboard
-        int currentMonth = Calendar.getInstance().get(Calendar.MONTH) + 1;
-        String mStr = String.format(java.util.Locale.US, "/%02d/", currentMonth);
-        expenses.add(new Expense("expense",getRandom(50., 100.) , 1, "Compra semanal", "02" + mStr + y));
-        expenses.add(new Expense("expense",getRandom(20., 40.) , 2, "Gasolina", "05" + mStr + y));
-        expenses.add(new Expense("expense",getRandom(10., 30.) , 5, "Cine", "08" + mStr + y));
-        expenses.add(new Expense("expense",getRandom(15., 25.) , 1, "Pizza", "10" + mStr + y));
-
-        for (Expense expense : expenses) {
-            expense.setUserId(profile.getId());
+        if (categoryDao.getCategories().isEmpty()) {
+            insertInitialCategories();
         }
+
+        long foodId = requireCategoryId(categoryDao, "ic_cat_food");
+        long shoppingId = requireCategoryId(categoryDao, "ic_cat_shoping_cart");
+        long transportId = requireCategoryId(categoryDao, "ic_cat_transport");
+        long homeId = requireCategoryId(categoryDao, "ic_nav_home");
+        long leisureId = requireCategoryId(categoryDao, "ic_cat_gamepad_2");
+        long subsId = requireCategoryId(categoryDao, "ic_cat_suscriptions");
+        long clothesId = requireCategoryId(categoryDao, "ic_cat_shirt");
+        long gymId = requireCategoryId(categoryDao, "ic_cat_gym");
+        long othersId = requireCategoryId(categoryDao, "ic_cat_package");
+
+        List<Expense> expenses = new ArrayList<>();
+        Calendar cal = Calendar.getInstance();
+
+        // Generar datos coherentes para los últimos 12 meses hasta el mes actual (sin superar el día actual)
+        for (int i = 11; i >= 0; i--) {
+            Calendar monthCal = (Calendar) cal.clone();
+            monthCal.add(Calendar.MONTH, -i);
+            int m = monthCal.get(Calendar.MONTH) + 1;
+            int yr = monthCal.get(Calendar.YEAR);
+            String mStr = String.format(Locale.US, "%02d", m);
+            String yrStr = String.valueOf(yr);
+
+            addExpenseIfValid(expenses, profile.getId(), "income", 1200.0, (int)othersId, "Nómina mensual", "01/" + mStr + "/" + yrStr, "09:00", yr, m, 1);
+            addExpenseIfValid(expenses, profile.getId(), "expense", 500.0, (int)homeId, "Alquiler", "01/" + mStr + "/" + yrStr, "10:00", yr, m, 1);
+            addExpenseIfValid(expenses, profile.getId(), "expense", getRandom(45.0, 75.0), (int)homeId, "Luz", "10/" + mStr + "/" + yrStr, "11:30", yr, m, 10);
+            addExpenseIfValid(expenses, profile.getId(), "expense", 35.0, (int)gymId, "Gimnasio", "05/" + mStr + "/" + yrStr, "08:00", yr, m, 5);
+            addExpenseIfValid(expenses, profile.getId(), "expense", 14.99, (int)subsId, "Suscripción streaming", "15/" + mStr + "/" + yrStr, "16:00", yr, m, 15);
+
+            addExpenseIfValid(expenses, profile.getId(), "expense", getRandom(40.0, 90.0), (int)shoppingId, "Supermercado", "03/" + mStr + "/" + yrStr, "18:00", yr, m, 3);
+            addExpenseIfValid(expenses, profile.getId(), "expense", getRandom(45.0, 100.0), (int)shoppingId, "Supermercado", "10/" + mStr + "/" + yrStr, "18:30", yr, m, 10);
+            addExpenseIfValid(expenses, profile.getId(), "expense", getRandom(50.0, 110.0), (int)shoppingId, "Supermercado", "17/" + mStr + "/" + yrStr, "19:00", yr, m, 17);
+            addExpenseIfValid(expenses, profile.getId(), "expense", getRandom(40.0, 95.0), (int)shoppingId, "Supermercado", "24/" + mStr + "/" + yrStr, "18:15", yr, m, 24);
+
+            addExpenseIfValid(expenses, profile.getId(), "expense", getRandom(2.0, 3.5), (int)foodId, "Café", "04/" + mStr + "/" + yrStr, "09:30", yr, m, 4);
+            addExpenseIfValid(expenses, profile.getId(), "expense", getRandom(2.0, 3.5), (int)foodId, "Café", "12/" + mStr + "/" + yrStr, "10:15", yr, m, 12);
+            addExpenseIfValid(expenses, profile.getId(), "expense", getRandom(2.0, 3.5), (int)foodId, "Café", "19/" + mStr + "/" + yrStr, "09:45", yr, m, 19);
+            addExpenseIfValid(expenses, profile.getId(), "expense", getRandom(2.0, 3.5), (int)foodId, "Café", "26/" + mStr + "/" + yrStr, "10:00", yr, m, 26);
+
+            addExpenseIfValid(expenses, profile.getId(), "expense", getRandom(25.0, 70.0), (int)leisureId, "Cena amigos", "08/" + mStr + "/" + yrStr, "21:30", yr, m, 8);
+            addExpenseIfValid(expenses, profile.getId(), "expense", getRandom(15.0, 40.0), (int)leisureId, "Cine y palomitas", "22/" + mStr + "/" + yrStr, "20:00", yr, m, 22);
+
+            addExpenseIfValid(expenses, profile.getId(), "expense", getRandom(30.0, 60.0), (int)transportId, "Gasolina", "12/" + mStr + "/" + yrStr, "14:00", yr, m, 12);
+            addExpenseIfValid(expenses, profile.getId(), "expense", getRandom(30.0, 60.0), (int)transportId, "Gasolina", "25/" + mStr + "/" + yrStr, "15:30", yr, m, 25);
+
+            if (i % 2 == 0) {
+                addExpenseIfValid(expenses, profile.getId(), "expense", getRandom(20.0, 65.0), (int)clothesId, "Ropa", "18/" + mStr + "/" + yrStr, "17:00", yr, m, 18);
+            }
+        }
+
         dao.deleteAll();
         dao.insertListOfExpenses(expenses);
+
+        // Actualizar tabla Streak, comprobar logros y actualizar userXP
+        try {
+            streakDao.deleteAll();
+            String todayStr = LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+
+            Streak recordingStreak = new Streak();
+            recordingStreak.setUserId(profile.getId());
+            recordingStreak.setType(Streak.TYPE_RECORDING);
+            recordingStreak.setConsecutiveDays(5);
+            recordingStreak.setStartDate(LocalDate.now().minusDays(5).format(DateTimeFormatter.ofPattern("yyyy-MM-dd")));
+            recordingStreak.setLastActivityDate(todayStr);
+            recordingStreak.setMaxStreakRecord(12);
+            recordingStreak.setActive(true);
+
+            Streak budgetStreak = new Streak();
+            budgetStreak.setUserId(profile.getId());
+            budgetStreak.setType(Streak.TYPE_BUDGET);
+            budgetStreak.setConsecutiveDays(4);
+            budgetStreak.setStartDate(LocalDate.now().minusDays(4).format(DateTimeFormatter.ofPattern("yyyy-MM-dd")));
+            budgetStreak.setLastActivityDate(todayStr);
+            budgetStreak.setMaxStreakRecord(10);
+            budgetStreak.setActive(true);
+
+            List<Streak> streaks = new ArrayList<>();
+            streaks.add(recordingStreak);
+            streaks.add(budgetStreak);
+            streakDao.insertListOfStreak(streaks);
+
+            AchievementController achievementController = new AchievementController(mContext);
+            achievementController.checkAndUnlockAchievements();
+
+            // Actualizar tabla userXP en consecuencia
+            UserXP userXP = xpDao.getUserXPByUserId(profile.getId());
+            if (userXP == null) {
+                userXP = new UserXP();
+                userXP.setUserId(profile.getId());
+                xpDao.insertUserXP(userXP);
+                userXP = xpDao.getUserXPByUserId(profile.getId());
+            }
+            if (userXP != null) {
+                int transactionXp = expenses.size() * 10;
+                int achievementPoints = INSTANCE.achievementDao().getTotalPointsSync();
+                int totalXpEarned = transactionXp + achievementPoints + 200;
+
+                userXP.setTotalXP(totalXpEarned);
+                int level = 1;
+                int remainingXp = totalXpEarned;
+                while (remainingXp >= 100 * level) {
+                    remainingXp -= 100 * level;
+                    level++;
+                }
+                userXP.setCurrentLevel(level);
+                userXP.setXpForNextLevel((100 * level) - remainingXp);
+                userXP.setAchievementsUnlocked(INSTANCE.achievementDao().getUnlockedCountSync());
+                userXP.setLastXPEarnedAt(System.currentTimeMillis());
+                xpDao.updateUserXP(userXP);
+            }
+
+            Log.d("AppDatabase", "Dummy data populated successfully, streaks, achievements and userXP updated.");
+        } catch (Exception e) {
+            Log.e("AppDatabase", "Error updating streaks/achievements/userXP during dummyData: " + e.getMessage(), e);
+        }
+    }
+
+    private static void addExpenseIfValid(List<Expense> list, long userId, String type, double amount, int category, String desc, String dateStr, String timeStr, int yr, int m, int day) {
+        Calendar targetCal = Calendar.getInstance();
+        int hour = 12;
+        int minute = 0;
+        try {
+            String[] parts = timeStr.split(":");
+            if (parts.length >= 2) {
+                hour = Integer.parseInt(parts[0].trim());
+                minute = Integer.parseInt(parts[1].trim());
+            }
+        } catch (Exception ignored) {}
+
+        targetCal.set(yr, m - 1, day, hour, minute, 0);
+        targetCal.set(Calendar.MILLISECOND, 0);
+
+        Calendar now = Calendar.getInstance();
+        if (targetCal.before(now) || targetCal.equals(now)) {
+            Expense e = new Expense(type, amount, category, desc, dateStr);
+            e.setTime(timeStr);
+            e.setUserId(userId);
+            try {
+                java.text.SimpleDateFormat sdf = new java.text.SimpleDateFormat("dd/MM/yyyy HH:mm", Locale.getDefault());
+                java.util.Date parsed = sdf.parse(dateStr + " " + timeStr);
+                if (parsed != null) {
+                    e.setTimestamp(parsed.getTime());
+                }
+            } catch (Exception ignored) {
+                e.setTimestamp(targetCal.getTimeInMillis());
+            }
+            list.add(e);
+        }
     }
 
     private static double getRandom(Double valorMinimo, Double valorMaximo) {
         Random rand = new Random();
         double randomValue = valorMinimo + (valorMaximo - valorMinimo) * rand.nextDouble();
         return Math.round(randomValue * 100.0) / 100.0;
+    }
+
+    public static void generateDummyCsvAndPopulate(Context context) {
+        dummyData();
+        try {
+            java.io.File sharedPrefsDir = new java.io.File(context.getApplicationInfo().dataDir, "shared_prefs");
+            if (!sharedPrefsDir.exists()) {
+                sharedPrefsDir.mkdirs();
+            }
+            java.io.File csvFile = new java.io.File(sharedPrefsDir, "equilibra_dummy_expenses.csv");
+
+            AppDatabase db = AppDatabase.getInstance(context);
+            List<Expense> allExpenses = db.expenseDao().getAllExpenses();
+
+            try (java.io.FileOutputStream fos = new java.io.FileOutputStream(csvFile);
+                 java.io.OutputStreamWriter writer = new java.io.OutputStreamWriter(fos, java.nio.charset.StandardCharsets.UTF_8)) {
+                writer.write("type,amount,category,description,date,time,timestamp\n");
+                for (Expense e : allExpenses) {
+                    writer.write(String.format(java.util.Locale.US, "%s,%.2f,%d,\"%s\",%s,%s,%d\n",
+                            e.getType() != null ? e.getType() : "expense",
+                            e.getAmount(),
+                            e.getCategory() != null ? e.getCategory() : 1L,
+                            e.getDescription() != null ? e.getDescription().replace("\"", "\"\"") : "",
+                            e.getDate() != null ? e.getDate() : "",
+                            e.getTime() != null ? e.getTime() : "12:00",
+                            e.getTimestamp()
+                    ));
+                }
+                writer.flush();
+            }
+            Log.d("AppDatabase", "Dummy CSV generated at: " + csvFile.getAbsolutePath());
+        } catch (Exception e) {
+            Log.e("AppDatabase", "Error generating dummy CSV", e);
+        }
     }
 
 }

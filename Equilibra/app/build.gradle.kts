@@ -59,7 +59,8 @@ dependencies {
     implementation("androidx.concurrent:concurrent-futures:1.2.0")
     testImplementation(libs.junit)
     testImplementation(libs.arch.core.testing)
-    androidTestImplementation(libs.ext.junit)
+    androidTestImplementation(libs.junit)
+    androidTestImplementation(libs.arch.core.testing)
     androidTestImplementation(libs.espresso.core)
     implementation(libs.cardview)
 

@@ -15,6 +15,12 @@ public interface XPAuditLogDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     void insertLog(XPAuditLog log);
 
+    @Query("DELETE FROM xp_audit_log")
+    void deleteAll();
+
+    @Query("SELECT * FROM xp_audit_log")
+    List<XPAuditLog> getAllXpAuditLogsSync();
+
     @Query("SELECT * FROM xp_audit_log WHERE userId = :userId ORDER BY timestamp DESC")
     LiveData<List<XPAuditLog>> getLogsByUserId(long userId);
 

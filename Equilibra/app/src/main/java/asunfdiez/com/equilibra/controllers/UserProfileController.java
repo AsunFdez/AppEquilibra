@@ -103,7 +103,6 @@ public class UserProfileController {
                 }
                 
                 new Handler(Looper.getMainLooper()).post(() -> {
-                    setDummyData(user); //solo para probar funciones concretas
                     if (onComplete != null) {
                         onComplete.run();
                     }
@@ -280,17 +279,6 @@ public class UserProfileController {
         });
     }
     
-
-    /**
-     * Crea datos dummy para pruebas solo si el nombre del usuario es Dummy
-     * @param user perfil de usuario
-     */
-    public void setDummyData(UserProfile user) {
-        if (user != null && user.getName() != null && user.getName().equals("Dummy") ){
-            Log.d("User Controller setDummyData", "Setting dummy data");
-            executor.execute(AppDatabase::dummyData);
-        }
-    }
 
     /**
      * Guarda el objetivo de ahorro

@@ -1,6 +1,7 @@
 package asunfdiez.com.equilibra.activities;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
@@ -8,6 +9,8 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.credentials.CredentialManager;
@@ -19,16 +22,21 @@ import androidx.lifecycle.ViewModelProvider;
 
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 
+import java.util.List;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 
 import asunfdiez.com.equilibra.R;
+import asunfdiez.com.equilibra.database.AppDatabase;
 import asunfdiez.com.equilibra.databinding.ActivitySettingsBinding;
 import asunfdiez.com.equilibra.databinding.BottomNavigationBinding;
+import asunfdiez.com.equilibra.models.Expense;
 import asunfdiez.com.equilibra.repositories.CloudSyncRepository;
 import asunfdiez.com.equilibra.utils.AnimationHelper;
 import asunfdiez.com.equilibra.utils.BottomNavigationHandler;
 import asunfdiez.com.equilibra.utils.Constants;
+import asunfdiez.com.equilibra.utils.CsvExportImportUtils;
+import asunfdiez.com.equilibra.utils.DatabaseBackupHelper;
 import asunfdiez.com.equilibra.viewmodels.SettingsViewModel;
 
 /**
@@ -52,6 +60,108 @@ public class SettingsActivity extends AppCompatActivity implements BottomNavigat
 
     private CredentialManager credentialManager;
     private final Executor executor = Executors.newSingleThreadExecutor();
+
+    private final ActivityResultLauncher<Intent> exportCsvLauncher = registerForActivityResult(
+            new ActivityResultContracts.StartActivityForResult(),
+            result -> {
+                if (result.getResultCode() == RESULT_OK && result.getData() != null) {
+                    Uri uri = result.getData().getData();
+                    if (uri != null) {
+                        Executors.newSingleThreadExecutor().execute(() -> {
+                            AppDatabase db = AppDatabase.getInstance(this);
+                            List<Expense> expenses = db.expenseDao().getAllExpenses();
+                            boolean success = CsvExportImportUtils.exportExpenses(this, uri, expenses);
+                            runOnUiThread(() -> {
+                                if (success) {
+                                    Toast.makeText(this, R.string.export_success, Toast.LENGTH_SHORT).show();
+                                } else {
+                                    Toast.makeText(this, R.string.export_error, Toast.LENGTH_SHORT).show();
+                                }
+                            });
+                        });
+                    }
+                }
+            }
+    );
+
+    private final ActivityResultLauncher<Intent> importCsvLauncher = registerForActivityResult(
+            new ActivityResultContracts.StartActivityForResult(),
+            result -> {
+                if (result.getResultCode() == RESULT_OK && result.getData() != null) {
+                    Uri uri = result.getData().getData();
+                    if (uri != null) {
+                        Executors.newSingleThreadExecutor().execute(() -> {
+                            int count = CsvExportImportUtils.importExpenses(this, uri);
+                            runOnUiThread(() -> {
+                                if (count >= 0) {
+                                    String msg = getString(R.string.import_success, count);
+                                    Toast.makeText(this, msg, Toast.LENGTH_SHORT).show();
+                                } else {
+                                    Toast.makeText(this, R.string.import_error, Toast.LENGTH_SHORT).show();
+                                }
+                            });
+                        });
+                    }
+                }
+            }
+    );
+
+    private final ActivityResultLauncher<Intent> exportDatabaseJsonLauncher = registerForActivityResult(
+            new ActivityResultContracts.StartActivityForResult(),
+            result -> {
+                if (result.getResultCode() == RESULT_OK && result.getData() != null) {
+                    Uri uri = result.getData().getData();
+                    if (uri != null) {
+                        Executors.newSingleThreadExecutor().execute(() -> {
+                            boolean success = DatabaseBackupHelper.exportDatabaseToFile(this, uri);
+                            runOnUiThread(() -> {
+                                if (success) {
+                                    Toast.makeText(this, R.string.export_db_success, Toast.LENGTH_SHORT).show();
+                                } else {
+                                    Toast.makeText(this, R.string.export_db_error, Toast.LENGTH_SHORT).show();
+                                }
+                            });
+                        });
+                    }
+                }
+            }
+    );
+
+    private final ActivityResultLauncher<Intent> importDatabaseJsonLauncher = registerForActivityResult(
+            new ActivityResultContracts.StartActivityForResult(),
+            result -> {
+                if (result.getResultCode() == RESULT_OK && result.getData() != null) {
+                    Uri uri = result.getData().getData();
+                    if (uri != null) {
+                        showImportDatabaseConfirmation(uri);
+                    }
+                }
+            }
+    );
+
+    private void showImportDatabaseConfirmation(Uri uri) {
+        new MaterialAlertDialogBuilder(this)
+                .setTitle(R.string.import_db_confirm_title)
+                .setMessage(R.string.import_db_confirm_message)
+                .setPositiveButton(R.string.restore, (dialog, which) -> {
+                    Executors.newSingleThreadExecutor().execute(() -> {
+                        boolean success = DatabaseBackupHelper.importDatabaseFromFile(this, uri);
+                        runOnUiThread(() -> {
+                            if (success) {
+                                Toast.makeText(this, R.string.import_db_success, Toast.LENGTH_LONG).show();
+                                Intent intent = new Intent(this, MainActivity.class);
+                                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                                startActivity(intent);
+                                finish();
+                            } else {
+                                Toast.makeText(this, R.string.import_db_error, Toast.LENGTH_SHORT).show();
+                            }
+                        });
+                    });
+                })
+                .setNegativeButton(android.R.string.cancel, null)
+                .show();
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -125,8 +235,72 @@ public class SettingsActivity extends AppCompatActivity implements BottomNavigat
         // Botón de limpiar datos
         binding.btnClearData.setOnClickListener(v -> showClearDataDialog());
 
+        // Botón de exportar CSV
+        binding.btnExportCsv.setOnClickListener(v -> {
+            Intent intent = new Intent(Intent.ACTION_CREATE_DOCUMENT);
+            intent.addCategory(Intent.CATEGORY_OPENABLE);
+            intent.setType("text/csv");
+            intent.putExtra(Intent.EXTRA_TITLE, "equilibra_expenses_export.csv");
+            exportCsvLauncher.launch(intent);
+        });
+
+        // Botón de importar CSV
+        binding.btnImportCsv.setOnClickListener(v -> {
+            Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
+            intent.addCategory(Intent.CATEGORY_OPENABLE);
+            intent.setType("*/*");
+            intent.putExtra(Intent.EXTRA_MIME_TYPES, new String[]{
+                    "text/csv",
+                    "text/comma-separated-values",
+                    "text/plain",
+                    "application/csv",
+                    "application/vnd.ms-excel",
+                    "text/x-csv"
+            });
+            importCsvLauncher.launch(intent);
+        });
+
+        // Botón de generar dummy y CSV
+        binding.btnGenerateDummyCsv.setOnClickListener(v -> showGenerateDummyCsvDialog());
+
+        // Botón de exportar Base de Datos JSON
+        binding.btnExportDatabaseJson.setOnClickListener(v -> {
+            Intent intent = new Intent(Intent.ACTION_CREATE_DOCUMENT);
+            intent.addCategory(Intent.CATEGORY_OPENABLE);
+            intent.setType("application/json");
+            intent.putExtra(Intent.EXTRA_TITLE, "equilibra_db_backup_" + System.currentTimeMillis() + ".json");
+            exportDatabaseJsonLauncher.launch(intent);
+        });
+
+        // Botón de importar Base de Datos JSON
+        binding.btnImportDatabaseJson.setOnClickListener(v -> {
+            Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
+            intent.addCategory(Intent.CATEGORY_OPENABLE);
+            intent.setType("*/*");
+            intent.putExtra(Intent.EXTRA_MIME_TYPES, new String[]{
+                    "application/json",
+                    "text/plain",
+                    "application/octet-stream"
+            });
+            importDatabaseJsonLauncher.launch(intent);
+        });
+
         // Botón de resetear app
         binding.btnResetApp.setOnClickListener(v -> showResetAppDialog());
+    }
+
+    private void showGenerateDummyCsvDialog() {
+        new MaterialAlertDialogBuilder(this)
+                .setTitle(R.string.generate_dummy_csv_title)
+                .setMessage(R.string.generate_dummy_csv_message)
+                .setPositiveButton(R.string.generate_dummy_csv, (dialog, which) -> {
+                    Executors.newSingleThreadExecutor().execute(() -> {
+                        AppDatabase.generateDummyCsvAndPopulate(this);
+                        runOnUiThread(() -> Toast.makeText(this, R.string.dummy_csv_generated, Toast.LENGTH_SHORT).show());
+                    });
+                })
+                .setNegativeButton(android.R.string.cancel, null)
+                .show();
     }
 
     private void openAbout() {
